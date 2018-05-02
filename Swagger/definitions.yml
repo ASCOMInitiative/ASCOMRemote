@@ -1,0 +1,28 @@
+StringResponse:
+type: object
+properties:
+  ClientTransactionID:
+	type: integer
+	format: int32
+	description: Client's transaction ID.
+  ServerTransactionID:
+	type: integer
+	format: int32
+	description: Server's transaction ID.
+  Method:
+	type: string
+	description: Name of the calling method.
+  ErrorNumber:
+	type: integer
+	format: int32
+	description: Error number from device.
+  ErrorMessage:
+	type: string
+	description: Error message description from device.
+  DriverException:
+	type: object
+	description: Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object).
+  Value:
+	type: string
+	description: String response from the device.
+	

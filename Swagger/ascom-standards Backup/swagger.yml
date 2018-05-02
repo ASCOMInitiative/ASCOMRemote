@@ -1,0 +1,2836 @@
+swagger: '2.0'
+info:
+  title: ASCOM Web
+  description: |
+    This restful API provides access to ASCOM devices remotely over the web. 
+    
+    ## Parameters and Returned values
+    For GET operations, parameters should be placed in the URI string and for PUT operations they should be placed in the body of the message.
+    
+    Responses, as described below, are returned in JSON format and always include a common set of values including: the client's 
+    identity number, the client's transaction number, the server's transaction number, the error message, error number and serialised Windows exception.
+    The ErrorMessage field will be an empty string, the ErrorNumber field will be zero and the DriverException field will be null if the device driver method executes successfully.
+    
+    ## HTTP Status Codes and ASCOM Error codes
+    The returned HTTP status code refers to the status of the transaction from the perspective of the web application server. 
+    Under most circumstances you will receive an http return status code of `200`, indicating that the 
+    operation completed successfully within the web application server at the remote location. This does not necessarily mean
+    that the operation completed as expected and you must always check one of the ErrorMessage, ErrorNumber or DriverException fields to confirm that the 
+    returned result is valid. 
+    
+    An HTTP status code of `400` indicates that the web application server received a bad URI path or parameter value that it cannot 
+    understand and thus cannot forward the command to the device. Check the body of the response for an error message.
+    
+    An HTTP status code of `500` indicates an unexpected error within the appliation server itself, from which it could not recover. Check 
+    the body of the response for an error message.
+  version: "1.0.0"
+# the domain of the service
+host: www.ascom-standards.org
+# array of all schemes that your API supports
+schemes:
+  - http
+  - https
+# will be prefixed to all paths
+basePath: /api/v1
+consumes:
+  - application/x-www-form-urlencoded
+produces:
+  - application/json
+parameters:
+  ClientIDQuery:
+    name: ClientID
+    description: Client's unique ID.
+    type: integer
+    format: int32
+    in: query
+    required: false
+  ClientTransactionIDQuery:
+    name: ClientTransactionID
+    description: Client's transaction ID.
+    type: integer
+    format: int32
+    in: query
+    required: false
+  ClientIDForm:
+    name: ClientID
+    description: Client's unique ID.
+    type: integer
+    format: int32
+    in: formData
+    required: false
+  ClientTransactionIDForm:
+    name: ClientTransactionID
+    description: Client's transaction ID.
+    type: integer
+    format: int32
+    in: formData
+    required: false
+  DeviceType:
+    name: DeviceType
+    description: One of the recognised ASCOM device types e.g. Telescope
+    type: string
+    in: path
+    required: true
+  DeviceNumber:
+    name: DeviceNumber
+    description: Zero based device number as set on the server
+    type: integer
+    format: int32
+    in: path
+    required: true
+  Command:
+    name: Command
+    description: The literal command string to be transmitted.
+    type: string      
+    in: formData
+    required: true
+  Raw:
+    name: Raw
+    description: If set to true the string is transmitted 'as-is', if set to false then protocol framing characters may be added prior to transmission
+    type: boolean      
+    in: formData
+    required: true
+    allowEmptyValue: false
+ 
+paths:
+# Methods common to all device types
+  /{DeviceType}/{DeviceNumber}/Action:
+    put:
+      summary: Invokes the specified device-specific action.
+      description: Invokes the specified device-specific action.
+      parameters:
+        - $ref: '#/parameters/DeviceType'
+        - $ref: '#/parameters/DeviceNumber'
+        - name: Action
+          description: A well known name that represents the action to be carried out.
+          type: string      
+          in: formData
+          required: true
+        - name: Parameters
+          description: List of required parameters or an Empty String if none are required
+          type: string      
+          in: formData
+          required: true
+          allowEmptyValue: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /{DeviceType}/{DeviceNumber}/CommandBlind:
+    put:
+      summary: Transmits an arbitrary string to the device
+      description: Transmits an arbitrary string to the device and does not wait for a response. Optionally, protocol framing characters may be added to the string before transmission. 
+      parameters:
+        - $ref: '#/parameters/DeviceType'
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/Command'
+        - $ref: '#/parameters/Raw'
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /{DeviceType}/{DeviceNumber}/CommandBool:
+    put:
+      summary: Transmits an arbitrary string to the device and returns a boolean value from the device.
+      description: Transmits an arbitrary string to the device and waits for a boolean response. Optionally, protocol framing characters may be added to the string before transmission. 
+      parameters:
+        - $ref: '#/parameters/DeviceType'
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/Command'
+        - $ref: '#/parameters/Raw'
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /{DeviceType}/{DeviceNumber}/CommandString:
+    put:
+      summary: Transmits an arbitrary string to the device and returns a string value from the device.
+      description: Transmits an arbitrary string to the device and waits for a string response. Optionally, protocol framing characters may be added to the string before transmission. 
+      parameters:
+        - $ref: '#/parameters/DeviceType'
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/Command'
+        - $ref: '#/parameters/Raw'
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/StringResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /{DeviceType}/{DeviceNumber}/Connected:
+    get:
+      summary: Retrieves the connected state of the device
+      description: Retrieves the connected state of the device
+      parameters:
+        - $ref: '#/parameters/DeviceType'
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the connected state of the device
+      description: Sets the connected state of the device
+      tags:
+        - ASCOM Methods Common To All Devices
+      parameters:
+        - $ref: '#/parameters/DeviceType'
+        - $ref: '#/parameters/DeviceNumber'
+        - name: Connected
+          description: Set True to connect to the device hardware, set False to disconnect from the device hardware
+          type: boolean      
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /{DeviceType}/{DeviceNumber}/Description:
+    get:
+      summary: Device description
+      description: The description of the device
+      parameters:
+        - $ref: '#/parameters/DeviceType'
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/StringResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /{DeviceType}/{DeviceNumber}/Driverinfo:
+    get:
+      summary: Device driver description
+      description: The description of the driver
+      parameters:
+        - $ref: '#/parameters/DeviceType'
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/StringResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /{DeviceType}/{DeviceNumber}/DriverVersion:
+    get:
+      summary: Driver Version
+      description: A string containing only the major and minor version of the driver. 
+      parameters:
+        - $ref: '#/parameters/DeviceType'
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        200:
+          description:  Driver response
+          schema:
+            $ref: '#/definitions/StringResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /{DeviceType}/{DeviceNumber}/Name:
+    get:
+      summary: Device name
+      description: The name of the device
+      parameters:
+        - $ref: '#/parameters/DeviceType'
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/StringResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /{DeviceType}/{DeviceNumber}/SupportedActions:  
+    get:
+      summary: Returns the list of action names supported by this driver.
+      description: Returns the list of action names supported by this driver.
+      parameters:
+        - $ref: '#/parameters/DeviceType'
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/StringArrayResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+# FilterWheel specific methods
+  /FilterWheel/{DeviceNumber}/FocusOffsets:
+    get:
+      summary: Filter focus offsets
+      description: An integer array of filter focus offsets.
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - FilterWheel Specific Methods
+      responses:
+        200:
+          description:  Driver response
+          schema:
+            $ref: '#/definitions/IntArrayResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /FilterWheel/{DeviceNumber}/Names:
+    get:
+      summary: Filter wheel filter names
+      description: The names of the filters
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - FilterWheel Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/StringArrayResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /FilterWheel/{DeviceNumber}/Position:
+    get:
+      summary: Returns the current filter wheel position
+      description: Returns the current filter wheel position
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - FilterWheel Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/IntResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the filter wheel position
+      description: Sets the filter wheel position
+      tags:
+        - FilterWheel Specific Methods
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: Position
+          description: The number of the filter wheel position to select
+          type: integer
+          format: int32
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+# Focuser specific methods
+  /Focuser/{DeviceNumber}/Absolute:
+    get:
+      summary: Indicates whether the focuser is capable of absolute position.
+      description: True if the focuser is capable of absolute position; that is, being commanded to a specific step location. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Focuser/{DeviceNumber}/IsMoving:
+    get:
+      summary: Indicates whether the focuser is currently moving.
+      description: True if the focuser is currently moving to a new position. False if the focuser is stationary.  
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Focuser/{DeviceNumber}/MaxIncrement:
+    get:
+      summary: Returns the focuser's maximum increment size.
+      description: Maximum increment size allowed by the focuser; i.e. the maximum number of steps allowed in one move operation.
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/IntResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Focuser/{DeviceNumber}/MaxStep:
+    get:
+      summary: Returns the focuser's maximum step size.
+      description: Maximum step position permitted. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/IntResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Focuser/{DeviceNumber}/Position:
+    get:
+      summary: Returns the focuser's current position.
+      description: Current focuser position, in steps.  
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/IntResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Focuser/{DeviceNumber}/StepSize:
+    get:
+      summary: Returns the focuser's step size.
+      description: Step size (microns) for the focuser.   
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Focuser/{DeviceNumber}/TempComp:
+    get:
+      summary: Retrieves the state of temperature compensation mode
+      description: Gets the state of temperature compensation mode (if available), else always False. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the device's temperature compensation mode.
+      description: Sets the state of temperature compensation mode. 
+      tags:
+        - Focuser Specific Methods
+      parameters:
+        - name: DeviceNumber
+          description: Zero based device number as set on the server
+          type: integer
+          format: int32
+          in: path
+          required: true
+        - name: TempComp
+          description: Set true to enable the focuser's temperature compensation mode, otherwise false for normal operation.
+          type: boolean      
+          in: formData
+          required: true
+        - name: Client
+          description: Client's unique ID.
+          type: integer
+          format: int32
+          in: formData
+          required: false
+        - name: ClientTransactionIDForm
+          description: Client's transaction ID.
+          type: integer
+          format: int32
+          in: formData
+          required: false
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Focuser/{DeviceNumber}/TempCompAvailable:
+    get:
+      summary: Indicates whether the focuser has temperature compensation.
+      description: True if focuser has temperature compensation available.   
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Focuser/{DeviceNumber}/Temperature:
+    get:
+      summary: Returns the focuser's current temperature.
+      description: Current ambient temperature as measured by the focuser.    
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Focuser/{DeviceNumber}/Halt:
+    put:
+      summary: Immediatley stops focuser motion.
+      description: Immediately stop any focuser motion due to a previous Move(Int32) method call. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Focuser/{DeviceNumber}/Move:
+    put:
+      summary: Moves the focuser to a new position.
+      description: Moves the focuser by the specified amount or to the specified position depending on the value of the Absolute property. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: Position
+          description: Step distance or absolute position, depending on the value of the Absolute property
+          type: integer
+          format: int32
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+# Rotator specific methods
+  /Rotator/{DeviceNumber}/CanReverse :
+    get:
+      summary: IIndicates whether the Rotator supports the Reverse method. 
+      description: True if the Rotator supports the Reverse method.   
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Rotator Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Rotator/{DeviceNumber}/IsMoving:
+    get:
+      summary: Indicates whether the rotator is currently moving.
+      description: True if the rotator is currently moving to a new position. False if the focuser is stationary.  
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Rotator Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Rotator/{DeviceNumber}/Position:
+    get:
+      summary: Returns the rotator's current position.
+      description: Current instantaneous Rotator position, in degrees.   
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Rotator Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Rotator/{DeviceNumber}/Reverse :
+    get:
+      summary: Returns the rotator’s Reverse state. 
+      description: Returns the rotator’s Reverse state. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Rotator Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the rotator’s Reverse state. 
+      description: Sets the rotator’s Reverse state.
+      tags:
+        - Rotator Specific Methods
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: Reverse
+          description: True if the rotation and angular direction must be reversed to match the optical characteristcs
+          type: boolean      
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Rotator/{DeviceNumber}/StepSize:
+    get:
+      summary: Returns the minimum StepSize 
+      description: The minimum StepSize, in degrees.
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Rotator Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Rotator/{DeviceNumber}/TargetPosition:
+    get:
+      summary: Returns the destination position angle.  
+      description: The destination position angle for Move() and MoveAbsolute(). 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Rotator Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Rotator/{DeviceNumber}/Halt:
+    put:
+      summary: Immediatley stops rotator motion.
+      description: Immediately stop any Rotator motion due to a previous Move or MoveAbsolute method call. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Rotator Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Rotator/{DeviceNumber}/Move:
+    put:
+      summary: Moves the rotator to a new relative position.
+      description: Causes the rotator to move Position degrees relative to the current Position value. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: Position
+          description: Relative position to move in degrees from current Position.
+          type: number
+          format: double
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Rotator Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Rotator/{DeviceNumber}/MoveAbsolute:
+    put:
+      summary: Moves the rotator to a new absolute position.
+      description: Causes the rotator to move the absolute position of Position degrees. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: Position
+          description: Absolute position in degrees.
+          type: number
+          format: double
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Rotator Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+# Telescope specific methods
+  /Telescope/{DeviceNumber}/AlignmentMode:
+    get:
+      summary: Returns the current mount alignment mode
+      description: Returns the alignment mode of the mount (Alt/Az, Polar, German Polar).  The alignment mode is specified as an integer value from the AlignmentModes Enum.
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/IntResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/Altitude:
+    get:
+      summary: Returns the mount's Altitude above the horizon.
+      description: The Altitude above the local horizon of the telescope's current position (degrees, positive up)    
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/ApertureArea:
+    get:
+      summary: Returns the telescope's aperture.
+      description: The area of the telescope's aperture, taking into account any obstructions (square meters)     
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/ApertureDiameter:
+    get:
+      summary: Returns the telescope's effective aperture.
+      description: The telescope's effective aperture diameter (meters)      
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/AtHome:
+    get:
+      summary: Indicates whether the mount is at the home position.
+      description: True if the mount is stopped in the Home position. Set only following a FindHome()  operation, and reset with any slew operation. This property must be False if the telescope does not support homing. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/AtPark:
+    get:
+      summary: Indicates whether the telescope is at the park position.
+      description: True if the telescope has been put into the parked state by the seee Park()  method. Set False by calling the Unpark() method.  
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/Azimuth:
+    get:
+      summary: Returns the telescope's aperture.
+      description: The azimuth at the local horizon of the telescope's current position (degrees, North-referenced, positive East/clockwise).      
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/CanFindHome:
+    get:
+      summary: Indicates whether the mount can find the home position.
+      description: True if this telescope is capable of programmed finding its home position (FindHome()  method). 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/CanPark:
+    get:
+      summary: Indicates whether the telescope can be parked.
+      description: True if this telescope is capable of programmed parking (Park() method) 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/CanPulseGuide:
+    get:
+      summary: Indicates whether the telescope can be pulse guided.
+      description: True if this telescope is capable of software-pulsed guiding (via the PulseGuide(GuideDirections, Int32) method)  
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/CanSetDeclinationRate:
+    get:
+      summary: Indicates whether the DeclinationRate property can be changed.
+      description: True if the DeclinationRate property can be changed to provide offset tracking in the declination axis.   
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/CanSetGuideRates:
+    get:
+      summary: Indicates whether the DeclinationRate property can be changed.
+      description: True if the guide rate properties used for PulseGuide(GuideDirections, Int32) can ba adjusted. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/CanSetPark:
+    get:
+      summary: Indicates whether the telescope park position can be set.
+      description: True if this telescope is capable of programmed setting of its park position (SetPark() method)  
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/CanSetPierSide:
+    get:
+      summary: Indicates whether the telescope SideOfPier can be set.
+      description: True if the SideOfPier property can be set, meaning that the mount can be forced to flip.   
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/CanSetRightAscensionRate:
+    get:
+      summary: Indicates whether the RightAscensionRate property can be changed.
+      description: True if the RightAscensionRate property can be changed to provide offset tracking in the right ascension axis. .   
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/CanSetTracking:
+    get:
+      summary: Indicates whether the Tracking property can be changed.
+      description: True if the Tracking property can be changed, turning telescope sidereal tracking on and off.   
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/CanSlew:
+    get:
+      summary: Indicates whether the telescope can slew synchronously.
+      description: True if this telescope is capable of programmed slewing (synchronous or asynchronous) to equatorial coordinates 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/CanSlewAltAz:
+    get:
+      summary: Indicates whether the telescope can slew synchronously to AltAz coordinates.
+      description: True if this telescope is capable of programmed slewing (synchronous or asynchronous) to local horizontal coordinates  
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/CanSlewAltAzAsync:
+    get:
+      summary: Indicates whether the telescope can slew asynchronously to AltAz coordinates.
+      description: True if this telescope is capable of programmed asynchronous slewing to local horizontal coordinates  
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/CanSlewAsync:
+    get:
+      summary: Indicates whether the telescope can slew asynchronously.
+      description: True if this telescope is capable of programmed asynchronous slewing to equatorial coordinates. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/CanSync:
+    get:
+      summary: Indicates whether the telescope can sync to equatorial coordinates.
+      description: True if this telescope is capable of programmed synching to equatorial coordinates.  
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/CanSyncAltAz:
+    get:
+      summary: Indicates whether the telescope can sync to local horizontal coordinates.
+      description: True if this telescope is capable of programmed synching to local horizontal coordinates   
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/Declination:
+    get:
+      summary: Returns the telescope's declination.
+      description: The declination (degrees) of the telescope's current equatorial coordinates, in the coordinate system given by the EquatorialSystem property. Reading the property will raise an error if the value is unavailable.       
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/DeclinationRate:
+    get:
+      summary: Returns the telescope's declination tracking rate.
+      description: The declination tracking rate (arcseconds per second, default = 0.0)        
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the telescope's declination tracking rate.
+      description: Sets the declination tracking rate (arcseconds per second)  
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: DeclinationRate
+          description: Declination tracking rate (arcseconds per second)
+          type: number
+          format: double
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/DoesRefraction:
+    get:
+      summary: Indicates whether atmospheric refraction is applied to coordinates.
+      description: True if the telescope or driver applies atmospheric refraction to coordinates.   
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Determines whether atmospheric refraction is applied to coordinates.
+      description: Causes the rotator to move Position degrees relative to the current Position value. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: DoesRefraction
+          description: Set True to make the telescope or driver applie atmospheric refraction to coordinates. 
+          type: boolean
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/EquatorialSystem:
+    get:
+      summary: Returns the current equatorial coordinate system used by this telescope. 
+      description: Returns the current equatorial coordinate system used by this telescope (e.g. Topocentric or J2000). 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/IntResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/FocalLength:
+    get:
+      summary: Returns the telescope's focal length in meters.
+      description: The telescope's focal length in meters     
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/GuideRateDeclination:
+    get:
+      summary: Returns the  current Declination rate offset for telescope guiding
+      description: The current Declination movement rate offset for telescope guiding (degrees/sec)     
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the  current Declination rate offset for telescope guiding.
+      description: Sets the current Declination movement rate offset for telescope guiding (degrees/sec).
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: GuideRateDeclination 
+          description: Declination movement rate offset degrees/sec).
+          type: number
+          format: double
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/GuideRateRightAscension :
+    get:
+      summary: Returns the  current RightAscension rate offset for telescope guiding
+      description: The current RightAscension movement rate offset for telescope guiding (degrees/sec)     
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the  current RightAscension rate offset for telescope guiding.
+      description: Sets the current RightAscension movement rate offset for telescope guiding (degrees/sec).
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: GuideRateRightAscension  
+          description: RightAscension movement rate offset degrees/sec).
+          type: number
+          format: double
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/IsPulseGuiding:
+    get:
+      summary: Indicates whether the telescope is currently executing a PulseGuide command
+      description: True if a PulseGuide(GuideDirections, Int32) command is in progress, False otherwise 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/RightAscension:
+    get:
+      summary: Returns the telescope's right ascension coordinate.
+      description: The right ascension (hours) of the telescope's current equatorial coordinates, in the coordinate system given by the EquatorialSystem property 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/RightAscensionRate:
+    get:
+      summary: Returns the telescope's right ascension tracking rate.
+      description: The right ascension tracking rate (arcseconds per second, default = 0.0)        
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the telescope's right ascension tracking rate.
+      description: Sets the right ascension tracking rate (arcseconds per second)  
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: RightAscensionRate 
+          description: Right ascension tracking rate (arcseconds per second)
+          type: number
+          format: double
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/SideOfPier:
+    get:
+      summary: Returns the mount's pointing state. 
+      description: Indicates the pointing state of the mount. 0 = pierEast, 1 = pierWest, -1= pierUnknown
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/IntResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the mount's pointing state.
+      description: Sets the pointing state of the mount. 0 = pierEast, 1 = pierWest
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: SideOfPier 
+          description: New pointing state.
+          type: integer
+          format: int32
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/SiderealTime:
+    get:
+      summary: Returns the local apparent sidereal time.
+      description: The local apparent sidereal time from the telescope's internal clock (hours, sidereal).   
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/SiteElevation:
+    get:
+      summary: Returns the observing site's elevation above mean sea level.
+      description: The elevation above mean sea level (meters) of the site at which the telescope is located.   
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the observing site's elevation above mean sea level.
+      description: Sets the elevation above mean sea level (metres) of the site at which the telescope is located.  
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: SiteElevation
+          description: Elevation above mean sea level (metres).
+          type: number
+          format: double
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/SiteLatitude:
+    get:
+      summary: Returns the observing site's latitude.
+      description: The geodetic(map) latitude (degrees, positive North, WGS84) of the site at which the telescope is located.   
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the observing site's latitude.
+      description: Sets the observing site's latitude (degrees). 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: SiteLatitude
+          description: Site latitude (degrees)
+          type: number
+          format: double
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/SiteLongitude:
+    get:
+      summary: Returns the observing site's longitude.
+      description: The longitude (degrees, positive East, WGS84) of the site at which the telescope is located.    
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the observing site's longitude.
+      description: Sets the observing site's longitude (degrees, positive East, WGS84). 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: SiteLongitude
+          description: Site longitude (degrees, positive East, WGS84)
+          type: number
+          format: double
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/Slewing:
+    get:
+      summary: Indicates whether the telescope is currently slewing.
+      description: True if telescope is currently moving in response to one of the Slew methods or the MoveAxis(TelescopeAxes, Double) method, False at all other times.  
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/SlewSettleTime:
+    get:
+      summary: Returns the post-slew settling time. 
+      description: Returns the post-slew settling time (sec.). 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/IntResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the post-slew settling time. 
+      description: Sets the  post-slew settling time (integer sec.).
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: SlewSettleTime
+          description: Settling time (integer sec.).
+          type: integer
+          format: int32
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/TargetDeclination:
+    get:
+      summary: Returns the current target declination.
+      description: The declination (degrees, positive North) for the target of an equatorial slew or sync operation    
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the target declination of a slew or sync.
+      description: Sets the declination (degrees, positive North) for the target of an equatorial slew or sync operation
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: TargetDeclination 
+          description: Target declination(degrees)
+          type: number
+          format: double
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/TargetRightAscension:
+    get:
+      summary: Returns the current target right ascension.
+      description: The right ascension (hours) for the target of an equatorial slew or sync operation    
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/DoubleResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the target right ascension of a slew or sync.
+      description: Sets the right ascension (hours) for the target of an equatorial slew or sync operation
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: TargetDeclination 
+          description: Target right ascension(hours)
+          type: number
+          format: double
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/Tracking:
+    get:
+      summary: Indicates whether the telescope is tracking.
+      description: Returns the state of the telescope's sidereal tracking drive.  
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/BoolResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Enables or disables telescope tracking.
+      description: Sets the state of the telescope's sidereal tracking drive. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: Tracking 
+          description: Tracking enabled / disabled
+          type: boolean
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/TrackingRate:
+    get:
+      summary: Returns the current tracking rate. 
+      description: The current tracking rate of the telescope's sidereal drive.
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/IntResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the mount's tracking rate.
+      description: Sets the tracking rate of the telescope's sidereal drive. 0 = driveSidereal, 1 = driveLunar, 2 = driveSolar, 3 = driveKing
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: TrackingRate 
+          description: New tracking rate
+          type: integer
+          format: int32
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+  /Telescope/{DeviceNumber}/TrackingRates:
+    get:
+      summary: Returns an array of supported DriveRates values. 
+      description: Returns an array of supported DriveRates values that describe the permissible values of the TrackingRate property for this telescope type. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description:  Driver response
+          schema:
+            $ref: '#/definitions/IntArrayResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+
+  /Telescope/{DeviceNumber}/UTCDate:
+    get:
+      summary: Returns the UTC date/time of the telescope's internal clock.
+      description: The UTC date/time of the telescope's internal clock in ISO 8601 format including fractional seconds. The general format (in Microsoft custom date format style) is yyyy-MM-ddTHH:mm:ss.fffffffZ E.g. 2016-03-04T17:45:31.1234567Z or 2016-11-14T07:03:08.1234567Z Please note the compulsary trailing Z indicating the 'Zulu', UTC time zone.
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/StringResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+    put:
+      summary: Sets the UTC date/time of the telescope's internal clock.
+      description: The UTC date/time of the telescope's internal clock in ISO 8601 format including fractional seconds. The general format (in Microsoft custom date format style) is yyyy-MM-ddTHH:mm:ss.fffffffZ E.g. 2016-03-04T17:45:31.1234567Z or 2016-11-14T07:03:08.1234567Z Please note the compulsary trailing Z indicating the 'Zulu', UTC time zone. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: UTCDate
+          description: UTC date/time in ISO 8601 format.
+          type: string
+          in: formData
+          required: true
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/Halt:
+    put:
+      summary: Immediatley stops a slew in progress. 
+      description: Immediately Stops a slew in progress. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - $ref: '#/parameters/ClientIDForm'
+        - $ref: '#/parameters/ClientTransactionIDForm'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Transaction complete or exception
+          schema:
+            $ref: '#/definitions/MethodResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+  /Telescope/{DeviceNumber}/AxisRates :
+    get:
+      summary: Returns the rates at which the telescope may be moved about the specified axis. 
+      description: The rates at which the telescope may be moved about the specified axis by the MoveAxis(TelescopeAxes, Double) method. 
+      parameters:
+        - $ref: '#/parameters/DeviceNumber'
+        - name: Axis
+          description: The axis about which rate information is desired. 0 = axisPrimary, 1 = axisSecondary, 2 = axisTertiary.
+          type: integer
+          format: int32
+          in: formData
+          required: true       
+        - $ref: '#/parameters/ClientIDQuery'
+        - $ref: '#/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        200:
+          description: Driver response
+          schema:
+            $ref: '#/definitions/AxisRatesResponse'
+        400:
+          description: Method or parameter value error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+        500:
+          description: Server internal error, check error message
+          schema:
+            $ref: '#/definitions/ErrorMessage'
+
+# Definitions          
+definitions:
+  ErrorMessage:
+    type: string
+    properties:
+      Value:
+        type: string
+        description: Error message
+  BoolResponse:
+    type: object
+    properties:
+      ClientTransactionIDForm:
+        type: integer
+        format: int32
+        description: Client's transaction ID.
+      ServerTransactionID:
+        type: integer
+        format: int32
+        description: Server's transaction ID.
+      Method:
+        type: string
+        description: Name of the calling method.
+      ErrorNumber:
+        type: integer
+        format: int32
+        description: Error number from device.
+      ErrorMessage:
+        type: string
+        description: Error message description from device.
+      DriverException:
+        type: object
+        description: Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object).
+      Value:
+        type: boolean
+        description: True or False value
+  DoubleResponse:
+    type: object
+    properties:
+      ClientTransactionIDForm:
+        type: integer
+        format: int32
+        description: Client's transaction ID.
+      ServerTransactionID:
+        type: integer
+        format: int32
+        description: Server's transaction ID.
+      Method:
+        type: string
+        description: Name of the calling method.
+      ErrorNumber:
+        type: integer
+        format: int32
+        description: Error number from device.
+      ErrorMessage:
+        type: string
+        description: Error message description from device.
+      DriverException:
+        type: object
+        description: Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object).
+      Value:
+        type: number
+        format: double
+        description: Returned double value
+
+  BoolResponse:
+    type: object
+    properties:
+      ClientTransactionIDForm:
+        type: integer
+        format: int32
+        description: Client's transaction ID.
+      ServerTransactionID:
+        type: integer
+        format: int32
+        description: Server's transaction ID.
+      Method:
+        type: string
+        description: Name of the calling method.
+      ErrorNumber:
+        type: integer
+        format: int32
+        description: Error number from device.
+      ErrorMessage:
+        type: string
+        description: Error message description from device.
+      DriverException:
+        type: object
+        description: Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object).
+      Value:
+        type: boolean
+        description: True or False value
+
+  IntResponse:
+    type: object
+    properties:
+      ClientTransactionIDForm:
+        type: integer
+        format: int32
+        description: Client's transaction ID.
+      ServerTransactionID:
+        type: integer
+        format: int32
+        description: Server's transaction ID.
+      Method:
+        type: string
+        description: Name of the calling method.
+      ErrorNumber:
+        type: integer
+        format: int32
+        description: Error number from device.
+      ErrorMessage:
+        type: string
+        description: Error message description from device.
+      DriverException:
+        type: object
+        description: Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object).
+      Value:
+        type: integer
+        format: int32
+        description: Returned integer value
+  IntArrayResponse:
+    type: object
+    properties:
+      ClientTransactionIDForm:
+        type: integer
+        format: int32
+        description: Client's transaction ID.
+      ServerTransactionID:
+        type: integer
+        format: int32
+        description: Server's transaction ID.
+      Method:
+        type: string
+        description: Name of the calling method.
+      ErrorNumber:
+        type: integer
+        format: int32
+        description: Error number from device.
+      ErrorMessage:
+        type: string
+        description: Error message description from device.
+      DriverException:
+        type: object
+        description: Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object).
+      Value:
+        type: array
+        items:
+          type: integer
+          format: int32
+        description: Array of integer values.
+  MethodResponse:
+    type: object
+    properties:
+      ClientTransactionIDForm:
+        type: integer
+        format: int32
+        description: Client's transaction ID.
+      ServerTransactionID:
+        type: integer
+        format: int32
+        description: Server's transaction ID.
+      Method:
+        type: string
+        description: Name of the calling method.
+      ErrorNumber:
+        type: integer
+        format: int32
+        description: Error number from device.
+      ErrorMessage:
+        type: string
+        description: Error message description from device.
+      DriverException:
+        type: object
+        description: Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object).
+  StringResponse:
+    type: object
+    properties:
+      ClientTransactionIDForm:
+        type: integer
+        format: int32
+        description: Client's transaction ID.
+      ServerTransactionID:
+        type: integer
+        format: int32
+        description: Server's transaction ID.
+      Method:
+        type: string
+        description: Name of the calling method.
+      ErrorNumber:
+        type: integer
+        format: int32
+        description: Error number from device.
+      ErrorMessage:
+        type: string
+        description: Error message description from device.
+      DriverException:
+        type: object
+        description: Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object).
+      Value:
+        type: string
+        description: String response from the device.
+  StringArrayResponse:
+    type: object
+    properties:
+      ClientTransactionIDForm:
+        type: integer
+        format: int32
+        description: Client's transaction ID.
+      ServerTransactionID:
+        type: integer
+        format: int32
+        description: Server's transaction ID.
+      Method:
+        type: string
+        description: Name of the calling method.
+      ErrorNumber:
+        type: integer
+        format: int32
+        description: Error number from device.
+      ErrorMessage:
+        type: string
+        description: Error message description from device.
+      DriverException:
+        type: object
+        description: Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object).
+      Value:
+        type: array
+        items:
+          type: string
+        description: Array of string values.
+  AxisRatesResponse:
+    type: object
+    properties:
+      ClientTransactionIDForm:
+        type: integer
+        format: int32
+        description: Client's transaction ID.
+      ServerTransactionID:
+        type: integer
+        format: int32
+        description: Server's transaction ID.
+      Method:
+        type: string
+        description: Name of the calling method.
+      ErrorNumber:
+        type: integer
+        format: int32
+        description: Error number from device.
+      ErrorMessage:
+        type: string
+        description: Error message description from device.
+      DriverException:
+        type: object
+        description: Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object).
+      Value:
+        description: Array of rate objects
+        type: array
+        items:
+          $ref: '#/definitions/AxisRate'
+  AxisRate:
+    description: Rate object
+    type: object
+    properties:
+      Maximum:
+        description: The maximum rate (degrees per second) This must always be a positive number. It indicates the maximum rate in either direction about the axis. 
+        type: number
+      Minimum:
+        description: The minimum rate (degrees per second) This must always be a positive number. It indicates the maximum rate in either direction about the axis. 
+        type: number
+    required:
+        - Maximum
+        - Minimum
