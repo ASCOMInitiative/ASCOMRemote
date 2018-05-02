@@ -40,7 +40,6 @@ namespace ASCOM.Web
 
         public void Dispose()
         {
-            throw new System.NotImplementedException();
         }
 
         public double Maximum

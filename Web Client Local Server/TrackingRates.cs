@@ -104,7 +104,7 @@ namespace ASCOM.Web
             if (disposing)
             {
                 // free managed resources
-                m_TrackingRates = null;
+                // m_TrackingRates = null;
             }
         }
         #endregion
