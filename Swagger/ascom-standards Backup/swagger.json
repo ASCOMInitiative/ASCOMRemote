@@ -1,0 +1,2007 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "ASCOM Web",
+        "description": "Provides access to ASCOM devices remotely over the web",
+        "version": "1.0.0"
+    },
+    "host": "www.ascom-standards.org",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "basePath": "/api/v1",
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "parameters": {
+        "Client": {
+            "name": "Client",
+            "description": "Client's unique ID.",
+            "type": "integer",
+            "format": "int32",
+            "in": "formData",
+            "required": false
+        },
+        "ClientTransactionID": {
+            "name": "ClientTransactionID",
+            "description": "Client's transaction ID.",
+            "type": "integer",
+            "format": "int32",
+            "in": "formData",
+            "required": false
+        },
+        "DeviceType": {
+            "name": "DeviceType",
+            "description": "One of the recognised ASCOM device types e.g. Telescope",
+            "type": "string",
+            "in": "path",
+            "required": true
+        },
+        "DeviceNumber": {
+            "name": "DeviceNumber",
+            "description": "Zero based device number as set on the server",
+            "type": "integer",
+            "format": "int32",
+            "in": "path",
+            "required": true
+        }
+    },
+    "paths": {
+        "/{DeviceType}/{DeviceNumber}/Action": {
+            "put": {
+                "summary": "Invokes the specified device-specific action.",
+                "description": "Invokes the specified device-specific action.",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/DeviceType"
+                    },
+                    {
+                        "$ref": "#/parameters/DeviceNumber"
+                    },
+                    {
+                        "name": "Action",
+                        "description": "A well known name that represents the action to be carried out.",
+                        "type": "string",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "name": "Parameters",
+                        "description": "List of required parameters or an Empty String if none are required",
+                        "type": "string",
+                        "in": "formData",
+                        "required": true,
+                        "allowEmptyValue": true
+                    },
+                    {
+                        "$ref": "#/parameters/Client"
+                    },
+                    {
+                        "$ref": "#/parameters/ClientTransactionID"
+                    }
+                ],
+                "tags": [
+                    "ASCOM Methods Common To All Devices"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction complete or exception",
+                        "schema": {
+                            "$ref": "#/definitions/MethodResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/{DeviceType}/{DeviceNumber}/CommandBlind": {
+            "put": {
+                "summary": "Transmits an arbitrary string to the device",
+                "description": "Transmits an arbitrary string to the device and does not wait for a response. Optionally, protocol framing characters may be added to the string before transmission.",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/DeviceType"
+                    },
+                    {
+                        "$ref": "#/parameters/DeviceNumber"
+                    },
+                    {
+                        "name": "Command",
+                        "description": "The literal command string to be transmitted.",
+                        "type": "string",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "name": "Raw",
+                        "description": "If set to true the string is transmitted 'as-is', if set to false then protocol framing characters may be added prior to transmission",
+                        "type": "boolean",
+                        "in": "formData",
+                        "required": true,
+                        "allowEmptyValue": false
+                    },
+                    {
+                        "$ref": "#/parameters/Client"
+                    },
+                    {
+                        "$ref": "#/parameters/ClientTransactionID"
+                    }
+                ],
+                "tags": [
+                    "ASCOM Methods Common To All Devices"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction complete or exception",
+                        "schema": {
+                            "$ref": "#/definitions/MethodResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/{DeviceType}/{DeviceNumber}/CommandBool": {
+            "put": {
+                "summary": "Transmits an arbitrary string to the device and returns a boolean value from the device.",
+                "description": "Transmits an arbitrary string to the device and waits for a boolean response. Optionally, protocol framing characters may be added to the string before transmission.",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/DeviceType"
+                    },
+                    {
+                        "$ref": "#/parameters/DeviceNumber"
+                    },
+                    {
+                        "name": "Command",
+                        "description": "The literal command string to be transmitted.",
+                        "type": "string",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "name": "Raw",
+                        "description": "If set to true the string is transmitted 'as-is', if set to false then protocol framing characters may be added prior to transmission",
+                        "type": "boolean",
+                        "in": "formData",
+                        "required": true,
+                        "allowEmptyValue": false
+                    },
+                    {
+                        "$ref": "#/parameters/Client"
+                    },
+                    {
+                        "$ref": "#/parameters/ClientTransactionID"
+                    }
+                ],
+                "tags": [
+                    "ASCOM Methods Common To All Devices"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction complete or exception",
+                        "schema": {
+                            "$ref": "#/definitions/BoolResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/{DeviceType}/{DeviceNumber}/CommandString": {
+            "put": {
+                "summary": "Transmits an arbitrary string to the device and returns a string value from the device.",
+                "description": "Transmits an arbitrary string to the device and waits for a string response. Optionally, protocol framing characters may be added to the string before transmission.",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/DeviceType"
+                    },
+                    {
+                        "$ref": "#/parameters/DeviceNumber"
+                    },
+                    {
+                        "name": "Command",
+                        "description": "The literal command string to be transmitted.",
+                        "type": "string",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "name": "Raw",
+                        "description": "If set to true the string is transmitted 'as-is', if set to false then protocol framing characters may be added prior to transmission",
+                        "type": "boolean",
+                        "in": "formData",
+                        "required": true,
+                        "allowEmptyValue": false
+                    },
+                    {
+                        "$ref": "#/parameters/Client"
+                    },
+                    {
+                        "$ref": "#/parameters/ClientTransactionID"
+                    }
+                ],
+                "tags": [
+                    "ASCOM Methods Common To All Devices"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction complete or exception",
+                        "schema": {
+                            "$ref": "#/definitions/StringResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/{DeviceType}/{DeviceNumber}/Connected": {
+            "get": {
+                "summary": "Retrieves the connected state of the device",
+                "description": "Retrieves the connected state of the device",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/DeviceType"
+                    },
+                    {
+                        "$ref": "#/parameters/DeviceNumber"
+                    }
+                ],
+                "tags": [
+                    "ASCOM Methods Common To All Devices"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/BoolResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Sets the connected state of the device",
+                "description": "Sets the connected state of the device",
+                "tags": [
+                    "ASCOM Methods Common To All Devices"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/DeviceType"
+                    },
+                    {
+                        "$ref": "#/parameters/DeviceNumber"
+                    },
+                    {
+                        "name": "ParameterValue",
+                        "description": "True or False value to set",
+                        "type": "boolean",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "$ref": "#/parameters/Client"
+                    },
+                    {
+                        "$ref": "#/parameters/ClientTransactionID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction complete or exception",
+                        "schema": {
+                            "$ref": "#/definitions/MethodResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/{DeviceType}/{DeviceNumber}/Description": {
+            "get": {
+                "summary": "Device description",
+                "description": "The description of the device",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/DeviceType"
+                    },
+                    {
+                        "$ref": "#/parameters/DeviceNumber"
+                    }
+                ],
+                "tags": [
+                    "ASCOM Methods Common To All Devices"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/StringResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/{DeviceType}/{DeviceNumber}/Driverinfo": {
+            "get": {
+                "summary": "Device driver description",
+                "description": "The description of the driver",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/DeviceType"
+                    },
+                    {
+                        "$ref": "#/parameters/DeviceNumber"
+                    }
+                ],
+                "tags": [
+                    "ASCOM Methods Common To All Devices"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/StringResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/{DeviceType}/{DeviceNumber}/DriverVersion": {
+            "get": {
+                "summary": "Driver Version",
+                "description": "A string containing only the major and minor version of the driver.",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/DeviceType"
+                    },
+                    {
+                        "$ref": "#/parameters/DeviceNumber"
+                    }
+                ],
+                "tags": [
+                    "ASCOM Methods Common To All Devices"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/StringResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/{DeviceType}/{DeviceNumber}/Name": {
+            "get": {
+                "summary": "Device name",
+                "description": "The name of the device",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/DeviceType"
+                    },
+                    {
+                        "$ref": "#/parameters/DeviceNumber"
+                    }
+                ],
+                "tags": [
+                    "ASCOM Methods Common To All Devices"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/StringResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/{DeviceType}/{DeviceNumber}/SupportedActions": {
+            "get": {
+                "summary": "Returns the list of action names supported by this driver.",
+                "description": "Returns the list of action names supported by this driver.",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/DeviceType"
+                    },
+                    {
+                        "$ref": "#/parameters/DeviceNumber"
+                    }
+                ],
+                "tags": [
+                    "ASCOM Methods Common To All Devices"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/StringArrayResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/FilterWheel/{DeviceNumber}/FocusOffsets": {
+            "get": {
+                "summary": "Filter focus offsets",
+                "description": "An integer array of filter focus offsets.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "FilterWheel Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/IntArrayResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/FilterWheel/{DeviceNumber}/Names": {
+            "get": {
+                "summary": "Filter wheel filter names",
+                "description": "The names of the filters",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "FilterWheel Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/StringArrayResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/FilterWheel/{DeviceNumber}/Position": {
+            "get": {
+                "summary": "Returns the current filter wheel position",
+                "description": "Returns the current filter wheel position",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "FilterWheel Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/IntResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Sets the filter wheel position",
+                "description": "Sets the filter wheel position",
+                "tags": [
+                    "FilterWheel Specific Methods"
+                ],
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "ParameterValue",
+                        "description": "Position value to set",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "name": "Client",
+                        "description": "Client's unique ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    },
+                    {
+                        "name": "ClientTransactionID",
+                        "description": "Client's transaction ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction complete or exception",
+                        "schema": {
+                            "$ref": "#/definitions/MethodResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Focuser/{DeviceNumber}/Absolute": {
+            "get": {
+                "summary": "Indicates whether the focuser is capable of absolute position.",
+                "description": "True if the focuser is capable of absolute position; that is, being commanded to a specific step location.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Focuser Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/BoolResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Focuser/{DeviceNumber}/IsMoving": {
+            "get": {
+                "summary": "Indicates whether the focuser is currently moving.",
+                "description": "True if the focuser is currently moving to a new position. False if the focuser is stationary.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Focuser Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/BoolResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Focuser/{DeviceNumber}/MaxIncrement": {
+            "get": {
+                "summary": "Returns the focuser's maximum increment size.",
+                "description": "Maximum increment size allowed by the focuser; i.e. the maximum number of steps allowed in one move operation.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Focuser Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/IntResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Focuser/{DeviceNumber}/MaxStep": {
+            "get": {
+                "summary": "Returns the focuser's maximum step size.",
+                "description": "Maximum step position permitted.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Focuser Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/IntResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Focuser/{DeviceNumber}/Position": {
+            "get": {
+                "summary": "Returns the focuser's current position.",
+                "description": "Current focuser position, in steps.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Focuser Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/IntResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Focuser/{DeviceNumber}/StepSize": {
+            "get": {
+                "summary": "Returns the focuser's step size.",
+                "description": "Step size (microns) for the focuser.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Focuser Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/DoubleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Focuser/{DeviceNumber}/TempComp": {
+            "get": {
+                "summary": "Retrieves the state of temperature compensation mode",
+                "description": "Gets the state of temperature compensation mode (if available), else always False.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Focuser Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/BoolResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Sets the device's temperature compensation mode.",
+                "description": "Sets the state of temperature compensation mode.",
+                "tags": [
+                    "Focuser Specific Methods"
+                ],
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "ParameterValue",
+                        "description": "True or False value to set",
+                        "type": "boolean",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "name": "Client",
+                        "description": "Client's unique ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    },
+                    {
+                        "name": "ClientTransactionID",
+                        "description": "Client's transaction ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction complete or exception",
+                        "schema": {
+                            "$ref": "#/definitions/MethodResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Focuser/{DeviceNumber}/TempCompAvailable": {
+            "get": {
+                "summary": "Indicates whether the focuser has temperature compensation.",
+                "description": "True if focuser has temperature compensation available.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Focuser Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/BoolResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Focuser/{DeviceNumber}/Temperature": {
+            "get": {
+                "summary": "Returns the focuser's current temperature.",
+                "description": "Current ambient temperature as measured by the focuser.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Focuser Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/DoubleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Focuser/{DeviceNumber}/Halt": {
+            "put": {
+                "summary": "Immediatley stops focuser motion.",
+                "description": "Immediately stop any focuser motion due to a previous Move(Int32) method call.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "Client",
+                        "description": "Client's unique ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    },
+                    {
+                        "name": "ClientTransactionID",
+                        "description": "Client's transaction ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    }
+                ],
+                "tags": [
+                    "Focuser Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction complete or exception",
+                        "schema": {
+                            "$ref": "#/definitions/MethodResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Focuser/{DeviceNumber}/Move": {
+            "put": {
+                "summary": "Moves the focuser to a new position.",
+                "description": "Moves the focuser by the specified amount or to the specified position depending on the value of the Absolute property.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "ParameterValue",
+                        "description": "Step distance or absolute position, depending on the value of the Absolute property.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "name": "Client",
+                        "description": "Client's unique ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    },
+                    {
+                        "name": "ClientTransactionID",
+                        "description": "Client's transaction ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    }
+                ],
+                "tags": [
+                    "Focuser Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction complete or exception",
+                        "schema": {
+                            "$ref": "#/definitions/MethodResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Rotator/{DeviceNumber}/CanReverse": {
+            "get": {
+                "summary": "IIndicates whether the Rotator supports the Reverse method.",
+                "description": "True if the Rotator supports the Reverse method.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Rotator Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/BoolResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Rotator/{DeviceNumber}/IsMoving": {
+            "get": {
+                "summary": "Indicates whether the rotator is currently moving.",
+                "description": "True if the rotator is currently moving to a new position. False if the focuser is stationary.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Rotator Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/BoolResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Rotator/{DeviceNumber}/Position": {
+            "get": {
+                "summary": "Returns the rotator's current position.",
+                "description": "Current instantaneous Rotator position, in degrees.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Rotator Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/DoubleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Rotator/{DeviceNumber}/Reverse": {
+            "get": {
+                "summary": "Returns the rotator’s Reverse state.",
+                "description": "Returns the rotator’s Reverse state.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Rotator Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/BoolResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Sets the rotator’s Reverse state.",
+                "description": "Sets the rotator’s Reverse state.",
+                "tags": [
+                    "Rotator Specific Methods"
+                ],
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "ParameterValue",
+                        "description": "True or False value to set",
+                        "type": "boolean",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "name": "Client",
+                        "description": "Client's unique ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    },
+                    {
+                        "name": "ClientTransactionID",
+                        "description": "Client's transaction ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction complete or exception",
+                        "schema": {
+                            "$ref": "#/definitions/MethodResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Rotator/{DeviceNumber}/StepSize": {
+            "get": {
+                "summary": "Returns the minimum StepSize",
+                "description": "The minimum StepSize, in degrees.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Rotator Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/DoubleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Rotator/{DeviceNumber}/TargetPosition": {
+            "get": {
+                "summary": "Returns the destination position angle.",
+                "description": "The destination position angle for Move() and MoveAbsolute().",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Rotator Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Driver response",
+                        "schema": {
+                            "$ref": "#/definitions/DoubleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Rotator/{DeviceNumber}/Halt": {
+            "put": {
+                "summary": "Immediatley stops rotator motion.",
+                "description": "Immediately stop any Rotator motion due to a previous Move or MoveAbsolute method call.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "Client",
+                        "description": "Client's unique ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    },
+                    {
+                        "name": "ClientTransactionID",
+                        "description": "Client's transaction ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    }
+                ],
+                "tags": [
+                    "Rotator Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction complete or exception",
+                        "schema": {
+                            "$ref": "#/definitions/MethodResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Rotator/{DeviceNumber}/Move": {
+            "put": {
+                "summary": "Moves the rotator to a new relative position.",
+                "description": "Causes the rotator to move Position degrees relative to the current Position value.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "ParameterValue",
+                        "description": "Step distance or absolute position, depending on the value of the Absolute property.",
+                        "type": "number",
+                        "format": "double",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "name": "Client",
+                        "description": "Client's unique ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    },
+                    {
+                        "name": "ClientTransactionID",
+                        "description": "Client's transaction ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    }
+                ],
+                "tags": [
+                    "Rotator Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction complete or exception",
+                        "schema": {
+                            "$ref": "#/definitions/MethodResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/Rotator/{DeviceNumber}/MoveAbsolute": {
+            "put": {
+                "summary": "Moves the rotator to a new absolute position.",
+                "description": "Causes the rotator to move the absolute position of Position degrees.",
+                "parameters": [
+                    {
+                        "name": "DeviceNumber",
+                        "description": "Zero based device number as set on the server",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "ParameterValue",
+                        "description": "Step distance or absolute position, depending on the value of the Absolute property.",
+                        "type": "number",
+                        "format": "double",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "name": "Client",
+                        "description": "Client's unique ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    },
+                    {
+                        "name": "ClientTransactionID",
+                        "description": "Client's transaction ID.",
+                        "type": "integer",
+                        "format": "int32",
+                        "in": "formData",
+                        "required": false
+                    }
+                ],
+                "tags": [
+                    "Rotator Specific Methods"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction complete or exception",
+                        "schema": {
+                            "$ref": "#/definitions/MethodResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Method or parameter value error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Server internal error, check error message",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorMessage"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "ErrorMessage": {
+            "type": "string",
+            "properties": {
+                "Value": {
+                    "type": "string",
+                    "description": "Error message"
+                }
+            }
+        },
+        "BoolResponse": {
+            "type": "object",
+            "properties": {
+                "ClientTransactionID": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Client's transaction ID."
+                },
+                "ServerTransactionID": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Server's transaction ID."
+                },
+                "Method": {
+                    "type": "string",
+                    "description": "Name of the calling method."
+                },
+                "ErrorNumber": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Error number from device."
+                },
+                "ErrorMessage": {
+                    "type": "string",
+                    "description": "Error message description from device."
+                },
+                "DriverException": {
+                    "type": "object",
+                    "description": "Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object)."
+                },
+                "Value": {
+                    "type": "boolean",
+                    "description": "True or False value"
+                }
+            }
+        },
+        "DoubleResponse": {
+            "type": "object",
+            "properties": {
+                "ClientTransactionID": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Client's transaction ID."
+                },
+                "ServerTransactionID": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Server's transaction ID."
+                },
+                "Method": {
+                    "type": "string",
+                    "description": "Name of the calling method."
+                },
+                "ErrorNumber": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Error number from device."
+                },
+                "ErrorMessage": {
+                    "type": "string",
+                    "description": "Error message description from device."
+                },
+                "DriverException": {
+                    "type": "object",
+                    "description": "Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object)."
+                },
+                "Value": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "Returned double value"
+                }
+            }
+        },
+        "IntResponse": {
+            "type": "object",
+            "properties": {
+                "ClientTransactionID": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Client's transaction ID."
+                },
+                "ServerTransactionID": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Server's transaction ID."
+                },
+                "Method": {
+                    "type": "string",
+                    "description": "Name of the calling method."
+                },
+                "ErrorNumber": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Error number from device."
+                },
+                "ErrorMessage": {
+                    "type": "string",
+                    "description": "Error message description from device."
+                },
+                "DriverException": {
+                    "type": "object",
+                    "description": "Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object)."
+                },
+                "Value": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Returned integer value"
+                }
+            }
+        },
+        "IntArrayResponse": {
+            "type": "object",
+            "properties": {
+                "ClientTransactionID": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Client's transaction ID."
+                },
+                "ServerTransactionID": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Server's transaction ID."
+                },
+                "Method": {
+                    "type": "string",
+                    "description": "Name of the calling method."
+                },
+                "ErrorNumber": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Error number from device."
+                },
+                "ErrorMessage": {
+                    "type": "string",
+                    "description": "Error message description from device."
+                },
+                "DriverException": {
+                    "type": "object",
+                    "description": "Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object)."
+                },
+                "Value": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "description": "Array of integer values."
+                }
+            }
+        },
+        "MethodResponse": {
+            "type": "object",
+            "properties": {
+                "ClientTransactionID": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Client's transaction ID."
+                },
+                "ServerTransactionID": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Server's transaction ID."
+                },
+                "Method": {
+                    "type": "string",
+                    "description": "Name of the calling method."
+                },
+                "ErrorNumber": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Error number from device."
+                },
+                "ErrorMessage": {
+                    "type": "string",
+                    "description": "Error message description from device."
+                },
+                "DriverException": {
+                    "type": "object",
+                    "description": "Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object)."
+                }
+            }
+        },
+        "StringResponse": {
+            "type": "object",
+            "properties": {
+                "ClientTransactionID": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Client's transaction ID."
+                },
+                "ServerTransactionID": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Server's transaction ID."
+                },
+                "Method": {
+                    "type": "string",
+                    "description": "Name of the calling method."
+                },
+                "ErrorNumber": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Error number from device."
+                },
+                "ErrorMessage": {
+                    "type": "string",
+                    "description": "Error message description from device."
+                },
+                "DriverException": {
+                    "type": "object",
+                    "description": "Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object)."
+                },
+                "Value": {
+                    "type": "string",
+                    "description": "String response from the device."
+                }
+            }
+        },
+        "StringArrayResponse": {
+            "type": "object",
+            "properties": {
+                "ClientTransactionID": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Client's transaction ID."
+                },
+                "ServerTransactionID": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Server's transaction ID."
+                },
+                "Method": {
+                    "type": "string",
+                    "description": "Name of the calling method."
+                },
+                "ErrorNumber": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Error number from device."
+                },
+                "ErrorMessage": {
+                    "type": "string",
+                    "description": "Error message description from device."
+                },
+                "DriverException": {
+                    "type": "object",
+                    "description": "Windows error exception object (only of value if client is Windows in which case deserialise to a .NET Exception object)."
+                },
+                "Value": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Array of string values."
+                }
+            }
+        }
+    }
+}

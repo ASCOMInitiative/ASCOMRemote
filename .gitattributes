@@ -1,1 +1,5 @@
-Swagger/* linguist-generated=true
+###############################################################################
+# Tell Git Linguist to ignore Swagger content files when deciding what language
+# is used in the repository
+###############################################################################
+Swagger/** linguist-generated=true
