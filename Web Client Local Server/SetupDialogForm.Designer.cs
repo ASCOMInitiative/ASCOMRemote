@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupDialogForm));
             this.numPort = new System.Windows.Forms.NumericUpDown();
             this.addressList = new System.Windows.Forms.ComboBox();
             this.numRemoteDeviceNumber = new System.Windows.Forms.NumericUpDown();
@@ -472,6 +473,7 @@
             this.Controls.Add(this.numRemoteDeviceNumber);
             this.Controls.Add(this.numPort);
             this.Controls.Add(this.addressList);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SetupDialogForm";
             this.Text = "SetupDialogForm";
             this.TopMost = true;

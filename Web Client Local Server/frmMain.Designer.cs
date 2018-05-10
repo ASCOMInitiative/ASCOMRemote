@@ -30,6 +30,7 @@ namespace ASCOM.Web
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -48,6 +49,7 @@ namespace ASCOM.Web
             this.ClientSize = new System.Drawing.Size(233, 52);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmMain";
             this.Text = "Web Driver Server";
             this.ResumeLayout(false);

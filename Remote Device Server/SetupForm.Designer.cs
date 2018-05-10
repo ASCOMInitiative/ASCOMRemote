@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupForm));
             this.addressList = new System.Windows.Forms.ComboBox();
             this.BtnCancel = new System.Windows.Forms.Button();
             this.BtnOK = new System.Windows.Forms.Button();
@@ -413,6 +414,7 @@
             this.Controls.Add(this.BtnOK);
             this.Controls.Add(this.BtnCancel);
             this.Controls.Add(this.addressList);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SetupForm";
             this.Text = "ASCOM Remote Access Server Configuration";
             this.Load += new System.EventHandler(this.Form_Load);
