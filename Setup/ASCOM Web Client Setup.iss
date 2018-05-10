@@ -21,7 +21,7 @@ DisableDirPage=yes
 DisableProgramGroupPage=yes
 ; Must be at least Vista to run
 MinVersion=6.0  
-OutputDir="."
+OutputDir="Build"
 #emit "OutputBaseFilename=ASCOMRemoteDriverServer(" + MyAppVer +")setup"
 PrivilegesRequired=admin
 SetupIconFile=ASCOM.ico
