@@ -178,7 +178,7 @@ begin
          Result := StrToFloat(PlatVerString); // Create a double from the modified string that contains this system's decimal separator
       end;
    except                                                                   
-     Result:= -1.0; // Indciate in the return value that an exception was generated
+     Result:= -1.0; // Indicate in the return value that an exception was generated
    end;
 end;
 
@@ -192,12 +192,12 @@ var
    Result := FALSE;  // Assume failure
    PlatformVersionNumber := PlatformVersion(); // Get the installed Platform version as a double
    If PlatformVersionNumber >= REQUIRED_PLATFORM_VERSION then	// Check whether we have the minimum required Platform or newer
-         Result := TRUE
+      Result := TRUE
    else
       if PlatformVersionNumber = 0.0 then
-      MsgBox('No ASCOM Platform is installed. Please install Platform ' + Format('%3.1f', [REQUIRED_PLATFORM_VERSION]) + ' or later from http://www.ascom-standards.org', mbCriticalError, MB_OK)
+         MsgBox('No ASCOM Platform is installed. Please install Platform ' + Format('%3.1f', [REQUIRED_PLATFORM_VERSION]) + ' or later from http://www.ascom-standards.org', mbCriticalError, MB_OK)
       else 
-      MsgBox('ASCOM Platform ' + Format('%3.1f', [REQUIRED_PLATFORM_VERSION]) + ' or later is required, but Platform '+ Format('%3.1f', [PlatformVersionNumber]) + ' is installed. Please install the latest Platform before continuing; you will find it at http://www.ascom-standards.org', mbCriticalError, MB_OK);
+         MsgBox('ASCOM Platform ' + Format('%3.1f', [REQUIRED_PLATFORM_VERSION]) + ' or later is required, but Platform '+ Format('%3.1f', [PlatformVersionNumber]) + ' is installed. Please install the latest Platform before continuing; you will find it at http://www.ascom-standards.org', mbCriticalError, MB_OK);
 end;
 
 // Code to enable the installer to uninstall previous versions of itself when a new version is installed
