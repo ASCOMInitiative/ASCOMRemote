@@ -7,7 +7,7 @@
     <ProjectGuid>{08231D28-47EA-47AD-A8E7-EB57285C4246}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ASCOM.Web</RootNamespace>
+    <RootNamespace>ASCOM.Remote</RootNamespace>
     <AssemblyName>ASCOM.WebClient2.Dome</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

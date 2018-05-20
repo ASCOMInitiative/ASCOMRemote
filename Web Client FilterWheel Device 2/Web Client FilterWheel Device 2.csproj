@@ -7,7 +7,7 @@
     <ProjectGuid>{0BD6BD32-6856-47A1-9617-7C2CB07A63F5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ASCOM.Web</RootNamespace>
+    <RootNamespace>ASCOM.Remote</RootNamespace>
     <AssemblyName>ASCOM.WebClient2.FilterWheel</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -7,7 +7,7 @@
     <ProjectGuid>{3AFE58B9-BC57-401A-AC2C-5B828FD5BDBE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ASCOM.Web</RootNamespace>
+    <RootNamespace>ASCOM.Remote</RootNamespace>
     <AssemblyName>ASCOM.WebClient2.ObservingConditions</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

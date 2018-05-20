@@ -8,7 +8,7 @@
     <ProjectGuid>{3689A2CB-94C5-4012-A5CF-7E7D1DD27143}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ASCOM.Web</RootNamespace>
+    <RootNamespace>ASCOM.Remote</RootNamespace>
     <AssemblyName>ASCOM.WebClient.LocalServer</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileUpgradeFlags>

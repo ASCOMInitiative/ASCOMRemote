@@ -7,7 +7,7 @@
     <ProjectGuid>{1942C8A7-713D-4A5A-BC18-0BB8A88F2BCD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ASCOM.Web</RootNamespace>
+    <RootNamespace>ASCOM.Remote</RootNamespace>
     <AssemblyName>ASCOM.WebClient1.Rotator</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

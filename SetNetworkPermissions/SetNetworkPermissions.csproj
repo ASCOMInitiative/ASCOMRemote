@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{FF57CAEA-63F3-4F4F-9252-734796B74731}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>SetNetworkPemissions</RootNamespace>
+    <RootNamespace>ASCOM.Remote</RootNamespace>
     <AssemblyName>SetNetworkPermissions</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
