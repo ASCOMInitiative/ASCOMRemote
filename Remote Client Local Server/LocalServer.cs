@@ -1,5 +1,5 @@
 //
-// ASCOM.Web Local COM Server
+// ASCOM.Remote Local COM Server
 //
 // This is the core of a managed COM Local Server, capable of serving
 // multiple instances of multiple interfaces, within a single
@@ -27,7 +27,7 @@ using System.Security.Principal;
 using System.Diagnostics;
 using ASCOM;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     public static class Server
     {

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ASCOM.Utilities;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     public partial class SetupDialogForm : Form
     {

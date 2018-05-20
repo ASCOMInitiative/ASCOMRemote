@@ -1,4 +1,4 @@
-﻿namespace ASCOM.Web
+﻿namespace ASCOM.Remote
 {
     partial class SetupForm
     {
@@ -37,20 +37,20 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.ServedDevice9 = new ASCOM.Web.ServedDevice();
-            this.ServedDevice8 = new ASCOM.Web.ServedDevice();
-            this.ServedDevice7 = new ASCOM.Web.ServedDevice();
-            this.ServedDevice6 = new ASCOM.Web.ServedDevice();
-            this.ServedDevice5 = new ASCOM.Web.ServedDevice();
-            this.ServedDevice4 = new ASCOM.Web.ServedDevice();
-            this.ServedDevice3 = new ASCOM.Web.ServedDevice();
-            this.ServedDevice2 = new ASCOM.Web.ServedDevice();
-            this.ServedDevice1 = new ASCOM.Web.ServedDevice();
+            this.ServedDevice9 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice8 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice7 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice6 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice5 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice4 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice3 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice2 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice1 = new ASCOM.Remote.ServedDevice();
             this.chkAutoConnect = new System.Windows.Forms.CheckBox();
             this.chkTrace = new System.Windows.Forms.CheckBox();
             this.chkDebugTrace = new System.Windows.Forms.CheckBox();
             this.chkAccessLog = new System.Windows.Forms.CheckBox();
-            this.ServedDevice0 = new ASCOM.Web.ServedDevice();
+            this.ServedDevice0 = new ASCOM.Remote.ServedDevice();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();

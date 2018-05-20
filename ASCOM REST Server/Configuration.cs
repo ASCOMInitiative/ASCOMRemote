@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using ASCOM.Utilities;
 using Microsoft.Win32;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     class Configuration : IDisposable
     {

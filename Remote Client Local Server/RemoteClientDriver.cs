@@ -19,7 +19,7 @@ using Newtonsoft.Json;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     public static class WebClientDriver
     {

@@ -13,7 +13,7 @@ using ASCOM.Utilities;
 using System.Collections;
 using System.Text.RegularExpressions;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     public partial class SetupForm : Form
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     /// <summary>
     ///   This exception should be raised by the driver to reject a parameter from the client. 

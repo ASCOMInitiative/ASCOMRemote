@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     internal static class NativeMethods
     {

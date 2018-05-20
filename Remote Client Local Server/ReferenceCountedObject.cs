@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     [ComVisible(false)]
     public class ReferenceCountedObjectBase

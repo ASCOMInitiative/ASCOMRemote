@@ -1,4 +1,4 @@
-﻿namespace ASCOM.Web
+﻿namespace ASCOM.Remote
 {
     partial class ServerConfigurationForm
     {
@@ -37,16 +37,16 @@
             this.label1 = new System.Windows.Forms.Label();
             this.BtnOK = new System.Windows.Forms.Button();
             this.BtnCancel = new System.Windows.Forms.Button();
-            this.ServedDevice0 = new ASCOM.Web.ServedDeviceClient();
-            this.ServedDevice1 = new ASCOM.Web.ServedDeviceClient();
-            this.ServedDevice2 = new ASCOM.Web.ServedDeviceClient();
-            this.ServedDevice3 = new ASCOM.Web.ServedDeviceClient();
-            this.ServedDevice4 = new ASCOM.Web.ServedDeviceClient();
-            this.ServedDevice5 = new ASCOM.Web.ServedDeviceClient();
-            this.ServedDevice6 = new ASCOM.Web.ServedDeviceClient();
-            this.ServedDevice7 = new ASCOM.Web.ServedDeviceClient();
-            this.ServedDevice8 = new ASCOM.Web.ServedDeviceClient();
-            this.ServedDevice9 = new ASCOM.Web.ServedDeviceClient();
+            this.ServedDevice0 = new ASCOM.Remote.ServedDeviceClient();
+            this.ServedDevice1 = new ASCOM.Remote.ServedDeviceClient();
+            this.ServedDevice2 = new ASCOM.Remote.ServedDeviceClient();
+            this.ServedDevice3 = new ASCOM.Remote.ServedDeviceClient();
+            this.ServedDevice4 = new ASCOM.Remote.ServedDeviceClient();
+            this.ServedDevice5 = new ASCOM.Remote.ServedDeviceClient();
+            this.ServedDevice6 = new ASCOM.Remote.ServedDeviceClient();
+            this.ServedDevice7 = new ASCOM.Remote.ServedDeviceClient();
+            this.ServedDevice8 = new ASCOM.Remote.ServedDeviceClient();
+            this.ServedDevice9 = new ASCOM.Remote.ServedDeviceClient();
             this.BtnGetRemoteConfiguration = new System.Windows.Forms.Button();
             this.BtnSetRemoteConfiguration = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     public class AxisRatesResponse : RestResponseBase
     {

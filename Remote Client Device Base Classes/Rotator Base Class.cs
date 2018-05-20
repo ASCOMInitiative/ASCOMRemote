@@ -7,7 +7,7 @@ using ASCOM.DeviceInterface;
 using System.Windows.Forms;
 using RestSharp;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     /// <summary>
     /// ASCOM Rotator Driver for Web.

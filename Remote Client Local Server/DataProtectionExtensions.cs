@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Windows.Forms;
 using ASCOM.Utilities;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     /// <summary>
     /// Extensions to the String datatype to allow the string to be encrypted and decrypted.

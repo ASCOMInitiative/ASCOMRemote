@@ -21,7 +21,7 @@ using System.Web;
 using System.Text.RegularExpressions;
 using System.Linq;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
 
     public partial class ServerForm : Form

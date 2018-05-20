@@ -19,7 +19,7 @@ using System.Text;
 using ASCOM;
 using System.Linq;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     /// <summary>
     /// The resources shared by all drivers and devices, in this example it's a serial port with a shared SendMessage method

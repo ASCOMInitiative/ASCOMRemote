@@ -7,14 +7,14 @@ using ASCOM.DeviceInterface;
 using System.Collections;
 using System.Threading;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     #region Rate class
     //
     // The Rate class implements IRate, and is used to hold values
     // for AxisRates. You do not need to change this class.
     //
-    // The Guid attribute sets the CLSID for ASCOM.Web.Rate
+    // The Guid attribute sets the CLSID for ASCOM.Remote.Rate
     // The ClassInterface/None addribute prevents an empty interface called
     // _Rate from being created and used as the [default] interface
     //

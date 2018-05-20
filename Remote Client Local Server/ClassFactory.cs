@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Collections;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
 
     #region C# Definition of IClassFactory

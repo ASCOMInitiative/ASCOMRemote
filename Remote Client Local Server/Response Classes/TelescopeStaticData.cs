@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections;
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     public class TelescopeStaticData : RestResponseBase
     {

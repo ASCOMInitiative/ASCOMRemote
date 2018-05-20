@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using RestSharp;
 using RestSharp.Authenticators;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     /// <summary>
     /// ASCOM Telescope Driver for Web.

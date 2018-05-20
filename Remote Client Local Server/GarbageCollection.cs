@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     /// <summary>
     /// Summary description for GarbageCollection.

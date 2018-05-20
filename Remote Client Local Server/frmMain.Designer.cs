@@ -1,6 +1,6 @@
 using System;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     partial class frmMain
     {

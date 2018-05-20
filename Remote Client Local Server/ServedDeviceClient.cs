@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using ASCOM.Utilities;
 using System.Collections;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     public partial class ServedDeviceClient : UserControl
     {

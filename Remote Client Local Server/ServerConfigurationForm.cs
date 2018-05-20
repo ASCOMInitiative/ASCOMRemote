@@ -7,7 +7,7 @@ using RestSharp;
 using RestSharp.Authenticators;
 using Newtonsoft.Json;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     public partial class ServerConfigurationForm : Form
     {

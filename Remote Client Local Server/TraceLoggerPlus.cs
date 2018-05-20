@@ -5,7 +5,7 @@ using System.Text;
 
 using ASCOM.Utilities;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     public class TraceLoggerPlus : TraceLogger
     {

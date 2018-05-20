@@ -1,4 +1,4 @@
-﻿namespace ASCOM.Web
+﻿namespace ASCOM.Remote
 {
     partial class ServedDeviceClient
     {

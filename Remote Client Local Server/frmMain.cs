@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     public partial class frmMain : Form
     {

@@ -3,14 +3,14 @@ using System.Collections;
 using System.Runtime.InteropServices;
 using ASCOM.DeviceInterface;
 
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     //
     // AxisRates is a strongly-typed collection that must be enumerable by
     // both COM and .NET. The IAxisRates and IEnumerable interfaces provide
     // this polymorphism. 
     //
-    // The Guid attribute sets the CLSID for ASCOM.Web.AxisRates
+    // The Guid attribute sets the CLSID for ASCOM.Remote.AxisRates
     // The ClassInterface/None addribute prevents an empty interface called
     // _AxisRates from being created and used as the [default] interface
     //

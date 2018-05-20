@@ -1,5 +1,5 @@
 ﻿
-namespace ASCOM.Web
+namespace ASCOM.Remote
 {
     public static class SharedConstants
     {
@@ -61,7 +61,7 @@ namespace ASCOM.Web
 
         // Driver naming constants
         public const string DRIVER_DISPLAY_NAME = "ASCOM Web Client";
-        public const string DRIVER_PROGID_BASE = "ASCOM.Web";
+        public const string DRIVER_PROGID_BASE = "ASCOM.Remote";
         public const string NOT_CONNECTED_MESSAGE = "is not connected."; // This is appended to the driver display name + driver number and displayed when the driver is not connected
         public const string TRACELOGGER_NAME_FORMAT_STRING = "Web{0}.{1}";
 
