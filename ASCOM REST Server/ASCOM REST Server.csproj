@@ -45,7 +45,7 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>Web Server Key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>REST Server Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>ASCOM.ico</ApplicationIcon>
@@ -125,7 +125,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Web Server Key.snk" />
+    <None Include="REST Server Key.snk" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

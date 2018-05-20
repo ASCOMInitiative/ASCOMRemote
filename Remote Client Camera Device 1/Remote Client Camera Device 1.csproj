@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ASCOM.Remote</RootNamespace>
-    <AssemblyName>ASCOM.WebClient1.Camera</AssemblyName>
+    <AssemblyName>ASCOM.RemoteClient1.Camera</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
