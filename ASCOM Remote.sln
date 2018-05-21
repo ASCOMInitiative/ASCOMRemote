@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Devices", "Devices", "{C375AA07-FA9A-4720-96F5-2B23DF4567F2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Remote Client Drivers", "Remote Client Drivers", "{C375AA07-FA9A-4720-96F5-2B23DF4567F2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetNetworkPermissions", "SetNetworkPermissions\SetNetworkPermissions.csproj", "{FF57CAEA-63F3-4F4F-9252-734796B74731}"
 EndProject
