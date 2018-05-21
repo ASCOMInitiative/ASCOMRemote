@@ -416,7 +416,7 @@
             this.Controls.Add(this.addressList);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SetupForm";
-            this.Text = "ASCOM Remote Access Server Configuration";
+            this.Text = "ASCOM REST Server Configuration";
             this.Load += new System.EventHandler(this.Form_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();

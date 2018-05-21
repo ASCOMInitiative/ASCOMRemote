@@ -194,7 +194,7 @@ namespace ASCOM.Remote
 
         private void ServerForm_Load(object sender, EventArgs e)
         {
-            this.Text = "ASCOM Device Server Console - " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            this.Text = "ASCOM REST Server - v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             if (ServerAutoConnect) SetConfiguration();
         }
 
@@ -650,7 +650,7 @@ namespace ASCOM.Remote
             int formHeight = control.Height;
             int buttonLeft = formWidth - 150;
 
-            lblTitle.Left = ((formWidth - lblTitle.Width) / 2) - 10;
+            lblTitle.Left = ((formWidth - lblTitle.Width) / 2) - 85;
             lblTitle.Top = 20;
 
             txtLog.Width = formWidth - 200;
