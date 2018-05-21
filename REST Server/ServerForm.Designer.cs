@@ -118,11 +118,11 @@
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.lblTitle.Location = new System.Drawing.Point(164, 25);
+            this.lblTitle.Location = new System.Drawing.Point(204, 25);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(357, 26);
+            this.lblTitle.Size = new System.Drawing.Size(338, 26);
             this.lblTitle.TabIndex = 8;
-            this.lblTitle.Text = "ASCOM Restful Interface Server";
+            this.lblTitle.Text = "ASCOM REST Server Console";
             // 
             // chkLogRequests
             // 
@@ -183,7 +183,7 @@
             this.Controls.Add(this.BtnSetup);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ServerForm";
-            this.Text = "HTTP Server";
+            this.Text = "ASCOM REST Server";
             this.Load += new System.EventHandler(this.ServerForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pBoxConnected)).EndInit();
             this.ResumeLayout(false);
