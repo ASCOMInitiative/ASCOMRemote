@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Windows.Forms;
 
 using ASCOM.DeviceInterface;
-using System.Windows.Forms;
 using RestSharp;
 
 namespace ASCOM.Remote

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using ASCOM.DeviceInterface;
 using System.Windows.Forms;
+
+using ASCOM.DeviceInterface;
 using RestSharp;
 
 namespace ASCOM.Remote

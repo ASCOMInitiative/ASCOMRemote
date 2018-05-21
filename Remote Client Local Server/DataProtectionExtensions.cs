@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Management;
 using System.Text;
-using System.Security;
 using System.Security.Cryptography;
-using System.Windows.Forms;
 using ASCOM.Utilities;
 
 namespace ASCOM.Remote

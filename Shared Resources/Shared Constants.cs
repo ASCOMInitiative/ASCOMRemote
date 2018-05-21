@@ -1,5 +1,4 @@
-﻿
-namespace ASCOM.Remote
+﻿namespace ASCOM.Remote
 {
     public static class SharedConstants
     {

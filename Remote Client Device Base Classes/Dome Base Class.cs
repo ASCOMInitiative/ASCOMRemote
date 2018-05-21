@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Reflection;
-using System.Runtime.InteropServices;
-
-using ASCOM.Utilities;
-using ASCOM.DeviceInterface;
 using System.Windows.Forms;
+
+using ASCOM.DeviceInterface;
 using RestSharp;
-using RestSharp.Authenticators;
 
 namespace ASCOM.Remote
 {

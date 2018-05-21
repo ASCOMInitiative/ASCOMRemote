@@ -2,9 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
@@ -15,9 +17,6 @@ using ASCOM.DeviceInterface;
 using RestSharp;
 using RestSharp.Authenticators;
 using Newtonsoft.Json;
-
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
 
 namespace ASCOM.Remote
 {

@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
-using ASCOM.DeviceInterface;
 using System.Windows.Forms;
+
+using ASCOM.DeviceInterface;
 using RestSharp;
 
 namespace ASCOM.Remote

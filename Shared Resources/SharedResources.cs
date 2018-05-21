@@ -15,9 +15,6 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Text;
-using ASCOM;
-using System.Linq;
 
 namespace ASCOM.Remote
 {
