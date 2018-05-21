@@ -75,5 +75,13 @@
     <Compile Include="SharedResources.cs" />
     <Compile Include="TraceLoggerPlus.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>11.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="RestSharp">
+      <Version>106.2.2</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
