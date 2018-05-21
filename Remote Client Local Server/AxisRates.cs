@@ -123,7 +123,7 @@ namespace ASCOM.Remote
         {
             get
             {
-                if (pos < 0 || pos >= m_Rates.Length) throw new System.InvalidOperationException(string.Format("ASCOM Web AxisRates.Current - Pointer value {0} is outside expected range 0..{1}", pos, m_Rates.Length));
+                if (pos < 0 || pos >= m_Rates.Length) throw new System.InvalidOperationException(string.Format("ASCOM Remote AxisRates.Current - Pointer value {0} is outside expected range 0..{1}", pos, m_Rates.Length));
                 return m_Rates[pos];
             }
         }

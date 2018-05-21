@@ -237,7 +237,7 @@ namespace ASCOM.Remote
                 catch (Exception e)
                 {
                     MessageBox.Show("Failed to load served COM class assembly " + fi.Name + " - " + e.Message,
-                        "Web", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        "Remote", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     return false;
                 }
 
@@ -275,12 +275,12 @@ namespace ASCOM.Remote
             try { Process.Start(si); }
             catch (System.ComponentModel.Win32Exception)
             {
-                MessageBox.Show("The Web was not " + (arg == "/register" ? "registered" : "unregistered") +
-                    " because you did not allow it.", "Web", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("The driver was not " + (arg == "/register" ? "registered" : "unregistered") +
+                    " because you did not allow it.", "Driver Registration", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "Web", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                MessageBox.Show(ex.ToString(), "Driver Registration", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             }
             return;
         }
@@ -307,7 +307,7 @@ namespace ASCOM.Remote
             // If reached here, we're running elevated
             //
 
-            TraceLogger TL = new TraceLogger("WebClientServer")
+            TraceLogger TL = new TraceLogger("RemoteClientServer")
             {
                 Enabled = true
             };
@@ -343,7 +343,7 @@ namespace ASCOM.Remote
             catch (Exception ex)
             {
                 MessageBox.Show("Error while registering the server:\n" + ex.ToString(),
-                        "Web", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        "Remote Local Server", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 return;
             }
             finally
@@ -425,7 +425,7 @@ namespace ASCOM.Remote
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error while registering the server:\n" + ex.ToString(), "Web", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    MessageBox.Show("Error while registering the server:\n" + ex.ToString(), "Remote Local Server", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     bFail = true;
                 }
                 finally
@@ -518,7 +518,7 @@ namespace ASCOM.Remote
                 if (!factory.RegisterClassObject())
                 {
                     MessageBox.Show("Failed to register class factory for " + type.Name,
-                        "Web", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        "Remote Local Server", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                     return false;
                 }
             }
@@ -574,7 +574,7 @@ namespace ASCOM.Remote
 
                     default:
                         MessageBox.Show("Unknown argument: " + args[0] + "\nValid are : -register, -unregister and -embedding",
-                            "Web", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            "Remote Local Server", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         break;
                 }
             }

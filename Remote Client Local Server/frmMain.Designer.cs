@@ -51,7 +51,7 @@ namespace ASCOM.Remote
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmMain";
-            this.Text = "Web Driver Server";
+            this.Text = "Remote Driver Server";
             this.ResumeLayout(false);
 
         }

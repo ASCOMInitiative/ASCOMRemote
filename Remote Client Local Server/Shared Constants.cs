@@ -34,7 +34,7 @@ namespace ASCOM.Remote
         public const string LOCALHOST_NAME = "localhost";
         public const string LOCALHOST_ADDRESS = "127.0.0.1"; // Get the localhost loopback address
 
-        // Constants shared by Web Client Drivers and the Remote Web Device Server
+        // Constants shared by Remote Client Drivers and the ASCOM REST Server
         public const string API_URL_BASE = "/api/"; // This const must always be lower case to make the logic tests work properly 
         public const string API_VERSION_V1 = "v1"; // This const must always be lower case to make the logic tests work properly
         public const string MANAGEMENT_URL_BASE = "/server/"; // This const must always be lower case to make the logic tests work properly 
@@ -60,10 +60,10 @@ namespace ASCOM.Remote
         public const string MANAGE_CONNECT_LOCALLY_PROFILENAME = "Manage Connect Locally"; public const string MANAGE_CONNECT_LOCALLY_DEFAULT = "False";
 
         // Driver naming constants
-        public const string DRIVER_DISPLAY_NAME = "ASCOM Web Client";
+        public const string DRIVER_DISPLAY_NAME = "ASCOM Remote Client";
         public const string DRIVER_PROGID_BASE = "ASCOM.Remote";
         public const string NOT_CONNECTED_MESSAGE = "is not connected."; // This is appended to the driver display name + driver number and displayed when the driver is not connected
-        public const string TRACELOGGER_NAME_FORMAT_STRING = "Web{0}.{1}";
+        public const string TRACELOGGER_NAME_FORMAT_STRING = "Remote{0}.{1}";
 
         // Enum to describe Camera.ImageArray and ImageArrayVCariant array types
         public enum ImageArrayElementTypes
@@ -75,11 +75,11 @@ namespace ASCOM.Remote
         }
 
         // Registry key where the Web Server configuration will be stored
-        public const string REMOTE_DEVICE_CONFIGURATION_KEY = @"Software\ASCOM Web";
+        public const string REMOTE_DEVICE_CONFIGURATION_KEY = @"Software\ASCOM Remote";
 
         public const string REQUEST_RECEIVED_STRING = "RequestReceived";
 
-        public const string DEVICE_NOT_CONFIGURED = "None"; // ProgID value indicating no device cofigured
+        public const string DEVICE_NOT_CONFIGURED = "None"; // ProgID value indicating no device configured
 
     }
 }

@@ -102,7 +102,7 @@ namespace ASCOM.Remote
                 TL.LogMessage("GetConfiguration", "Creating Authenticator");
                 client.Authenticator = new HttpBasicAuthenticator(userName, password);
                 TL.LogMessage("GetConfiguration", "Setting timeout");
-                WebClientDriver.SetClientTimeout(client, 10);
+                RemoteClientDriver.SetClientTimeout(client, 10);
 
                 string managementUri = string.Format("{0}{1}/{2}", SharedConstants.MANAGEMENT_URL_BASE, SharedConstants.API_VERSION_V1, SharedConstants.MANGEMENT_CONFIGURATION);
                 RestRequest request = new RestRequest(managementUri, Method.GET)
@@ -111,7 +111,7 @@ namespace ASCOM.Remote
                 };
 
                 request.AddParameter(SharedConstants.CLIENTID_PARAMETER_NAME, clientNumber.ToString());
-                int transaction = WebClientDriver.TransactionNumber();
+                int transaction = RemoteClientDriver.TransactionNumber();
                 request.AddParameter(SharedConstants.CLIENTTRANSACTION_PARAMETER_NAME, transaction.ToString());
 
                 TL.LogMessage("GetConfiguration", "Client Txn ID: " + transaction.ToString() + ", Sending command to remote server");

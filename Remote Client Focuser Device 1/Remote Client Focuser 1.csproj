@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{06679176-7962-42CE-A7A5-B1297B9FD03B}</ProjectGuid>
+    <ProjectGuid>{35830366-75D7-4606-BB82-E89E580FCFEA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ASCOM.Remote</RootNamespace>
-    <AssemblyName>ASCOM.RemoteClient1.Camera</AssemblyName>
+    <AssemblyName>ASCOM.RemoteClient1.Focuser</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

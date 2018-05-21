@@ -13,41 +13,41 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASCOM REST Server", "ASCOM 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device Base Classes", "Remote Client Device Base Classes\Device Base Classes.csproj", "{C7605D43-D11A-4891-A32D-FD5AB6E74772}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Camera Device 1", "Remote Client Camera Device 1\Remote Client Camera Device 1.csproj", "{06679176-7962-42CE-A7A5-B1297B9FD03B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Camera 1", "Remote Client Camera Device 1\Remote Client Camera 1.csproj", "{06679176-7962-42CE-A7A5-B1297B9FD03B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Camera Device 2", "Remote Client Camera Device 2\Remote Client Camera Device 2.csproj", "{9919FFD3-5CB8-4717-B45B-2952E863E555}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Camera 2", "Remote Client Camera Device 2\Remote Client Camera 2.csproj", "{9919FFD3-5CB8-4717-B45B-2952E863E555}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Dome Device 1", "Remote Client Dome Device 1\Remote Client Dome Device 1.csproj", "{80F1C74E-0286-44D8-B709-E94848D983E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Dome 1", "Remote Client Dome Device 1\Remote Client Dome 1.csproj", "{80F1C74E-0286-44D8-B709-E94848D983E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Dome Device 2", "Remote Client Dome Device 2\Remote Client Dome Device 2.csproj", "{08231D28-47EA-47AD-A8E7-EB57285C4246}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Dome 2", "Remote Client Dome Device 2\Remote Client Dome 2.csproj", "{08231D28-47EA-47AD-A8E7-EB57285C4246}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client FilterWheel Device 1", "Remote Client FilterWheel Device 1\Remote Client FilterWheel Device 1.csproj", "{68493476-DCB0-4158-AEDD-60A52D1F74BF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client FilterWheel 1", "Remote Client FilterWheel Device 1\Remote Client FilterWheel 1.csproj", "{68493476-DCB0-4158-AEDD-60A52D1F74BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client FilterWheel Device 2", "Remote Client FilterWheel Device 2\Remote Client FilterWheel Device 2.csproj", "{0BD6BD32-6856-47A1-9617-7C2CB07A63F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client FilterWheel 2", "Remote Client FilterWheel Device 2\Remote Client FilterWheel 2.csproj", "{0BD6BD32-6856-47A1-9617-7C2CB07A63F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client ObservingConditions Device 1", "Remote Client ObservingConditions Device 1\Remote Client ObservingConditions Device 1.csproj", "{5464389A-F571-42E7-8D11-7BD83A85E75D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client ObservingConditions 1", "Remote Client ObservingConditions Device 1\Remote Client ObservingConditions 1.csproj", "{5464389A-F571-42E7-8D11-7BD83A85E75D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client ObservingConditions Device 2", "Remote Client ObservingConditions Device 2\Remote Client ObservingConditions Device 2.csproj", "{3AFE58B9-BC57-401A-AC2C-5B828FD5BDBE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client ObservingConditions 2", "Remote Client ObservingConditions Device 2\Remote Client ObservingConditions 2.csproj", "{3AFE58B9-BC57-401A-AC2C-5B828FD5BDBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Rotator Device 1", "Remote Client Rotator Device 1\Remote Client Rotator Device 1.csproj", "{1942C8A7-713D-4A5A-BC18-0BB8A88F2BCD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Rotator 1", "Remote Client Rotator Device 1\Remote Client Rotator 1.csproj", "{1942C8A7-713D-4A5A-BC18-0BB8A88F2BCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Rotator Device 2", "Remote Client Rotator Device 2\Remote Client Rotator Device 2.csproj", "{6851E82D-D1A7-400C-8F8D-9288FFA186C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Rotator 2", "Remote Client Rotator Device 2\Remote Client Rotator 2.csproj", "{6851E82D-D1A7-400C-8F8D-9288FFA186C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client SafetyMonitor Device 1", "Remote Client SafetyMonitor Device 1\Remote Client SafetyMonitor Device 1.csproj", "{52A53799-6252-4C9F-B0D7-CA4C19294AA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client SafetyMonitor 1", "Remote Client SafetyMonitor Device 1\Remote Client SafetyMonitor 1.csproj", "{52A53799-6252-4C9F-B0D7-CA4C19294AA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client SafetyMonitor Device 2", "Remote Client SafetyMonitor Device 2\Remote Client SafetyMonitor Device 2.csproj", "{2FDA56AA-A63B-4391-9130-8D2130C719CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client SafetyMonitor 2", "Remote Client SafetyMonitor Device 2\Remote Client SafetyMonitor 2.csproj", "{2FDA56AA-A63B-4391-9130-8D2130C719CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Switch Device 1", "Remote Client Switch Device 1\Remote Client Switch Device 1.csproj", "{5E3DF246-628E-4784-BD04-EFCBCFC52D51}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Switch 1", "Remote Client Switch Device 1\Remote Client Switch 1.csproj", "{5E3DF246-628E-4784-BD04-EFCBCFC52D51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Switch Device 2", "Remote Client Switch Device 2\Remote Client Switch Device 2.csproj", "{EF4B3317-B1E1-42FD-80CD-CC3367C973E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Switch 2", "Remote Client Switch Device 2\Remote Client Switch 2.csproj", "{EF4B3317-B1E1-42FD-80CD-CC3367C973E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Telescope Device 1", "Remote Client Telescope Device 1\Remote Client Telescope Device 1.csproj", "{C7273EC6-232F-41C1-8790-9B7ECF24055B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Telescope 1", "Remote Client Telescope Device 1\Remote Client Telescope 1.csproj", "{C7273EC6-232F-41C1-8790-9B7ECF24055B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Telescope Device 2", "Remote Client Telescope Device 2\Remote Client Telescope Device 2.csproj", "{4D3E69E6-FAEB-4DE8-B253-C03342CAA1CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Telescope 2", "Remote Client Telescope Device 2\Remote Client Telescope 2.csproj", "{4D3E69E6-FAEB-4DE8-B253-C03342CAA1CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web Client Focuser Device 1", "Remote Client Focuser Device 1\Web Client Focuser Device 1.csproj", "{35830366-75D7-4606-BB82-E89E580FCFEA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Focuser 1", "Remote Client Focuser Device 1\Remote Client Focuser 1.csproj", "{35830366-75D7-4606-BB82-E89E580FCFEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web Client Focuser Device 2", "Remote Client Focuser Device 2\Web Client Focuser Device 2.csproj", "{AB7E6BCB-C088-4EA6-A6D6-FF8107F7023B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Focuser 2", "Remote Client Focuser Device 2\Remote Client Focuser 2.csproj", "{AB7E6BCB-C088-4EA6-A6D6-FF8107F7023B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

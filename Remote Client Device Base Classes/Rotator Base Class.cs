@@ -10,7 +10,7 @@ using RestSharp;
 namespace ASCOM.Remote
 {
     /// <summary>
-    /// ASCOM Rotator Driver for Web.
+    /// ASCOM Remote Rotator base class
     /// </summary>
     public class RotatorBaseClass : ReferenceCountedObjectBase, IRotatorV2
     {
@@ -50,7 +50,7 @@ namespace ASCOM.Remote
         #region Initialiser
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Web"/> class.
+        /// Initializes a new instance of the <see cref="RotatorBaseClass"/> class.
         /// Must be public for COM registration.
         /// </summary>
         public RotatorBaseClass(string RequiredDriverNumber, string RequiredDriverDisplayName, string RequiredProgId)
@@ -64,16 +64,16 @@ namespace ASCOM.Remote
                 NotConnectedMessage = DriverDisplayName + " " + SharedConstants.NOT_CONNECTED_MESSAGE;
 
                 if (TL == null) TL = new TraceLoggerPlus("", string.Format(SharedConstants.TRACELOGGER_NAME_FORMAT_STRING, DriverNumber, DEVICE_TYPE));
-                WebClientDriver.ReadProfile(clientNumber, TL, DEVICE_TYPE, DriverProgId,
+                RemoteClientDriver.ReadProfile(clientNumber, TL, DEVICE_TYPE, DriverProgId,
                     ref traceState, ref debugTraceState, ref ipAddressString, ref portNumber, ref remoteDeviceNumber, ref serviceType, ref establishConnectionTimeout, ref standardServerResponseTimeout, ref longServerResponseTimeout, ref userName, ref password, ref manageConnectLocally);
                 TL.LogMessage(clientNumber, DEVICE_TYPE, string.Format("Trace state: {0}, Debug Trace State: {1}, TraceLogger Debug State: {2}", traceState, debugTraceState, TL.DebugTraceState));
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
                 TL.LogMessage(clientNumber, DEVICE_TYPE, "Starting initialisation, Version: " + version.ToString());
 
-                clientNumber = WebClientDriver.GetUniqueClientNumber();
+                clientNumber = RemoteClientDriver.GetUniqueClientNumber();
                 TL.LogMessage(clientNumber, DEVICE_TYPE, "This instance's unique client number: " + clientNumber);
 
-                WebClientDriver.ConnectToRemoteServer(ref client, ipAddressString, portNumber, serviceType, TL, clientNumber, DEVICE_TYPE, standardServerResponseTimeout, userName, password);
+                RemoteClientDriver.ConnectToRemoteServer(ref client, ipAddressString, portNumber, serviceType, TL, clientNumber, DEVICE_TYPE, standardServerResponseTimeout, userName, password);
 
                 URIBase = string.Format("{0}{1}/{2}/{3}/", SharedConstants.API_URL_BASE, SharedConstants.API_VERSION_V1, DEVICE_TYPE, remoteDeviceNumber.ToString());
                 TL.LogMessage(clientNumber, DEVICE_TYPE, "This devices's base URI: " + URIBase);
@@ -98,26 +98,26 @@ namespace ASCOM.Remote
 
         public string Action(string actionName, string actionParameters)
         {
-            WebClientDriver.SetClientTimeout(client, longServerResponseTimeout);
-            return WebClientDriver.Action(clientNumber, client, URIBase, TL, actionName, actionParameters);
+            RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
+            return RemoteClientDriver.Action(clientNumber, client, URIBase, TL, actionName, actionParameters);
         }
 
         public void CommandBlind(string command, bool raw = false)
         {
-            WebClientDriver.SetClientTimeout(client, longServerResponseTimeout);
-            WebClientDriver.CommandBlind(clientNumber, client, URIBase, TL, command, raw);
+            RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
+            RemoteClientDriver.CommandBlind(clientNumber, client, URIBase, TL, command, raw);
         }
 
         public bool CommandBool(string command, bool raw = false)
         {
-            WebClientDriver.SetClientTimeout(client, longServerResponseTimeout);
-            return WebClientDriver.CommandBool(clientNumber, client, URIBase, TL, command, raw);
+            RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
+            return RemoteClientDriver.CommandBool(clientNumber, client, URIBase, TL, command, raw);
         }
 
         public string CommandString(string command, bool raw = false)
         {
-            WebClientDriver.SetClientTimeout(client, longServerResponseTimeout);
-            return WebClientDriver.CommandString(clientNumber, client, URIBase, TL, command, raw);
+            RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
+            return RemoteClientDriver.CommandString(clientNumber, client, URIBase, TL, command, raw);
         }
 
         public void Dispose()
@@ -139,9 +139,9 @@ namespace ASCOM.Remote
                 }
                 else // Send the command to the remote server
                 {
-                    WebClientDriver.SetClientTimeout(client, establishConnectionTimeout);
-                    if (value) WebClientDriver.Connect(clientNumber, client, URIBase, TL);
-                    else WebClientDriver.Disconnect(clientNumber, client, URIBase, TL);
+                    RemoteClientDriver.SetClientTimeout(client, establishConnectionTimeout);
+                    if (value) RemoteClientDriver.Connect(clientNumber, client, URIBase, TL);
+                    else RemoteClientDriver.Disconnect(clientNumber, client, URIBase, TL);
                 }
             }
         }
@@ -150,8 +150,8 @@ namespace ASCOM.Remote
         {
             get
             {
-                WebClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
-                string response = string.Format("{0} REMOTE DRIVER: {1}", DriverDisplayName, WebClientDriver.Description(clientNumber, client, URIBase, TL));
+                RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
+                string response = string.Format("{0} REMOTE DRIVER: {1}", DriverDisplayName, RemoteClientDriver.Description(clientNumber, client, URIBase, TL));
                 TL.LogMessage(clientNumber, "Description", response);
                 return response;
             }
@@ -161,9 +161,9 @@ namespace ASCOM.Remote
         {
             get
             {
-                WebClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
+                RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
                 Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-                string remoteString = WebClientDriver.DriverInfo(clientNumber, client, URIBase, TL);
+                string remoteString = RemoteClientDriver.DriverInfo(clientNumber, client, URIBase, TL);
                 string response = string.Format("{0} Version {1}, REMOTE DRIVER: {2}", DriverDisplayName, version.ToString(), remoteString);
                 TL.LogMessage(clientNumber, "DriverInfo", response);
                 return response;
@@ -174,8 +174,8 @@ namespace ASCOM.Remote
         {
             get
             {
-                WebClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
-                return WebClientDriver.DriverVersion(clientNumber, client, URIBase, TL);
+                RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
+                return RemoteClientDriver.DriverVersion(clientNumber, client, URIBase, TL);
             }
         }
 
@@ -183,8 +183,8 @@ namespace ASCOM.Remote
         {
             get
             {
-                WebClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
-                return WebClientDriver.InterfaceVersion(clientNumber, client, URIBase, TL);
+                RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
+                return RemoteClientDriver.InterfaceVersion(clientNumber, client, URIBase, TL);
             }
         }
 
@@ -192,7 +192,7 @@ namespace ASCOM.Remote
         {
             get
             {
-                string remoteString = WebClientDriver.GetValue<string>(clientNumber, client, URIBase, TL, "Name");
+                string remoteString = RemoteClientDriver.GetValue<string>(clientNumber, client, URIBase, TL, "Name");
                 string response = string.Format("{0} REMOTE DRIVER: {1}", DriverDisplayName, remoteString);
                 TL.LogMessage(clientNumber, "Name", response);
                 return response;
@@ -249,12 +249,12 @@ namespace ASCOM.Remote
 
                         // Write the changed values to the Profile
                         TL.LogMessage(clientNumber, "SetupDialog", "Writing new values to profile");
-                        WebClientDriver.WriteProfile(clientNumber, TL, DEVICE_TYPE, DriverProgId,
+                        RemoteClientDriver.WriteProfile(clientNumber, TL, DEVICE_TYPE, DriverProgId,
                              traceState, debugTraceState, ipAddressString, portNumber, remoteDeviceNumber, serviceType, establishConnectionTimeout, standardServerResponseTimeout, longServerResponseTimeout, userName, password, manageConnectLocally);
 
                         // Establish new host and device parameters
                         TL.LogMessage(clientNumber, "SetupDialog", "Establishing new host and device parameters");
-                        WebClientDriver.ConnectToRemoteServer(ref client, ipAddressString, portNumber, serviceType, TL, clientNumber, DEVICE_TYPE, standardServerResponseTimeout, userName, password);
+                        RemoteClientDriver.ConnectToRemoteServer(ref client, ipAddressString, portNumber, serviceType, TL, clientNumber, DEVICE_TYPE, standardServerResponseTimeout, userName, password);
                     }
                     else TL.LogMessage(clientNumber, "SetupDialog", "Dialogue closed with Cancel status");
                 }
@@ -270,8 +270,8 @@ namespace ASCOM.Remote
         {
             get
             {
-                WebClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
-                return WebClientDriver.SupportedActions(clientNumber, client, URIBase, TL);
+                RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
+                return RemoteClientDriver.SupportedActions(clientNumber, client, URIBase, TL);
             }
         }
 
@@ -283,8 +283,8 @@ namespace ASCOM.Remote
         {
             get
             {
-                WebClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
-                return WebClientDriver.GetValue<bool>(clientNumber, client, URIBase, TL, "CanReverse");
+                RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
+                return RemoteClientDriver.GetValue<bool>(clientNumber, client, URIBase, TL, "CanReverse");
             }
         }
 
@@ -292,8 +292,8 @@ namespace ASCOM.Remote
         {
             get
             {
-                WebClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
-                return WebClientDriver.GetValue<bool>(clientNumber, client, URIBase, TL, "IsMoving");
+                RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
+                return RemoteClientDriver.GetValue<bool>(clientNumber, client, URIBase, TL, "IsMoving");
             }
         }
 
@@ -301,8 +301,8 @@ namespace ASCOM.Remote
         {
             get
             {
-                WebClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
-                return WebClientDriver.GetValue<float>(clientNumber, client, URIBase, TL, "Position");
+                RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
+                return RemoteClientDriver.GetValue<float>(clientNumber, client, URIBase, TL, "Position");
             }
         }
 
@@ -310,14 +310,14 @@ namespace ASCOM.Remote
         {
             get
             {
-                WebClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
-                return WebClientDriver.GetValue<bool>(clientNumber, client, URIBase, TL, "Reverse");
+                RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
+                return RemoteClientDriver.GetValue<bool>(clientNumber, client, URIBase, TL, "Reverse");
             }
 
             set
             {
-                WebClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
-                WebClientDriver.SetBool(clientNumber, client, URIBase, TL, "Reverse", value);
+                RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
+                RemoteClientDriver.SetBool(clientNumber, client, URIBase, TL, "Reverse", value);
             }
         }
 
@@ -325,8 +325,8 @@ namespace ASCOM.Remote
         {
             get
             {
-                WebClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
-                return WebClientDriver.GetValue<float>(clientNumber, client, URIBase, TL, "StepSize");
+                RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
+                return RemoteClientDriver.GetValue<float>(clientNumber, client, URIBase, TL, "StepSize");
             }
         }
 
@@ -334,15 +334,15 @@ namespace ASCOM.Remote
         {
             get
             {
-                WebClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
-                return WebClientDriver.GetValue<float>(clientNumber, client, URIBase, TL, "TargetPosition");
+                RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
+                return RemoteClientDriver.GetValue<float>(clientNumber, client, URIBase, TL, "TargetPosition");
             }
         }
 
         public void Halt()
         {
-            WebClientDriver.SetClientTimeout(client, longServerResponseTimeout);
-            WebClientDriver.CallMethodWithNoParameters(clientNumber, client, URIBase, TL, "Halt");
+            RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
+            RemoteClientDriver.CallMethodWithNoParameters(clientNumber, client, URIBase, TL, "Halt");
             TL.LogMessage(clientNumber, "Halt", "Rotator halted OK");
         }
 
@@ -352,7 +352,7 @@ namespace ASCOM.Remote
             {
                 { SharedConstants.POSITION_PARAMETER_NAME, Position.ToString(CultureInfo.InvariantCulture) }
             };
-            WebClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "Move", Parameters, Method.PUT);
+            RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "Move", Parameters, Method.PUT);
             TL.LogMessage(clientNumber, "Move", string.Format("Rotator moved to relative position {0} OK", Position));
         }
 
@@ -362,7 +362,7 @@ namespace ASCOM.Remote
             {
                 { SharedConstants.POSITION_PARAMETER_NAME, Position.ToString(CultureInfo.InvariantCulture) }
             };
-            WebClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "MoveAbsolute", Parameters, Method.PUT);
+            RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "MoveAbsolute", Parameters, Method.PUT);
             TL.LogMessage(clientNumber, "MoveAbsolute", string.Format("Rotator moved to abolute position {0} OK", Position));
         }
 

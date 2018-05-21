@@ -21,12 +21,12 @@ using System.Diagnostics;
 
 namespace ASCOM.Remote
 {
-    public static class WebClientDriver
+    public static class RemoteClientDriver
     {
         #region Private variables and constants
 
         //Private constants
-        private const string NOT_CONNECTED_MESSAGE = "ASCOM Web Client Driver is not connected.";
+        private const string NOT_CONNECTED_MESSAGE = "ASCOM Remote Client Driver is not connected.";
         private const string RANK_VARIABLE_NAME = "Rank";
         private const string ARRAYTYPE_VARIABLE_NAME = "Type";
 
@@ -50,26 +50,26 @@ namespace ASCOM.Remote
         /// <summary>
         /// Static initialiser to set up the objects we need at run time
         /// </summary>
-        static WebClientDriver()
+        static RemoteClientDriver()
         {
             try
             {
-                TLLocalServer = new TraceLoggerPlus("", "WebClientLocalServer")
+                TLLocalServer = new TraceLoggerPlus("", "RemoteClientLocalServer")
                 {
                     Enabled = false
                 }; // Trace state is set in ReadProfile, immediately after being read from the Profile
 
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
-                TLLocalServer.LogMessage("WebClient", "Initialising, Trace: " + traceState + ", Version: " + version.ToString());
+                TLLocalServer.LogMessage("RemoteClient", "Initialising, Trace: " + traceState + ", Version: " + version.ToString());
 
                 connectStates = new ConcurrentDictionary<long, bool>();
 
-                TLLocalServer.LogMessage("WebClient", "Initialisation complete.");
+                TLLocalServer.LogMessage("RemoteClient", "Initialisation complete.");
             }
             catch (Exception ex)
             {
-                TLLocalServer.LogMessageCrLf("WebClient", ex.ToString());
-                MessageBox.Show(ex.ToString(), "Error initialising the WebClient Terlescope Simulator", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TLLocalServer.LogMessageCrLf("RemoteClient", ex.ToString());
+                MessageBox.Show(ex.ToString(), "Error initialising the RemoteClient Telescope", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -269,7 +269,7 @@ namespace ASCOM.Remote
 
         #endregion
 
-        #region Web access methods
+        #region Remote access methods
 
         public static void CallMethodWithNoParameters(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method)
         {
@@ -914,7 +914,7 @@ namespace ASCOM.Remote
                             }
                             return objectArray2D;
                         default:
-                            throw new InvalidValueException("Web Driver Camera.ImageArrayVariant: Unsupported return array rank from WebClientDriver.GetValue<Array>: " + returnArray.Rank);
+                            throw new InvalidValueException("Remote Driver Camera.ImageArrayVariant: Unsupported return array rank from RemoteClientDriver.GetValue<Array>: " + returnArray.Rank);
                     }
                 case 3:
                     switch (variantType)
@@ -957,11 +957,11 @@ namespace ASCOM.Remote
                             }
                             return objectArray3D;
                         default:
-                            throw new InvalidValueException("Web Driver Camera.ImageArrayVariant: Unsupported return array rank from WebClientDriver.GetValue<Array>: " + returnArray.Rank);
+                            throw new InvalidValueException("Remote Driver Camera.ImageArrayVariant: Unsupported return array rank from RemoteClientDriver.GetValue<Array>: " + returnArray.Rank);
                     }
 
                 default:
-                    throw new InvalidValueException("Web Driver Camera.ImageArrayVariant: Unsupported return array rank from WebClientDriver.GetValue<Array>: " + returnArray.Rank);
+                    throw new InvalidValueException("Remote Driver Camera.ImageArrayVariant: Unsupported return array rank from RemoteClientDriver.GetValue<Array>: " + returnArray.Rank);
             }
         }
 
