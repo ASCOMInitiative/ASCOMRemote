@@ -84,8 +84,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\ASCOM REST Server\Properties\SharedAssemblyVersionNumber.cs">
-      <Link>Properties\SharedAssemblyVersionNumber.cs</Link>
+    <Compile Include="..\Shared Resources\Properties\SharedVersionNumbers.cs">
+      <Link>Properties\SharedVersionNumbers.cs</Link>
     </Compile>
     <Compile Include="AxisRates.cs" />
     <Compile Include="ClassFactory.cs" />

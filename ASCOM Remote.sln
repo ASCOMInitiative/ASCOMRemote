@@ -49,6 +49,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Focuser 1", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Focuser 2", "Remote Client Focuser Device 2\Remote Client Focuser 2.csproj", "{AB7E6BCB-C088-4EA6-A6D6-FF8107F7023B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared Resources", "Shared Resources\Shared Resources.csproj", "{A9A92122-3CD7-4960-8D80-D62B06553983}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +145,10 @@ Global
 		{AB7E6BCB-C088-4EA6-A6D6-FF8107F7023B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB7E6BCB-C088-4EA6-A6D6-FF8107F7023B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB7E6BCB-C088-4EA6-A6D6-FF8107F7023B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9A92122-3CD7-4960-8D80-D62B06553983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9A92122-3CD7-4960-8D80-D62B06553983}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9A92122-3CD7-4960-8D80-D62B06553983}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9A92122-3CD7-4960-8D80-D62B06553983}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
