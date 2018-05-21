@@ -7,7 +7,7 @@
     <ProjectGuid>{FF57CAEA-63F3-4F4F-9252-734796B74731}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ASCOM.Remote</RootNamespace>
-    <AssemblyName>SetNetworkPermissions</AssemblyName>
+    <AssemblyName>ASCOM.SetNetworkPermissions</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -49,6 +49,7 @@
     <Compile Include="..\Shared Resources\Properties\SharedVersionNumbers.cs">
       <Link>Properties\SharedVersionNumbers.cs</Link>
     </Compile>
+    <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

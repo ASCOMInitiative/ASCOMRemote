@@ -1,10 +1,10 @@
 ;
-; Script to sinatll the ASCOM Remote Access Drivers and Server
+; Script to sinatll the ASCOM Remote Drivers and REST Server
 ;
 
 [Setup]
 AppID={{0ee690ae-7927-4ee7-b851-f5877c077ff5}
-#define MyAppVer GetFileVersion("..\Remote Device Server\bin\Release\ASCOM.RemoteDeviceServer.exe") ; define variable
+#define MyAppVer GetFileVersion("..\REST Server\bin\Release\ASCOM.RESTServer.exe") ; define variable
 
 AppName=ASCOM Remote Driver Server 
 AppCopyright=Copyright © 2018 ASCOM Initiative
@@ -16,23 +16,23 @@ AppUpdatesURL=http://ascom-standards.org/
 #emit "AppVersion=" + MyAppVer
 Compression=lzma
 DefaultDirName="{cf}\ASCOM"
-DefaultGroupName=ASCOM Remote Driver Server
+DefaultGroupName=ASCOM REST Server
 DisableDirPage=yes
 DisableProgramGroupPage=yes
 ; Must be at least Vista to run
 MinVersion=6.0  
 OutputDir="Build"
-#emit "OutputBaseFilename=ASCOMRemoteDriverServer(" + MyAppVer +")setup"
+#emit "OutputBaseFilename=ASCOMRemote(" + MyAppVer +")setup"
 PrivilegesRequired=admin
 SetupIconFile=ASCOM.ico
 SetupLogging=true
 SolidCompression=yes
 UninstallDisplayIcon={app}\WebClient\ASCOM.WebClient.LocalServer.exe.exe
-UninstallFilesDir="{cf}\ASCOM\Uninstall\Telescope\Web"
+UninstallFilesDir="{cf}\ASCOM\Uninstall\Remote"
 VersionInfoCompany=Peter Simpson
 VersionInfoCopyright=Peter Simpson
-VersionInfoDescription=ASCOM Remote Driver Server
-VersionInfoProductName=ASCOM Remote Driver Server
+VersionInfoDescription=ASCOM Remote
+VersionInfoProductName=ASCOM Remote
 WizardImageFile=NewWizardImage.bmp
 WizardSmallImageFile=ASCOMLogo.bmp
 #emit "VersionInfoProductVersion=" + MyAppVer
@@ -42,94 +42,90 @@ WizardSmallImageFile=ASCOMLogo.bmp
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Dirs]
-Name: "{cf}\ASCOM\Uninstall\Telescope\Web"
+Name: "{cf}\ASCOM\Uninstall\Remote"
 
 [Files]
 ; LOCAL SERVER FILES
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient.LocalServer.exe"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient.LocalServer.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Local Server\bin\Release\ASCOM.RemoteClientLocalServer.exe"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Local Server\bin\Release\ASCOM.RemoteClientLocalServer.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
 ; LOCAL SERVER AND DRIVER SUPPORT FILES
-Source: "..\Web Client Local Server\bin\Release\Web Client Device Base Classes.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\Web Client Device Base Classes.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\RestSharp.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Device Base Classes\bin\Release\ASCOM.RemoteClientBaseClasses.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Device Base Classes\bin\Release\ASCOM.RemoteClientBaseClasses.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Local Server\bin\Release\RestSharp.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Local Server\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
 ; CAMERA DRIVERS
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.Camera.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.Camera.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.Camera.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.Camera.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Camera Device 1\bin\Release\ASCOM.Remote1.Camera.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Camera Device 1\bin\Release\ASCOM.Remote1.Camera.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Camera Device 2\bin\Release\ASCOM.Remote2.Camera.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Camera Device 2\bin\Release\ASCOM.Remote2.Camera.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
 ; DOME DRIVERS
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.Dome.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.Dome.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.Dome.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.Dome.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Dome Device 1\bin\Release\ASCOM.Remote1.Dome.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Dome Device 1\bin\Release\ASCOM.Remote1.Dome.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Dome Device 2\bin\Release\ASCOM.Remote2.Dome.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Dome Device 2\bin\Release\ASCOM.Remote2.Dome.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
 ; FILTER WHEEL DRIVERS
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.FilterWheel.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.FilterWheel.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.FilterWheel.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.FilterWheel.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client FilterWheel Device 1\bin\Release\ASCOM.Remote1.FilterWheel.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client FilterWheel Device 1\bin\Release\ASCOM.Remote1.FilterWheel.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client FilterWheel Device 2\bin\Release\ASCOM.Remote2.FilterWheel.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client FilterWheel Device 2\bin\Release\ASCOM.Remote2.FilterWheel.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
 ; FOCUSER DRIVERS
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.Focuser.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.Focuser.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.Focuser.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.Focuser.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Focuser Device 1\bin\Release\ASCOM.Remote1.Focuser.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Focuser Device 1\bin\Release\ASCOM.Remote1.Focuser.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Focuser Device 2\bin\Release\ASCOM.Remote2.Focuser.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Focuser Device 2\bin\Release\ASCOM.Remote2.Focuser.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
 ; OBSERVINGCONDITIONS DRIVERS
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.ObservingConditions.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.ObservingConditions.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.ObservingConditions.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.ObservingConditions.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client ObservingConditions Device 1\bin\Release\ASCOM.Remote1.ObservingConditions.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client ObservingConditions Device 1\bin\Release\ASCOM.Remote1.ObservingConditions.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client ObservingConditions Device 2\bin\Release\ASCOM.Remote2.ObservingConditions.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client ObservingConditions Device 2\bin\Release\ASCOM.Remote2.ObservingConditions.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
 ; ROTATOR DRIVERS
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.Rotator.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.Rotator.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.Rotator.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.Rotator.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Rotator Device 1\bin\Release\ASCOM.Remote1.Rotator.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Rotator Device 1\bin\Release\ASCOM.Remote1.Rotator.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Rotator Device 2\bin\Release\ASCOM.Remote2.Rotator.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Rotator Device 2\bin\Release\ASCOM.Remote2.Rotator.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
 ; SAFETYMONITOR DRIVERS
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.SafetyMonitor.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.SafetyMonitor.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.SafetyMonitor.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.SafetyMonitor.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client SafetyMonitor Device 1\bin\Release\ASCOM.Remote1.SafetyMonitor.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client SafetyMonitor Device 1\bin\Release\ASCOM.Remote1.SafetyMonitor.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client SafetyMonitor Device 2\bin\Release\ASCOM.Remote2.SafetyMonitor.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client SafetyMonitor Device 2\bin\Release\ASCOM.Remote2.SafetyMonitor.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
 ; SWITCH DRIVERS
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.Switch.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.Switch.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.Switch.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.Switch.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Switch Device 1\bin\Release\ASCOM.Remote1.Switch.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Switch Device 1\bin\Release\ASCOM.Remote1.Switch.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Switch Device 2\bin\Release\ASCOM.Remote2.Switch.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Switch Device 2\bin\Release\ASCOM.Remote2.Switch.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
 ; TELESCOPE DRIVERS
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.Telescope.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient1.Telescope.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.Telescope.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Web Client Local Server\bin\Release\ASCOM.WebClient2.Telescope.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion; Components: ClientComponents
-; REMOTE SERVER FILES
-Source: "..\Remote Device Server\bin\Release\ASCOM.RemoteDeviceServer.exe"; DestDir: "{pf}\ASCOM\RemoteServer"; Flags: ignoreversion; Components: ServerComponents
-Source: "..\Remote Device Server\bin\Release\ASCOM.RemoteDeviceServer.pdb"; DestDir: "{pf}\ASCOM\RemoteServer"; Flags: ignoreversion; Components: ServerComponents
-; REMOTE SERVER SUPPORT FILES
-Source: "..\Remote Device Server\bin\Release\RestSharp.dll"; DestDir: "{pf}\ASCOM\RemoteServer"; Flags: ignoreversion; Components: ServerComponents
-Source: "..\Remote Device Server\bin\Release\Newtonsoft.Json.dll"; DestDir: "{pf}\ASCOM\RemoteServer"; Flags: ignoreversion; Components: ServerComponents
-Source: "..\Remote Device Server\bin\Release\ASCOM.WebClient.LocalServer.exe"; DestDir: "{pf}\ASCOM\RemoteServer"; Flags: ignoreversion; Components: ServerComponents
-Source: "..\Remote Device Server\bin\Release\ASCOM.RemoteDeviceServer.pdb"; DestDir: "{pf}\ASCOM\RemoteServer"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\Remote Client Telescope Device 1\bin\Release\ASCOM.Remote1.Telescope.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Telescope Device 1\bin\Release\ASCOM.Remote1.Telescope.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Telescope Device 2\bin\Release\ASCOM.Remote2.Telescope.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Telescope Device 2\bin\Release\ASCOM.Remote2.Telescope.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
+; REST SERVER FILES
+Source: "..\REST Server\bin\Release\ASCOM.RESTServer.exe"; DestDir: "{pf}\ASCOM\RESTServer"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\REST Server\bin\Release\ASCOM.RESTServer.pdb"; DestDir: "{pf}\ASCOM\RESTServer"; Flags: ignoreversion; Components: ServerComponents
+; REST SERVER SUPPORT FILES
+Source: "..\REST Server\bin\Release\RestSharp.dll"; DestDir: "{pf}\ASCOM\RESTServer"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\REST Server\bin\Release\Newtonsoft.Json.dll"; DestDir: "{pf}\ASCOM\RESTServer"; Flags: ignoreversion; Components: ServerComponents
 ; SET NETWORK PERMISSIONS FILES
-Source: "..\SetNetworkPermissions\bin\Release\CommandLine.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion
-Source: "..\SetNetworkPermissions\bin\Release\Interop.NetFwTypeLib.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion
-Source: "..\SetNetworkPermissions\bin\Release\SetNetworkPermissions.exe"; DestDir: "{app}\WebClient"; Flags: ignoreversion
-Source: "..\SetNetworkPermissions\bin\Release\SetNetworkPermissions.exe.config"; DestDir: "{app}\WebClient"; Flags: ignoreversion
-Source: "..\SetNetworkPermissions\bin\Release\SetNetworkPermissions.pdb"; DestDir: "{app}\WebClient"; Flags: ignoreversion
-Source: "..\SetNetworkPermissions\bin\Release\WindowsFirewallHelper.dll"; DestDir: "{app}\WebClient"; Flags: ignoreversion
-
+Source: "..\SetNetworkPermissions\bin\Release\ASCOM.SetNetworkPermissions.exe"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\SetNetworkPermissions\bin\Release\ASCOM.SetNetworkPermissions.pdb"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
+; SET NETWORK PERMISSIONS SUPPORT FILES
+Source: "..\SetNetworkPermissions\bin\Release\WindowsFirewallHelper.dll"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\SetNetworkPermissions\bin\Release\CommandLine.dll"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\SetNetworkPermissions\bin\Release\Interop.NetFwTypeLib.dll"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
 ; WEB CONTENT
 ;Source: "..\Web Content\index.html"; DestDir: "{pf}\ASCOM\RemoteServer"; Components: WebContent
 
 [Run]
-Filename: "{app}\WebClient\ASCOM.WebClient.LocalServer.exe"; Parameters: "/regserver"
-Filename: "{app}\WebClient\SetNetworkPermissions.exe"; Parameters: "-l ""{app}\WebClient\ASCOM.WebClient.LocalServer.exe"""; Components: ClientComponents; Flags: runhidden
-Filename: "{app}\WebClient\SetNetworkPermissions.exe"; Parameters: "-r ""{pf}\ASCOM\RemoteServer\ASCOM.RemoteDeviceServer.exe"""; Components: ServerComponents; Flags: runhidden
-; Filename: "{pf}\ASCOM\RemoteServer\ASCOM.RemoteDeviceServer.exe"; Flags: postinstall
+Filename: "{app}\RemoteClients\ASCOM.RemoteClientLocalServer.exe"; Parameters: "/regserver"
+Filename: "{pf}\ASCOM\Remote\ASCOM.SetNetworkPermissions.exe"; Parameters: "--localserverpath ""{app}\RemoteClients\ASCOM.RemoteClientLocalServer.exe"""; Components: ClientComponents; Flags: runhidden
+Filename: "{pf}\ASCOM\Remote\ASCOM.SetNetworkPermissions.exe"; Parameters: "--remoteserverpath ""{pf}\ASCOM\RESTServer\ASCOM.RESTServer.exe"""; Components: ServerComponents; Flags: runhidden
 
 [UninstallRun]
-Filename: "{app}\WebClient\ASCOM.WebClient.LocalServer.exe"; Parameters: "/unregserver"
+Filename: "{app}\RemoteClients\ASCOM.RemoteClientLocalServer.exe"; Parameters: "/unregserver"
 
 [Registry]
 
 [Icons]
-Name: "{group}\ASCOM Remote Driver Server"; Filename: "{pf}\ASCOM\RemoteServer\ASCOM.RemoteDeviceServer.exe"
+Name: "{group}\ASCOM REST Server"; Filename: "{pf}\ASCOM\RESTServer\ASCOM.RESTServer.exe"
 
 [Components]
 Name: "ClientComponents"; Description: "Client components"; Types: ClientOnly Full;

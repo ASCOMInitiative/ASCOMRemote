@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WindowsFirewallHelper;
 using ASCOM.Utilities;
 using System.Security.Principal;
 using CommandLine;
 using System.IO;
 
-namespace SetNetworkPemissions
+namespace ASCOM.Remote
 {
     static class Program
     {
@@ -79,6 +77,7 @@ namespace SetNetworkPemissions
             }
             TL.BlankLine();
 
+            // Set firewall rules depending on which command line parameter was supplied
             if (opts.LocalServerPath != NOT_PRESENT_FLAG) SetFireWallRules(opts.LocalServerPath, LOCAL_SERVER_RULE_NAME_BASE);
             if (opts.RemoteServerPath != NOT_PRESENT_FLAG) SetFireWallRules(opts.RemoteServerPath, REMOTE_SERVER_RULE_NAME_BASE);
         }
@@ -154,14 +153,6 @@ namespace SetNetworkPemissions
 
             Environment.Exit(0);
         }
-    }
-
-    class Options
-    {
-        [Option('l', Required = false, Default = Program.NOT_PRESENT_FLAG, HelpText = "Path to the local server executable")]
-        public string LocalServerPath { get; set; }
-        [Option('r', Required = false, Default = Program.NOT_PRESENT_FLAG, HelpText = "Path to the remote server executable")]
-        public string RemoteServerPath { get; set; }
     }
 }
 

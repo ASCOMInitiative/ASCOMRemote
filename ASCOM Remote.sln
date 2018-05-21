@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetNetworkPermissions", "Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Local Server", "Remote Client Local Server\Remote Client Local Server.csproj", "{3689A2CB-94C5-4012-A5CF-7E7D1DD27143}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "REST Server", "ASCOM REST Server\REST Server.csproj", "{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device Base Classes", "Remote Client Device Base Classes\Device Base Classes.csproj", "{C7605D43-D11A-4891-A32D-FD5AB6E74772}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Camera 1", "Remote Client Camera Device 1\Remote Client Camera 1.csproj", "{06679176-7962-42CE-A7A5-B1297B9FD03B}"
@@ -51,6 +49,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Focuser 2", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared Resources", "Shared Resources\Shared Resources.csproj", "{A9A92122-3CD7-4960-8D80-D62B06553983}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "REST Server", "REST Server\REST Server.csproj", "{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,10 +65,6 @@ Global
 		{3689A2CB-94C5-4012-A5CF-7E7D1DD27143}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3689A2CB-94C5-4012-A5CF-7E7D1DD27143}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3689A2CB-94C5-4012-A5CF-7E7D1DD27143}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C7605D43-D11A-4891-A32D-FD5AB6E74772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C7605D43-D11A-4891-A32D-FD5AB6E74772}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7605D43-D11A-4891-A32D-FD5AB6E74772}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -149,6 +145,10 @@ Global
 		{A9A92122-3CD7-4960-8D80-D62B06553983}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9A92122-3CD7-4960-8D80-D62B06553983}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9A92122-3CD7-4960-8D80-D62B06553983}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
