@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetNetworkPermissions", "Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Local Server", "Remote Client Local Server\Remote Client Local Server.csproj", "{3689A2CB-94C5-4012-A5CF-7E7D1DD27143}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASCOM REST Server", "ASCOM REST Server\ASCOM REST Server.csproj", "{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "REST Server", "ASCOM REST Server\REST Server.csproj", "{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device Base Classes", "Remote Client Device Base Classes\Device Base Classes.csproj", "{C7605D43-D11A-4891-A32D-FD5AB6E74772}"
 EndProject
