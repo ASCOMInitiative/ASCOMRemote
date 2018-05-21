@@ -131,12 +131,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Remote Client Local Server\Remote Client Local Server.csproj">
-      <Project>{3689a2cb-94c5-4012-a5cf-7e7d1dd27143}</Project>
-      <Name>Remote Client Local Server</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="ASCOM.ico" />
   </ItemGroup>
   <ItemGroup>

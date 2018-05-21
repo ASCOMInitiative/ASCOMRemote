@@ -66,7 +66,7 @@ namespace ASCOM.Remote
             {
                 if (!connectedDevices.ContainsKey(deviceId))
                     connectedDevices.Add(deviceId, new DeviceHardware());
-                connectedDevices[deviceId].count++;       // increment the value
+                connectedDevices[deviceId].Count++;       // increment the value
             }
         }
 
@@ -76,8 +76,8 @@ namespace ASCOM.Remote
             {
                 if (connectedDevices.ContainsKey(deviceId))
                 {
-                    connectedDevices[deviceId].count--;
-                    if (connectedDevices[deviceId].count <= 0)
+                    connectedDevices[deviceId].Count--;
+                    if (connectedDevices[deviceId].Count <= 0)
                         connectedDevices.Remove(deviceId);
                 }
             }
@@ -86,7 +86,7 @@ namespace ASCOM.Remote
         public static bool IsConnected(string deviceId)
         {
             if (connectedDevices.ContainsKey(deviceId))
-                return (connectedDevices[deviceId].count > 0);
+                return (connectedDevices[deviceId].Count > 0);
             else
                 return false;
         }
@@ -101,11 +101,11 @@ namespace ASCOM.Remote
     /// </summary>
     public class DeviceHardware
     {
-        internal int count { set; get; }
+        internal int Count { set; get; }
 
         internal DeviceHardware()
         {
-            count = 0;
+            Count = 0;
         }
     }
     public static class ExtensionMethods
