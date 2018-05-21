@@ -70,8 +70,95 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared Resources\ConfiguredDevice.cs">
+      <Link>ConfiguredDevice.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared Resources\ProfileDevice.cs">
+      <Link>ProfileDevice.cs</Link>
+    </Compile>
     <Compile Include="..\Shared Resources\Properties\SharedVersionNumbers.cs">
       <Link>Properties\SharedVersionNumbers.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\AxisRatesResponse.cs">
+      <Link>Response Classes\AxisRatesResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\BoolResponse.cs">
+      <Link>Response Classes\BoolResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\ConfigurationResponse.cs">
+      <Link>Response Classes\ConfigurationResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\DateAndTimeResponse.cs">
+      <Link>Response Classes\DateAndTimeResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\DoubleArray2DResponse.cs">
+      <Link>Response Classes\DoubleArray2DResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\DoubleArray3DResponse.cs">
+      <Link>Response Classes\DoubleArray3DResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\DoubleResponse.cs">
+      <Link>Response Classes\DoubleResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\ImageArrayResponseBase.cs">
+      <Link>Response Classes\ImageArrayResponseBase.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\IntArray1DResponse.cs">
+      <Link>Response Classes\IntArray1DResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\IntArray2DResponse.cs">
+      <Link>Response Classes\IntArray2DResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\IntArray3DResponse.cs">
+      <Link>Response Classes\IntArray3DResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\IntResponse.cs">
+      <Link>Response Classes\IntResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\MethodResponse.cs">
+      <Link>Response Classes\MethodResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\ProfileResponse.cs">
+      <Link>Response Classes\ProfileResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\RateResponse.cs">
+      <Link>Response Classes\RateResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\RestResponseBase.cs">
+      <Link>Response Classes\RestResponseBase.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\ShortArray2DResponse.cs">
+      <Link>Response Classes\ShortArray2DResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\ShortArray3DResponse.cs">
+      <Link>Response Classes\ShortArray3DResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\ShortResponse.cs">
+      <Link>Response Classes\ShortResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\StringArrayResponse.cs">
+      <Link>Response Classes\StringArrayResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\StringListResponse.cs">
+      <Link>Response Classes\StringListResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\StringResponse.cs">
+      <Link>Response Classes\StringResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\TelescopeStaticData.cs">
+      <Link>Response Classes\TelescopeStaticData.cs</Link>
+    </Compile>
+    <Compile Include="..\shared resources\response classes\TrackingRatesResponse.cs">
+      <Link>Response Classes\TrackingRatesResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared Resources\Shared Constants.cs">
+      <Link>Shared Constants.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared Resources\SharedResources.cs">
+      <Link>SharedResources.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared Resources\TraceLoggerPlus.cs">
+      <Link>TraceLoggerPlus.cs</Link>
     </Compile>
     <Compile Include="ActiveObject.cs" />
     <Compile Include="Configuration.cs" />

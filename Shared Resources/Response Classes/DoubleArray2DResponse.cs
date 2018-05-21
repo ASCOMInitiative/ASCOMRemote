@@ -1,0 +1,33 @@
+﻿using System;
+
+namespace ASCOM.Remote
+{
+    public class DoubleArray2DResponse : ImageArrayResponseBase
+    {
+        private double[,] doubleArray2D;
+
+        private const int RANK = 2;
+        private const SharedConstants.ImageArrayElementTypes TYPE = SharedConstants.ImageArrayElementTypes.Double;
+
+        public DoubleArray2DResponse(int clientTransactionID, int transactionID, string method, double[,] value)
+        {
+            base.ServerTransactionID = transactionID;
+            base.Method = method;
+            doubleArray2D = value;
+            base.Type = (int)TYPE;
+            base.Rank = RANK;
+            base.ClientTransactionID = clientTransactionID;
+        }
+
+        public double[,] Value
+        {
+            get { return doubleArray2D; }
+            set
+            {
+                doubleArray2D = value;
+                base.Type = (int)TYPE;
+                base.Rank = RANK;
+            }
+        }
+    }
+}
