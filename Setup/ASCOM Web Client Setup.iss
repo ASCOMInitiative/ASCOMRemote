@@ -27,7 +27,7 @@ PrivilegesRequired=admin
 SetupIconFile=ASCOM.ico
 SetupLogging=true
 SolidCompression=yes
-UninstallDisplayIcon={app}\WebClient\ASCOM.WebClient.LocalServer.exe.exe
+UninstallDisplayIcon={pf}\ASCOM\Remote\ASCOM.SetNetworkPermissions.exe
 UninstallFilesDir="{cf}\ASCOM\Uninstall\Remote"
 VersionInfoCompany=Peter Simpson
 VersionInfoCopyright=Peter Simpson
@@ -102,7 +102,6 @@ Source: "..\Remote Client Telescope Device 2\bin\Release\ASCOM.Remote2.Telescope
 Source: "..\REST Server\bin\Release\ASCOM.RESTServer.exe"; DestDir: "{pf}\ASCOM\RESTServer"; Flags: ignoreversion; Components: ServerComponents
 Source: "..\REST Server\bin\Release\ASCOM.RESTServer.pdb"; DestDir: "{pf}\ASCOM\RESTServer"; Flags: ignoreversion; Components: ServerComponents
 ; REST SERVER SUPPORT FILES
-Source: "..\REST Server\bin\Release\RestSharp.dll"; DestDir: "{pf}\ASCOM\RESTServer"; Flags: ignoreversion; Components: ServerComponents
 Source: "..\REST Server\bin\Release\Newtonsoft.Json.dll"; DestDir: "{pf}\ASCOM\RESTServer"; Flags: ignoreversion; Components: ServerComponents
 ; SET NETWORK PERMISSIONS FILES
 Source: "..\SetNetworkPermissions\bin\Release\ASCOM.SetNetworkPermissions.exe"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
@@ -115,12 +114,12 @@ Source: "..\SetNetworkPermissions\bin\Release\Interop.NetFwTypeLib.dll"; DestDir
 ;Source: "..\Web Content\index.html"; DestDir: "{pf}\ASCOM\RemoteServer"; Components: WebContent
 
 [Run]
-Filename: "{app}\RemoteClients\ASCOM.RemoteClientLocalServer.exe"; Parameters: "/regserver"
+Filename: "{app}\RemoteClients\ASCOM.RemoteClientLocalServer.exe"; Parameters: "/regserver"; Components: ClientComponents
 Filename: "{pf}\ASCOM\Remote\ASCOM.SetNetworkPermissions.exe"; Parameters: "--localserverpath ""{app}\RemoteClients\ASCOM.RemoteClientLocalServer.exe"""; Components: ClientComponents; Flags: runhidden
 Filename: "{pf}\ASCOM\Remote\ASCOM.SetNetworkPermissions.exe"; Parameters: "--remoteserverpath ""{pf}\ASCOM\RESTServer\ASCOM.RESTServer.exe"""; Components: ServerComponents; Flags: runhidden
 
 [UninstallRun]
-Filename: "{app}\RemoteClients\ASCOM.RemoteClientLocalServer.exe"; Parameters: "/unregserver"
+Filename: "{app}\RemoteClients\ASCOM.RemoteClientLocalServer.exe"; Parameters: "/unregserver"; Components: ClientComponents
 
 [Registry]
 
