@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared Resources", "Shared 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "REST Server", "REST Server\REST Server.csproj", "{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASCOM.DynamicRemoteClients", "ASCOM.DynamicRemoteClients\ASCOM.DynamicRemoteClients.csproj", "{97967194-9DD9-44DF-846C-E2D8D504DF2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -149,6 +151,10 @@ Global
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97967194-9DD9-44DF-846C-E2D8D504DF2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97967194-9DD9-44DF-846C-E2D8D504DF2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97967194-9DD9-44DF-846C-E2D8D504DF2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97967194-9DD9-44DF-846C-E2D8D504DF2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -173,6 +179,7 @@ Global
 		{4D3E69E6-FAEB-4DE8-B253-C03342CAA1CA} = {C375AA07-FA9A-4720-96F5-2B23DF4567F2}
 		{35830366-75D7-4606-BB82-E89E580FCFEA} = {C375AA07-FA9A-4720-96F5-2B23DF4567F2}
 		{AB7E6BCB-C088-4EA6-A6D6-FF8107F7023B} = {C375AA07-FA9A-4720-96F5-2B23DF4567F2}
+		{97967194-9DD9-44DF-846C-E2D8D504DF2E} = {C375AA07-FA9A-4720-96F5-2B23DF4567F2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {171EDC5A-81C8-4545-BB43-723B4AE9B622}
