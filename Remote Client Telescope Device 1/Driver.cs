@@ -1,4 +1,7 @@
-﻿using System;
+﻿// This driver is only retained to demonstrate the form of the dynamically generated remote clients
+// It is not included in the installer and the build action has been set to "None" instead of "Compile" so that no binary is generated.
+//
+using System;
 using System.Runtime.InteropServices;
 
 namespace ASCOM.Remote

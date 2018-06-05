@@ -46,7 +46,7 @@
     <Compile Include="..\Shared Resources\Properties\SharedVersionNumbers.cs">
       <Link>Properties\SharedVersionNumbers.cs</Link>
     </Compile>
-    <Compile Include="Driver.cs" />
+    <None Include="Driver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
