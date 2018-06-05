@@ -16,7 +16,7 @@ AppUpdatesURL=http://ascom-standards.org/
 #emit "AppVersion=" + MyAppVer
 Compression=lzma
 DefaultDirName="{cf}\ASCOM"
-DefaultGroupName=ASCOM REST Server
+DefaultGroupName="ASCOM Remote"
 DisableDirPage=yes
 DisableProgramGroupPage=yes
 ; Must be at least Windows 7 SP1 or later to run
@@ -29,6 +29,7 @@ SetupLogging=true
 SolidCompression=yes
 UninstallDisplayIcon={pf}\ASCOM\Remote\ASCOM.SetNetworkPermissions.exe
 UninstallFilesDir="{cf}\ASCOM\Uninstall\Remote"
+UsePreviousGroup=no
 VersionInfoCompany=Peter Simpson
 VersionInfoCopyright=Peter Simpson
 VersionInfoDescription=ASCOM Remote
@@ -51,7 +52,6 @@ Source: "..\Remote Client Local Server\bin\Release\ASCOM.RemoteClientLocalServer
 ; DYNAMIC CLIENT GENERATOR
 Source: "..\ASCOM.DynamicRemoteClients\bin\Release\ASCOM.DynamicRemoteClients.exe"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
 Source: "..\ASCOM.DynamicRemoteClients\bin\Release\ASCOM.DynamicRemoteClients.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
-
 ; LOCAL SERVER AND DRIVER SUPPORT FILES
 Source: "..\Remote Client Device Base Classes\bin\Release\ASCOM.RemoteClientBaseClasses.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
 Source: "..\Remote Client Device Base Classes\bin\Release\ASCOM.RemoteClientBaseClasses.pdb"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
@@ -83,8 +83,8 @@ Filename: "{app}\RemoteClients\ASCOM.RemoteClientLocalServer.exe"; Parameters: "
 [Registry]
 
 [Icons]
-Name: "{group}\ASCOM REST Server"; Filename: "{pf}\ASCOM\RESTServer\ASCOM.RESTServer.exe"; Components: ServerComponents
-Name: "{group}\ASCOM Remote Client Configuration"; Filename: "{app}\RemoteClients\ASCOM.DynamicRemoteClients.exe"; Components: ClientComponents
+Name: "{group}\ASCOM Remote\ASCOM REST Server"; Filename: "{pf}\ASCOM\RESTServer\ASCOM.RESTServer.exe"; Components: ServerComponents
+Name: "{group}\ASCOM Remote\ASCOM Remote Client Configuration"; Filename: "{app}\RemoteClients\ASCOM.DynamicRemoteClients.exe"; Components: ClientComponents
 
 [Components]
 Name: "ClientComponents"; Description: "Client components"; Types: ClientOnly Full;
