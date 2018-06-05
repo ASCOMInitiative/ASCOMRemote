@@ -100,7 +100,7 @@ Name: "Custom"; Description: "Custom"; Flags: iscustom
 [Code]
 const
    REQUIRED_PLATFORM_VERSION = 6.2;    // Set this to the minimum required ASCOM Platform version for this application
-   REQUIRED_DOTNET_VERSION = 'v4.7.1';  // Set this to the minimum required Microsoft .NET Framework version for this application
+   REQUIRED_DOTNET_VERSION = 'v4.6.2';  // Set this to the minimum required Microsoft .NET Framework version for this application
 
 //
 // Function to return the ASCOM Platform's version number as a double.
