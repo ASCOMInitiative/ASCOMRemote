@@ -266,9 +266,9 @@ namespace ASCOM.Remote
             if (httpListener != null) // Close and dispose of the current listener, if there is one.
             {
                 LogMessage(0, 0, 0, "ClearListenerAndDevices", "Stopping current REST server");
-                httpListener.Stop();
-                httpListener.Close();
-                httpListener = null;
+                try { httpListener.Stop(); } catch { }
+                try { httpListener.Close(); } catch { }
+                try { httpListener = null; } catch { }
             }
 
             LogMessage(0, 0, 0, "ClearListenerAndDevices", "Clearing devices");
