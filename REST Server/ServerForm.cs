@@ -14,6 +14,7 @@ using System.Threading;
 using System.Windows.Forms;
 using ASCOM.Utilities;
 using ASCOM.DeviceInterface;
+using System.Drawing;
 
 using Newtonsoft.Json;
 using System.Web;
@@ -184,6 +185,12 @@ namespace ASCOM.Remote
                 this.Resize += ServerForm_Resize;
                 ServerForm_Resize(this, new EventArgs());
 
+                LogMessage(0, 0, 0, "New", "Assigning label parents to picture boxes");
+                LbDriverStatus.Parent = PboxDriverStatus;
+                LbDriverStatus.Location = new Point(0, 0);
+                LblRESTStatus.Parent = PboxRESTStatus;
+                LblRESTStatus.Location = new Point(0, 0);
+
                 LogMessage(0, 0, 0, "New", "Initialisation complete");
             }
             catch (Exception ex)
@@ -259,9 +266,8 @@ namespace ASCOM.Remote
 
         private void DisconnectDevices()
         {
-            pBoxConnected.BackColor = System.Drawing.Color.Red;
-            lblConnected.Text = "Disconnected";
-
+            PboxDriverStatus.BackColor = Color.Red;
+            LbDriverStatus.Text = "Drivers Disconnected";
         }
 
         private void ClearListenerAndDevices()
@@ -319,8 +325,8 @@ namespace ASCOM.Remote
 
                 apiIsEnabled = StartWithApiEnabled; // Set the API enabled flag as specified in the configuration
 
-                pBoxConnected.BackColor = System.Drawing.Color.Green; // Turn the "Connected / Disconnected" colour box green
-                lblConnected.Text = "Connected";
+                PboxDriverStatus.BackColor = Color.Green; // Turn the "Connected / Disconnected" colour box green
+                LbDriverStatus.Text = "Drivers Connected";
 
                 ClearListenerAndDevices(); // Shut down all the ASCOM device instances
 
@@ -358,6 +364,9 @@ namespace ASCOM.Remote
                 httpListener.Prefixes.Add(apiOperatingUri); // Set up the listener on the api URI
                 httpListener.Prefixes.Add(managementUri); // Set up the listener on the management URI
 
+                PboxRESTStatus.BackColor = Color.Red;
+                LblRESTStatus.Text = "REST Server Down";
+
                 // Start the listener and ask pernmission if required
                 while (!httpListener.IsListening)
                 {
@@ -366,10 +375,12 @@ namespace ASCOM.Remote
                         LogMessage(0, 0, 0, "SetConfiguration", "Starting listener");
                         httpListener.Start();
                         LogMessage(0, 0, 0, "SetConfiguration", "Listener started");
+                        PboxRESTStatus.BackColor = Color.Green;
+                        LblRESTStatus.Text = "REST Server Running";
                     }
                     catch (HttpListenerException ex) when (ex.ErrorCode == (int)WindowsErrorCodes.ERROR_ACCESS_DENIED) // User does not have an ACL permitting this address and port to be used so get permission
                     {
-                        DialogResult dlgResult = MessageBox.Show("You need to give permission to listen on URL: " + apiOperatingUri + ", do you wish to do this?", "Access Denied", MessageBoxButtons.YesNo);
+                        DialogResult dlgResult = MessageBox.Show(string.Format("You need to give permission to listen on URL: {0}, do you wish to do this? \r\n(Requires administrator privilige)", apiOperatingUri), "Access Denied", MessageBoxButtons.YesNo);
                         if (dlgResult == DialogResult.Yes) // Permission given so set the ACL using netsh, which will ask for elevation if reuqired
                         {
                             LogMessage(0, 0, 0, "SetConfiguration", "User gave permission to set port ACL");
@@ -659,7 +670,6 @@ namespace ASCOM.Remote
             if (control.Width < 400) control.Width = 400;
             if (control.Height < 425) control.Height = 425;
 
-
             int formWidth = control.Width;
             int formHeight = control.Height;
             int buttonLeft = formWidth - 150;
@@ -671,22 +681,25 @@ namespace ASCOM.Remote
             txtLog.Height = formHeight - 123;
 
             txtConcurrency.Left = buttonLeft + 2;
-            txtConcurrency.Top = formHeight - 450;
+            txtConcurrency.Top = formHeight - 570;
 
             lblConcurrentTransactions.Left = buttonLeft + 32;
-            lblConcurrentTransactions.Top = formHeight - 454;
+            lblConcurrentTransactions.Top = formHeight - 574;
 
             chkLogRequests.Left = buttonLeft + 5;
-            chkLogRequests.Top = formHeight - 370;
+            chkLogRequests.Top = formHeight - 490;
 
             chkLogResponses.Left = buttonLeft + 5;
-            chkLogResponses.Top = formHeight - 350;
+            chkLogResponses.Top = formHeight - 470;
 
-            pBoxConnected.Left = buttonLeft;
-            pBoxConnected.Top = formHeight - 320;
+            PboxRESTStatus.Left = buttonLeft;
+            PboxRESTStatus.Top = formHeight - 405;
 
-            lblConnected.Left = buttonLeft;
-            lblConnected.Top = formHeight - 280;
+            PboxDriverStatus.Left = buttonLeft;
+            PboxDriverStatus.Top = formHeight - 340;
+
+            LbDriverStatus.Left = buttonLeft;
+            LbDriverStatus.Top = formHeight - 280;
 
             BtnConnect.Left = buttonLeft;
             BtnConnect.Top = formHeight - 230;

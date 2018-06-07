@@ -33,15 +33,18 @@
             this.BtnConnect = new System.Windows.Forms.Button();
             this.BtnDisconnect = new System.Windows.Forms.Button();
             this.BtnExit = new System.Windows.Forms.Button();
-            this.pBoxConnected = new System.Windows.Forms.PictureBox();
-            this.lblConnected = new System.Windows.Forms.Label();
+            this.PboxDriverStatus = new System.Windows.Forms.PictureBox();
+            this.LbDriverStatus = new System.Windows.Forms.Label();
             this.txtLog = new System.Windows.Forms.TextBox();
             this.lblTitle = new System.Windows.Forms.Label();
             this.chkLogRequests = new System.Windows.Forms.CheckBox();
             this.chkLogResponses = new System.Windows.Forms.CheckBox();
             this.txtConcurrency = new System.Windows.Forms.TextBox();
             this.lblConcurrentTransactions = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.pBoxConnected)).BeginInit();
+            this.LblRESTStatus = new System.Windows.Forms.Label();
+            this.PboxRESTStatus = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.PboxDriverStatus)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PboxRESTStatus)).BeginInit();
             this.SuspendLayout();
             // 
             // BtnSetup
@@ -84,25 +87,26 @@
             this.BtnExit.UseVisualStyleBackColor = true;
             this.BtnExit.Click += new System.EventHandler(this.BtnExit_Click);
             // 
-            // pBoxConnected
+            // PboxDriverStatus
             // 
-            this.pBoxConnected.BackColor = System.Drawing.Color.Red;
-            this.pBoxConnected.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pBoxConnected.Location = new System.Drawing.Point(738, 225);
-            this.pBoxConnected.Name = "pBoxConnected";
-            this.pBoxConnected.Size = new System.Drawing.Size(100, 50);
-            this.pBoxConnected.TabIndex = 5;
-            this.pBoxConnected.TabStop = false;
+            this.PboxDriverStatus.BackColor = System.Drawing.Color.Red;
+            this.PboxDriverStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.PboxDriverStatus.Location = new System.Drawing.Point(738, 289);
+            this.PboxDriverStatus.Name = "PboxDriverStatus";
+            this.PboxDriverStatus.Size = new System.Drawing.Size(100, 55);
+            this.PboxDriverStatus.TabIndex = 5;
+            this.PboxDriverStatus.TabStop = false;
             // 
-            // lblConnected
+            // LbDriverStatus
             // 
-            this.lblConnected.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblConnected.Location = new System.Drawing.Point(738, 278);
-            this.lblConnected.Name = "lblConnected";
-            this.lblConnected.Size = new System.Drawing.Size(100, 20);
-            this.lblConnected.TabIndex = 6;
-            this.lblConnected.Text = "Disconnected";
-            this.lblConnected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LbDriverStatus.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LbDriverStatus.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.LbDriverStatus.Location = new System.Drawing.Point(738, 289);
+            this.LbDriverStatus.Name = "LbDriverStatus";
+            this.LbDriverStatus.Size = new System.Drawing.Size(100, 50);
+            this.LbDriverStatus.TabIndex = 6;
+            this.LbDriverStatus.Text = "Devices Disconnected";
+            this.LbDriverStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // txtLog
             // 
@@ -164,28 +168,53 @@
             this.lblConcurrentTransactions.TabIndex = 12;
             this.lblConcurrentTransactions.Text = "Concurrent\r\nTransactions";
             // 
+            // LblRESTStatus
+            // 
+            this.LblRESTStatus.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LblRESTStatus.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.LblRESTStatus.Location = new System.Drawing.Point(738, 220);
+            this.LblRESTStatus.Name = "LblRESTStatus";
+            this.LblRESTStatus.Size = new System.Drawing.Size(100, 50);
+            this.LblRESTStatus.TabIndex = 14;
+            this.LblRESTStatus.Text = "REST Server Down";
+            this.LblRESTStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // PboxRESTStatus
+            // 
+            this.PboxRESTStatus.BackColor = System.Drawing.Color.Red;
+            this.PboxRESTStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.PboxRESTStatus.Location = new System.Drawing.Point(738, 220);
+            this.PboxRESTStatus.Name = "PboxRESTStatus";
+            this.PboxRESTStatus.Size = new System.Drawing.Size(100, 55);
+            this.PboxRESTStatus.TabIndex = 13;
+            this.PboxRESTStatus.TabStop = false;
+            // 
             // ServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(850, 616);
+            this.Controls.Add(this.LblRESTStatus);
+            this.Controls.Add(this.PboxRESTStatus);
             this.Controls.Add(this.lblConcurrentTransactions);
             this.Controls.Add(this.txtConcurrency);
             this.Controls.Add(this.chkLogResponses);
             this.Controls.Add(this.chkLogRequests);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.txtLog);
-            this.Controls.Add(this.lblConnected);
-            this.Controls.Add(this.pBoxConnected);
+            this.Controls.Add(this.LbDriverStatus);
+            this.Controls.Add(this.PboxDriverStatus);
             this.Controls.Add(this.BtnExit);
             this.Controls.Add(this.BtnDisconnect);
             this.Controls.Add(this.BtnConnect);
             this.Controls.Add(this.BtnSetup);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ServerForm";
             this.Text = "ASCOM REST Server";
             this.Load += new System.EventHandler(this.ServerForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pBoxConnected)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PboxDriverStatus)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PboxRESTStatus)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -197,14 +226,16 @@
         private System.Windows.Forms.Button BtnConnect;
         private System.Windows.Forms.Button BtnDisconnect;
         private System.Windows.Forms.Button BtnExit;
-        private System.Windows.Forms.PictureBox pBoxConnected;
-        private System.Windows.Forms.Label lblConnected;
+        private System.Windows.Forms.PictureBox PboxDriverStatus;
+        private System.Windows.Forms.Label LbDriverStatus;
         private System.Windows.Forms.TextBox txtLog;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.CheckBox chkLogRequests;
         private System.Windows.Forms.CheckBox chkLogResponses;
         private System.Windows.Forms.TextBox txtConcurrency;
         private System.Windows.Forms.Label lblConcurrentTransactions;
+        private System.Windows.Forms.Label LblRESTStatus;
+        private System.Windows.Forms.PictureBox PboxRESTStatus;
     }
 }
 
