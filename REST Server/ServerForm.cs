@@ -25,10 +25,13 @@ namespace ASCOM.Remote
     public partial class ServerForm : Form
     {
 
-        #region Device Server Constants
+        #region Constants
 
         private const string SERVER_TRACELOGGER_NAME = "RemoteAccessServer";
         private const string ACCESSLOG_TRACELOGGER_NAME = "ServerAccessLog";
+
+        //Relative path of the SetNetworkPermissions exe from C:\Program Files (or x86 flavour on a 64bit OS). This must match the location where the installer puts the exe!
+        private const string SET_NETWORK_PERMISSIONS_EXE_PATH = @"\ASCOM\Remote\ASCOM.SetNetworkPermissions.exe";
 
         private const int MAX_ERRORS_BEFORE_CLOSE = 10; // Maximum number of async listen errors before the application permanently shuts down
 
@@ -373,9 +376,51 @@ namespace ASCOM.Remote
                             LogMessage(0, 0, 0, "SetConfiguration", "Closing listener"); // Have to close listener before setting ACL
                             httpListener.Close();
                             httpListener = null;
-                            LogMessage(0, 0, 0, "SetConfiguration", "Enabling URL");
-                            EnableUrl(apiOperatingUri); // Set the ACL on the address / port
-                            EnableUrl(managementUri); // Set the ACL on the address / port
+                            LogMessage(0, 0, 0, "SetConfiguration", "Enabling URIs");
+
+                            string apiNetshCommand = string.Format(@"http add urlacl url={0} user={1}\{2}""", apiOperatingUri, Environment.UserDomainName, Environment.UserName);
+                            LogMessage(0, 0, 0, "EnableUris", string.Format("API NetSh command: {0}", apiNetshCommand));
+
+                            string managementNetshCommand = string.Format(@"""http add urlacl url={0} user={1}\{2}""", managementUri, Environment.UserDomainName, Environment.UserName);
+                            LogMessage(0, 0, 0, "EnableUris", string.Format("Management NetSh command: {0}", managementNetshCommand));
+
+                            try
+                            {
+                                string setNetworkPermissionsPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + SET_NETWORK_PERMISSIONS_EXE_PATH;
+                                LogMessage(0, 0, 0, "EnableUris", string.Format("SetNetworkPermissionspath: {0}", setNetworkPermissionsPath));
+
+                                // Check that the SetNetworkPermissions exe exists
+                                if (File.Exists(setNetworkPermissionsPath)) // SetNetworkPermissions exists
+                                {
+                                    string args = string.Format(@"--setapiuriacl {0} --setmanagementuriacl {1}", apiOperatingUri, managementUri);
+                                    LogMessage(0, 0, 0, "EnableUris", string.Format("SetNetworkPermissions arguments: {0}", args));
+
+                                    ProcessStartInfo psi = new ProcessStartInfo(setNetworkPermissionsPath, args)
+                                    {
+                                        Verb = "runas",
+                                        CreateNoWindow = true,
+                                        WindowStyle = ProcessWindowStyle.Hidden,
+                                        UseShellExecute = true
+                                    };
+                                    LogMessage(0, 0, 0, "EnableUris", "Starting SetNetworkPermissions process");
+                                    Process.Start(psi).WaitForExit();
+                                    LogMessage(0, 0, 0, "EnableUris", "Completed SetNetworkPermissions process");
+                                }
+                                else // SetNetworkPermissions does not exist
+                                {
+                                    string errorMessage = string.Format("Cannot find SetNetworkPermissions program: {0} ", setNetworkPermissionsPath);
+                                    LogToScreen(errorMessage);
+                                    LogMessage(0, 0, 0, "EnableUris", errorMessage);
+                                    return;
+                                }
+                            }
+                            catch (Exception ex1)
+                            {
+                                LogToScreen("Exception while enabling the API and Management URIs: " + ex1.Message);
+                                LogException(0, 0, 0, "EnableUris", ex1.ToString());
+                            }
+
+                            // Create a new listener instance and loop round to attempt to start it again
                             LogMessage(0, 0, 0, "SetConfiguration", "Creating listener");
                             httpListener = new HttpListener(); // Set up the listener so that Start can be attempted again at the top of the while loop
                             httpListener.Prefixes.Add(apiOperatingUri); // Set up the listener on the required URI
@@ -384,7 +429,7 @@ namespace ASCOM.Remote
                         else
                         {
                             LogMessage(0, 0, 0, "SetConfiguration", "User did NOT give permission to set port ACL");
-                            return; // Just exist and wait for user to do something
+                            return; // Just exit and wait for user to do something
                         }
                     }
                 }
@@ -400,35 +445,6 @@ namespace ASCOM.Remote
             {
                 LogToScreen("Exception while attempting to start the listener: " + ex.Message);
                 LogException(0, 0, 0, "SetConfiguration", ex.ToString());
-            }
-        }
-
-        public void EnableUrl(string address)
-        {
-            EnableUrl(address, Environment.UserDomainName, Environment.UserName);
-        }
-
-        public void EnableUrl(string address, string domain, string user)
-        {
-            try
-            {
-                string args = string.Format(@"http add urlacl url={0} user={1}\{2}", address, domain, user);
-                TL.LogMessage("EnableUrl", "Enable arguments: " + args);
-
-                ProcessStartInfo psi = new ProcessStartInfo("netsh", args)
-                {
-                    Verb = "runas",
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    UseShellExecute = true
-                };
-                TL.LogMessage("EnableUrl", "Starting process");
-                Process.Start(psi).WaitForExit();
-                TL.LogMessage("EnableUrl", "Completed process");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Process exception: " + ex.ToString());
             }
         }
 

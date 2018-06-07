@@ -6,6 +6,7 @@ using ASCOM.Utilities;
 using System.Security.Principal;
 using CommandLine;
 using System.IO;
+using System.Diagnostics;
 
 namespace ASCOM.Remote
 {
@@ -46,12 +47,23 @@ namespace ASCOM.Remote
         private static void ProcessOptions(Options opts)
         {
 
-            Console.WriteLine("Local server path: {0}", opts.LocalServerPath);
-            TL.LogMessage("ProcessOptions", string.Format("Local server  path: {0}", opts.LocalServerPath));
-            Console.WriteLine("Remote server path: {0}", opts.RemoteServerPath);
-            TL.LogMessage("ProcessOptions", string.Format("Remote server  path: {0}", opts.RemoteServerPath));
+            TL.LogMessage("ProcessOptions", string.Format("Local server path: {0}", opts.LocalServerPath));
+            TL.LogMessage("ProcessOptions", string.Format("Remote server path: {0}", opts.RemoteServerPath));
+            TL.LogMessage("ProcessOptions", string.Format("API URI: {0}", opts.SetApiUriAcl));
+            TL.LogMessage("ProcessOptions", string.Format("Manafgement URI: {0}", opts.SetManagementUriAcl));
             TL.BlankLine();
 
+            // Set firewall rules depending on which command line parameter was supplied
+            if (opts.LocalServerPath != NOT_PRESENT_FLAG) SetFireWallRules(opts.LocalServerPath, LOCAL_SERVER_RULE_NAME_BASE);
+            if (opts.RemoteServerPath != NOT_PRESENT_FLAG) SetFireWallRules(opts.RemoteServerPath, REMOTE_SERVER_RULE_NAME_BASE);
+
+            // Set http.sys ACLs as needed
+            if (opts.SetApiUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetApiUriAcl);
+            if (opts.SetManagementUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetManagementUriAcl);
+        }
+
+        private static void SetFireWallRules(string applicationPath, string FirewallRuleName)
+        {
             try // Make sure that we still try and set the firewall rules even if we bomb out trying to get information on the firewall configuration
             {
                 TL.LogMessage("QueryFireWall", string.Format("Firewall version: {0}", FirewallManager.Version.ToString())); // Log the firfewall version in use
@@ -77,13 +89,6 @@ namespace ASCOM.Remote
             }
             TL.BlankLine();
 
-            // Set firewall rules depending on which command line parameter was supplied
-            if (opts.LocalServerPath != NOT_PRESENT_FLAG) SetFireWallRules(opts.LocalServerPath, LOCAL_SERVER_RULE_NAME_BASE);
-            if (opts.RemoteServerPath != NOT_PRESENT_FLAG) SetFireWallRules(opts.RemoteServerPath, REMOTE_SERVER_RULE_NAME_BASE);
-        }
-
-        private static void SetFireWallRules(string applicationPath, string FirewallRuleName)
-        {
             try
             {
                 if ((new WindowsPrincipal(WindowsIdentity.GetCurrent())).IsInRole(WindowsBuiltInRole.Administrator)) // Application is being run with Administrator privilege so go ahead and set the firewall rules
@@ -138,7 +143,50 @@ namespace ASCOM.Remote
 
         }
 
-        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private static void SetAcl(string Uri)
+        {
+            try
+            {
+                string command = string.Format(@"http add urlacl url={0} user={1}\{2}", Uri, Environment.UserDomainName, Environment.UserName);
+                TL.LogMessage("SetAcl", "Enable arguments: " + command);
+
+                ProcessStartInfo psi = new ProcessStartInfo("netsh")
+                {
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    UseShellExecute = false,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                };
+
+                TL.LogMessage("SetAcl", "Creating netsh process");
+                Process process = new Process();
+                process.StartInfo = psi;
+                process.OutputDataReceived += (sender, args) => TL.LogMessage("SetAcl", string.Format("NetSh output: {0}", args.Data));
+
+                TL.LogMessage("SetAcl", "Starting process");
+                process.Start();
+                process.BeginOutputReadLine();
+                TL.LogMessage("SetAcl", "Process started");
+
+                TL.LogMessage("SetAcl", string.Format("Sending netsh command: {0}", command));
+                process.StandardInput.WriteLine(command);
+                TL.LogMessage("SetAcl", string.Format("Sent netsh command: {0}", command));
+
+                TL.LogMessage("SetAcl", string.Format("Sending netsh command: exit"));
+                process.StandardInput.WriteLine("exit");
+                TL.LogMessage("SetAcl", string.Format("Sent netsh command: exit"));
+
+                process.WaitForExit();
+                TL.LogMessage("SetAcl", "Process ended");
+            }
+            catch (Exception ex)
+            {
+                TL.LogMessageCrLf("SetAcl", "Process exception: " + ex.ToString());
+            }
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Exception exception = (Exception)e.ExceptionObject;
             TraceLogger TL = new TraceLogger("SetNetworkPemissionsException")
