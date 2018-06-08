@@ -36,6 +36,4 @@ namespace ASCOM.Remote
         public bool DebugTraceState { get; set; }
 
     }
-
-
 }

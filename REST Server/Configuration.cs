@@ -14,7 +14,7 @@ namespace ASCOM.Remote
             try
             {
                 if (ServerForm.DebugTraceState) ServerForm.LogMessage(0,0,0,"Configuration New", "About to create base key");
-                baseRegistryKey = Registry.CurrentUser.CreateSubKey(SharedConstants.REMOTE_DEVICE_CONFIGURATION_KEY);
+                baseRegistryKey = RegistryKey.OpenBaseKey(SharedConstants.ASCOM_REMOTE_CONFIGURATION_HIVE, RegistryView.Default).CreateSubKey(SharedConstants.ASCOM_REMOTE_CONFIGURATION_KEY);
                 if (ServerForm.DebugTraceState) ServerForm.LogMessage(0,0,0,"Configuration New", "Created base key: " + baseRegistryKey.Name);
             }
             catch (Exception ex)

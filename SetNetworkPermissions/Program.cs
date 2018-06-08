@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using WindowsFirewallHelper;
-using ASCOM.Utilities;
-using System.Security.Principal;
-using CommandLine;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Security.Principal;
+
+using CommandLine;
+using WindowsFirewallHelper;
+
+using ASCOM.Utilities;
 
 namespace ASCOM.Remote
 {

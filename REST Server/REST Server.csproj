@@ -71,6 +71,9 @@
     <Compile Include="..\Shared Resources\ConfiguredDevice.cs">
       <Link>ConfiguredDevice.cs</Link>
     </Compile>
+    <Compile Include="..\Shared Resources\ExtensionMethods.cs">
+      <Link>ExtensionMethods.cs</Link>
+    </Compile>
     <Compile Include="..\Shared Resources\ProfileDevice.cs">
       <Link>ProfileDevice.cs</Link>
     </Compile>
@@ -143,9 +146,6 @@
     <Compile Include="..\shared resources\response classes\StringResponse.cs">
       <Link>Response Classes\StringResponse.cs</Link>
     </Compile>
-    <Compile Include="..\shared resources\response classes\TelescopeStaticData.cs">
-      <Link>Response Classes\TelescopeStaticData.cs</Link>
-    </Compile>
     <Compile Include="..\shared resources\response classes\TrackingRatesResponse.cs">
       <Link>Response Classes\TrackingRatesResponse.cs</Link>
     </Compile>
@@ -173,7 +173,6 @@
     <Compile Include="SetupForm.Designer.cs">
       <DependentUpon>SetupForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Encrypt.cs" />
     <Compile Include="ServerForm.cs">
       <SubType>Form</SubType>
     </Compile>

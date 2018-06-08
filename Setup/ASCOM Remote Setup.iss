@@ -27,8 +27,9 @@ PrivilegesRequired=admin
 SetupIconFile=ASCOM.ico
 SetupLogging=true
 SolidCompression=yes
-UninstallDisplayIcon={pf}\ASCOM\Remote\ASCOM.SetNetworkPermissions.exe
+UninstallDisplayIcon={pf}\ASCOM\Remote\ASCOM.ico
 UninstallFilesDir="{cf}\ASCOM\Uninstall\Remote"
+UsePreviousAppDir=no
 UsePreviousGroup=no
 VersionInfoCompany=Peter Simpson
 VersionInfoCopyright=Peter Simpson
@@ -58,10 +59,10 @@ Source: "..\Remote Client Device Base Classes\bin\Release\ASCOM.RemoteClientBase
 Source: "..\Remote Client Local Server\bin\Release\RestSharp.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
 Source: "..\Remote Client Local Server\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}\RemoteClients"; Flags: ignoreversion; Components: ClientComponents
 ; REST SERVER FILES
-Source: "..\REST Server\bin\Release\ASCOM.RESTServer.exe"; DestDir: "{pf}\ASCOM\RESTServer"; Flags: ignoreversion; Components: ServerComponents
-Source: "..\REST Server\bin\Release\ASCOM.RESTServer.pdb"; DestDir: "{pf}\ASCOM\RESTServer"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\REST Server\bin\Release\ASCOM.RESTServer.exe"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\REST Server\bin\Release\ASCOM.RESTServer.pdb"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
 ; REST SERVER SUPPORT FILES
-Source: "..\REST Server\bin\Release\Newtonsoft.Json.dll"; DestDir: "{pf}\ASCOM\RESTServer"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\REST Server\bin\Release\Newtonsoft.Json.dll"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
 ; SET NETWORK PERMISSIONS FILES
 Source: "..\SetNetworkPermissions\bin\Release\ASCOM.SetNetworkPermissions.exe"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
 Source: "..\SetNetworkPermissions\bin\Release\ASCOM.SetNetworkPermissions.pdb"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
@@ -69,6 +70,8 @@ Source: "..\SetNetworkPermissions\bin\Release\ASCOM.SetNetworkPermissions.pdb"; 
 Source: "..\SetNetworkPermissions\bin\Release\WindowsFirewallHelper.dll"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
 Source: "..\SetNetworkPermissions\bin\Release\CommandLine.dll"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
 Source: "..\SetNetworkPermissions\bin\Release\Interop.NetFwTypeLib.dll"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
+; INSTALLER SUPPORT FILES
+Source: "ASCOM.ico"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion
 ; WEB CONTENT
 ;Source: "..\Web Content\index.html"; DestDir: "{pf}\ASCOM\RemoteServer"; Components: WebContent
 
@@ -83,8 +86,8 @@ Filename: "{app}\RemoteClients\ASCOM.RemoteClientLocalServer.exe"; Parameters: "
 [Registry]
 
 [Icons]
-Name: "{group}\ASCOM Remote\ASCOM REST Server"; Filename: "{pf}\ASCOM\RESTServer\ASCOM.RESTServer.exe"; Components: ServerComponents
-Name: "{group}\ASCOM Remote\ASCOM Remote Client Configuration"; Filename: "{app}\RemoteClients\ASCOM.DynamicRemoteClients.exe"; Components: ClientComponents
+Name: "{group}\ASCOM REST Server"; Filename: "{pf}\ASCOM\Remote\ASCOM.RESTServer.exe"; Components: ServerComponents
+Name: "{group}\Remote Client Configuration"; Filename: "{app}\RemoteClients\ASCOM.DynamicRemoteClients.exe"; Components: ClientComponents
 
 [Components]
 Name: "ClientComponents"; Description: "Client components"; Types: ClientOnly Full;

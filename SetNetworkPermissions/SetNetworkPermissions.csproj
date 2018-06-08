@@ -53,6 +53,9 @@
     <Compile Include="..\Shared Resources\Properties\SharedVersionNumbers.cs">
       <Link>Properties\SharedVersionNumbers.cs</Link>
     </Compile>
+    <Compile Include="..\Shared Resources\Shared Constants.cs">
+      <Link>Shared Constants.cs</Link>
+    </Compile>
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

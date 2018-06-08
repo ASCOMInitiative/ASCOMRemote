@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ASCOM.DynamicRemoteClients.Properties {
+namespace ASCOM.Remote.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

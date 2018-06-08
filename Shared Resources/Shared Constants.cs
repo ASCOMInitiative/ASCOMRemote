@@ -1,4 +1,6 @@
-﻿namespace ASCOM.Remote
+﻿using Microsoft.Win32;
+
+namespace ASCOM.Remote
 {
     public static class SharedConstants
     {
@@ -74,7 +76,8 @@
         }
 
         // Registry key where the Web Server configuration will be stored
-        public const string REMOTE_DEVICE_CONFIGURATION_KEY = @"Software\ASCOM Remote";
+        public const RegistryHive ASCOM_REMOTE_CONFIGURATION_HIVE = RegistryHive.CurrentUser;
+        public const string ASCOM_REMOTE_CONFIGURATION_KEY = @"Software\ASCOM Remote";
 
         public const string REQUEST_RECEIVED_STRING = "RequestReceived";
 
