@@ -55,9 +55,7 @@ namespace ASCOM.DynamicRemoteClients
                         string searchPattern = string.Format(Form1.REMOTE_CLIENT_DRIVER_NAME_TEMPLATE, deviceType);
 
                         TL.LogMessage("Main", "About to create base key");
-                        RegistryKey remoteRegistryKey = RegistryKey.OpenBaseKey(SharedConstants.ASCOM_REMOTE_CONFIGURATION_HIVE, RegistryView.Default).CreateSubKey(SharedConstants.ASCOM_REMOTE_CONFIGURATION_KEY);
-                        TL.LogMessage("Main", "Created base key: " + remoteRegistryKey.Name);
-
+                        RegistryKey remoteRegistryKey = RegistryKey.OpenBaseKey(SharedConstants.ASCOM_REMOTE_CONFIGURATION_HIVE, RegistryView.Default).CreateSubKey(SharedConstants.ASCOM_REMOTE_CONFIGURATION_KEY, true);
                         bool alreadyRun = bool.Parse((string)remoteRegistryKey.GetValue(ALREADY_RUN, "false"));
                         TL.LogMessage("Main", string.Format("Already run: {0}", alreadyRun));
 
@@ -102,6 +100,11 @@ namespace ASCOM.DynamicRemoteClients
                                 // Register the drivers
                                 TL.LogMessage("Main", "Registering drivers");
                                 Form1.RunLocalServer(localServerExe, "-regserver", TL);
+
+                                // Record that we have run once on this PC
+                                TL.LogMessage("Main", string.Format("Setting already run to true"));
+                                remoteRegistryKey.SetValue(ALREADY_RUN, "true");
+                                TL.LogMessage("Main", string.Format("Set already run to true"));
                             }
                             else // Local server can not be found so report the issue
                             {
