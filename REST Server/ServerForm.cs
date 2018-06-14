@@ -865,15 +865,13 @@ namespace ASCOM.Remote
         /// </remarks>
         protected void WebRequestCallback(IAsyncResult result)
         {
-            HttpListener listener = (HttpListener)result.AsyncState;
-
+            HttpListener listener = (HttpListener)result.AsyncState; // Get the listener instance from which this particular callback has come, it is supplied as the state parameter on the BeginGetContext call
             HttpListenerContext context = null;
 
             // Get the result context from the client's call
             try
             {
                 if (DebugTraceState) LogMessage(0, 0, 0, "WebRequestCallback", string.Format("Thread {0} - Request received. Is thread pool thread: {1}. Is background thread: {2}.", Thread.CurrentThread.ManagedThreadId.ToString(), Thread.CurrentThread.IsThreadPoolThread, Thread.CurrentThread.IsBackground));
-                //context = httpListener.EndGetContext(result); // Get the context object
                 context = listener.EndGetContext(result); // Get the context object
             }
             catch (NullReferenceException) // httpListener is null because we are closing down or because of some other error so just log the event
@@ -881,7 +879,7 @@ namespace ASCOM.Remote
                 if (DebugTraceState) LogMessage(0, 0, 0, "WebRequestCallback", string.Format("Thread {0} - EndGetContext - httpListener is null so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
                 return;
             }
-            catch (ObjectDisposedException) // httpListener is disposed because we are closing down or because of some other error so just log the event
+            catch (ObjectDisposedException) // httpListener is disposed because the REST server has been stopped or because of some other error so just log the event
             {
                 if (DebugTraceState) LogMessage(0, 0, 0, "WebRequestCallback", string.Format("Thread {0} - EndGetContext - httpListener is disposed so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
                 return;
@@ -1962,7 +1960,6 @@ namespace ASCOM.Remote
 
             LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", clientID, clientTransactionID, message));
         }
-
         private void Return403Error(HttpListenerResponse response, string message, int clientID, int clientTransactionID, int serverTransactionID)
         {
             LogMessage(clientID, clientTransactionID, serverTransactionID, "HTTP 403 Error", message);
@@ -1975,7 +1972,6 @@ namespace ASCOM.Remote
             response.OutputStream.Close();
             LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", clientID, clientTransactionID, message));
         }
-
         private void Return500Error(HttpListenerRequest request, HttpListenerResponse response, string errorMessage, int clientID, int clientTransactionID, int serverTransactionID)
         {
             LogMessage(clientID, clientTransactionID, serverTransactionID, "HTTP 500 Error", errorMessage);
