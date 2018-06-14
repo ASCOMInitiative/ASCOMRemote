@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using ASCOM.Utilities;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 namespace ASCOM.Remote
 {
@@ -20,6 +16,7 @@ namespace ASCOM.Remote
         int deviceNumber = 0;
         string description = "";
         string progID = "";
+        bool devicesAreConnected = false;
 
         Profile profile;
         List<string> deviceTypes;
@@ -69,6 +66,7 @@ namespace ASCOM.Remote
             TL.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Setting selected index to 0");
 
             cmbDeviceType.SelectedIndex = 0;
+
             TL.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Finished");
 
         }
@@ -201,6 +199,19 @@ namespace ASCOM.Remote
             }
         }
 
+        public bool DevicesAreConnected
+        {
+            get
+            {
+                return devicesAreConnected;
+            }
+            set
+            {
+                devicesAreConnected = value;
+                btnSetup.Enabled = !devicesAreConnected;
+            }
+        }
+
         #endregion
 
         #region Event handlers
@@ -302,6 +313,95 @@ namespace ASCOM.Remote
             }
 
             e.DrawFocusRectangle();
+        }
+
+        private void BtnSetup_Click(object sender, EventArgs e)
+        {
+            // This device's ProgID is held in the variable progID so try and run its SetupDialog method
+            TL.LogMessage(0, 0, 0, "Setup", string.Format("Setup button pressed for device: {0}, ProgID: {1}", cmbDevice.Text, progID));
+
+            try
+            {
+                // Get an instance of the driver from its ProgID amd store this in a dynamic variable so that we can call its method directly
+                Type ProgIdType = Type.GetTypeFromProgID(progID);
+                TL.LogMessage(0, 0, 0, "Setup", string.Format("Found type: {0}", ProgIdType.Name));
+
+                dynamic oDrv = Activator.CreateInstance(ProgIdType);
+                TL.LogMessage(0, 0, 0, "Setup", "Created driver instance OK");
+
+                try
+                {
+                    if (oDrv.Connected) // Driver is connected and the Setup dialog must be run with the device disconnected so ask whether we can disconnect it
+                    {
+                        DialogResult dialogResult = MessageBox.Show("Device is conncted, OK to disconnect and run Setup?", "Disconnect Device?", MessageBoxButtons.OKCancel);
+                        if (dialogResult == DialogResult.OK) // OK to disconnect and run setup dialogue
+                        {
+                            TL.LogMessage(0, 0, 0, "Setup", "User gave permission to disconnect device - setting Connected to false");
+                            oDrv.Connected = false;
+
+                            int RemainingObjectCount = Marshal.FinalReleaseComObject(oDrv);
+                            oDrv = null;
+                            oDrv = Activator.CreateInstance(ProgIdType);
+
+                            TL.LogMessage(0, 0, 0, "Setup", string.Format("Connected has bee set false and destroyed. New Connected value: {0}", oDrv.Connected));
+
+                            TL.LogMessage(0, 0, 0, "Setup", "Device is now disconnected, calling SetupDialog method");
+                            oDrv.SetupDialog();
+                            TL.LogMessage(0, 0, 0, "Setup", "Completed SetupDialog method, setting Connected to true");
+                            oDrv.Connected = true;
+                            TL.LogMessage(0, 0, 0, "Setup", "Driver is now Connected");
+                        }
+                        else // Not OK to disconnect so just do nothing and exit
+                        {
+                            TL.LogMessage(0, 0, 0, "Setup", "User did not give permission to disconnect device - no action taken");
+                        }
+                    }
+                    else // Driver is not connected 
+                    {
+                        TL.LogMessage(0, 0, 0, "Setup", "Device is disconnected so just calling SetupDialog method");
+                        oDrv.SetupDialog();
+                        TL.LogMessage(0, 0, 0, "Setup", "Completed SetupDialog method");
+
+                        try { oDrv.Dispose(); } catch { }; // Dispose the driver if possible
+
+                        // Release the COM object properly
+                        try
+                        {
+                            TL.LogMessage(0, 0, 0, "Setup", "  Releasing COM object");
+                            int LoopCount = 0;
+                            int RemainingObjectCount = 0;
+
+                            do
+                            {
+                                LoopCount += 1; // Increment the loop counter so that we don't go on for ever!
+                                RemainingObjectCount = Marshal.ReleaseComObject(oDrv);
+                                TL.LogMessage(0, 0, 0, "Setup", "  Remaining object count: " + RemainingObjectCount.ToString() + ", LoopCount: " + LoopCount);
+                            } while ((RemainingObjectCount > 0) & (LoopCount < 20));
+                        }
+                        catch (Exception ex2)
+                        {
+                            TL.LogMessage(0, 0, 0, "Setup", "  ReleaseComObject Exception: " + ex2.Message);
+                        }
+
+                        oDrv = null;
+                    }
+                }
+                catch (Exception ex1)
+                {
+                    string errMsg = string.Format("Exception calling SetupDialog method: {0}", ex1.Message);
+                    MessageBox.Show(errMsg);
+                    TL.LogMessage(0, 0, 0, "Setup", errMsg);
+                    TL.LogMessageCrLf(0, 0, 0, "Setup", ex1.ToString());
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string errMsg = string.Format("Exception creating driver {0} - {1}", progID, ex.Message);
+                MessageBox.Show(errMsg);
+                TL.LogMessage(0, 0, 0, "Setup", errMsg);
+                TL.LogMessageCrLf(0, 0, 0, "Setup", ex.ToString());
+            }
         }
 
         #endregion

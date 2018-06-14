@@ -92,6 +92,27 @@ namespace ASCOM.Remote
         internal static List<string> ServerDeviceNames = new List<string>() { "ServedDevice0", "ServedDevice1", "ServedDevice2", "ServedDevice3", "ServedDevice4", "ServedDevice5", "ServedDevice6", "ServedDevice7", "ServedDevice8", "ServedDevice9" };
         internal static List<string> ServerDeviceNumbers = new List<string>() { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
+        // Form size and resize constants
+        internal const int FORM_MINIMUM_WIDTH = 400; // Server form minimum width
+        internal const int FORM_MINIMUM_HEIGHT = 350; // Server form minimum height
+        internal const int TITLE_OFFSET_FROM_TOP = 22; // Offset of the title from the top of the form
+        internal const int TITLE_TRANSITION_POSITION_END = 900; // Form width above which the title position is always centred over the message list
+        internal const int LOG_HEIGHT_OFFSET = 123; // Offset from the height of the form so that the log text box just fits within the form when resized
+        internal const int CONTROL_OVERALL_HEIGHT = 103; // Overall height of all control groups
+        internal const int CONTROL_SPACING_MAXIMUM = 45; // Maximum separation between control groups
+        internal const int CONTROL_SPACE_WIDTH = 240; // Size of the free space, to the right of the log messages text box, that must be left clear for server controls
+        internal const int CONTROL_LEFT_OFFSET = 202; // Offset from the width of the form to the start of a full sized control
+        internal const int CONTROL_CENTRE_OFFSET = 32; // Offset from the CONTROL_LEFT_OFFSET to the start of a centred control
+
+        // The server form displays controls in several groups:
+        // Control Group 1 - Concurrent transactions counter
+        // Control Group 2 - Log requests and responses check boxes
+        // Control Group 3 - REST Server Status panel plus the Stop and Start buttons
+        // Control Group 4 - Device Status panel plus the Disconnect and Connect buttons
+        // Control Group 5 - Setup button
+        // Control Group 6 - Exit button
+        internal const int NUMBER_OF_CONTROL_GROUPS = 6; // Number of control groups 
+
         #endregion
 
         #region Application Global Variables
@@ -102,7 +123,10 @@ namespace ASCOM.Remote
         internal static TraceLoggerPlus TL;
         internal static TraceLoggerPlus AccessLog;
         internal readonly object counterLock = new object();
+
+        // Application Status variables
         internal static bool apiIsEnabled = false;
+        internal static bool devicesAreConnected = false;
 
         internal static int serverTransactionIDCounter = 0; // Internal variable used to keep track of the current server transaction ID
         internal static int numberOfConcurrentTransactions = 0; // Internal variable to keep track of the number of concurrent transactions
@@ -120,7 +144,7 @@ namespace ASCOM.Remote
         internal static bool DebugTraceState;
         internal static string ServerIPAddressString;
         internal static decimal ServerPortNumber;
-        internal static bool ServerAutoConnect;
+        internal static bool StartWithDevicesConnected;
         internal static bool AccessLogEnabled;
         internal static bool ScreenLogRequests;
         internal static bool ScreenLogResponses;
@@ -162,7 +186,6 @@ namespace ASCOM.Remote
 
                 ReadProfile();
                 TL.Enabled = TraceState; // Iniitalise with the trace state enabled or disabled as configured
-                apiIsEnabled = StartWithApiEnabled; // Iniitalise with the API enabled or disabled as configured
 
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
                 LogMessage(0, 0, 0, "New", "Connected OK, Version: " + version.ToString());
@@ -177,19 +200,21 @@ namespace ASCOM.Remote
                 chkLogResponses.Checked = ScreenLogResponses;
 
                 LogMessage(0, 0, 0, "New", "Enabling screen log check box event handlers");
-                chkLogRequests.CheckedChanged += ScreenLog_CheckedChanged;
-                chkLogResponses.CheckedChanged += ScreenLog_CheckedChanged;
+                chkLogRequests.CheckedChanged += ChkLogRequestsAndResponses_CheckedChanged;
+                chkLogResponses.CheckedChanged += ChkLogRequestsAndResponses_CheckedChanged;
 
-                LogMessage(0, 0, 0, "New", "Enabling form event handlers");
+                LogMessage(0, 0, 0, "New", "Form configuration and enabling form event handlers");
+                this.MinimumSize = new Size(FORM_MINIMUM_WIDTH, FORM_MINIMUM_HEIGHT); // Set the form's minimum size
                 this.FormClosed += Form1_FormClosed;
                 this.Resize += ServerForm_Resize;
-                ServerForm_Resize(this, new EventArgs());
+                ServerForm_Resize(this, new EventArgs()); // Move controls to their correct positions
 
                 LogMessage(0, 0, 0, "New", "Assigning label parents to picture boxes");
                 LbDriverStatus.Parent = PboxDriverStatus;
                 LbDriverStatus.Location = new Point(0, 0);
                 LblRESTStatus.Parent = PboxRESTStatus;
                 LblRESTStatus.Location = new Point(0, 0);
+
 
                 LogMessage(0, 0, 0, "New", "Initialisation complete");
             }
@@ -203,22 +228,25 @@ namespace ASCOM.Remote
         private void ServerForm_Load(object sender, EventArgs e)
         {
             this.Text = "ASCOM REST Server - v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            if (ServerAutoConnect) SetConfiguration();
+            if (StartWithDevicesConnected)
+            {
+                ConnectDevices();
+            }
+
+            if (StartWithApiEnabled)
+            {
+                StartRESTServer();
+            }
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
 
+            // Clear down the listener
+            StopRESTServer();
+
             // Clear all of the curent objects
-            ClearListenerAndDevices();
-
-            try { device.Connected = false; } catch { }
-            try { device.Dispose(); } catch { }
-            try { device = null; } catch { }
-
-            try { httpListener.Stop(); } catch { }
-            try { httpListener.Close(); } catch { }
-            try { httpListener = null; } catch { }
+            DisconnectDevices();
 
             Application.Exit();
         }
@@ -264,71 +292,150 @@ namespace ASCOM.Remote
             return localIP;
         }
 
-        private void DisconnectDevices()
+        private void StartRESTServer()
         {
-            PboxDriverStatus.BackColor = Color.Red;
-            LbDriverStatus.Text = "Drivers Disconnected";
+            try
+            {
+
+                // Create variables to hold the ASCOM device server operating URIs
+                string apiOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
+                string managementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.MANAGEMENT_URL_BASE);
+                LogMessage(0, 0, 0, "StartRESTServer", "Operating URI: " + apiOperatingUri);
+                LogMessage(0, 0, 0, "StartRESTServer", "Management URI: " + managementUri);
+
+                // Create the listener on the reuiqred URIs
+                LogMessage(0, 0, 0, "StartRESTServer", "Stopping existing server");
+                StopRESTServer();
+
+                LogMessage(0, 0, 0, "StartRESTServer", "Creating listener");
+                httpListener = new HttpListener();
+                httpListener.Prefixes.Add(apiOperatingUri); // Set up the listener on the api URI
+                httpListener.Prefixes.Add(managementUri); // Set up the listener on the management URI
+
+                // Start the listener and ask pernmission if required
+                while (!httpListener.IsListening)
+                {
+                    try
+                    {
+                        LogMessage(0, 0, 0, "StartRESTServer", "Starting listener");
+                        httpListener.Start();
+                        LogMessage(0, 0, 0, "StartRESTServer", "Listener started");
+                    }
+                    catch (HttpListenerException ex) when (ex.ErrorCode == (int)WindowsErrorCodes.ERROR_ACCESS_DENIED) // User does not have an ACL permitting this address and port to be used so get permission
+                    {
+                        DialogResult dlgResult = MessageBox.Show(string.Format("You need to give permission to listen on URL: {0}, do you wish to do this? \r\n(Requires administrator privilige)", apiOperatingUri), "Access Denied", MessageBoxButtons.YesNo);
+                        if (dlgResult == DialogResult.Yes) // Permission given so set the ACL using netsh, which will ask for elevation if reuqired
+                        {
+                            LogMessage(0, 0, 0, "StartRESTServer", "User gave permission to set port ACL");
+                            LogMessage(0, 0, 0, "StartRESTServer", "Closing listener"); // Have to close listener before setting ACL
+                            httpListener.Close();
+                            httpListener = null;
+                            LogMessage(0, 0, 0, "StartRESTServer", "Enabling URIs");
+
+                            string apiNetshCommand = string.Format(@"http add urlacl url={0} user={1}\{2}""", apiOperatingUri, Environment.UserDomainName, Environment.UserName);
+                            LogMessage(0, 0, 0, "StartRESTServer", string.Format("API NetSh command: {0}", apiNetshCommand));
+
+                            string managementNetshCommand = string.Format(@"""http add urlacl url={0} user={1}\{2}""", managementUri, Environment.UserDomainName, Environment.UserName);
+                            LogMessage(0, 0, 0, "StartRESTServer", string.Format("Management NetSh command: {0}", managementNetshCommand));
+
+                            try
+                            {
+                                string setNetworkPermissionsPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + SET_NETWORK_PERMISSIONS_EXE_PATH;
+                                LogMessage(0, 0, 0, "StartRESTServer", string.Format("SetNetworkPermissionspath: {0}", setNetworkPermissionsPath));
+
+                                // Check that the SetNetworkPermissions exe exists
+                                if (File.Exists(setNetworkPermissionsPath)) // SetNetworkPermissions exists
+                                {
+                                    string args = string.Format(@"--setapiuriacl {0} --setmanagementuriacl {1}", apiOperatingUri, managementUri);
+                                    LogMessage(0, 0, 0, "StartRESTServer", string.Format("SetNetworkPermissions arguments: {0}", args));
+
+                                    ProcessStartInfo psi = new ProcessStartInfo(setNetworkPermissionsPath, args)
+                                    {
+                                        Verb = "runas",
+                                        CreateNoWindow = true,
+                                        WindowStyle = ProcessWindowStyle.Hidden,
+                                        UseShellExecute = true
+                                    };
+                                    LogMessage(0, 0, 0, "StartRESTServer", "Starting SetNetworkPermissions process");
+                                    Process.Start(psi).WaitForExit();
+                                    LogMessage(0, 0, 0, "StartRESTServer", "Completed SetNetworkPermissions process");
+                                }
+                                else // SetNetworkPermissions does not exist
+                                {
+                                    string errorMessage = string.Format("Cannot find SetNetworkPermissions program: {0} ", setNetworkPermissionsPath);
+                                    LogToScreen(errorMessage);
+                                    LogMessage(0, 0, 0, "StartRESTServer", errorMessage);
+                                    return;
+                                }
+                            }
+                            catch (Exception ex1)
+                            {
+                                LogToScreen("Exception while enabling the API and Management URIs: " + ex1.Message);
+                                LogException(0, 0, 0, "StartRESTServer", ex1.ToString());
+                            }
+
+                            // Create a new listener instance and loop round to attempt to start it again
+                            LogMessage(0, 0, 0, "StartRESTServer", "Creating listener");
+                            httpListener = new HttpListener(); // Set up the listener so that Start can be attempted again at the top of the while loop
+                            httpListener.Prefixes.Add(apiOperatingUri); // Set up the listener on the required URI
+                            httpListener.Prefixes.Add(managementUri); // Set up the listener on the management URI
+                        }
+                        else
+                        {
+                            LogMessage(0, 0, 0, "StartRESTServer", "User did NOT give permission to set port ACL");
+                            return; // Just exit and wait for user to do something
+                        }
+                    }
+                }
+
+                apiIsEnabled = true;
+                PboxRESTStatus.BackColor = Color.Green;
+                LblRESTStatus.Text = "REST Server Running";
+
+                LogMessage(0, 0, 0, "StartRESTServer", "Starting wait for incoming request");
+                IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(WebRequestCallback), httpListener);
+
+                //LogToScreen("Server started successfully.");
+                LogMessage(0, 0, 0, "StartRESTServer", "Server started successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                LogToScreen("Exception while attempting to start the listener: " + ex.Message);
+                LogException(0, 0, 0, "StartRESTServer", ex.ToString());
+            }
         }
 
-        private void ClearListenerAndDevices()
+        private void StopRESTServer()
         {
             if (httpListener != null) // Close and dispose of the current listener, if there is one.
             {
-                LogMessage(0, 0, 0, "ClearListenerAndDevices", "Stopping current REST server");
+                // Create variables to hold the ASCOM device server operating URIs
+                string apiOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
+                string managementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.MANAGEMENT_URL_BASE);
+                LogMessage(0, 0, 0, "StopRESTServer", "Operating URI: " + apiOperatingUri);
+                LogMessage(0, 0, 0, "StopRESTServer", "Management URI: " + managementUri);
+
+                LogMessage(0, 0, 0, "StopRESTServer", "Removing Prefixes");
+                try { httpListener.Prefixes.Remove(apiOperatingUri); } catch { } // Set up the listener on the api URI
+                try { httpListener.Prefixes.Remove(managementUri); } catch { }// Set up the listener on the management URI
+
+                LogMessage(0, 0, 0, "StopRESTServer", "Stopping current REST server");
                 try { httpListener.Stop(); } catch { }
                 try { httpListener.Close(); } catch { }
                 try { httpListener = null; } catch { }
             }
 
-            LogMessage(0, 0, 0, "ClearListenerAndDevices", "Clearing devices");
-            int RemainingObjectCount;
-
-            // Clear all of the current objects
-            foreach (KeyValuePair<string, ConfiguredDevice> kvp in ConfiguredDevices)
-            {
-                try
-                {
-                    // First try and disconnect cleanly
-                    string deviceKey = kvp.Value.DeviceType.ToLower() + @"/" + kvp.Value.DeviceNumber.ToString();
-                    device = ActiveObjects[deviceKey].DeviceObject;
-                    try { device.Connected = false; } catch { }
-                    try { device.Link = false; } catch { }
-
-                    // Now destroy the device instances
-                    LogMessage(0, 0, 0, "ClearListenerAndDevices", "Releasing COM object: " + kvp.Key);
-                    int LoopCount = 0;
-                    do
-                    {
-                        LoopCount += 1;
-                        RemainingObjectCount = Marshal.ReleaseComObject(device);
-                        LogMessage(0, 0, 0, "ClearListenerAndDevices", string.Format("Remaining {0} count: {1}, LoopCount: {2}", kvp.Key, RemainingObjectCount, LoopCount));
-                    }
-                    while ((RemainingObjectCount > 0) & (LoopCount != 20));
-                    device = null;
-                }
-                catch (Exception ex2)
-                {
-                    LogException(0, 0, 0, "ClearListenerAndDevices", "  ReleaseComObject Exception: " + ex2.Message);
-                }
-            }
-
-            ActiveObjects.Clear();
-
-            GC.Collect();
+            apiIsEnabled = false;
+            PboxRESTStatus.BackColor = Color.Red;
+            LblRESTStatus.Text = "REST Server Down";
         }
 
-        private void SetConfiguration()
+        private void ConnectDevices()
         {
             try
             {
-                LogMessage(0, 0, 0, "SetConfiguration", "Started");
-
-                apiIsEnabled = StartWithApiEnabled; // Set the API enabled flag as specified in the configuration
-
-                PboxDriverStatus.BackColor = Color.Green; // Turn the "Connected / Disconnected" colour box green
-                LbDriverStatus.Text = "Drivers Connected";
-
-                ClearListenerAndDevices(); // Shut down all the ASCOM device instances
+                DisconnectDevices(); // Shut down all the ASCOM device instances
 
                 // Create new ASCOM device instances
                 foreach (KeyValuePair<string, ConfiguredDevice> configuredDevice in ConfiguredDevices)
@@ -338,125 +445,76 @@ namespace ASCOM.Remote
                         try
                         {
                             string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber);
-                            LogMessage(0, 0, 0, "SetConfiguration", string.Format("Creating device: {0}, ProgID: {1}, Key: {2}", configuredDevice.Key, configuredDevice.Value.ProgID, deviceKey));
+                            LogMessage(0, 0, 0, "ConnectDevices", string.Format("Creating device: {0}, ProgID: {1}, Key: {2}", configuredDevice.Key, configuredDevice.Value.ProgID, deviceKey));
                             dynamic device = Activator.CreateInstance(Type.GetTypeFromProgID(configuredDevice.Value.ProgID));
                             ActiveObjects.Add(deviceKey, new ActiveObject(device, configuredDevice.Value.AllowConnectedSetFalse, configuredDevice.Value.AllowConnectedSetTrue));
 
-                            LogMessage(0, 0, 0, "SetConfiguration", "  Connecting device");
+                            LogMessage(0, 0, 0, "ConnectDevices", "  Connecting device");
                             device.Connected = true;
                         }
                         catch (Exception ex1)
                         {
-                            LogException(0, 0, 0, "SetConfiguration", "Error creating or connecting to device: \r\n" + ex1.ToString());
+                            LogException(0, 0, 0, "ConnectDevices", "Error creating or connecting to device: \r\n" + ex1.ToString());
                         }
                     }
                 }
 
-                // Create variables to hold the ASCOM device server operating URIs
-                string apiOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
-                string managementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.MANAGEMENT_URL_BASE);
-                LogMessage(0, 0, 0, "SetConfiguration", "Operating URI: " + apiOperatingUri);
-                LogMessage(0, 0, 0, "SetConfiguration", "Management URI: " + managementUri);
+                devicesAreConnected = true;
 
-                // Create the listener on the reuiqred URIs
-                LogMessage(0, 0, 0, "SetConfiguration", "Creating listener");
-                httpListener = new HttpListener();
-                httpListener.Prefixes.Add(apiOperatingUri); // Set up the listener on the api URI
-                httpListener.Prefixes.Add(managementUri); // Set up the listener on the management URI
-
-                PboxRESTStatus.BackColor = Color.Red;
-                LblRESTStatus.Text = "REST Server Down";
-
-                // Start the listener and ask pernmission if required
-                while (!httpListener.IsListening)
-                {
-                    try
-                    {
-                        LogMessage(0, 0, 0, "SetConfiguration", "Starting listener");
-                        httpListener.Start();
-                        LogMessage(0, 0, 0, "SetConfiguration", "Listener started");
-                        PboxRESTStatus.BackColor = Color.Green;
-                        LblRESTStatus.Text = "REST Server Running";
-                    }
-                    catch (HttpListenerException ex) when (ex.ErrorCode == (int)WindowsErrorCodes.ERROR_ACCESS_DENIED) // User does not have an ACL permitting this address and port to be used so get permission
-                    {
-                        DialogResult dlgResult = MessageBox.Show(string.Format("You need to give permission to listen on URL: {0}, do you wish to do this? \r\n(Requires administrator privilige)", apiOperatingUri), "Access Denied", MessageBoxButtons.YesNo);
-                        if (dlgResult == DialogResult.Yes) // Permission given so set the ACL using netsh, which will ask for elevation if reuqired
-                        {
-                            LogMessage(0, 0, 0, "SetConfiguration", "User gave permission to set port ACL");
-                            LogMessage(0, 0, 0, "SetConfiguration", "Closing listener"); // Have to close listener before setting ACL
-                            httpListener.Close();
-                            httpListener = null;
-                            LogMessage(0, 0, 0, "SetConfiguration", "Enabling URIs");
-
-                            string apiNetshCommand = string.Format(@"http add urlacl url={0} user={1}\{2}""", apiOperatingUri, Environment.UserDomainName, Environment.UserName);
-                            LogMessage(0, 0, 0, "EnableUris", string.Format("API NetSh command: {0}", apiNetshCommand));
-
-                            string managementNetshCommand = string.Format(@"""http add urlacl url={0} user={1}\{2}""", managementUri, Environment.UserDomainName, Environment.UserName);
-                            LogMessage(0, 0, 0, "EnableUris", string.Format("Management NetSh command: {0}", managementNetshCommand));
-
-                            try
-                            {
-                                string setNetworkPermissionsPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + SET_NETWORK_PERMISSIONS_EXE_PATH;
-                                LogMessage(0, 0, 0, "EnableUris", string.Format("SetNetworkPermissionspath: {0}", setNetworkPermissionsPath));
-
-                                // Check that the SetNetworkPermissions exe exists
-                                if (File.Exists(setNetworkPermissionsPath)) // SetNetworkPermissions exists
-                                {
-                                    string args = string.Format(@"--setapiuriacl {0} --setmanagementuriacl {1}", apiOperatingUri, managementUri);
-                                    LogMessage(0, 0, 0, "EnableUris", string.Format("SetNetworkPermissions arguments: {0}", args));
-
-                                    ProcessStartInfo psi = new ProcessStartInfo(setNetworkPermissionsPath, args)
-                                    {
-                                        Verb = "runas",
-                                        CreateNoWindow = true,
-                                        WindowStyle = ProcessWindowStyle.Hidden,
-                                        UseShellExecute = true
-                                    };
-                                    LogMessage(0, 0, 0, "EnableUris", "Starting SetNetworkPermissions process");
-                                    Process.Start(psi).WaitForExit();
-                                    LogMessage(0, 0, 0, "EnableUris", "Completed SetNetworkPermissions process");
-                                }
-                                else // SetNetworkPermissions does not exist
-                                {
-                                    string errorMessage = string.Format("Cannot find SetNetworkPermissions program: {0} ", setNetworkPermissionsPath);
-                                    LogToScreen(errorMessage);
-                                    LogMessage(0, 0, 0, "EnableUris", errorMessage);
-                                    return;
-                                }
-                            }
-                            catch (Exception ex1)
-                            {
-                                LogToScreen("Exception while enabling the API and Management URIs: " + ex1.Message);
-                                LogException(0, 0, 0, "EnableUris", ex1.ToString());
-                            }
-
-                            // Create a new listener instance and loop round to attempt to start it again
-                            LogMessage(0, 0, 0, "SetConfiguration", "Creating listener");
-                            httpListener = new HttpListener(); // Set up the listener so that Start can be attempted again at the top of the while loop
-                            httpListener.Prefixes.Add(apiOperatingUri); // Set up the listener on the required URI
-                            httpListener.Prefixes.Add(managementUri); // Set up the listener on the management URI
-                        }
-                        else
-                        {
-                            LogMessage(0, 0, 0, "SetConfiguration", "User did NOT give permission to set port ACL");
-                            return; // Just exit and wait for user to do something
-                        }
-                    }
-                }
-
-                LogMessage(0, 0, 0, "SetConfiguration", "Starting wait for incoming request");
-                IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(WebRequestCallback), httpListener);
-
-                LogToScreen("Server started successfully.");
-                LogMessage(0, 0, 0, "SetConfiguration", "Server started successfully.");
-
+                PboxDriverStatus.BackColor = Color.Green; // Turn the "Connected / Disconnected" colour box green
+                LbDriverStatus.Text = "Drivers Connected";
             }
             catch (Exception ex)
             {
-                LogToScreen("Exception while attempting to start the listener: " + ex.Message);
-                LogException(0, 0, 0, "SetConfiguration", ex.ToString());
+                LogToScreen("Exception while attempting to create devices: " + ex.Message);
+                LogException(0, 0, 0, "ConnectDevices", ex.ToString());
             }
+        }
+
+        private void DisconnectDevices()
+        {
+            LogMessage(0, 0, 0, "DisconnectDevices", "Clearing devices");
+            int RemainingObjectCount;
+
+            PboxDriverStatus.BackColor = Color.Red; // Turn the "Connected / Disconnected" colour box red
+            LbDriverStatus.Text = "Drivers Disconnected";
+            devicesAreConnected = false;
+
+            // Clear all of the current objects
+            foreach (KeyValuePair<string, ConfiguredDevice> kvp in ConfiguredDevices)
+            {
+                try
+                {
+                    // First try and disconnect cleanly
+                    string deviceKey = kvp.Value.DeviceType.ToLower() + @"/" + kvp.Value.DeviceNumber.ToString();
+                    device = ActiveObjects[deviceKey].DeviceObject;
+                    try { device.Connected = false; } catch { }// Don't throw exceptions from these
+                    try { device.Link = false; } catch { }
+
+                    // Now destroy the device instances
+                    LogMessage(0, 0, 0, "DisconnectDevices", "Releasing COM object: " + kvp.Key);
+                    int LoopCount = 0;
+                    RemainingObjectCount = 0;
+                    do
+                    {
+                        LoopCount += 1;
+                        try { RemainingObjectCount = Marshal.ReleaseComObject(device); } catch { } // Don't throw exceptions from this
+                        LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Remaining {0} count: {1}, LoopCount: {2}", kvp.Key, RemainingObjectCount, LoopCount));
+                    }
+                    while ((RemainingObjectCount > 0) & (LoopCount != 20));
+                    device = null;
+                }
+                catch (KeyNotFoundException) { } // Ignore key not found exceptions, they are expected for unconfigured devices
+
+                catch (Exception ex)
+                {
+                    LogException(0, 0, 0, "DisconnectDevices", "  ReleaseComObject Exception: " + ex.ToString());
+                }
+            }
+
+            ActiveObjects.Clear(); // Clear the list of active objects now that all active device instances have been destroyed
+
+            GC.Collect(); // Reclain memory and destroy all deleted objects
         }
 
         internal static void LogMessage(int clientID, int clientTransactionID, int serverTransactionID, string Method, string Message)
@@ -582,7 +640,7 @@ namespace ASCOM.Remote
                 DebugTraceState = driverProfile.GetValue<bool>(SERVER_DEBUG_TRACE_PROFILENAME, string.Empty, SERVER_DEBUG_TRACE_DEFAULT);
                 ServerIPAddressString = driverProfile.GetValue<string>(SERVER_IPADDRESS_PROFILENAME, string.Empty, SERVER_IPADDRESS_DEFAULT);
                 ServerPortNumber = driverProfile.GetValue<decimal>(SERVER_PORTNUMBER_PROFILENAME, string.Empty, SERVER_PORTNUMBER_DEFAULT);
-                ServerAutoConnect = driverProfile.GetValue<bool>(SERVER_AUTOCONNECT_PROFILENAME, string.Empty, SERVER_AUTOCONNECT_DEFAULT);
+                StartWithDevicesConnected = driverProfile.GetValue<bool>(SERVER_AUTOCONNECT_PROFILENAME, string.Empty, SERVER_AUTOCONNECT_DEFAULT);
                 AccessLogEnabled = driverProfile.GetValue<bool>(SERVER_ACCESS_LOG_PROFILENAME, string.Empty, SERVER_ACCESS_LOG_DEFAULT);
                 ScreenLogRequests = driverProfile.GetValue<bool>(SCREEN_LOG_REQUESTS_PROFILENAME, string.Empty, SCREEN_LOG_REQUESTS_DEFAULT);
                 ScreenLogResponses = driverProfile.GetValue<bool>(SCREEN_LOG_RESPONSES_PROFILENAME, string.Empty, SCREEN_LOG_RESPONSES_DEFAULT);
@@ -617,7 +675,7 @@ namespace ASCOM.Remote
                 driverProfile.SetValue<bool>(SERVER_DEBUG_TRACE_PROFILENAME, string.Empty, DebugTraceState);
                 driverProfile.SetValue<string>(SERVER_IPADDRESS_PROFILENAME, string.Empty, ServerIPAddressString);
                 driverProfile.SetValue<decimal>(SERVER_PORTNUMBER_PROFILENAME, string.Empty, ServerPortNumber);
-                driverProfile.SetValue<bool>(SERVER_AUTOCONNECT_PROFILENAME, string.Empty, ServerAutoConnect);
+                driverProfile.SetValue<bool>(SERVER_AUTOCONNECT_PROFILENAME, string.Empty, StartWithDevicesConnected);
                 driverProfile.SetValue<bool>(SERVER_ACCESS_LOG_PROFILENAME, string.Empty, AccessLogEnabled);
                 driverProfile.SetValue<bool>(SCREEN_LOG_REQUESTS_PROFILENAME, string.Empty, ScreenLogRequests);
                 driverProfile.SetValue<bool>(SCREEN_LOG_RESPONSES_PROFILENAME, string.Empty, ScreenLogResponses);
@@ -642,10 +700,43 @@ namespace ASCOM.Remote
 
         private void BtnSetup_Click(object sender, EventArgs e)
         {
+            bool apiEnabled; // Local variables to hold the current server state
+            bool devicesConnected;
+
+            LogMessage(0, 0, 0, "SetupButton", string.Format("Saving current server state", apiIsEnabled, devicesAreConnected));
+            apiEnabled = apiIsEnabled; // Save current server state
+            devicesConnected = devicesAreConnected;
+
+            LogMessage(0, 0, 0, "SetupButton", string.Format("Stopping REST Server"));
+            StopRESTServer(); // Shut down access while we use the Setup screen
+            LogMessage(0, 0, 0, "SetupButton", string.Format("Disconnecting devices"));
+            DisconnectDevices(); // Disconnect all devices so we can use their Setup screens if necessary
+
+            LogMessage(0, 0, 0, "SetupButton", string.Format("Loading Setup form"));
             SetupForm frm = new SetupForm(TL);
             DialogResult outcome = frm.ShowDialog();
-            if (outcome == DialogResult.OK) SetConfiguration();
+            LogMessage(0, 0, 0, "SetupButton", string.Format("Setup dialogue outcome: {0}", outcome.ToString()));
 
+            // Restore original server state
+            if (devicesConnected)
+            {
+                LogMessage(0, 0, 0, "SetupButton", string.Format("Connecting devices"));
+                ConnectDevices();
+            }
+            else
+            {
+                LogMessage(0, 0, 0, "SetupButton", string.Format("Not connecting devices because they weren't connected in the first place."));
+            }
+
+            if (apiEnabled)
+            {
+                LogMessage(0, 0, 0, "SetupButton", string.Format("Starting REST server"));
+                StartRESTServer();
+            }
+            else
+            {
+                LogMessage(0, 0, 0, "SetupButton", string.Format("Not starting REST server because it wasn't running in the first place."));
+            }
         }
 
         private void BtnExit_Click(object sender, EventArgs e)
@@ -653,75 +744,109 @@ namespace ASCOM.Remote
             this.Close();
         }
 
-        private void BtnConnect_Click(object sender, EventArgs e)
+        private void BtnConnectDevices_Click(object sender, EventArgs e)
         {
-            SetConfiguration();
+            if (!devicesAreConnected) ConnectDevices();
         }
 
-        private void BtnDisconnect_Click(object sender, EventArgs e)
+        private void BtnDisconnectDevices_Click(object sender, EventArgs e)
         {
-            DisconnectDevices();
+            if (devicesAreConnected) DisconnectDevices();
         }
 
-        private void ServerForm_Resize(object sender, EventArgs e)
+        private void BtnStartRESTServer_Click(object sender, EventArgs e)
         {
-            Control control = (Control)sender;
-
-            if (control.Width < 400) control.Width = 400;
-            if (control.Height < 425) control.Height = 425;
-
-            int formWidth = control.Width;
-            int formHeight = control.Height;
-            int buttonLeft = formWidth - 150;
-
-            lblTitle.Left = ((formWidth - lblTitle.Width) / 2) - 85;
-            lblTitle.Top = 20;
-
-            txtLog.Width = formWidth - 200;
-            txtLog.Height = formHeight - 123;
-
-            txtConcurrency.Left = buttonLeft + 2;
-            txtConcurrency.Top = formHeight - 570;
-
-            lblConcurrentTransactions.Left = buttonLeft + 32;
-            lblConcurrentTransactions.Top = formHeight - 574;
-
-            chkLogRequests.Left = buttonLeft + 5;
-            chkLogRequests.Top = formHeight - 490;
-
-            chkLogResponses.Left = buttonLeft + 5;
-            chkLogResponses.Top = formHeight - 470;
-
-            PboxRESTStatus.Left = buttonLeft;
-            PboxRESTStatus.Top = formHeight - 405;
-
-            PboxDriverStatus.Left = buttonLeft;
-            PboxDriverStatus.Top = formHeight - 340;
-
-            LbDriverStatus.Left = buttonLeft;
-            LbDriverStatus.Top = formHeight - 280;
-
-            BtnConnect.Left = buttonLeft;
-            BtnConnect.Top = formHeight - 230;
-
-            BtnDisconnect.Left = buttonLeft;
-            BtnDisconnect.Top = formHeight - 200;
-
-            BtnSetup.Left = buttonLeft;
-            BtnSetup.Top = formHeight - 140;
-
-            BtnExit.Left = buttonLeft;
-            BtnExit.Top = formHeight - 80;
-
+            if (!apiIsEnabled) StartRESTServer();
         }
 
-        private void ScreenLog_CheckedChanged(object sender, EventArgs e)
+        private void BtnStopRESTServer_Click(object sender, EventArgs e)
+        {
+            if (apiIsEnabled) StopRESTServer();
+        }
+
+        private void ChkLogRequestsAndResponses_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox checkBox = (CheckBox)sender;
             if (DebugTraceState) LogMessage(0, 0, 0, "ScreenLog_Changed", string.Format("Check box {0} has changed to {1}, saving new value", checkBox.Name, checkBox.Checked.ToString()));
             ScreenLogRequests = chkLogRequests.Checked;
             ScreenLogResponses = chkLogResponses.Checked;
             WriteProfile();
+        }
+
+        /// <summary>
+        /// Lays out server form controls to appear visually pleasing at different sizes.
+        /// </summary>
+        /// <param name="sender">ServerForm instance</param>
+        /// <param name="e">Event argument that contains no data</param>
+        /// <remarks>Lays out controls in groups with equal spacing between groups. Supports full width controls and those that need to be centred on the control group median line</remarks>
+        private void ServerForm_Resize(object sender, EventArgs e)
+        {
+            Form form = (Form)sender; // Get the supplied control as a Form
+
+            if (WindowState != FormWindowState.Minimized) // No need to chnage anything if the window is minimised
+            {
+                int formWidth = form.Width;
+                int controlLeftPosition = formWidth - CONTROL_LEFT_OFFSET;
+                int controlCentrePosition = controlLeftPosition + CONTROL_CENTRE_OFFSET;
+
+                // Place the Log messages text box - This must be set first in this method as other controls are located releative to it
+                txtLog.Size = new Size(formWidth - CONTROL_SPACE_WIDTH, form.Height - LOG_HEIGHT_OFFSET);
+
+                // Precalculate some items
+                int controlSpacing = (txtLog.Height - CONTROL_OVERALL_HEIGHT) / (NUMBER_OF_CONTROL_GROUPS - 1); // Calculate the vertical distance between controls and control groups. This allows the controls to move closer together when the window is small.
+                if (controlSpacing > CONTROL_SPACING_MAXIMUM) controlSpacing = CONTROL_SPACING_MAXIMUM; // Limit the maximum spoacing so that it doesn't get too large and become unsightly
+                int controlsTop = txtLog.Top + (txtLog.Height / 2) - ((CONTROL_OVERALL_HEIGHT + 5 * controlSpacing) / 2); // Calculate the location of the top of the controls
+
+                // Place the form title
+                // Transition from Form.Width =900 to Form.Width = Title.Width + CONTROL_SPACE_WIDTH + Form.Left
+                int titleLeftMessagesCentred = txtLog.Left + ((txtLog.Width - lblTitle.Width) / 2) - 20; // Centre the title over the log message text box
+                int titleLeftFormCentred = ((form.Width - lblTitle.Width) / 2) - 8; // If the text box is narrower than the title, centre the title within the overall width of the form
+                int titleLeft = 0;
+                int titleTransitionPositionStart = lblTitle.Width + CONTROL_SPACE_WIDTH + txtLog.Left;
+
+                if (form.Width < TITLE_TRANSITION_POSITION_END) // We may be in the transition region or smaller than this
+                {
+                    if (form.Width > titleTransitionPositionStart) // We are in the transition region
+                    {
+                        int transitionSize = titleLeftFormCentred - titleLeftMessagesCentred;
+                        double transitionFraction = 1.0 - Convert.ToDouble(form.Width - titleTransitionPositionStart) / Convert.ToDouble(TITLE_TRANSITION_POSITION_END - titleTransitionPositionStart);
+                        titleLeft = titleLeftMessagesCentred + (int)(transitionSize * transitionFraction);
+                    }
+                    else // Smaller than lower transition point, just just go with form centred
+                    {
+                        titleLeft = titleLeftFormCentred;
+                    }
+                }
+                else // Larger than the upper transition point so do with message centred
+                {
+                    titleLeft = titleLeftMessagesCentred;
+                }
+                lblTitle.Location = new Point(titleLeft, TITLE_OFFSET_FROM_TOP); // Set the title posiiton
+
+                // Control Group 1 - Concurrent transactions counter
+                txtConcurrency.Location = new Point(controlCentrePosition - 3, controlsTop);
+                lblConcurrentTransactions.Location = new Point(controlCentrePosition + 33, txtConcurrency.Top - 4);
+
+                // Control Group 2 - Log requests and responses check boxes
+                chkLogRequests.Location = new Point(controlCentrePosition + 4, txtConcurrency.Top + controlSpacing);
+                chkLogResponses.Location = new Point(controlCentrePosition + 4, chkLogRequests.Top + +20);
+
+                //Control Group 3 - REST Server Status, Stop and Start
+                PboxRESTStatus.Location = new Point(controlLeftPosition, chkLogResponses.Top + controlSpacing - 5);
+                BtnStopRESTServer.Location = new Point(controlLeftPosition - 1, PboxRESTStatus.Top + 30);
+                BtnStartRESTServer.Location = new Point(controlLeftPosition + 84, PboxRESTStatus.Top + 30);
+
+                // Control Group 4 - Device Status, Disconnect and Connect
+                PboxDriverStatus.Location = new Point(controlLeftPosition, BtnStopRESTServer.Top + controlSpacing + 3);
+                BtnDisconnectDevices.Location = new Point(controlLeftPosition - 1, PboxDriverStatus.Top + 30);
+                BtnConnectDevices.Location = new Point(controlLeftPosition + 84, PboxDriverStatus.Top + 30);
+
+                // Control Group 5 - Setup button
+                BtnSetup.Location = new Point(controlCentrePosition, BtnDisconnectDevices.Top + controlSpacing + 2);
+
+                // Control Group 6 - Exit button
+                BtnExit.Location = new Point(controlCentrePosition, BtnSetup.Top + controlSpacing + 2);
+            }
         }
 
         #endregion
@@ -740,19 +865,28 @@ namespace ASCOM.Remote
         /// </remarks>
         protected void WebRequestCallback(IAsyncResult result)
         {
+            HttpListener listener = (HttpListener)result.AsyncState;
+
             HttpListenerContext context = null;
 
             // Get the result context from the client's call
             try
             {
                 if (DebugTraceState) LogMessage(0, 0, 0, "WebRequestCallback", string.Format("Thread {0} - Request received. Is thread pool thread: {1}. Is background thread: {2}.", Thread.CurrentThread.ManagedThreadId.ToString(), Thread.CurrentThread.IsThreadPoolThread, Thread.CurrentThread.IsBackground));
-                context = httpListener.EndGetContext(result); // Get the context object
+                //context = httpListener.EndGetContext(result); // Get the context object
+                context = listener.EndGetContext(result); // Get the context object
             }
             catch (NullReferenceException) // httpListener is null because we are closing down or because of some other error so just log the event
             {
                 if (DebugTraceState) LogMessage(0, 0, 0, "WebRequestCallback", string.Format("Thread {0} - EndGetContext - httpListener is null so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
                 return;
             }
+            catch (ObjectDisposedException) // httpListener is disposed because we are closing down or because of some other error so just log the event
+            {
+                if (DebugTraceState) LogMessage(0, 0, 0, "WebRequestCallback", string.Format("Thread {0} - EndGetContext - httpListener is disposed so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
+                return;
+            }
+
             catch (Exception ex)
             {
                 LogException(0, 0, 0, "WebRequestCallback", ex.ToString()); // Log the exception
@@ -805,7 +939,12 @@ namespace ASCOM.Remote
             if (numberOfConsecutiveErrors == MAX_ERRORS_BEFORE_CLOSE)
             {
                 LogMessage(0, 0, 0, "WebRequestCallback", string.Format("Thread {0} - Maximum number of errors ({1}) reached, closing server and device drivers.", Thread.CurrentThread.ManagedThreadId, MAX_ERRORS_BEFORE_CLOSE));
-                ClearListenerAndDevices();
+
+                // Clear down the listener
+                StopRESTServer();
+
+                // Clear the devices
+                DisconnectDevices();
             }
         }
 

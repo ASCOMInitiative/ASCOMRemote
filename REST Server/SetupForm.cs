@@ -90,13 +90,14 @@ namespace ASCOM.Remote
             // Set up the GUI components
             addressList.SelectedIndex = selectedIndex;
             numPort.Value = ServerForm.ServerPortNumber;
-            chkAutoConnect.Checked = ServerForm.ServerAutoConnect;
+            chkAutoConnect.Checked = ServerForm.StartWithDevicesConnected;
             chkAccessLog.Checked = ServerForm.AccessLogEnabled;
             chkTrace.Checked = ServerForm.TraceState;
             chkDebugTrace.Checked = ServerForm.DebugTraceState;
             chkDebugTrace.Enabled = ServerForm.TraceState; // Enable or disable the debug trace check box depending on whether normal trace is enabled
             chkManagementInterfaceEnabled.Checked = ServerForm.ManagementInterfaceEnabled;
             ChkStartWithApiEnabled.Checked = ServerForm.StartWithApiEnabled;
+            LblDevicesNotDisconnoected.Visible = ServerForm.devicesAreConnected;
 
             // Populate the device types list
             foreach (string deviceType in profile.RegisteredDeviceTypes)
@@ -122,6 +123,8 @@ namespace ASCOM.Remote
                 item.DeviceNumber = ServerForm.ConfiguredDevices[item.Name].DeviceNumber;
                 item.AllowConnectedSetFalse = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetFalse;
                 item.AllowConnectedSetTrue = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetTrue;
+                item.DevicesAreConnected = ServerForm.devicesAreConnected;
+
                 TL.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}.", item.Name));
             }
 
@@ -213,7 +216,7 @@ namespace ASCOM.Remote
             if (addressList.Text == SharedConstants.LOCALHOST_NAME) ServerForm.ServerIPAddressString = SharedConstants.LOCALHOST_ADDRESS;
             else ServerForm.ServerIPAddressString = addressList.Text;
             ServerForm.ServerPortNumber = numPort.Value;
-            ServerForm.ServerAutoConnect = chkAutoConnect.Checked;
+            ServerForm.StartWithDevicesConnected = chkAutoConnect.Checked;
             ServerForm.AccessLogEnabled = chkAccessLog.Checked;
             ServerForm.TraceState = chkTrace.Checked;
             ServerForm.DebugTraceState = chkDebugTrace.Checked;

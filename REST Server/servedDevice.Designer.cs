@@ -33,6 +33,7 @@
             this.cmbDevice = new System.Windows.Forms.ComboBox();
             this.chkAllowSetConnectedTrue = new System.Windows.Forms.CheckBox();
             this.chkAllowSetConnectedFalse = new System.Windows.Forms.CheckBox();
+            this.btnSetup = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cmbDeviceType
@@ -68,7 +69,7 @@
             // chkAllowSetConnectedTrue
             // 
             this.chkAllowSetConnectedTrue.AutoSize = true;
-            this.chkAllowSetConnectedTrue.Location = new System.Drawing.Point(724, 4);
+            this.chkAllowSetConnectedTrue.Location = new System.Drawing.Point(844, 4);
             this.chkAllowSetConnectedTrue.Name = "chkAllowSetConnectedTrue";
             this.chkAllowSetConnectedTrue.Size = new System.Drawing.Size(15, 14);
             this.chkAllowSetConnectedTrue.TabIndex = 5;
@@ -77,23 +78,34 @@
             // chkAllowSetConnectedFalse
             // 
             this.chkAllowSetConnectedFalse.AutoSize = true;
-            this.chkAllowSetConnectedFalse.Location = new System.Drawing.Point(664, 4);
+            this.chkAllowSetConnectedFalse.Location = new System.Drawing.Point(784, 4);
             this.chkAllowSetConnectedFalse.Name = "chkAllowSetConnectedFalse";
             this.chkAllowSetConnectedFalse.Size = new System.Drawing.Size(15, 14);
             this.chkAllowSetConnectedFalse.TabIndex = 4;
             this.chkAllowSetConnectedFalse.UseVisualStyleBackColor = true;
             // 
+            // btnSetup
+            // 
+            this.btnSetup.Location = new System.Drawing.Point(644, 1);
+            this.btnSetup.Name = "btnSetup";
+            this.btnSetup.Size = new System.Drawing.Size(75, 19);
+            this.btnSetup.TabIndex = 6;
+            this.btnSetup.Text = "Setup";
+            this.btnSetup.UseVisualStyleBackColor = true;
+            this.btnSetup.Click += new System.EventHandler(this.BtnSetup_Click);
+            // 
             // ServedDevice
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnSetup);
             this.Controls.Add(this.chkAllowSetConnectedTrue);
             this.Controls.Add(this.chkAllowSetConnectedFalse);
             this.Controls.Add(this.cmbDevice);
             this.Controls.Add(this.txtDeviceNumber);
             this.Controls.Add(this.cmbDeviceType);
             this.Name = "ServedDevice";
-            this.Size = new System.Drawing.Size(747, 22);
+            this.Size = new System.Drawing.Size(872, 22);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -106,5 +118,6 @@
         private System.Windows.Forms.ComboBox cmbDevice;
         private System.Windows.Forms.CheckBox chkAllowSetConnectedTrue;
         private System.Windows.Forms.CheckBox chkAllowSetConnectedFalse;
+        private System.Windows.Forms.Button btnSetup;
     }
 }
