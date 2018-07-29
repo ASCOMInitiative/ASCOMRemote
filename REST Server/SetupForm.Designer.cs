@@ -61,6 +61,7 @@
             this.ServedDevice3 = new ASCOM.Remote.ServedDevice();
             this.ServedDevice2 = new ASCOM.Remote.ServedDevice();
             this.ServedDevice1 = new ASCOM.Remote.ServedDevice();
+            this.ChkRunDriversInSeparateThreadss = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
@@ -412,6 +413,16 @@
             this.ServedDevice1.Size = new System.Drawing.Size(872, 22);
             this.ServedDevice1.TabIndex = 9;
             // 
+            // ChkRunDriversInSeparateThreadss
+            // 
+            this.ChkRunDriversInSeparateThreadss.AutoSize = true;
+            this.ChkRunDriversInSeparateThreadss.Location = new System.Drawing.Point(309, 501);
+            this.ChkRunDriversInSeparateThreadss.Name = "ChkRunDriversInSeparateThreadss";
+            this.ChkRunDriversInSeparateThreadss.Size = new System.Drawing.Size(181, 17);
+            this.ChkRunDriversInSeparateThreadss.TabIndex = 34;
+            this.ChkRunDriversInSeparateThreadss.Text = "Run Drivers in Separate Threads";
+            this.ChkRunDriversInSeparateThreadss.UseVisualStyleBackColor = true;
+            // 
             // SetupForm
             // 
             this.AcceptButton = this.BtnCancel;
@@ -419,6 +430,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.BtnCancel;
             this.ClientSize = new System.Drawing.Size(920, 560);
+            this.Controls.Add(this.ChkRunDriversInSeparateThreadss);
             this.Controls.Add(this.LblDevicesNotDisconnoected);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.ChkStartWithApiEnabled);
@@ -493,5 +505,6 @@
         private System.Windows.Forms.CheckBox ChkStartWithApiEnabled;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label LblDevicesNotDisconnoected;
+        private System.Windows.Forms.CheckBox ChkRunDriversInSeparateThreadss;
     }
 }

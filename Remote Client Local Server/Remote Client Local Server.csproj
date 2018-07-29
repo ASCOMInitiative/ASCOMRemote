@@ -91,6 +91,9 @@
     <Compile Include="..\Shared Resources\Properties\SharedVersionNumbers.cs">
       <Link>Properties\SharedVersionNumbers.cs</Link>
     </Compile>
+    <Compile Include="..\Shared Resources\RequestData.cs">
+      <Link>RequestData.cs</Link>
+    </Compile>
     <Compile Include="..\Shared Resources\Response Classes\AxisRatesResponse.cs">
       <Link>Response Classes\AxisRatesResponse.cs</Link>
     </Compile>

@@ -17,6 +17,7 @@ using ASCOM.DeviceInterface;
 using RestSharp;
 using RestSharp.Authenticators;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
 
 namespace ASCOM.Remote
 {
@@ -81,8 +82,22 @@ namespace ASCOM.Remote
         /// </summary>
         public static int GetUniqueClientNumber()
         {
-            Interlocked.Increment(ref uniqueClientNumber);
-            return uniqueClientNumber;
+            //Interlocked.Increment(ref uniqueClientNumber);
+            //return uniqueClientNumber;
+
+
+            int randomvalue;
+            using (RNGCryptoServiceProvider rg = new RNGCryptoServiceProvider())
+            {
+                byte[] rno = new byte[5];
+                rg.GetBytes(rno);
+                rno[3] = 0;
+                randomvalue = BitConverter.ToInt32(rno, 0);
+            }
+
+            return randomvalue;
+
+
         }
 
         /// <summary>
@@ -112,6 +127,11 @@ namespace ASCOM.Remote
         /// <returns></returns>
         public static bool IsClientConnected(int clientNumber, RestClient client, TraceLoggerPlus TL)
         {
+            foreach (KeyValuePair<long, bool> kvp in connectStates)
+            {
+                TL.LogMessage(clientNumber, "IsClientConnected", string.Format("This device ClientID is in the ConnectedStates list: {0}, Value: {1}", kvp.Key, kvp.Value));
+            }
+
             TL.LogMessage(clientNumber, "IsClientConnected", "Number of connected devices: " + connectStates.Count + ", Returning: " + connectStates.ContainsKey(clientNumber).ToString());
 
             return connectStates.ContainsKey(clientNumber);
@@ -788,14 +808,10 @@ namespace ASCOM.Remote
                 {
                     try
                     {
-                        TL.LogMessage(clientNumber, "Connect", "Attempting to connect to devices");
+                        TL.LogMessage(clientNumber, "Connect", "This is the first connection so set Connected to True");
+                        SetBool(clientNumber, client, URIBase, TL, "Connected", true);
                         bool notAlreadyPresent = connectStates.TryAdd(clientNumber, true);
                         TL.LogMessage(clientNumber, "Connect", "Successfully connected, AlreadyConnected: " + (!notAlreadyPresent).ToString() + ", number of connections: " + connectStates.Count);
-                        if (ConnectionCount(TL) == 1) // This is the first successful connection
-                        {
-                            TL.LogMessage(clientNumber, "Connect", "This is the first connection so set Connected to True");
-                            SetBool(clientNumber, client, URIBase, TL, "Connected", true);
-                        }
                     }
                     catch (Exception ex)
                     {
@@ -813,15 +829,18 @@ namespace ASCOM.Remote
 
         public static void Disconnect(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
         {
-            bool successfullyRemoved = connectStates.TryRemove(clientNumber, out bool lastValue);
-            TL.LogMessage("Disconnect", "Set Connected to: False, Successfully removed: " + successfullyRemoved.ToString());
 
-            if (ConnectionCount(TL) == 0) // The last connection has dropped so really disconnect
+            if (IsClientConnected(clientNumber, client, TL)) // If we are already connected then disconnect, otherwise ignore disconnect 
             {
-                TL.LogMessage(clientNumber, "Disconnect", "This is the last connection so set Connected to False");
+                TL.LogMessage(clientNumber, "Disconnect", "We are connected, setting Connected to False on remote driver");
                 SetBool(clientNumber, client, URIBase, TL, "Connected", false);
+                bool successfullyRemoved = connectStates.TryRemove(clientNumber, out bool lastValue);
+                TL.LogMessage("Disconnect", "Set Connected to: False, Successfully removed: " + successfullyRemoved.ToString());
             }
-
+            else
+            {
+                TL.LogMessage("Disconnect", "Already disconnected, not sending command to driver");
+            }
         }
 
         public static string DriverInfo(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)

@@ -1,19 +1,38 @@
-﻿namespace ASCOM.Remote
+﻿using System.Collections.Concurrent;
+using System.Threading;
+using System.Windows.Forms;
+namespace ASCOM.Remote
 {
     public class ActiveObject
     {
-        object deviceObject;
+        dynamic deviceObject;
         bool allowConnectedSetFalse;
         bool allowConnectedSetTrue;
+        DriverHostForm driverHostForm;
 
-        public ActiveObject(object deviceObjectParm,bool allowConnectedSetFalseParm,bool allowSetConnectedTrueParm)
+        //static readonly object commandLock;
+        readonly object commandLock;
+
+        /*        static ActiveObject()
+                {
+                    commandLock = new object();
+                }
+        */
+
+        public ActiveObject()
+        {
+            commandLock = new object();
+        }
+
+
+        public ActiveObject(dynamic deviceObjectParm, bool allowConnectedSetFalseParm, bool allowSetConnectedTrueParm) : this()
         {
             deviceObject = deviceObjectParm;
             allowConnectedSetFalse = allowConnectedSetFalseParm;
             allowConnectedSetTrue = allowSetConnectedTrueParm;
         }
 
-        public object DeviceObject
+        public dynamic DeviceObject
         {
             get => deviceObject;
             set => deviceObject = value;
@@ -30,6 +49,14 @@
             get => allowConnectedSetTrue;
             set => allowConnectedSetTrue = value;
         }
-
+        public object CommandLock
+        {
+            get => commandLock;
+        }
+        public DriverHostForm DriverHostForm
+        {
+            get => driverHostForm;
+            set => driverHostForm = value;
+        }
     }
 }

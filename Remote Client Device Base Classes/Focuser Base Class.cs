@@ -92,6 +92,7 @@ namespace ASCOM.Remote
             }
         }
 
+
         #endregion
 
         #region Common properties and methods.

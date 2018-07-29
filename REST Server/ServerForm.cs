@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
@@ -25,7 +26,6 @@ namespace ASCOM.Remote
 
     public partial class ServerForm : Form
     {
-
         #region Constants
 
         private const string SERVER_TRACELOGGER_NAME = "RemoteAccessServer";
@@ -80,6 +80,7 @@ namespace ASCOM.Remote
         internal const string ALLOW_CONNECTED_SET_TRUE_PROFILENAME = "Allow Connected Set True"; public const bool ALLOW_CONNECTED_SET_TRUE_DEFAULT = true;
         internal const string MANAGEMENT_INTERFACE_ENABLED_PROFILENAME = "Management Interface Enabled"; public const bool MANGEMENT_INTERFACE_ENABLED_DEFAULT = false;
         internal const string START_WITH_API_ENABLED_PROFILENAME = "Start WIth API Enabled"; public const bool START_WITH_API_ENABLED_DEFAULT = true;
+        internal const string RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME = "Run Drivers On Separate Threads"; public const bool RUN_DRIVERS_ON_SEPARATE_THREADS_DEFAULT = false;
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -89,7 +90,7 @@ namespace ASCOM.Remote
         internal const string DEVICENUMBER_PROFILENAME = "Device Number"; public const int DEVICENUMBER_DEFAULT = 0;
 
         // !!!!! This list must match the names of the ServedDevice instances on the SetupForm !!!!!
-        internal static List<string> ServerDeviceNames = new List<string>() { "ServedDevice0", "ServedDevice1", "ServedDevice2", "ServedDevice3", "ServedDevice4", "ServedDevice5", "ServedDevice6", "ServedDevice7", "ServedDevice8", "ServedDevice9" };
+        internal static ConcurrentBag<string> ServerDeviceNames = new ConcurrentBag<string>() { "ServedDevice0", "ServedDevice1", "ServedDevice2", "ServedDevice3", "ServedDevice4", "ServedDevice5", "ServedDevice6", "ServedDevice7", "ServedDevice8", "ServedDevice9" };
         internal static List<string> ServerDeviceNumbers = new List<string>() { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
         // Form size and resize constants
@@ -113,6 +114,13 @@ namespace ASCOM.Remote
         // Control Group 6 - Exit button
         internal const int NUMBER_OF_CONTROL_GROUPS = 6; // Number of control groups 
 
+        // Management interface constants
+        internal const int MANGEMENT_RESTART_WAIT_TIME = 5000;
+
+        // Run driver in separate thread constants
+        internal const int DESTROY_DRIVER = int.MinValue;
+        internal const int ASYNC_WAIT_LOOP_TIME = 20; // Number of milliseconds to wait for work before timing out and going round the wait loop to run Application.DoEvents()
+
         #endregion
 
         #region Application Global Variables
@@ -123,6 +131,7 @@ namespace ASCOM.Remote
         internal static TraceLoggerPlus TL;
         internal static TraceLoggerPlus AccessLog;
         internal readonly object counterLock = new object();
+        internal readonly object managementCommandLock = new object();
 
         // Application Status variables
         internal static bool apiIsEnabled = false;
@@ -136,10 +145,10 @@ namespace ASCOM.Remote
         internal static DateTime LastTraceLogTime = DateTime.Now; // Initialise to now to esnure that the TraceLoggerPlus code works correctly
         internal static DateTime LastAccessLogTime = DateTime.Now; // Initialise to now to esnure that the TraceLoggerPlus code works correctly
 
-        internal static Dictionary<string, ConfiguredDevice> ConfiguredDevices;
-        internal static Dictionary<string, ActiveObject> ActiveObjects;
+        internal static ConcurrentDictionary<string, ConfiguredDevice> ConfiguredDevices;
+        internal static ConcurrentDictionary<string, ActiveObject> ActiveObjects;
 
-        // Setup dialogue configuration variables
+        // Configuration variables that can be changed through the Setup dialogue 
         internal static bool TraceState;
         internal static bool DebugTraceState;
         internal static string ServerIPAddressString;
@@ -150,6 +159,7 @@ namespace ASCOM.Remote
         internal static bool ScreenLogResponses;
         internal static bool ManagementInterfaceEnabled;
         internal static bool StartWithApiEnabled;
+        internal static bool RunDriversOnSeparateThreads;
 
         #endregion
 
@@ -168,8 +178,11 @@ namespace ASCOM.Remote
 
         #region Delegates for Form callbacks
 
-        delegate void SetTextCallback(string text);
-        delegate void SetConcurrencyCallback();
+        private delegate void SetTextCallback(string text);
+        private delegate void SetConcurrencyCallback();
+        private delegate void DestroyDriverDelegate();
+        private delegate void DriverCommandDelegate(RequestData requestData);
+        private delegate void CreateInstanceDelegate(KeyValuePair<string, ConfiguredDevice> kvp);
 
         #endregion
 
@@ -181,8 +194,8 @@ namespace ASCOM.Remote
             {
                 InitializeComponent();
                 TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME);
-                ConfiguredDevices = new Dictionary<string, ConfiguredDevice>();
-                ActiveObjects = new Dictionary<string, ActiveObject>();
+                ConfiguredDevices = new ConcurrentDictionary<string, ConfiguredDevice>();
+                ActiveObjects = new ConcurrentDictionary<string, ActiveObject>();
 
                 ReadProfile();
                 TL.Enabled = TraceState; // Iniitalise with the trace state enabled or disabled as configured
@@ -390,10 +403,10 @@ namespace ASCOM.Remote
 
                 apiIsEnabled = true;
                 PboxRESTStatus.BackColor = Color.Green;
-                LblRESTStatus.Text = "REST Server Running";
+                LblRESTStatus.Text = "REST Server Up";
 
                 LogMessage(0, 0, 0, "StartRESTServer", "Starting wait for incoming request");
-                IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(WebRequestCallback), httpListener);
+                IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(RestRequestReceivedHandler), httpListener);
 
                 //LogToScreen("Server started successfully.");
                 LogMessage(0, 0, 0, "StartRESTServer", "Server started successfully.");
@@ -436,6 +449,8 @@ namespace ASCOM.Remote
             try
             {
                 DisconnectDevices(); // Shut down all the ASCOM device instances
+                ActiveObjects.Clear();
+                GC.Collect();
 
                 // Create new ASCOM device instances
                 foreach (KeyValuePair<string, ConfiguredDevice> configuredDevice in ConfiguredDevices)
@@ -444,17 +459,41 @@ namespace ASCOM.Remote
                     {
                         try
                         {
-                            string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber);
-                            LogMessage(0, 0, 0, "ConnectDevices", string.Format("Creating device: {0}, ProgID: {1}, Key: {2}", configuredDevice.Key, configuredDevice.Value.ProgID, deviceKey));
-                            dynamic device = Activator.CreateInstance(Type.GetTypeFromProgID(configuredDevice.Value.ProgID));
-                            ActiveObjects.Add(deviceKey, new ActiveObject(device, configuredDevice.Value.AllowConnectedSetFalse, configuredDevice.Value.AllowConnectedSetTrue));
+                            if (RunDriversOnSeparateThreads)
+                            {
+                                LogMessage(0, 0, 0, "ConnectDevices", string.Format("Creating driver on separate thread. This is thread: {0}", Thread.CurrentThread.ManagedThreadId));
+                                Thread driverThread = new Thread(DriverOnSeparateThread);
+                                driverThread.SetApartmentState(ApartmentState.STA);
+                                driverThread.DisableComObjectEagerCleanup();
+                                driverThread.IsBackground = true;
+                                driverThread.Start(configuredDevice);
+                                LogMessage(0, 0, 0, "ConnectDevices", string.Format("Thread started successfully. This is thread: {0}", Thread.CurrentThread.ManagedThreadId));
 
-                            LogMessage(0, 0, 0, "ConnectDevices", "  Connecting device");
-                            device.Connected = true;
+                                string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber);
+                                ActiveObjects[deviceKey] = new ActiveObject();
+
+                                do
+                                {
+                                    Thread.Sleep(50);
+                                    Application.DoEvents();
+                                } while (ActiveObjects[deviceKey].DriverHostForm == null);
+
+                                LogMessage(0, 0, 0, "ConnectDevices", string.Format("Completed create driver delegate on thread {0}", Thread.CurrentThread.ManagedThreadId));
+                            }
+                            else
+                            {
+                                if (this.InvokeRequired)
+                                {
+                                    CreateInstanceDelegate createInstanceDelegate = new CreateInstanceDelegate(CreateInstance);
+                                    this.Invoke(createInstanceDelegate, new object[] { configuredDevice }); // Force the driver to be created on the main UI thread if we are currently executing on a different thread
+                                }
+                                else CreateInstance(configuredDevice); // We are on the UI thread so just create the driver
+                            }
                         }
-                        catch (Exception ex1)
+                        catch (Exception ex)
                         {
-                            LogException(0, 0, 0, "ConnectDevices", "Error creating or connecting to device: \r\n" + ex1.ToString());
+                            LogToScreen(string.Format("Exception while attempting to create thread for device: {0} {1}", configuredDevice.Value.ProgID, ex.Message));
+                            LogException(0, 0, 0, "ConnectDevices", ex.ToString());
                         }
                     }
                 }
@@ -471,38 +510,74 @@ namespace ASCOM.Remote
             }
         }
 
+        private void DriverOnSeparateThread(object arg)
+        {
+            KeyValuePair<string, ConfiguredDevice> configuredDevice = (KeyValuePair<string, ConfiguredDevice>)arg;
+
+            DriverHostForm driverHostForm = new DriverHostForm(TL, configuredDevice, this);
+            driverHostForm.Show();
+            driverHostForm.Hide();
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Before Application.Run() on thread {0}", Thread.CurrentThread.ManagedThreadId));
+            Application.Run();
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("After Application.Run() on thread {0}", Thread.CurrentThread.ManagedThreadId));
+            string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber);
+
+            // Thread will finish at this point
+        }
+
+        internal void CreateInstance(KeyValuePair<string, ConfiguredDevice> configuredDevice)
+        {
+            try
+            {
+                string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber);
+                LogMessage(0, 0, 0, "CreateInstance", string.Format("Creating device: {0}, ProgID: {1}, Key: {2} on thread {3}", configuredDevice.Key, configuredDevice.Value.ProgID, deviceKey, Thread.CurrentThread.ManagedThreadId));
+
+                dynamic deviceObject = Activator.CreateInstance(Type.GetTypeFromProgID(configuredDevice.Value.ProgID));
+                LogMessage(0, 0, 0, "CreateInstance", string.Format("Device object is null: {0}", (deviceObject == null)));
+                ActiveObjects[deviceKey] = new ActiveObject(deviceObject, configuredDevice.Value.AllowConnectedSetFalse, configuredDevice.Value.AllowConnectedSetTrue);
+                LogMessage(0, 0, 0, "CreateInstance", string.Format("ActiveObjects.DeviceObject is null: {0}", (ActiveObjects[deviceKey].DeviceObject == null)));
+
+                try
+                {
+                    LogMessage(0, 0, 0, "CreateInstance", "Connecting device");
+                    deviceObject.Connected = true;
+                }
+                catch (Exception ex1)
+                {
+                    LogException(0, 0, 0, "CreateInstance", "Error connecting to device: \r\n" + ex1.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException(0, 0, 0, "CreateInstance", "Error creating device: \r\n" + ex.ToString());
+            }
+        }
+
         private void DisconnectDevices()
         {
             LogMessage(0, 0, 0, "DisconnectDevices", "Clearing devices");
             int RemainingObjectCount;
 
             PboxDriverStatus.BackColor = Color.Red; // Turn the "Connected / Disconnected" colour box red
-            LbDriverStatus.Text = "Drivers Disconnected";
+            LbDriverStatus.Text = "Drivers Unloaded";
             devicesAreConnected = false;
 
-            // Clear all of the current objects
-            foreach (KeyValuePair<string, ConfiguredDevice> kvp in ConfiguredDevices)
+            // Clear all of the current drivers
+            foreach (KeyValuePair<string, ActiveObject> activeObject in ActiveObjects)
             {
                 try
                 {
-                    // First try and disconnect cleanly
-                    string deviceKey = kvp.Value.DeviceType.ToLower() + @"/" + kvp.Value.DeviceNumber.ToString();
-                    device = ActiveObjects[deviceKey].DeviceObject;
-                    try { device.Connected = false; } catch { }// Don't throw exceptions from these
-                    try { device.Link = false; } catch { }
-
-                    // Now destroy the device instances
-                    LogMessage(0, 0, 0, "DisconnectDevices", "Releasing COM object: " + kvp.Key);
-                    int LoopCount = 0;
-                    RemainingObjectCount = 0;
-                    do
+                    if (RunDriversOnSeparateThreads)
                     {
-                        LoopCount += 1;
-                        try { RemainingObjectCount = Marshal.ReleaseComObject(device); } catch { } // Don't throw exceptions from this
-                        LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Remaining {0} count: {1}, LoopCount: {2}", kvp.Key, RemainingObjectCount, LoopCount));
+                        DestroyDriverDelegate destroyDriverDelegate = new DestroyDriverDelegate(activeObject.Value.DriverHostForm.DestroyDriver);
+                        LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Starting invoke of driver delegate on thread {0}", Thread.CurrentThread.ManagedThreadId));
+                        activeObject.Value.DriverHostForm.Invoke(destroyDriverDelegate);
+                        LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Completed invoke of driver delegate on thread {0}", Thread.CurrentThread.ManagedThreadId));
                     }
-                    while ((RemainingObjectCount > 0) & (LoopCount != 20));
-                    device = null;
+                    else
+                    {
+                        RemainingObjectCount = DestroyDriver(activeObject.Key);
+                    }
                 }
                 catch (KeyNotFoundException) { } // Ignore key not found exceptions, they are expected for unconfigured devices
 
@@ -515,6 +590,52 @@ namespace ASCOM.Remote
             ActiveObjects.Clear(); // Clear the list of active objects now that all active device instances have been destroyed
 
             GC.Collect(); // Reclain memory and destroy all deleted objects
+        }
+
+        internal static int DestroyDriver(string DeviceKey)
+        {
+            int RemainingObjectCount;
+
+            LogMessage(0, 0, 0, "DestroyDriver", "Destroying driver: " + DeviceKey);
+
+            device = ActiveObjects[DeviceKey].DeviceObject;
+
+            try { device.Connected = false; } catch { }// Don't throw exceptions from these
+            try { device.Link = false; } catch { }
+            try { device.Dispose(); } catch { }
+
+            // Now destroy the device instance
+            int LoopCount = 0;
+            RemainingObjectCount = 0;
+
+            if (device != null)
+            {
+                do
+                {
+                    LoopCount += 1;
+                    try { RemainingObjectCount = Marshal.ReleaseComObject(device); } catch { } // Don't throw exceptions from this
+                    LogMessage(0, 0, 0, "DestroyDriver", string.Format("Remaining {0} count: {1}, LoopCount: {2}", DeviceKey, RemainingObjectCount, LoopCount));
+                }
+                while ((RemainingObjectCount > 0) & (LoopCount != 20));
+                device = null;
+            }
+            return RemainingObjectCount;
+        }
+
+        internal void WaitFor(int Duration)
+        {
+            const int SLEEP_TIME = 20;
+            int remainingDuration;
+
+            remainingDuration = Duration;
+
+            do
+            {
+                remainingDuration -= SLEEP_TIME;
+                Thread.Sleep(SLEEP_TIME);
+                Application.DoEvents();
+
+            } while (remainingDuration > 0);
         }
 
         internal static void LogMessage(int clientID, int clientTransactionID, int serverTransactionID, string Method, string Message)
@@ -561,22 +682,22 @@ namespace ASCOM.Remote
             }
         }
 
-        private void LogToScreen(string text)
+        private void LogToScreen(string screenMessage)
         {
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
             // If these threads are different, it returns true.
             if (this.txtLog.InvokeRequired)
             {
-                SetTextCallback d = new SetTextCallback(LogToScreen);
-                this.Invoke(d, new object[] { text });
+                SetTextCallback logToScreenDelegate = new SetTextCallback(LogToScreen);
+                this.Invoke(logToScreenDelegate, screenMessage);
             }
             else
             {
                 if (txtLog.TextLength > 50000) txtLog.Text = txtLog.Text.Substring(txtLog.TextLength - 28000);
 
                 //                this.txtLog.Text += text;
-                txtLog.AppendText(text + "\r\n");
+                txtLog.AppendText(screenMessage + "\r\n");
                 txtLog.SelectionStart = txtLog.Text.Length;
             }
         }
@@ -595,12 +716,12 @@ namespace ASCOM.Remote
             }
         }
 
-        private void DecrementConcurrencyCounter()
+        internal void DecrementConcurrencyCounter()
         {
             if (this.txtConcurrency.InvokeRequired)
             {
-                SetConcurrencyCallback d = new SetConcurrencyCallback(DecrementConcurrencyCounter);
-                this.Invoke(d, new object[] { });
+                SetConcurrencyCallback decrementConcurrencyCounterDelegate = new SetConcurrencyCallback(DecrementConcurrencyCounter);
+                this.Invoke(decrementConcurrencyCounterDelegate, new object[] { });
             }
             else
             {
@@ -646,6 +767,7 @@ namespace ASCOM.Remote
                 ScreenLogResponses = driverProfile.GetValue<bool>(SCREEN_LOG_RESPONSES_PROFILENAME, string.Empty, SCREEN_LOG_RESPONSES_DEFAULT);
                 ManagementInterfaceEnabled = driverProfile.GetValue<bool>(MANAGEMENT_INTERFACE_ENABLED_PROFILENAME, string.Empty, MANGEMENT_INTERFACE_ENABLED_DEFAULT);
                 StartWithApiEnabled = driverProfile.GetValue<bool>(START_WITH_API_ENABLED_PROFILENAME, string.Empty, START_WITH_API_ENABLED_DEFAULT);
+                RunDriversOnSeparateThreads = driverProfile.GetValue<bool>(RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME, string.Empty, RUN_DRIVERS_ON_SEPARATE_THREADS_DEFAULT);
 
                 LogMessage(0, 0, 0, "Readprofile", string.Format("Number of served devices: {0}.", ServerDeviceNames.Count));
                 foreach (string deviceName in ServerDeviceNames)
@@ -658,7 +780,7 @@ namespace ASCOM.Remote
                     bool allowConnectedSetTrue = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_TRUE_PROFILENAME, deviceName, ALLOW_CONNECTED_SET_TRUE_DEFAULT));
 
                     LogMessage(0, 0, 0, "Readprofile", string.Format("Adding configured device: {0}  {1}", deviceType, progID));
-                    ConfiguredDevices.Add(deviceName, new ConfiguredDevice(deviceType, progID, description, deviceNumber, allowConnectedSetFalse, allowConnectedSetTrue));
+                    ConfiguredDevices[deviceName] = new ConfiguredDevice(deviceType, progID, description, deviceNumber, allowConnectedSetFalse, allowConnectedSetTrue);
                 }
             }
         }
@@ -681,6 +803,7 @@ namespace ASCOM.Remote
                 driverProfile.SetValue<bool>(SCREEN_LOG_RESPONSES_PROFILENAME, string.Empty, ScreenLogResponses);
                 driverProfile.SetValue<bool>(MANAGEMENT_INTERFACE_ENABLED_PROFILENAME, string.Empty, ManagementInterfaceEnabled);
                 driverProfile.SetValue<bool>(START_WITH_API_ENABLED_PROFILENAME, string.Empty, StartWithApiEnabled);
+                driverProfile.SetValue<bool>(RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME, string.Empty, RunDriversOnSeparateThreads);
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
@@ -863,7 +986,7 @@ namespace ASCOM.Remote
         /// 
         /// This method will be called by the HttpListener on the first free thread in the background pool,
         /// </remarks>
-        protected void WebRequestCallback(IAsyncResult result)
+        protected void RestRequestReceivedHandler(IAsyncResult result)
         {
             HttpListener listener = (HttpListener)result.AsyncState; // Get the listener instance from which this particular callback has come, it is supplied as the state parameter on the BeginGetContext call
             HttpListenerContext context = null;
@@ -904,7 +1027,7 @@ namespace ASCOM.Remote
             try
             {
                 if (DebugTraceState) LogMessage(0, 0, 0, "WebRequestCallback", string.Format("Thread {0} - Setting up new call back to wait for next request ", Thread.CurrentThread.ManagedThreadId.ToString()));
-                httpListener.BeginGetContext(new AsyncCallback(WebRequestCallback), httpListener);
+                httpListener.BeginGetContext(new AsyncCallback(RestRequestReceivedHandler), httpListener);
             }
             catch (NullReferenceException) // httpListener is null because we are closing down or because of some other error so just log the event
             {
@@ -931,7 +1054,7 @@ namespace ASCOM.Remote
 
             // Now process this request, any exceptions are handled by the ProcessRequest method itslef
             if (DebugTraceState) LogMessage(0, 0, 0, "WebRequestCallback", string.Format("Thread {0} - Processing received message.", Thread.CurrentThread.ManagedThreadId.ToString()));
-            ProcessRequest(context);
+            ProcessRestRequest(context);
 
             // Shut down the listener and close down device drivers if the maximum number of errors has been reached
             if (numberOfConsecutiveErrors == MAX_ERRORS_BEFORE_CLOSE)
@@ -950,7 +1073,7 @@ namespace ASCOM.Remote
         /// Processes the request received by the server
         /// </summary>
         /// <param name="context">Context object that contains the request and response objects.</param>
-        private void ProcessRequest(HttpListenerContext context)
+        private void ProcessRestRequest(HttpListenerContext context)
         {
             // Local convenience variables to hold this transaction's information
             int clientID = 0;
@@ -1077,677 +1200,23 @@ namespace ASCOM.Remote
                             case SharedConstants.API_VERSION_V1: // OK so we have a V1 request
                                 if ((ServerDeviceNumbers.Contains(elements[URL_ELEMENT_DEVICE_NUMBER].ToLowerInvariant())) & (elements[URL_ELEMENT_DEVICE_NUMBER].ToLowerInvariant() != "")) // OK so we have a valid device number
                                 {
-                                    // Confirm that the device requested is availble on this server and process the request
-                                    try
+                                    string deviceKey = elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + @"/" + elements[URL_ELEMENT_DEVICE_NUMBER].ToLowerInvariant(); // Create a unique key from device type and device number
+
+                                    // Ensure that we only process one command at a time for this driver
+                                    lock (ActiveObjects[deviceKey].CommandLock) // Proceed when we have a lock for this device
                                     {
-                                        string deviceKey = elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + @"/" + elements[URL_ELEMENT_DEVICE_NUMBER].ToLowerInvariant(); // Create a unique key from device type and device number
-
-                                        // Create three shortcut variables that are local to this thread
-                                        device = ActiveObjects[deviceKey].DeviceObject; // Try and access the device. If it does not exist in the active devices collection then a KeyNotFound exception is generated and handled below
-                                        allowConnectedSetFalse = ActiveObjects[deviceKey].AllowConnectedSetFalse; // If we get here then the user has requested a device that does exist
-                                        allowConnectedSetTrue = ActiveObjects[deviceKey].AllowConnectedSetTrue;
-
-                                        switch (request.HttpMethod.ToUpperInvariant()) // Handle GET and PUT requests
+                                        // Confirm that the device requested is availble on this server and process the request
+                                        if (RunDriversOnSeparateThreads)
                                         {
-                                            case "GET": // Read and return data methods
-                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                {
-                                                    #region Common methods
-                                                    // Common methods are indicated in ReturnXXX methods by having the device type parameter set to "*" rather than the name of one of the ASCOM device types
-                                                    // STRING Get Values
-                                                    case "description":
-                                                    case "driverinfo":
-                                                    case "driverversion":
-                                                    case "name":
-                                                        ReturnString("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
-                                                        break;
-
-                                                    case "supportedactions":
-                                                        ReturnStringList("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
-                                                        break;
-
-                                                    // SHORT Get Values
-                                                    case "interfaceversion":
-                                                        ReturnShort("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
-                                                        break;
-
-                                                    // BOOL Get Values
-                                                    case "connected":
-                                                        ReturnBool("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
-                                                        break;
-                                                    #endregion
-                                                    default: // Not a common method so check for device specific methods
-                                                        switch (elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant())
-                                                        {
-                                                            case "telescope": // OK so we have a Telescope request
-                                                                #region Telescope
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    #region Properties
-                                                                    // BOOL Get Values
-                                                                    case "athome":
-                                                                    case "atpark":
-                                                                    case "canfindhome":
-                                                                    case "canslew":
-                                                                    case "cansync":
-                                                                    case "canpark":
-                                                                    case "canpulseguide":
-                                                                    case "cansetdeclinationrate":
-                                                                    case "cansetguiderates":
-                                                                    case "cansetpark":
-                                                                    case "cansetpierside":
-                                                                    case "cansetrightascensionrate":
-                                                                    case "cansettracking":
-                                                                    case "canslewaltaz":
-                                                                    case "canslewaltazasync":
-                                                                    case "canslewasync":
-                                                                    case "cansyncaltaz":
-                                                                    case "canunpark":
-                                                                    case "ispulseguiding":
-                                                                    case "tracking":
-                                                                    case "doesrefraction":
-                                                                    case "slewing":
-                                                                        ReturnBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    // SHORT Get Values
-                                                                    case "slewsettletime":
-                                                                        ReturnShort(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //DOUBLE Get Values
-                                                                    case "altitude":
-                                                                    case "aperturearea":
-                                                                    case "aperturediameter":
-                                                                    case "azimuth":
-                                                                    case "declination":
-                                                                    case "declinationrate":
-                                                                    case "focallength":
-                                                                    case "guideratedeclination":
-                                                                    case "guideraterightascension":
-                                                                    case "rightascension":
-                                                                    case "rightascensionrate":
-                                                                    case "siteelevation":
-                                                                    case "sitelatitude":
-                                                                    case "sitelongitude":
-                                                                    case "siderealtime":
-                                                                    case "targetdeclination":
-                                                                    case "targetrightascension":
-                                                                        ReturnDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //DATETIME Get values
-                                                                    case "utcdate":
-                                                                        ReturnDateTime(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //ENUM TYPES Get values
-                                                                    case "equatorialsystem":
-                                                                        ReturnEquatorialSystem(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    case "alignmentmode":
-                                                                        ReturnAlignmentMode(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    case "trackingrate":
-                                                                        ReturnTrackingRate(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    case "sideofpier":
-                                                                        ReturnSideofPier(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //TRACKINGRATES Get value
-                                                                    case "trackingrates":
-                                                                        ReturnTrackingRates(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    #endregion
-
-                                                                    #region Methods
-                                                                    // METHODS
-                                                                    case "axisrates":
-                                                                        ReturnAxisRates(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                    case "destinationsideofpier":
-                                                                        ReturnDestinationSideOfPier(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                    case "canmoveaxis":
-                                                                        ReturnCanMoveAxis(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                    #endregion
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break;
-                                                            #endregion
-                                                            case "camera":
-                                                                #region Camera
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    // SHORT Get Values
-                                                                    case "binx":
-                                                                    case "biny":
-                                                                    case "maxbinx":
-                                                                    case "maxbiny":
-                                                                    case "bayeroffsetx":
-                                                                    case "bayeroffsety":
-                                                                    case "gain":
-                                                                    case "gainmax":
-                                                                    case "gainmin":
-                                                                    case "percentcompleted":
-                                                                    case "readoutmode":
-                                                                        ReturnShort(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    // INT Get Values
-                                                                    case "cameraxsize":
-                                                                    case "cameraysize":
-                                                                    case "maxadu":
-                                                                    case "numx":
-                                                                    case "numy":
-                                                                    case "startx":
-                                                                    case "starty":
-                                                                        ReturnInt(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    // BOOL Get Values
-                                                                    case "canabortexposure":
-                                                                    case "canasymmetricbin":
-                                                                    case "cangetcoolerpower":
-                                                                    case "canpulseguide":
-                                                                    case "cansetccdtemperature":
-                                                                    case "canstopexposure":
-                                                                    case "cooleron":
-                                                                    case "hasshutter":
-                                                                    case "imageready":
-                                                                    case "ispulseguiding":
-                                                                    case "canfastreadout":
-                                                                    case "fastreadout":
-                                                                        ReturnBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    // DOUBLE Get Values
-                                                                    case "ccdtemperature":
-                                                                    case "coolerpower":
-                                                                    case "electronsperadu":
-                                                                    case "fullwellcapacity":
-                                                                    case "heatsinktemperature":
-                                                                    case "lastexposureduration":
-                                                                    case "pixelsizex":
-                                                                    case "pixelsizey":
-                                                                    case "setccdtemperature":
-                                                                    case "exposuremax":
-                                                                    case "exposuremin":
-                                                                    case "exposureresolution":
-                                                                        ReturnDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    //STRING Get Values
-                                                                    case "lastexposurestarttime":
-                                                                    case "sensorname":
-                                                                        ReturnString(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    //CAMERSTATES Get Values
-                                                                    case "camerastate":
-                                                                        ReturnCameraStates(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    //IMAGEARRAY Get Values
-                                                                    case "imagearray":
-                                                                    case "imagearrayvariant":
-                                                                        ReturnImageArray(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    //STRING LIST Get Values
-                                                                    case "gains":
-                                                                    case "readoutmodes":
-                                                                        ReturnStringList(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    //SENSORTYPE Get Values
-                                                                    case "sensortype":
-                                                                        ReturnSensorType(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break;
-                                                            #endregion
-                                                            case "dome":
-                                                                #region Dome
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    // BOOL Get Values
-                                                                    case "athome":
-                                                                    case "atpark":
-                                                                    case "canfindhome":
-                                                                    case "canpark":
-                                                                    case "cansetaltitude":
-                                                                    case "cansetazimuth":
-                                                                    case "cansetpark":
-                                                                    case "cansetshutter":
-                                                                    case "canslave":
-                                                                    case "cansyncazimuth":
-                                                                    case "slaved":
-                                                                    case "slewing":
-                                                                        ReturnBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    // DOUBLE Get Values
-                                                                    case "altitude":
-                                                                    case "azimuth":
-                                                                        ReturnDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    case "shutterstatus": //SensorState
-                                                                        ReturnShutterStatus(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break;
-                                                            #endregion
-                                                            case "filterwheel":
-                                                                #region Filter Wheel
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    // INT ARRAY Get Values
-                                                                    case "focusoffsets":
-                                                                        ReturnIntArray(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    // SHORT Get Values
-                                                                    case "position":
-                                                                        ReturnShort(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //STRING ARRAY Get Values
-                                                                    case "names":
-                                                                        ReturnStringArray(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break;
-                                                            #endregion
-                                                            case "focuser":
-                                                                #region Focuser
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    #region Focuser Properties
-                                                                    // BOOL Get Values
-                                                                    case "absolute":
-                                                                    case "ismoving":
-                                                                    case "tempcompavailable":
-                                                                    case "tempcomp":
-                                                                        ReturnBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    // INT Get Values
-                                                                    case "maxincrement":
-                                                                    case "maxstep":
-                                                                    case "position":
-                                                                        ReturnInt(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //DOUBLE Get Values
-                                                                    case "stepsize":
-                                                                    case "temperature":
-                                                                        ReturnDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    #endregion
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break;
-                                                            #endregion
-                                                            case "observingconditions":
-                                                                #region ObservingConditions
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    // DOUBLE Get Values
-                                                                    case "averageperiod":
-                                                                    case "cloudcover":
-                                                                    case "dewpoint":
-                                                                    case "humidity":
-                                                                    case "pressure":
-                                                                    case "rainrate":
-                                                                    case "skybrightness":
-                                                                    case "skyquality":
-                                                                    case "skytemperature":
-                                                                    case "starfwhm":
-                                                                    case "temperature":
-                                                                    case "winddirection":
-                                                                    case "windgust":
-                                                                    case "windspeed":
-                                                                    case "timesincelastupdate":
-                                                                        ReturnDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    // STRING Get Values
-                                                                    case "sensordescription":
-                                                                        ReturnString(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break;
-                                                            #endregion
-                                                            case "rotator":
-                                                                #region Rotator
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    // BOOL Get Values
-                                                                    case "canreverse":
-                                                                    case "ismoving":
-                                                                    case "reverse":
-                                                                        ReturnBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //DOUBLE Get Values
-                                                                    case "position":
-                                                                    case "stepsize":
-                                                                    case "targetposition":
-                                                                        ReturnFloat(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break;
-                                                            #endregion
-                                                            case "safetymonitor":
-                                                                #region SafetyMonitor
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    // BOOL Get Values
-                                                                    case "issafe":
-                                                                        ReturnBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break;
-                                                            #endregion
-                                                            case "switch":
-                                                                #region Switch
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    // BOOL Get Values
-                                                                    case "canwrite":
-                                                                    case "getswitch":
-                                                                        ReturnShortIndexedBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    // SHORT Get Values
-                                                                    case "maxswitch":
-                                                                        ReturnShort(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    // DOUBLE Get Values
-                                                                    case "getswitchvalue":
-                                                                    case "maxswitchvalue":
-                                                                    case "minswitchvalue":
-                                                                    case "switchstep":
-                                                                        ReturnShortIndexedDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    // STRING Get Values
-                                                                    case "getswitchdescription":
-                                                                    case "getswitchname":
-                                                                        ReturnShortIndexedString(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break;
-                                                            #endregion
-
-                                                            default:// End of valid device types
-                                                                Return400Error(response, "Unsupported Device Type: " + elements[URL_ELEMENT_DEVICE_TYPE] + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                break;
-                                                        }
-                                                        break;
-                                                }
-                                                break;
-                                            case "PUT": // Write or action methods
-                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                {
-                                                    #region Common methods
-                                                    // Process common methods shared by all drivers
-                                                    case "commandblind":
-                                                        CallMethod("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
-                                                        break;
-                                                    case "commandbool":
-                                                        ReturnBool("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
-                                                        break;
-                                                    case "commandstring":
-                                                        ReturnString("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
-                                                        break;
-                                                    case "action":
-                                                        ReturnString("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
-                                                        break;
-                                                    case "connected":
-                                                        WriteBool("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
-                                                        break;
-                                                    #endregion
-                                                    default:
-                                                        switch (elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant())
-                                                        {
-                                                            case "telescope": // OK so we have a Telescope request
-                                                                #region Telescope
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    #region Telescope Properties
-                                                                    //BOOL Set values
-                                                                    case "tracking":
-                                                                    case "doesrefraction":
-                                                                        WriteBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //SHORT Set Values
-                                                                    case "slewsettletime":
-                                                                        WriteShort(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //DOUBLE Set values
-                                                                    case "declinationrate":
-                                                                    case "rightascensionrate":
-                                                                    case "guideratedeclination":
-                                                                    case "guideraterightascension":
-                                                                    case "siteelevation":
-                                                                    case "sitelatitude":
-                                                                    case "sitelongitude":
-                                                                    case "targetdeclination":
-                                                                    case "targetrightascension":
-                                                                        WriteDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    //DATETIME Set values
-                                                                    case "utcdate":
-                                                                        WriteDateTime(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //ENUM TYPES Set values
-                                                                    case "trackingrate":
-                                                                        WriteTrackingRate(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    #endregion
-
-                                                                    #region Telescope Methods
-                                                                    // METHODS
-                                                                    case "sideofpier":
-                                                                    case "unpark":
-                                                                    case "park":
-                                                                    case "abortslew":
-                                                                    case "findhome":
-                                                                    case "setpark":
-                                                                    case "slewtotarget":
-                                                                    case "slewtotargetasync":
-                                                                    case "synctotarget":
-                                                                    case "slewtocoordinates":
-                                                                    case "slewtocoordinatesasync":
-                                                                    case "slewtoaltaz":
-                                                                    case "slewtoaltazasync":
-                                                                    case "synctoaltaz":
-                                                                    case "synctocoordinates":
-                                                                    case "moveaxis":
-                                                                    case "pulseguide":
-                                                                        CallMethod(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                    #endregion
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break;
-                                                            #endregion
-                                                            case "camera":
-                                                                #region Camera
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    // METHODS
-                                                                    case "abortexposure":
-                                                                    case "pulseguide":
-                                                                    case "startexposure":
-                                                                    case "stopexposure":
-                                                                        CallMethod(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    //SHORT Set values
-                                                                    case "binx":
-                                                                    case "biny":
-                                                                    case "gain":
-                                                                    case "readoutmode":
-                                                                        WriteShort(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    //INT Set values
-                                                                    case "numx":
-                                                                    case "numy":
-                                                                    case "startx":
-                                                                    case "starty":
-                                                                        WriteInt(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    //DOUBLE Set values
-                                                                    case "setccdtemperature":
-                                                                        WriteDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    //BOOL Set values
-                                                                    case "cooleron":
-                                                                    case "fastreadout":
-                                                                        WriteBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break; // End of valid device types
-                                                            #endregion
-                                                            case "dome":
-                                                                #region Dome
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    // METHODS
-                                                                    case "abortslew":
-                                                                    case "closeshutter":
-                                                                    case "findhome":
-                                                                    case "openshutter":
-                                                                    case "park":
-                                                                    case "setpark":
-                                                                    case "slewtoaltitude":
-                                                                    case "slewtoazimuth":
-                                                                    case "synctoazimuth":
-                                                                        CallMethod(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    //BOOL Set values
-                                                                    case "slaved":
-                                                                        WriteBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break; // End of valid device types
-                                                            #endregion
-                                                            case "filterwheel":
-                                                                #region Filter Wheel
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    //SHORT Set values
-                                                                    case "position":
-                                                                        WriteShort(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break; // End of valid device types
-                                                            #endregion
-                                                            case "focuser":
-                                                                #region Focuser
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    #region Focuser Properties
-                                                                    //BOOL Set values
-                                                                    case "tempcomp":
-                                                                        WriteBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    #endregion
-
-                                                                    #region Focuser Methods
-                                                                    // METHODS
-                                                                    case "halt":
-                                                                    case "move":
-                                                                        CallMethod(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                    #endregion
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break;
-                                                            #endregion
-                                                            case "observingconditions":
-                                                                #region ObservingConditions
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    // METHODS
-                                                                    case "refresh":
-                                                                        CallMethod(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    //DOUBLE Set values
-                                                                    case "averageperiod":
-                                                                        WriteDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break; // End of valid device types
-                                                            #endregion
-                                                            case "rotator":
-                                                                #region Rotator
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    // METHODS
-                                                                    case "halt":
-                                                                    case "move":
-                                                                    case "moveabsolute":
-                                                                        CallMethod(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-                                                                    //BOOL Set values
-                                                                    case "reverse":
-                                                                        WriteBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break; // End of valid device types
-                                                            #endregion
-                                                            case "switch":
-                                                                #region Switch
-                                                                switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
-                                                                {
-                                                                    // METHODS
-                                                                    case "setswitchname":
-                                                                    case "setswitch":
-                                                                    case "setswitchvalue":
-                                                                        CallMethod(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
-
-                                                                    //UNKNOWN METHOD CALL
-                                                                    default:
-                                                                        Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                        break;
-                                                                }
-                                                                break; // End of valid device types
-                                                            #endregion
-
-                                                            default:
-                                                                Return400Error(response, "Unsupported Device Type: " + elements[URL_ELEMENT_DEVICE_TYPE] + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
-                                                                break;
-                                                        }
-                                                        break;
-                                                }
-                                                break;
-                                            default:
-                                                Return400Error(response, "Unsupported http verp: " + request.HttpMethod, clientID, clientTransactionID, serverTransactionID);
-                                                break;
+                                            LogMessage(clientID, clientTransactionID, serverTransactionID, "ProcessRequestAsync", string.Format("Sending driver command to {0} from thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
+                                            DriverCommandDelegate driverCommandDelegate = new DriverCommandDelegate(ActiveObjects[deviceKey].DriverHostForm.DriverCommand);
+                                            ActiveObjects[deviceKey].DriverHostForm.Invoke(driverCommandDelegate, new RequestData(clientID, clientTransactionID, serverTransactionID, suppliedParameters, request, response, elements, deviceKey));
+                                            LogMessage(clientID, clientTransactionID, serverTransactionID, "ProcessRequestAsync", string.Format("Completed driver command to {0} from thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
                                         }
-                                    }
-                                    catch (KeyNotFoundException)
-                                    {
-                                        Return400Error(response, string.Format("The requested device \"{0} {1}\" does not exist on this server. Supplied URI: {2} {3}", elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_DEVICE_NUMBER], request.Url.AbsolutePath, CORRECT_API_FORMAT_STRING), clientID, clientTransactionID, serverTransactionID);
+                                        else // Driver is running on the UI thread so just process the command
+                                        {
+                                            ProcessDriverCommand(clientID, clientTransactionID, serverTransactionID, suppliedParameters, request, response, elements, deviceKey);
+                                        }
                                     }
                                 }
                                 else
@@ -1787,6 +1256,7 @@ namespace ASCOM.Remote
                             for (int i = 0; i < elements.Length; i++)
                             {
                                 elements[i] = elements[i].Trim();// Remove leading and trailing space characters
+                                LogMessage(clientID, clientTransactionID, serverTransactionID, "ManagmentCommand", string.Format("Received element {0} = {1}", i, elements[i]));
                             }
 
                             switch (elements[URL_ELEMENT_API_VERSION].ToLowerInvariant())
@@ -1880,9 +1350,32 @@ namespace ASCOM.Remote
                                                         }
 
                                                         break;
-                                                    // Process common methods shared by all drivers
+
+                                                    // Restart the server by closing current drivers and reloading them
+                                                    case SharedConstants.MANGEMENT_RESTART:
+                                                        LogMessage(clientID, clientTransactionID, serverTransactionID, "Management Restart", string.Format("Restarting server - getting management lock"));
+                                                        lock (managementCommandLock) // Make sure that this command can only run one at a time!
+                                                        {
+                                                            bool originalAPiIsEnabledState = apiIsEnabled;
+                                                            LogMessage(clientID, clientTransactionID, serverTransactionID, "Management Restart", string.Format("Got lock - API is currently enabled: {0}", apiIsEnabled));
+                                                            // Shut off access to the device API
+                                                            apiIsEnabled = false;
+                                                            LogMessage(clientID, clientTransactionID, serverTransactionID, "Management Restart", string.Format("Unloading drivers - devices are connected: {0}", devicesAreConnected));
+                                                            if (devicesAreConnected) DisconnectDevices();
+                                                            LogMessage(clientID, clientTransactionID, serverTransactionID, "Management Restart", string.Format("Reloading drivers"));
+                                                            WaitFor(MANGEMENT_RESTART_WAIT_TIME); // Wait for current device activity to complete
+                                                            ConnectDevices();
+                                                            apiIsEnabled = originalAPiIsEnabledState;
+                                                            LogMessage(clientID, clientTransactionID, serverTransactionID, "Management Restart", string.Format("Restored API enabled state: {0}, command completed", apiIsEnabled));
+                                                            ReturnNoResponse(commandName, request, response, null, clientID, clientTransactionID, serverTransactionID);
+                                                        }
+                                                        break;
+
                                                     case SharedConstants.MANGEMENT_CONFIGURATION:
-                                                        Return400Error(response, "Command not implemented: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                        lock (managementCommandLock) // Make sure that this command can only run one at a time!
+                                                        {
+                                                            Return400Error(response, "Command not implemented: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                        }
                                                         break;
 
                                                     default:
@@ -1943,6 +1436,679 @@ namespace ASCOM.Remote
             }
         } // End of ProcessRequest method
 
+        internal void ProcessDriverCommand(int clientID, int clientTransactionID, int serverTransactionID, NameValueCollection suppliedParameters, HttpListenerRequest request, HttpListenerResponse response, string[] elements, string deviceKey)
+        {
+            try
+            {
+                // Create three shortcut variables that are local to this thread
+                device = ActiveObjects[deviceKey].DeviceObject; // Try and access the device. If it does not exist in the active devices collection then a KeyNotFound exception is generated and handled below
+                allowConnectedSetFalse = ActiveObjects[deviceKey].AllowConnectedSetFalse; // If we get here then the user has requested a device that does exist
+                allowConnectedSetTrue = ActiveObjects[deviceKey].AllowConnectedSetTrue;
+
+                switch (request.HttpMethod.ToUpperInvariant()) // Handle GET and PUT requests
+                {
+                    case "GET": // Read and return data methods
+                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                        {
+                            #region Common methods
+                            // Common methods are indicated in ReturnXXX methods by having the device type parameter set to "*" rather than the name of one of the ASCOM device types
+                            // STRING Get Values
+                            case "description":
+                            case "driverinfo":
+                            case "driverversion":
+                            case "name":
+                                ReturnString("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
+                                break;
+
+                            case "supportedactions":
+                                ReturnStringList("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
+                                break;
+
+                            // SHORT Get Values
+                            case "interfaceversion":
+                                ReturnShort("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
+                                break;
+
+                            // BOOL Get Values
+                            case "connected":
+                                ReturnBool("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
+                                break;
+                            #endregion
+                            default: // Not a common method so check for device specific methods
+                                switch (elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant())
+                                {
+                                    case "telescope": // OK so we have a Telescope request
+                                        #region Telescope
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            #region Properties
+                                            // BOOL Get Values
+                                            case "athome":
+                                            case "atpark":
+                                            case "canfindhome":
+                                            case "canslew":
+                                            case "cansync":
+                                            case "canpark":
+                                            case "canpulseguide":
+                                            case "cansetdeclinationrate":
+                                            case "cansetguiderates":
+                                            case "cansetpark":
+                                            case "cansetpierside":
+                                            case "cansetrightascensionrate":
+                                            case "cansettracking":
+                                            case "canslewaltaz":
+                                            case "canslewaltazasync":
+                                            case "canslewasync":
+                                            case "cansyncaltaz":
+                                            case "canunpark":
+                                            case "ispulseguiding":
+                                            case "tracking":
+                                            case "doesrefraction":
+                                            case "slewing":
+                                                ReturnBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            // SHORT Get Values
+                                            case "slewsettletime":
+                                                ReturnShort(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //DOUBLE Get Values
+                                            case "altitude":
+                                            case "aperturearea":
+                                            case "aperturediameter":
+                                            case "azimuth":
+                                            case "declination":
+                                            case "declinationrate":
+                                            case "focallength":
+                                            case "guideratedeclination":
+                                            case "guideraterightascension":
+                                            case "rightascension":
+                                            case "rightascensionrate":
+                                            case "siteelevation":
+                                            case "sitelatitude":
+                                            case "sitelongitude":
+                                            case "siderealtime":
+                                            case "targetdeclination":
+                                            case "targetrightascension":
+                                                ReturnDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //DATETIME Get values
+                                            case "utcdate":
+                                                ReturnDateTime(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //ENUM TYPES Get values
+                                            case "equatorialsystem":
+                                                ReturnEquatorialSystem(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            case "alignmentmode":
+                                                ReturnAlignmentMode(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            case "trackingrate":
+                                                ReturnTrackingRate(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            case "sideofpier":
+                                                ReturnSideofPier(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //TRACKINGRATES Get value
+                                            case "trackingrates":
+                                                ReturnTrackingRates(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            #endregion
+
+                                            #region Methods
+                                            // METHODS
+                                            case "axisrates":
+                                                ReturnAxisRates(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                            case "destinationsideofpier":
+                                                ReturnDestinationSideOfPier(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                            case "canmoveaxis":
+                                                ReturnCanMoveAxis(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                            #endregion
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break;
+                                    #endregion
+                                    case "camera":
+                                        #region Camera
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            // SHORT Get Values
+                                            case "binx":
+                                            case "biny":
+                                            case "maxbinx":
+                                            case "maxbiny":
+                                            case "bayeroffsetx":
+                                            case "bayeroffsety":
+                                            case "gain":
+                                            case "gainmax":
+                                            case "gainmin":
+                                            case "percentcompleted":
+                                            case "readoutmode":
+                                                ReturnShort(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            // INT Get Values
+                                            case "cameraxsize":
+                                            case "cameraysize":
+                                            case "maxadu":
+                                            case "numx":
+                                            case "numy":
+                                            case "startx":
+                                            case "starty":
+                                                ReturnInt(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            // BOOL Get Values
+                                            case "canabortexposure":
+                                            case "canasymmetricbin":
+                                            case "cangetcoolerpower":
+                                            case "canpulseguide":
+                                            case "cansetccdtemperature":
+                                            case "canstopexposure":
+                                            case "cooleron":
+                                            case "hasshutter":
+                                            case "imageready":
+                                            case "ispulseguiding":
+                                            case "canfastreadout":
+                                            case "fastreadout":
+                                                ReturnBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            // DOUBLE Get Values
+                                            case "ccdtemperature":
+                                            case "coolerpower":
+                                            case "electronsperadu":
+                                            case "fullwellcapacity":
+                                            case "heatsinktemperature":
+                                            case "lastexposureduration":
+                                            case "pixelsizex":
+                                            case "pixelsizey":
+                                            case "setccdtemperature":
+                                            case "exposuremax":
+                                            case "exposuremin":
+                                            case "exposureresolution":
+                                                ReturnDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            //STRING Get Values
+                                            case "lastexposurestarttime":
+                                            case "sensorname":
+                                                ReturnString(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            //CAMERSTATES Get Values
+                                            case "camerastate":
+                                                ReturnCameraStates(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            //IMAGEARRAY Get Values
+                                            case "imagearray":
+                                            case "imagearrayvariant":
+                                                ReturnImageArray(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            //STRING LIST Get Values
+                                            case "gains":
+                                            case "readoutmodes":
+                                                ReturnStringList(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            //SENSORTYPE Get Values
+                                            case "sensortype":
+                                                ReturnSensorType(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break;
+                                    #endregion
+                                    case "dome":
+                                        #region Dome
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            // BOOL Get Values
+                                            case "athome":
+                                            case "atpark":
+                                            case "canfindhome":
+                                            case "canpark":
+                                            case "cansetaltitude":
+                                            case "cansetazimuth":
+                                            case "cansetpark":
+                                            case "cansetshutter":
+                                            case "canslave":
+                                            case "cansyncazimuth":
+                                            case "slaved":
+                                            case "slewing":
+                                                ReturnBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            // DOUBLE Get Values
+                                            case "altitude":
+                                            case "azimuth":
+                                                ReturnDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            case "shutterstatus": //SensorState
+                                                ReturnShutterStatus(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break;
+                                    #endregion
+                                    case "filterwheel":
+                                        #region Filter Wheel
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            // INT ARRAY Get Values
+                                            case "focusoffsets":
+                                                ReturnIntArray(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            // SHORT Get Values
+                                            case "position":
+                                                ReturnShort(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //STRING ARRAY Get Values
+                                            case "names":
+                                                ReturnStringArray(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break;
+                                    #endregion
+                                    case "focuser":
+                                        #region Focuser
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            #region Focuser Properties
+                                            // BOOL Get Values
+                                            case "absolute":
+                                            case "ismoving":
+                                            case "tempcompavailable":
+                                            case "tempcomp":
+                                                ReturnBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            // INT Get Values
+                                            case "maxincrement":
+                                            case "maxstep":
+                                            case "position":
+                                                ReturnInt(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //DOUBLE Get Values
+                                            case "stepsize":
+                                            case "temperature":
+                                                ReturnDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            #endregion
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break;
+                                    #endregion
+                                    case "observingconditions":
+                                        #region ObservingConditions
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            // DOUBLE Get Values
+                                            case "averageperiod":
+                                            case "cloudcover":
+                                            case "dewpoint":
+                                            case "humidity":
+                                            case "pressure":
+                                            case "rainrate":
+                                            case "skybrightness":
+                                            case "skyquality":
+                                            case "skytemperature":
+                                            case "starfwhm":
+                                            case "temperature":
+                                            case "winddirection":
+                                            case "windgust":
+                                            case "windspeed":
+                                            case "timesincelastupdate":
+                                                ReturnDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            // STRING Get Values
+                                            case "sensordescription":
+                                                ReturnString(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break;
+                                    #endregion
+                                    case "rotator":
+                                        #region Rotator
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            // BOOL Get Values
+                                            case "canreverse":
+                                            case "ismoving":
+                                            case "reverse":
+                                                ReturnBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //DOUBLE Get Values
+                                            case "position":
+                                            case "stepsize":
+                                            case "targetposition":
+                                                ReturnFloat(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break;
+                                    #endregion
+                                    case "safetymonitor":
+                                        #region SafetyMonitor
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            // BOOL Get Values
+                                            case "issafe":
+                                                ReturnBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break;
+                                    #endregion
+                                    case "switch":
+                                        #region Switch
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            // BOOL Get Values
+                                            case "canwrite":
+                                            case "getswitch":
+                                                ReturnShortIndexedBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            // SHORT Get Values
+                                            case "maxswitch":
+                                                ReturnShort(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            // DOUBLE Get Values
+                                            case "getswitchvalue":
+                                            case "maxswitchvalue":
+                                            case "minswitchvalue":
+                                            case "switchstep":
+                                                ReturnShortIndexedDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            // STRING Get Values
+                                            case "getswitchdescription":
+                                            case "getswitchname":
+                                                ReturnShortIndexedString(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, GET_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break;
+                                    #endregion
+
+                                    default:// End of valid device types
+                                        Return400Error(response, "Unsupported Device Type: " + elements[URL_ELEMENT_DEVICE_TYPE] + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                        break;
+                                }
+                                break;
+                        }
+                        break;
+                    case "PUT": // Write or action methods
+                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                        {
+                            #region Common methods
+                            // Process common methods shared by all drivers
+                            case "commandblind":
+                                CallMethod("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
+                                break;
+                            case "commandbool":
+                                ReturnBool("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
+                                break;
+                            case "commandstring":
+                                ReturnString("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
+                                break;
+                            case "action":
+                                ReturnString("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
+                                break;
+                            case "connected":
+                                WriteBool("*", elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
+                                break;
+                            #endregion
+                            default:
+                                switch (elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant())
+                                {
+                                    case "telescope": // OK so we have a Telescope request
+                                        #region Telescope
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            #region Telescope Properties
+                                            //BOOL Set values
+                                            case "tracking":
+                                            case "doesrefraction":
+                                                WriteBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //SHORT Set Values
+                                            case "slewsettletime":
+                                                WriteShort(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //DOUBLE Set values
+                                            case "declinationrate":
+                                            case "rightascensionrate":
+                                            case "guideratedeclination":
+                                            case "guideraterightascension":
+                                            case "siteelevation":
+                                            case "sitelatitude":
+                                            case "sitelongitude":
+                                            case "targetdeclination":
+                                            case "targetrightascension":
+                                                WriteDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            //DATETIME Set values
+                                            case "utcdate":
+                                                WriteDateTime(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //ENUM TYPES Set values
+                                            case "trackingrate":
+                                                WriteTrackingRate(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            #endregion
+
+                                            #region Telescope Methods
+                                            // METHODS
+                                            case "sideofpier":
+                                            case "unpark":
+                                            case "park":
+                                            case "abortslew":
+                                            case "findhome":
+                                            case "setpark":
+                                            case "slewtotarget":
+                                            case "slewtotargetasync":
+                                            case "synctotarget":
+                                            case "slewtocoordinates":
+                                            case "slewtocoordinatesasync":
+                                            case "slewtoaltaz":
+                                            case "slewtoaltazasync":
+                                            case "synctoaltaz":
+                                            case "synctocoordinates":
+                                            case "moveaxis":
+                                            case "pulseguide":
+                                                CallMethod(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                            #endregion
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break;
+                                    #endregion
+                                    case "camera":
+                                        #region Camera
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            // METHODS
+                                            case "abortexposure":
+                                            case "pulseguide":
+                                            case "startexposure":
+                                            case "stopexposure":
+                                                CallMethod(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            //SHORT Set values
+                                            case "binx":
+                                            case "biny":
+                                            case "gain":
+                                            case "readoutmode":
+                                                WriteShort(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            //INT Set values
+                                            case "numx":
+                                            case "numy":
+                                            case "startx":
+                                            case "starty":
+                                                WriteInt(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            //DOUBLE Set values
+                                            case "setccdtemperature":
+                                                WriteDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            //BOOL Set values
+                                            case "cooleron":
+                                            case "fastreadout":
+                                                WriteBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break; // End of valid device types
+                                    #endregion
+                                    case "dome":
+                                        #region Dome
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            // METHODS
+                                            case "abortslew":
+                                            case "closeshutter":
+                                            case "findhome":
+                                            case "openshutter":
+                                            case "park":
+                                            case "setpark":
+                                            case "slewtoaltitude":
+                                            case "slewtoazimuth":
+                                            case "synctoazimuth":
+                                                CallMethod(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            //BOOL Set values
+                                            case "slaved":
+                                                WriteBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break; // End of valid device types
+                                    #endregion
+                                    case "filterwheel":
+                                        #region Filter Wheel
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            //SHORT Set values
+                                            case "position":
+                                                WriteShort(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break; // End of valid device types
+                                    #endregion
+                                    case "focuser":
+                                        #region Focuser
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            #region Focuser Properties
+                                            //BOOL Set values
+                                            case "tempcomp":
+                                                WriteBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            #endregion
+
+                                            #region Focuser Methods
+                                            // METHODS
+                                            case "halt":
+                                            case "move":
+                                                CallMethod(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                            #endregion
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break;
+                                    #endregion
+                                    case "observingconditions":
+                                        #region ObservingConditions
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            // METHODS
+                                            case "refresh":
+                                                CallMethod(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            //DOUBLE Set values
+                                            case "averageperiod":
+                                                WriteDouble(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break; // End of valid device types
+                                    #endregion
+                                    case "rotator":
+                                        #region Rotator
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            // METHODS
+                                            case "halt":
+                                            case "move":
+                                            case "moveabsolute":
+                                                CallMethod(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+                                            //BOOL Set values
+                                            case "reverse":
+                                                WriteBool(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break; // End of valid device types
+                                    #endregion
+                                    case "switch":
+                                        #region Switch
+                                        switch (elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        {
+                                            // METHODS
+                                            case "setswitchname":
+                                            case "setswitch":
+                                            case "setswitchvalue":
+                                                CallMethod(elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_METHOD], request, response, suppliedParameters, clientID, clientTransactionID, serverTransactionID); break;
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(response, PUT_UNKNOWN_METHOD_MESSAGE + elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                                break;
+                                        }
+                                        break; // End of valid device types
+                                    #endregion
+
+                                    default:
+                                        Return400Error(response, "Unsupported Device Type: " + elements[URL_ELEMENT_DEVICE_TYPE] + " " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
+                                        break;
+                                }
+                                break;
+                        }
+                        break;
+                    default:
+                        Return400Error(response, "Unsupported http verp: " + request.HttpMethod, clientID, clientTransactionID, serverTransactionID);
+                        break;
+                }
+            }
+            catch (KeyNotFoundException)
+            {
+                Return400Error(response, string.Format("The requested device \"{0} {1}\" does not exist on this server. Supplied URI: {2} {3}", elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_DEVICE_NUMBER], request.Url.AbsolutePath, CORRECT_API_FORMAT_STRING), clientID, clientTransactionID, serverTransactionID);
+            }
+        }
+
         #endregion
 
         #region API response methods
@@ -1972,7 +2138,7 @@ namespace ASCOM.Remote
             response.OutputStream.Close();
             LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", clientID, clientTransactionID, message));
         }
-        private void Return500Error(HttpListenerRequest request, HttpListenerResponse response, string errorMessage, int clientID, int clientTransactionID, int serverTransactionID)
+        internal void Return500Error(HttpListenerRequest request, HttpListenerResponse response, string errorMessage, int clientID, int clientTransactionID, int serverTransactionID)
         {
             LogMessage(clientID, clientTransactionID, serverTransactionID, "HTTP 500 Error", errorMessage);
             response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -2275,7 +2441,6 @@ namespace ASCOM.Remote
             string parameters;
             bool raw;
             Exception exReturn = null;
-
 
             try
             {
@@ -3013,9 +3178,8 @@ namespace ASCOM.Remote
 
         private void ReturnEquatorialSystem(string deviceType, string method, HttpListenerRequest request, HttpListenerResponse response, NameValueCollection suppliedparameters, int clientID, int clientTransactionID, int serverTransactionID)
         {
-            EquatorialCoordinateType deviceResponse = EquatorialCoordinateType.equLocalTopocentric;
+            EquatorialCoordinateType deviceResponse = EquatorialCoordinateType.equTopocentric;
             Exception exReturn = null;
-
 
             try
             {

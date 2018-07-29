@@ -101,13 +101,13 @@
             // 
             // LbDriverStatus
             // 
-            this.LbDriverStatus.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LbDriverStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LbDriverStatus.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.LbDriverStatus.Location = new System.Drawing.Point(738, 309);
             this.LbDriverStatus.Name = "LbDriverStatus";
             this.LbDriverStatus.Size = new System.Drawing.Size(160, 22);
             this.LbDriverStatus.TabIndex = 6;
-            this.LbDriverStatus.Text = "Devices Disconnected";
+            this.LbDriverStatus.Text = "Drivers Unloaded";
             this.LbDriverStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // txtLog
@@ -172,7 +172,7 @@
             // 
             // LblRESTStatus
             // 
-            this.LblRESTStatus.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LblRESTStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LblRESTStatus.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.LblRESTStatus.Location = new System.Drawing.Point(738, 220);
             this.LblRESTStatus.Name = "LblRESTStatus";
@@ -213,8 +213,7 @@
             // 
             // ServerForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(920, 616);
             this.Controls.Add(this.BtnStartRESTServer);
             this.Controls.Add(this.BtnStopRESTServer);

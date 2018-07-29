@@ -50,6 +50,7 @@
             this.BtnGetRemoteConfiguration = new System.Windows.Forms.Button();
             this.BtnSetRemoteConfiguration = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
+            this.BtnReloadConfiguration = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label6
@@ -284,11 +285,22 @@
             this.label7.TabIndex = 50;
             this.label7.Text = "Remote Configurarion";
             // 
+            // BtnReloadConfiguration
+            // 
+            this.BtnReloadConfiguration.Location = new System.Drawing.Point(434, 438);
+            this.BtnReloadConfiguration.Name = "BtnReloadConfiguration";
+            this.BtnReloadConfiguration.Size = new System.Drawing.Size(88, 38);
+            this.BtnReloadConfiguration.TabIndex = 51;
+            this.BtnReloadConfiguration.Text = "Reload Configuration";
+            this.BtnReloadConfiguration.UseVisualStyleBackColor = true;
+            this.BtnReloadConfiguration.Click += new System.EventHandler(this.BtnReloadConfiguration_Click);
+            // 
             // ServerConfigurationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(796, 502);
+            this.Controls.Add(this.BtnReloadConfiguration);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.BtnSetRemoteConfiguration);
             this.Controls.Add(this.BtnGetRemoteConfiguration);
@@ -342,5 +354,6 @@
         private System.Windows.Forms.Button BtnGetRemoteConfiguration;
         private System.Windows.Forms.Button BtnSetRemoteConfiguration;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button BtnReloadConfiguration;
     }
 }

@@ -45,6 +45,7 @@ namespace ASCOM.Remote
         public const string MANGEMENT_CONFIGURATION = "configuration";
         public const string MANGEMENT_API_ENABLED = "enabled";
         public const string MANGEMENT_CONCURRENT_CALLS = "concurrency";
+        public const string MANGEMENT_RESTART = "restart";
 
         // Client driver profile persistence constants
         public const string TRACE_LEVEL_PROFILENAME = "Trace Level"; public const string CLIENT_TRACE_LEVEL_DEFAULT = "True";

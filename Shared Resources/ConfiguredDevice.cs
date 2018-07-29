@@ -1,4 +1,7 @@
-﻿namespace ASCOM.Remote
+﻿using System.Collections.Concurrent;
+using System.Threading;
+
+namespace ASCOM.Remote
 {
     /// <summary>
     /// Data response class to return the server device configuration. i.e. which devices are accessible through the http/JSON interface

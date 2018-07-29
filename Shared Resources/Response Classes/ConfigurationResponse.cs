@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace ASCOM.Remote
 {
     public class ConfigurationResponse : RestResponseBase
     {
-        private Dictionary<string, ConfiguredDevice> list;
+        private ConcurrentDictionary<string, ConfiguredDevice> list;
 
         public ConfigurationResponse() { }
 
-        public ConfigurationResponse(int clientTransactionID, int transactionID, string method, Dictionary<string, ConfiguredDevice> value)
+        public ConfigurationResponse(int clientTransactionID, int transactionID, string method, ConcurrentDictionary<string, ConfiguredDevice> value)
         {
             base.ServerTransactionID = transactionID;
             base.Method = method;
@@ -16,7 +17,7 @@ namespace ASCOM.Remote
             base.ClientTransactionID = clientTransactionID;
         }
 
-        public Dictionary<string, ConfiguredDevice> Value
+        public ConcurrentDictionary<string, ConfiguredDevice> Value
         {
             get { return list; }
             set { list = value; }

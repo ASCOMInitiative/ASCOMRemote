@@ -2,7 +2,7 @@ using System;
 
 namespace ASCOM.Remote
 {
-    partial class frmMain
+    partial class FrmMain
     {
         /// <summary>
         /// Required designer variable.
@@ -30,27 +30,28 @@ namespace ASCOM.Remote
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(12, 10);
+            this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(199, 33);
+            this.label1.Size = new System.Drawing.Size(260, 18);
             this.label1.TabIndex = 0;
-            this.label1.Text = "This is an ASCOM driver, not a program for you to use.";
+            this.label1.Text = "This is the ASCOM Remote Client driver local server.";
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(233, 52);
+            this.ClientSize = new System.Drawing.Size(281, 33);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmMain";
+            this.ShowInTaskbar = false;
             this.Text = "Remote Driver Server";
             this.ResumeLayout(false);
 

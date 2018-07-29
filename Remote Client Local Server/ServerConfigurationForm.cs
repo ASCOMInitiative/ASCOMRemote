@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Windows.Forms;
 using ASCOM.Utilities;
@@ -82,6 +83,7 @@ namespace ASCOM.Remote
 
         private void ServerConfigurationForm_Load(object sender, System.EventArgs e)
         {
+            MessageBox.Show("Set configuration is not yet implemented", "Set Configuration", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void BtnGetRemoteConfiguration_Click(object sender, EventArgs e)
@@ -124,7 +126,7 @@ namespace ASCOM.Remote
                 if ((response.ResponseStatus == ResponseStatus.Completed) & (response.StatusCode == System.Net.HttpStatusCode.OK))
                 {
                     ConfigurationResponse configurationResponse = JsonConvert.DeserializeObject<ConfigurationResponse>(response.Content);
-                    Dictionary<string, ConfiguredDevice> configuration = configurationResponse.Value;
+                    ConcurrentDictionary<string, ConfiguredDevice> configuration = configurationResponse.Value;
                     TL.LogMessage("GetConfiguration", "Number of device records: " + configuration.Count);
 
                     using (Profile profile = new Profile())
@@ -177,11 +179,78 @@ namespace ASCOM.Remote
             }
 
             TL.LogMessage("GetConfiguration", "End of btnGetRemoteConfgiuration_Click");
-
-
-
         }
 
+        private void BtnReloadConfiguration_Click(object sender, EventArgs e)
+        {
+            TL.LogMessage("Reload", "Start of BtnReloadConfiguration_Click");
+            try
+            {
+                int clientNumber = 0;
+                TL.LogMessage("Reload", "Connecting to device: " + ipAddressString + ":" + portNumber.ToString());
 
+                string clientHostAddress = string.Format("{0}://{1}:{2}", serviceType, ipAddressString, portNumber.ToString());
+                TL.LogMessage("Reload", "Client host address: " + clientHostAddress);
+
+                RestClient client = new RestClient(clientHostAddress)
+                {
+                    PreAuthenticate = true
+                };
+                TL.LogMessage("Reload", "Creating Authenticator");
+                client.Authenticator = new HttpBasicAuthenticator(userName, password);
+                TL.LogMessage("Reload", "Setting timeout");
+                RemoteClientDriver.SetClientTimeout(client, 10);
+
+                string managementUri = string.Format("{0}{1}/{2}", SharedConstants.MANAGEMENT_URL_BASE, SharedConstants.API_VERSION_V1, SharedConstants.MANGEMENT_CONFIGURATION);
+                RestRequest request = new RestRequest(managementUri, Method.GET)
+                {
+                    RequestFormat = DataFormat.Json
+                };
+
+                request.AddParameter(SharedConstants.CLIENTID_PARAMETER_NAME, clientNumber.ToString());
+                int transaction = RemoteClientDriver.TransactionNumber();
+                request.AddParameter(SharedConstants.CLIENTTRANSACTION_PARAMETER_NAME, transaction.ToString());
+
+                TL.LogMessage("Reload", "Client Txn ID: " + transaction.ToString() + ", Sending command to remote server");
+                IRestResponse response = client.Execute(request);
+                string responseContent;
+                if (response.Content.Length > 100) responseContent = response.Content.Substring(0, 100);
+                else responseContent = response.Content;
+                TL.LogMessage("Reload", string.Format("Response Status: '{0}', Response: {1}", response.StatusDescription, responseContent));
+
+                if ((response.ResponseStatus == ResponseStatus.Completed) & (response.StatusCode == System.Net.HttpStatusCode.OK))
+                {
+                    ConfigurationResponse configurationResponse = JsonConvert.DeserializeObject<ConfigurationResponse>(response.Content);
+                    ConcurrentDictionary<string, ConfiguredDevice> configuration = configurationResponse.Value;
+                    TL.LogMessage("Reload", "Number of device records: " + configuration.Count);
+
+                    // Handle exceptions received from the driver by the remote server
+                    if (configurationResponse.DriverException != null)
+                    {
+                        TL.LogMessageCrLf("Reload", string.Format("Exception Message: {0}, Exception Number: 0x{1}", configurationResponse.ErrorMessage, configurationResponse.ErrorNumber.ToString("X8")));
+                    }
+                }
+                else
+                {
+                    if (response.ErrorException != null)
+                    {
+                        TL.LogMessageCrLf("Reload", "RestClient exception: " + response.ErrorMessage + "\r\n " + response.ErrorException.ToString());
+                        // throw new ASCOM.DriverException(string.Format("Communications exception: {0} - {1}", response.ErrorMessage, response.ResponseStatus), response.ErrorException);
+                    }
+                    else
+                    {
+                        TL.LogMessage("Reload" + " Error", string.Format("RestRequest response status: {0}, HTTP response code: {1}, HTTP response description: {2}", response.ResponseStatus.ToString(), response.StatusCode, response.StatusDescription));
+                        // throw new ASCOM.DriverException("ServerConfigurationForm Error - Status: " + response.ResponseStatus + " " + response.StatusDescription);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TL.LogMessage("Reload", "Exception: " + ex.ToString());
+            }
+
+            TL.LogMessage("Reload", "End of BtnReloadConfiguration_Click");
+
+        }
     }
 }
