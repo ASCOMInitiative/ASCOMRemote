@@ -1271,11 +1271,12 @@ namespace ASCOM.Remote
                                                 switch (elements[URL_ELEMENT_SERVER_COMMAND].ToLowerInvariant())
                                                 {
                                                     // BOOL Get Values
-                                                    case SharedConstants.MANGEMENT_API_ENABLED:
+                                                    // MANGEMENT_API_ENABLED removed because it won't work if the management api is disabled
+                                                    /*case SharedConstants.MANGEMENT_API_ENABLED:
                                                         BoolResponse responseClass = new BoolResponse(clientTransactionID, serverTransactionID, commandName, apiIsEnabled);
                                                         string boolResponseJson = JsonConvert.SerializeObject(responseClass);
                                                         SendResponseToClient(commandName, request, response, null, boolResponseJson, clientID, clientTransactionID, serverTransactionID);
-                                                        break;
+                                                        break; */
 
                                                     // INT Get Values
                                                     case SharedConstants.MANGEMENT_CONCURRENT_CALLS:
@@ -1335,7 +1336,8 @@ namespace ASCOM.Remote
                                             case "PUT": // Write or action methods
                                                 switch (elements[URL_ELEMENT_SERVER_COMMAND].ToLowerInvariant())
                                                 {
-                                                    case SharedConstants.MANGEMENT_API_ENABLED:
+                                                    // MANGEMENT_API_ENABLED removed because it won't work if the management api is disabled
+                                                    /*case SharedConstants.MANGEMENT_API_ENABLED:
 
                                                         string newValueString = suppliedParameters[SharedConstants.MANGEMENT_API_ENABLED];
                                                         LogMessage(clientID, clientTransactionID, serverTransactionID, "PUT " + commandName, newValueString);
@@ -1348,8 +1350,7 @@ namespace ASCOM.Remote
                                                         {
                                                             Return400Error(response, string.Format("Management {0} command - supplied value '{1}' can not be converted to boolean.", commandName, newValueString), clientID, clientTransactionID, serverTransactionID);
                                                         }
-
-                                                        break;
+                                                        break; */
 
                                                     // Restart the server by closing current drivers and reloading them
                                                     case SharedConstants.MANGEMENT_RESTART:

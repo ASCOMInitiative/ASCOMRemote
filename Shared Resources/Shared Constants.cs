@@ -43,7 +43,7 @@ namespace ASCOM.Remote
         // Remote server management API interface constants
         public const string MANGEMENT_PROFILE = "profile";
         public const string MANGEMENT_CONFIGURATION = "configuration";
-        public const string MANGEMENT_API_ENABLED = "enabled";
+        // public const string MANGEMENT_API_ENABLED = "enabled"; // Commented out because this command can't be used if the management interface is disabled!
         public const string MANGEMENT_CONCURRENT_CALLS = "concurrency";
         public const string MANGEMENT_RESTART = "restart";
 
