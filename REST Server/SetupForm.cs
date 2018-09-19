@@ -22,7 +22,7 @@ namespace ASCOM.Remote
         private Dictionary<string, int> deviceNumberIndexes;
         private Profile profile;
 
-        private bool selectByMouse = false; // Variable to help select the whole contents of a numeric updown box when tabbed into our selected by mouse
+        private bool selectByMouse = false; // Variable to help select the whole contents of a numeric up-down box when tabbed into our selected by mouse
 
         #endregion
 
@@ -34,7 +34,7 @@ namespace ASCOM.Remote
             addressList.Validating += AddressList_Validating; // Add event handlers for IP address validation events
             chkTrace.CheckedChanged += ChkTrace_CheckedChanged;
 
-            // Create event handlers to select the whole contents of the numeric updown boxes when tabbed into or selected by mouse click
+            // Create event handlers to select the whole contents of the numeric up down boxes when tabbed into or selected by mouse click
             numPort.Enter += NumericUpDown_Enter;
             numPort.MouseDown += NumericUpDown_MouseDown;
 
@@ -113,7 +113,7 @@ namespace ASCOM.Remote
                 TL.LogMessage(0, 0, 0, "SetupForm Load", string.Format("ConfiguredDevices contains key {0}.", deviceName));
             }
 
-            // Initialise each of the device GUI compnents
+            // Initialise each of the device GUI components
             foreach (ServedDevice item in this.Controls.OfType<ServedDevice>())
             {
                 TL.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Starting Init for {0}.", item.Name));

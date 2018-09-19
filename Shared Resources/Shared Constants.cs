@@ -33,12 +33,12 @@ namespace ASCOM.Remote
         public static string ISO8601_DATE_FORMAT_STRING = "yyyy-MM-ddTHH:mm:ss.fffffff";
 
         public const string LOCALHOST_NAME = "localhost";
-        public const string LOCALHOST_ADDRESS = "127.0.0.1"; // Get the localhost loopback address
+        public const string LOCALHOST_ADDRESS = "127.0.0.1"; // Get the localhost loop back address
 
         // Constants shared by Remote Client Drivers and the ASCOM REST Server
-        public const string API_URL_BASE = "/api/"; // This const must always be lower case to make the logic tests work properly 
-        public const string API_VERSION_V1 = "v1"; // This const must always be lower case to make the logic tests work properly
-        public const string MANAGEMENT_URL_BASE = "/server/"; // This const must always be lower case to make the logic tests work properly 
+        public const string API_URL_BASE = "/api/"; // This constant must always be lower case to make the logic tests work properly 
+        public const string API_VERSION_V1 = "v1"; // This constant must always be lower case to make the logic tests work properly
+        public const string MANAGEMENT_URL_BASE = "/server/"; // This constant must always be lower case to make the logic tests work properly 
 
         // Remote server management API interface constants
         public const string MANGEMENT_PROFILE = "profile";

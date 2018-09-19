@@ -55,7 +55,7 @@ namespace ASCOM.Remote
         private const string GET_UNKNOWN_METHOD_MESSAGE = "GET - Unknown device method: ";
         private const string PUT_UNKNOWN_METHOD_MESSAGE = "PUT - Unknown device method: ";
         private const string MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE = "The management interface is not enabled, please enable it using the remote access server configuration dialogue";
-        private const string API_INTERFACE_NOT_ENABLED_MESSAGE = "Access to the device server API is not currently availble, please ask the owner to enable it.";
+        private const string API_INTERFACE_NOT_ENABLED_MESSAGE = "Access to the device server API is not currently available, please ask the owner to enable it.";
         private const char FORWARD_SLASH = '/'; // Forward slash character as a char value
         private const string X_FORWARDED_FOR = "X-Forwarded-For";
 
@@ -67,7 +67,7 @@ namespace ASCOM.Remote
         private const int URL_ELEMENT_METHOD = 4;
         private const int URL_ELEMENT_SERVER_COMMAND = 2; // For /server/ type uris
 
-        // Device server profile persistance constants
+        // Device server profile persistence constants
         internal const string SERVER_ACCESS_LOG_PROFILENAME = "Server Access Log Enabled"; public const bool SERVER_ACCESS_LOG_DEFAULT = true;
         internal const string SERVER_TRACE_LEVEL_PROFILENAME = "Server Trace Level"; public const bool SERVER_TRACE_LEVEL_DEFAULT = true;
         internal const string SERVER_DEBUG_TRACE_PROFILENAME = "Server Include Debug Trace"; public const bool SERVER_DEBUG_TRACE_DEFAULT = true;
@@ -142,8 +142,8 @@ namespace ASCOM.Remote
         internal static int numberOfConsecutiveErrors = 0; // Counter to record the number of consecutive errors, this is reset to zero whenever a successful async listen occurs
 
         // Variable to hold the last log time so that old logs are closed and new logs are started when we move to a new day
-        internal static DateTime LastTraceLogTime = DateTime.Now; // Initialise to now to esnure that the TraceLoggerPlus code works correctly
-        internal static DateTime LastAccessLogTime = DateTime.Now; // Initialise to now to esnure that the TraceLoggerPlus code works correctly
+        internal static DateTime LastTraceLogTime = DateTime.Now; // Initialise to now to ensure that the TraceLoggerPlus code works correctly
+        internal static DateTime LastAccessLogTime = DateTime.Now; // Initialise to now to ensure that the TraceLoggerPlus code works correctly
 
         internal static ConcurrentDictionary<string, ConfiguredDevice> ConfiguredDevices;
         internal static ConcurrentDictionary<string, ActiveObject> ActiveObjects;
@@ -168,7 +168,7 @@ namespace ASCOM.Remote
         // These are global within a Remote Device Server thread but will be different between threads
 
         [ThreadStatic]
-        internal static dynamic device; // Shortcut to the device referenced by the incoing URI
+        internal static dynamic device; // Shortcut to the device referenced by the incoming URI
         [ThreadStatic]
         internal static bool allowConnectedSetFalse; // Shortcut to a flag indicating whether Connected can be set False
         [ThreadStatic]
@@ -198,7 +198,7 @@ namespace ASCOM.Remote
                 ActiveObjects = new ConcurrentDictionary<string, ActiveObject>();
 
                 ReadProfile();
-                TL.Enabled = TraceState; // Iniitalise with the trace state enabled or disabled as configured
+                TL.Enabled = TraceState; // Initialise with the trace state enabled or disabled as configured
 
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
                 LogMessage(0, 0, 0, "New", "Connected OK, Version: " + version.ToString());
@@ -258,7 +258,7 @@ namespace ASCOM.Remote
             // Clear down the listener
             StopRESTServer();
 
-            // Clear all of the curent objects
+            // Clear all of the current objects
             DisconnectDevices();
 
             Application.Exit();
@@ -270,7 +270,7 @@ namespace ASCOM.Remote
 
         private int GetServerTransactionID()
         {
-            // Incremnent the server transaction number in a thread safe way
+            // Increment the server transaction number in a thread safe way
             lock (counterLock)
             {
                 // Ensure that the server transaction number wraps round gracefully when it gets to its maximum value
@@ -316,7 +316,7 @@ namespace ASCOM.Remote
                 LogMessage(0, 0, 0, "StartRESTServer", "Operating URI: " + apiOperatingUri);
                 LogMessage(0, 0, 0, "StartRESTServer", "Management URI: " + managementUri);
 
-                // Create the listener on the reuiqred URIs
+                // Create the listener on the required URIs
                 LogMessage(0, 0, 0, "StartRESTServer", "Stopping existing server");
                 StopRESTServer();
 
@@ -325,7 +325,7 @@ namespace ASCOM.Remote
                 httpListener.Prefixes.Add(apiOperatingUri); // Set up the listener on the api URI
                 httpListener.Prefixes.Add(managementUri); // Set up the listener on the management URI
 
-                // Start the listener and ask pernmission if required
+                // Start the listener and ask permission if required
                 while (!httpListener.IsListening)
                 {
                     try
@@ -336,8 +336,8 @@ namespace ASCOM.Remote
                     }
                     catch (HttpListenerException ex) when (ex.ErrorCode == (int)WindowsErrorCodes.ERROR_ACCESS_DENIED) // User does not have an ACL permitting this address and port to be used so get permission
                     {
-                        DialogResult dlgResult = MessageBox.Show(string.Format("You need to give permission to listen on URL: {0}, do you wish to do this? \r\n(Requires administrator privilige)", apiOperatingUri), "Access Denied", MessageBoxButtons.YesNo);
-                        if (dlgResult == DialogResult.Yes) // Permission given so set the ACL using netsh, which will ask for elevation if reuqired
+                        DialogResult dlgResult = MessageBox.Show(string.Format("You need to give permission to listen on URL: {0}, do you wish to do this? \r\n(Requires administrator privilege)", apiOperatingUri), "Access Denied", MessageBoxButtons.YesNo);
+                        if (dlgResult == DialogResult.Yes) // Permission given so set the ACL using net-sh, which will ask for elevation if required
                         {
                             LogMessage(0, 0, 0, "StartRESTServer", "User gave permission to set port ACL");
                             LogMessage(0, 0, 0, "StartRESTServer", "Closing listener"); // Have to close listener before setting ACL
@@ -589,7 +589,7 @@ namespace ASCOM.Remote
 
             ActiveObjects.Clear(); // Clear the list of active objects now that all active device instances have been destroyed
 
-            GC.Collect(); // Reclain memory and destroy all deleted objects
+            GC.Collect(); // Reclaim memory and destroy all deleted objects
         }
 
         internal static int DestroyDriver(string DeviceKey)
@@ -665,7 +665,7 @@ namespace ASCOM.Remote
                 if (TL.Enabled) // We are logging so we have to close the current log and start a new one if we have moved to a new day
                 {
                     DateTime now = DateTime.Now;
-                    if (LastTraceLogTime.DayOfYear != now.DayOfYear) // We have moved onto tomrrow so close the current log and start another
+                    if (LastTraceLogTime.DayOfYear != now.DayOfYear) // We have moved onto tomorrow so close the current log and start another
                     {
                         TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "EndOfDay", "Closing this log because a new day has started. " + now.ToString("dddd d MMMM yyyy hh:mm:ss"));
                         TL.Enabled = false;
@@ -906,18 +906,18 @@ namespace ASCOM.Remote
         {
             Form form = (Form)sender; // Get the supplied control as a Form
 
-            if (WindowState != FormWindowState.Minimized) // No need to chnage anything if the window is minimised
+            if (WindowState != FormWindowState.Minimized) // No need to change anything if the window is minimised
             {
                 int formWidth = form.Width;
                 int controlLeftPosition = formWidth - CONTROL_LEFT_OFFSET;
                 int controlCentrePosition = controlLeftPosition + CONTROL_CENTRE_OFFSET;
 
-                // Place the Log messages text box - This must be set first in this method as other controls are located releative to it
+                // Place the Log messages text box - This must be set first in this method as other controls are located relative to it
                 txtLog.Size = new Size(formWidth - CONTROL_SPACE_WIDTH, form.Height - LOG_HEIGHT_OFFSET);
 
-                // Precalculate some items
+                // Pre calculate some items
                 int controlSpacing = (txtLog.Height - CONTROL_OVERALL_HEIGHT) / (NUMBER_OF_CONTROL_GROUPS - 1); // Calculate the vertical distance between controls and control groups. This allows the controls to move closer together when the window is small.
-                if (controlSpacing > CONTROL_SPACING_MAXIMUM) controlSpacing = CONTROL_SPACING_MAXIMUM; // Limit the maximum spoacing so that it doesn't get too large and become unsightly
+                if (controlSpacing > CONTROL_SPACING_MAXIMUM) controlSpacing = CONTROL_SPACING_MAXIMUM; // Limit the maximum spacing so that it doesn't get too large and become unsightly
                 int controlsTop = txtLog.Top + (txtLog.Height / 2) - ((CONTROL_OVERALL_HEIGHT + 5 * controlSpacing) / 2); // Calculate the location of the top of the controls
 
                 // Place the form title
@@ -935,7 +935,7 @@ namespace ASCOM.Remote
                         double transitionFraction = 1.0 - Convert.ToDouble(form.Width - titleTransitionPositionStart) / Convert.ToDouble(TITLE_TRANSITION_POSITION_END - titleTransitionPositionStart);
                         titleLeft = titleLeftMessagesCentred + (int)(transitionSize * transitionFraction);
                     }
-                    else // Smaller than lower transition point, just just go with form centred
+                    else // Smaller than lower transition point, just go with form centred
                     {
                         titleLeft = titleLeftFormCentred;
                     }
@@ -944,7 +944,7 @@ namespace ASCOM.Remote
                 {
                     titleLeft = titleLeftMessagesCentred;
                 }
-                lblTitle.Location = new Point(titleLeft, TITLE_OFFSET_FROM_TOP); // Set the title posiiton
+                lblTitle.Location = new Point(titleLeft, TITLE_OFFSET_FROM_TOP); // Set the title position
 
                 // Control Group 1 - Concurrent transactions counter
                 txtConcurrency.Location = new Point(controlCentrePosition - 3, controlsTop);
@@ -1050,9 +1050,9 @@ namespace ASCOM.Remote
                 }
             }
 
-            Interlocked.Exchange(ref numberOfConsecutiveErrors, 0); // Reset the consective errors counter to zero
+            Interlocked.Exchange(ref numberOfConsecutiveErrors, 0); // Reset the consecutive errors counter to zero
 
-            // Now process this request, any exceptions are handled by the ProcessRequest method itslef
+            // Now process this request, any exceptions are handled by the ProcessRequest method itself
             if (DebugTraceState) LogMessage(0, 0, 0, "WebRequestCallback", string.Format("Thread {0} - Processing received message.", Thread.CurrentThread.ManagedThreadId.ToString()));
             ProcessRestRequest(context);
 
@@ -1094,7 +1094,7 @@ namespace ASCOM.Remote
 
                 response.Headers.Add(HttpResponseHeader.Server, "ASCOM Rest API Server -");
 
-                // Create a single colection holding all supplied parameters including both those supplied as query variables in the url string and those contained within the form post (http PUT only).
+                // Create a single collection holding all supplied parameters including both those supplied as query variables in the url string and those contained within the form post (http PUT only).
                 suppliedParameters.Add(request.QueryString); // Add the query string parameters to the collection
 
                 if (request.HasEntityBody) // Now add any parameters supplied in the form POST
@@ -1164,7 +1164,7 @@ namespace ASCOM.Remote
                     }
                 }
 
-                if (request.Url.AbsolutePath.Trim().ToLowerInvariant().StartsWith(SharedConstants.API_URL_BASE)) // Process requests whsoe URIs start with /api
+                if (request.Url.AbsolutePath.Trim().ToLowerInvariant().StartsWith(SharedConstants.API_URL_BASE)) // Process requests whose URIs start with /api
                 {
                     // Return a 403 error if the API is not enabled through the management console
                     if (!apiIsEnabled)
@@ -1178,11 +1178,11 @@ namespace ASCOM.Remote
                     // Element [0] will be "api"
                     // Element [1] will be the API version (whole number prefixed by V e.g. V1)
                     // Element [2] will be device type
-                    // Element [3] will be the device number within the devicetype collection
+                    // Element [3] will be the device number within the device type collection
                     // Element [4] will be a Method
                     string[] elements = request.Url.AbsolutePath.Trim(FORWARD_SLASH).Split(FORWARD_SLASH);
 
-                    // Basic error checking - We must have received 5 elements, now in the elments array, in order to have received a valid API request so check this here:
+                    // Basic error checking - We must have received 5 elements, now in the elements array, in order to have received a valid API request so check this here:
                     if (elements.Length != 5)
                     {
                         Return400Error(response, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_API_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
@@ -1205,7 +1205,7 @@ namespace ASCOM.Remote
                                     // Ensure that we only process one command at a time for this driver
                                     lock (ActiveObjects[deviceKey].CommandLock) // Proceed when we have a lock for this device
                                     {
-                                        // Confirm that the device requested is availble on this server and process the request
+                                        // Confirm that the device requested is available on this server and process the request
                                         if (RunDriversOnSeparateThreads)
                                         {
                                             LogMessage(clientID, clientTransactionID, serverTransactionID, "ProcessRequestAsync", string.Format("Sending driver command to {0} from thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
@@ -1245,13 +1245,13 @@ namespace ASCOM.Remote
                         // Element [2] will be the configuration command
                         string[] elements = request.Url.AbsolutePath.Trim(FORWARD_SLASH).Split(FORWARD_SLASH);
 
-                        // Basic error checking - We must have received 3 elements, now in the elments array, in order to have received a valid API request so check this here:
+                        // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid API request so check this here:
                         if (elements.Length != 3)
                         {
                             Return400Error(response, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_SERVER_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID);
                             return;
                         }
-                        else // We have received the required 3 elements inthe URI
+                        else // We have received the required 3 elements in the URI
                         {
                             for (int i = 0; i < elements.Length; i++)
                             {
@@ -1384,7 +1384,7 @@ namespace ASCOM.Remote
                                                 }
                                                 break;
                                             default:
-                                                Return400Error(response, "Unsupported http verp: " + request.HttpMethod, clientID, clientTransactionID, serverTransactionID);
+                                                Return400Error(response, "Unsupported http verb: " + request.HttpMethod, clientID, clientTransactionID, serverTransactionID);
                                                 break;
                                         }
                                     }
@@ -2099,7 +2099,7 @@ namespace ASCOM.Remote
                         }
                         break;
                     default:
-                        Return400Error(response, "Unsupported http verp: " + request.HttpMethod, clientID, clientTransactionID, serverTransactionID);
+                        Return400Error(response, "Unsupported http verb: " + request.HttpMethod, clientID, clientTransactionID, serverTransactionID);
                         break;
                 }
             }
@@ -3427,7 +3427,7 @@ namespace ASCOM.Remote
                             default:
                                 throw new InvalidValueException("ReturnImageArray: Received an unsupported return array type: " + arrayType);
                         }
-                        LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("Array elelments are of type: {0}", elementType));
+                        LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("Array elements are of type: {0}", elementType));
 
                         switch (deviceResponse.Rank)
                         {

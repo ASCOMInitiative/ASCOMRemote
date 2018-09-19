@@ -10,7 +10,6 @@ namespace ASCOM.Remote
         bool allowConnectedSetTrue;
         DriverHostForm driverHostForm;
 
-        //static readonly object commandLock;
         readonly object commandLock;
 
         /*        static ActiveObject()

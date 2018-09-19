@@ -256,7 +256,7 @@ namespace ASCOM.Remote
                 // Set up device list so we can translate ProgID to description
 
                 ArrayList installedDevices = profile.RegisteredDevices(cmbDeviceType.SelectedItem.ToString());
-                TL.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Created registered device arraylist");
+                TL.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Created registered device array list");
 
                 deviceDictionary.Clear();
                 foreach (KeyValuePair kvp in installedDevices)
@@ -322,7 +322,7 @@ namespace ASCOM.Remote
 
             try
             {
-                // Get an instance of the driver from its ProgID amd store this in a dynamic variable so that we can call its method directly
+                // Get an instance of the driver from its ProgID and store this in a dynamic variable so that we can call its method directly
                 Type ProgIdType = Type.GetTypeFromProgID(progID);
                 TL.LogMessage(0, 0, 0, "Setup", string.Format("Found type: {0}", ProgIdType.Name));
 
@@ -331,9 +331,9 @@ namespace ASCOM.Remote
 
                 try
                 {
-                    if (oDrv.Connected) // Driver is connected and the Setup dialog must be run with the device disconnected so ask whether we can disconnect it
+                    if (oDrv.Connected) // Driver is connected and the Setup dialogue must be run with the device disconnected so ask whether we can disconnect it
                     {
-                        DialogResult dialogResult = MessageBox.Show("Device is conncted, OK to disconnect and run Setup?", "Disconnect Device?", MessageBoxButtons.OKCancel);
+                        DialogResult dialogResult = MessageBox.Show("Device is connected, OK to disconnect and run Setup?", "Disconnect Device?", MessageBoxButtons.OKCancel);
                         if (dialogResult == DialogResult.OK) // OK to disconnect and run setup dialogue
                         {
                             TL.LogMessage(0, 0, 0, "Setup", "User gave permission to disconnect device - setting Connected to false");
