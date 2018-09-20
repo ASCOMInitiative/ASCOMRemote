@@ -401,6 +401,7 @@
             // 
             // btnServerConfiguration
             // 
+            this.btnServerConfiguration.Enabled = false;
             this.btnServerConfiguration.Location = new System.Drawing.Point(26, 48);
             this.btnServerConfiguration.Name = "btnServerConfiguration";
             this.btnServerConfiguration.Size = new System.Drawing.Size(92, 45);
@@ -423,11 +424,11 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(8, 22);
+            this.label15.Location = new System.Drawing.Point(13, 22);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(125, 13);
+            this.label15.Size = new System.Drawing.Size(109, 13);
             this.label15.TabIndex = 36;
-            this.label15.Text = "(Server must be running!)";
+            this.label15.Text = "(Not implemented yet)";
             // 
             // label14
             // 
