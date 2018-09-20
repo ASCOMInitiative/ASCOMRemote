@@ -89,8 +89,8 @@ Filename: "{app}\RemoteClients\ASCOM.RemoteClientLocalServer.exe"; Parameters: "
 [Registry]
 
 [Icons]
-Name: "{group}\ASCOM REST Server"; Filename: "{pf}\ASCOM\Remote\ASCOM Remote Concept.pdf";
-Name: "{group}\ASCOM Remote Documentation"; Filename: "{pf}\ASCOM\Remote\ASCOM.RESTServer.exe"; Components: ServerComponents
+Name: "{group}\ASCOM Remote Documentation"; Filename: "{pf}\ASCOM\Remote\ASCOM Remote Concept.pdf";
+Name: "{group}\ASCOM REST Server"; Filename: "{pf}\ASCOM\Remote\ASCOM.RESTServer.exe"; Components: ServerComponents
 Name: "{group}\Remote Client Configuration"; Filename: "{app}\RemoteClients\ASCOM.DynamicRemoteClients.exe"; Components: ClientComponents
 
 [Components]
