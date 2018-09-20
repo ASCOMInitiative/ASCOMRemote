@@ -70,6 +70,8 @@ Source: "..\SetNetworkPermissions\bin\Release\ASCOM.SetNetworkPermissions.pdb"; 
 Source: "..\SetNetworkPermissions\bin\Release\WindowsFirewallHelper.dll"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
 Source: "..\SetNetworkPermissions\bin\Release\CommandLine.dll"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
 Source: "..\SetNetworkPermissions\bin\Release\Interop.NetFwTypeLib.dll"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
+; DOCUMENTATION
+Source: "..\Documentation\ASCOM Remote Concept.pdf"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion
 ; INSTALLER SUPPORT FILES
 Source: "ASCOM.ico"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion
 ; WEB CONTENT
@@ -87,7 +89,8 @@ Filename: "{app}\RemoteClients\ASCOM.RemoteClientLocalServer.exe"; Parameters: "
 [Registry]
 
 [Icons]
-Name: "{group}\ASCOM REST Server"; Filename: "{pf}\ASCOM\Remote\ASCOM.RESTServer.exe"; Components: ServerComponents
+Name: "{group}\ASCOM REST Server"; Filename: "{pf}\ASCOM\Remote\ASCOM Remote Concept.pdf";
+Name: "{group}\ASCOM Remote Documentation"; Filename: "{pf}\ASCOM\Remote\ASCOM.RESTServer.exe"; Components: ServerComponents
 Name: "{group}\Remote Client Configuration"; Filename: "{app}\RemoteClients\ASCOM.DynamicRemoteClients.exe"; Components: ClientComponents
 
 [Components]
