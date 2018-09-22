@@ -1,0 +1,361 @@
+openapi: 3.0.0
+info:
+  title: ASCOM Remote Device Server - Management API
+  description: >
+    This restful API enables the ASCOM Remote Device Server configuration to be
+    discovered and changed. 
+
+
+    ## Parameters and Returned values
+
+    For GET operations, parameters should be placed in the URI string and for
+    PUT operations they should be placed in the body of the message.
+
+
+    Responses, as described below, are returned in JSON format and always
+    include a common set of values including: the client's 
+
+    identity number, the client's transaction number, the server's transaction
+    number, the error message, error number and serialised Windows exception.
+
+    The ErrorMessage field will be an empty string, the ErrorNumber field will
+    be zero and the DriverException field will be null if the device driver
+    method executes successfully.
+
+
+    ## HTTP Status Codes and ASCOM Error codes
+
+    The returned HTTP status code refers to the status of the transaction from
+    the perspective of the web application server. 
+
+    Under most circumstances you will receive an http return status code of
+    `200`, indicating that the 
+
+    operation completed successfully within the web application server at the
+    remote location. This does not necessarily mean
+
+    that the operation completed as expected and you must always check one of
+    the ErrorMessage, ErrorNumber or DriverException fields to confirm that the 
+
+    returned result is valid. 
+
+
+    An HTTP status code of `400` indicates that the web application server
+    received a bad URI path or parameter value that it cannot 
+
+    understand and thus cannot forward the command to the device. Check the body
+    of the response for an error message.
+
+
+    An HTTP status code of `500` indicates an unexpected error within the
+    appliation server itself, from which it could not recover. Check 
+
+    the body of the response for an error message.
+  version: "1.0.0-oas3"
+paths:
+  /Profile:
+    get:
+      summary: Gets a lists all ASCOM devices installed on the server
+      description: >-
+        Returns the type, ProgID and description of every ASCOM device installed
+        on the server
+      parameters:
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Server Methods
+      responses:
+        '200':
+          description: Server response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  /Configuration:
+    get:
+      summary: Gets the server configuration (which ASCOM devices are accessible)
+      description: Returns a list of devices which are accessible through the server
+      parameters:
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Server Methods
+      responses:
+        '200':
+          description: Server response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigurationResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    put:
+      summary: Sets the server configuration (which ASCOM devices are accessible)
+      description: Sends a new configuration to the remote device server
+      tags:
+        - Server Methods
+      responses:
+        '200':
+          description: Server response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                ClientID:
+                  description: Client's unique ID.
+                  type: string
+                ClientTransactionID:
+                  description: Client's transaction ID.
+                  type: string
+                Configuration:
+                  description: New configuration that the server should adopt
+                  type: string
+  /Concurrency:
+    get:
+      summary: Gets the number of concurrent remote server transactions
+      description: >-
+        Returns the number of concurrent driver method calls being handled by
+        the remote server at the time the call is made
+      parameters:
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Server Methods
+      responses:
+        '200':
+          description: Server response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+servers:
+# Added by API Auto Mocking Plugin
+# Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/ASCOMInitiative/ASCOMServerAPI/1.0.0-oas3
+components:
+  parameters:
+    ClientIDQuery:
+      name: ClientID
+      description: Client's unique ID.
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 1
+    ClientTransactionIDQuery:
+      name: ClientTransactionID
+      description: Client's transaction ID.
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 1234
+  schemas:
+    ProfileResponse:
+      type: object
+      properties:
+        Value:
+          type: array
+          items:
+            type: object
+            properties:
+              DeviceType:
+                description: The ASCOM device type e.g. Telescope or Camera
+                type: string
+              ProgID:
+                description: The device COM ProgID
+                type: string
+              Description:
+                description: The ASCOM Chooser device description
+                type: string
+        ClientTransactionIDForm:
+          type: integer
+          format: int32
+          description: Client's transaction ID.
+        ServerTransactionID:
+          type: integer
+          format: int32
+          description: Server's transaction ID.
+        Method:
+          type: string
+          description: Name of the calling method.
+        ErrorNumber:
+          type: integer
+          format: int32
+          description: Error number from device.
+        ErrorMessage:
+          type: string
+          description: Error message description from device.
+        DriverException:
+          type: object
+          description: >-
+            Windows error exception object (only of value if client is Windows
+            in which case deserialise to a .NET Exception object).
+    ConfigurationResponse:
+      type: object
+      properties:
+        Value:
+          type: array
+          items:
+            type: object
+            properties:
+              DeviceName:
+                description: Device name
+                type: string
+              ConfiguredDevice:
+                description: Device configuration information
+                type: object
+                properties:
+                  DeviceType:
+                    description: The ASCOM device type e.g. Telescope or Camera
+                    type: string
+                  ProgID:
+                    description: The device COM ProgID
+                    type: string
+                  Description:
+                    description: The ASCOM Chooser device description
+                    type: string
+                  DeviceNumber:
+                    description: The server's zero based device number for this device
+                    type: integer
+                    format: int32
+        ClientTransactionIDForm:
+          type: integer
+          format: int32
+          description: Client's transaction ID.
+        ServerTransactionID:
+          type: integer
+          format: int32
+          description: Server's transaction ID.
+        Method:
+          type: string
+          description: Name of the calling method.
+        ErrorNumber:
+          type: integer
+          format: int32
+          description: Error number from device.
+        ErrorMessage:
+          type: string
+          description: Error message description from device.
+        DriverException:
+          type: object
+          description: >-
+            Windows error exception object (only of value if client is Windows
+            in which case deserialise to a .NET Exception object).
+    MethodResponse:
+      type: object
+      properties:
+        ClientTransactionIDForm:
+          type: integer
+          format: int32
+          description: Client's transaction ID.
+        ServerTransactionID:
+          type: integer
+          format: int32
+          description: Server's transaction ID.
+        Method:
+          type: string
+          description: Name of the calling method.
+        ErrorNumber:
+          type: integer
+          format: int32
+          description: Error number from device.
+        ErrorMessage:
+          type: string
+          description: Error message description from device.
+        DriverException:
+          type: object
+          description: >-
+            Windows error exception object (only of value if client is Windows
+            in which case deserialise to a .NET Exception object).
+    IntResponse:
+      type: object
+      properties:
+        Value:
+          type: integer
+          format: int32
+          description: Returned integer value
+        ClientTransactionIDForm:
+          type: integer
+          format: int32
+          description: Client's transaction ID.
+        ServerTransactionID:
+          type: integer
+          format: int32
+          description: Server's transaction ID.
+        Method:
+          type: string
+          description: Name of the calling method.
+        ErrorNumber:
+          type: integer
+          format: int32
+          description: Error number from device.
+        ErrorMessage:
+          type: string
+          description: Error message description from device.
+        DriverException:
+          type: object
+          description: >-
+            Windows error exception object (only of value if client is Windows
+            in which case deserialise to a .NET Exception object).
+    ErrorMessage:
+      type: string
+      properties:
+        Value:
+          type: string
+          description: Error message
