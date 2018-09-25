@@ -256,14 +256,24 @@ namespace ASCOM.Remote
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-
             // Clear down the listener
+            LogMessage(0, 0, 0, "FormClosed", string.Format("Stopping REST server on thread {0}", Thread.CurrentThread.ManagedThreadId));
             StopRESTServer();
+            LogMessage(0, 0, 0, "FormClosed", string.Format("Stopped REST server on thread {0}", Thread.CurrentThread.ManagedThreadId));
 
             // Clear all of the current objects
+            LogMessage(0, 0, 0, "FormClosed", string.Format("Disconnecting devices on thread {0}", Thread.CurrentThread.ManagedThreadId));
             DisconnectDevices();
+            LogMessage(0, 0, 0, "FormClosed", string.Format("Disconnected devices on thread {0}", Thread.CurrentThread.ManagedThreadId));
 
+            LogMessage(0, 0, 0, "FormClosed", string.Format("Calling Application.Exit on thread {0}", Thread.CurrentThread.ManagedThreadId));
+
+            //Environment.Exit(0);
             Application.Exit();
+            LogMessage(0, 0, 0, "FormClosed", string.Format("After Application.Exit on thread {0}", Thread.CurrentThread.ManagedThreadId));
+            //Thread.Sleep(100);
+            WaitFor(200);
+            LogMessage(0, 0, 0, "FormClosed", string.Format("After Sleep on thread {0}", Thread.CurrentThread.ManagedThreadId));
         }
 
         #endregion
@@ -514,15 +524,20 @@ namespace ASCOM.Remote
 
         private void DriverOnSeparateThread(object arg)
         {
-            KeyValuePair<string, ConfiguredDevice> configuredDevice = (KeyValuePair<string, ConfiguredDevice>)arg;
+            KeyValuePair<string, ConfiguredDevice> configuredDevice = (KeyValuePair<string, ConfiguredDevice>)arg; // Convert the supplied argument to the correct type
+            string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber); // Recreate the device key to use in log messages
 
-            DriverHostForm driverHostForm = new DriverHostForm(TL, configuredDevice, this);
-            driverHostForm.Show();
-            driverHostForm.Hide();
-            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Before Application.Run() on thread {0}", Thread.CurrentThread.ManagedThreadId));
-            Application.Run();
-            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("After Application.Run() on thread {0}", Thread.CurrentThread.ManagedThreadId));
-            string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber);
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("About to create driver host form"));
+            DriverHostForm driverHostForm = new DriverHostForm(TL, configuredDevice, this); // Create the form
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Created driver host form"));
+            driverHostForm.Show(); // Make it come into existence - it doesn't exist until its shown for some reason
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Shown driver host form"));
+            driverHostForm.Hide(); // Hide the form from view
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Hidden driver host form"));
+
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Starting driver host environment for {0} on thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
+            Application.Run();  // Start the message loop on this thread to bring the form to life
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Environment for driver host {0} shut down on thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
 
             // Thread will finish at this point
         }
@@ -572,9 +587,9 @@ namespace ASCOM.Remote
                     if (RunDriversOnSeparateThreads)
                     {
                         DestroyDriverDelegate destroyDriverDelegate = new DestroyDriverDelegate(activeObject.Value.DriverHostForm.DestroyDriver);
-                        LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Starting invoke of driver delegate on thread {0}", Thread.CurrentThread.ManagedThreadId));
+                        LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Starting invoke of driver delegate for device {0} on thread {1}", activeObject.Key, Thread.CurrentThread.ManagedThreadId));
                         activeObject.Value.DriverHostForm.Invoke(destroyDriverDelegate);
-                        LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Completed invoke of driver delegate on thread {0}", Thread.CurrentThread.ManagedThreadId));
+                        LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Completed invoke of driver delegate for device {0} on thread {1}", activeObject.Key, Thread.CurrentThread.ManagedThreadId));
                     }
                     else
                     {
@@ -598,7 +613,7 @@ namespace ASCOM.Remote
         {
             int RemainingObjectCount;
 
-            LogMessage(0, 0, 0, "DestroyDriver", "Destroying driver: " + DeviceKey);
+            LogMessage(0, 0, 0, "DestroyDriver", string.Format("Destroying driver: {0}", DeviceKey));
 
             device = ActiveObjects[DeviceKey].DeviceObject;
 
@@ -621,6 +636,9 @@ namespace ASCOM.Remote
                 while ((RemainingObjectCount > 0) & (LoopCount != 20));
                 device = null;
             }
+
+            LogMessage(0, 0, 0, "DestroyDriver", string.Format("Destroyed driver: {0}", DeviceKey));
+
             return RemainingObjectCount;
         }
 

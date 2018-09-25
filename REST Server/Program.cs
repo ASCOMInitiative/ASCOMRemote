@@ -27,6 +27,17 @@ namespace ASCOM.Remote
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new ServerForm());
+
+#if DEBUG // When debugging, include a log to show the time of close down
+            TraceLogger TL = new TraceLogger("ASCOMRemoteEnded")
+            {
+                Enabled = true
+            };
+            TL.LogMessage("ASCOMRemoteEnded", "Application has exited");
+            TL.Enabled = false;
+            TL.Dispose();
+            TL = null;
+#endif
         }
         static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
