@@ -37,7 +37,6 @@ namespace ASCOM.Remote
         private static bool traceState = true;
         private static bool debugTraceState = true;
 
-        private static int uniqueClientNumber = 0; // Unique number that increments on each call to UniqueClientNumber
         private static int uniqueTransactionNumber = 0; // Unique number that increments on each call to TransactionNumber
 
         private readonly static object connectLockObject = new object();
@@ -82,11 +81,8 @@ namespace ASCOM.Remote
         /// </summary>
         public static int GetUniqueClientNumber()
         {
-            //Interlocked.Increment(ref uniqueClientNumber);
-            //return uniqueClientNumber;
-
-
             int randomvalue;
+
             using (RNGCryptoServiceProvider rg = new RNGCryptoServiceProvider())
             {
                 byte[] rno = new byte[5];
@@ -96,8 +92,6 @@ namespace ASCOM.Remote
             }
 
             return randomvalue;
-
-
         }
 
         /// <summary>
