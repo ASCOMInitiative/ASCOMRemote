@@ -35,6 +35,8 @@ namespace ASCOM.Remote
         private const string SET_NETWORK_PERMISSIONS_EXE_PATH = @"\ASCOM\Remote\ASCOM.SetNetworkPermissions.exe";
 
         private const int MAX_ERRORS_BEFORE_CLOSE = 10; // Maximum number of async listen errors before the application permanently shuts down
+        private const int SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH = 500; // Maximum length of a message that can be logged to the screen - required to prevent huge messages from locking up the system while the text box attempts to processes them
+        private const int SCREEN_LOG_MAXIMUM_LENGTH = 50000; // Maximum length of the screen log - The screen log will be pruned to ensure it never exceeds this length, which would start to degrade performance
 
         private const string CORRECT_API_FORMAT_STRING = "<br>Required format is: <b>" +
                             "<font color=\"red\">API/V</font>" +
@@ -682,29 +684,35 @@ namespace ASCOM.Remote
             }
         }
 
+        /// <summary>
+        /// Display a message on the screen log
+        /// </summary>
+        /// <param name="screenMessage">Message to be displayed</param>
+        /// <remarks>The log will be limited to a total length of SCREEN_LOG_MAXIMUM_LENGTH and the new message must be less than or equal to SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH characters in length</remarks>
         private void LogToScreen(string screenMessage)
         {
-            // InvokeRequired required compares the thread ID of the
-            // calling thread to the thread ID of the creating thread.
-            // If these threads are different, it returns true.
-            if (this.txtLog.InvokeRequired)
+            // Invoke the code on the UI thread if required
+            if (txtLog.InvokeRequired)
             {
                 SetTextCallback logToScreenDelegate = new SetTextCallback(LogToScreen);
                 this.Invoke(logToScreenDelegate, screenMessage);
             }
             else
             {
-                if (txtLog.TextLength > 50000) txtLog.Text = txtLog.Text.Substring(txtLog.TextLength - 28000);
+                // Limit the maximum number of characters in the screen log to maintain performance
+                if (txtLog.TextLength > SCREEN_LOG_MAXIMUM_LENGTH) txtLog.Text = txtLog.Text.Substring(SCREEN_LOG_MAXIMUM_LENGTH / 3);
 
-                //                this.txtLog.Text += text;
-                txtLog.AppendText(screenMessage + "\r\n");
-                txtLog.SelectionStart = txtLog.Text.Length;
+                // Limit the number of characters that can be added in one message to maintain performance
+                if (screenMessage.Length > SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH) screenMessage = string.Format("{0} - Screen display truncated to {1} characters in order to maintain performance", screenMessage.Substring(0, SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH), SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH);
+
+                txtLog.AppendText(screenMessage + "\r\n"); // Add the text to the screen log
+                txtLog.SelectionStart = txtLog.Text.Length; // Move the text box focus to the newly added text
             }
         }
 
         private void IncrementConcurrencyCounter()
         {
-            if (this.txtConcurrency.InvokeRequired)
+            if (txtConcurrency.InvokeRequired)
             {
                 SetConcurrencyCallback d = new SetConcurrencyCallback(IncrementConcurrencyCounter);
                 this.Invoke(d, new object[] { });
@@ -1130,7 +1138,7 @@ namespace ASCOM.Remote
                     // Parse the integer value out or throw a 400 error if the value is not an integer
                     if (!int.TryParse(clientIDString, out clientID))
                     {
-                        LogMessage(clientID, clientTransactionID, serverTransactionID, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString()));
+                        LogMessage(clientID, clientTransactionID, serverTransactionID, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}, Concurrent requests: {3}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString(), numberOfConcurrentTransactions));
                         Return400Error(response, "Client ID is not an integer: " + suppliedParameters[SharedConstants.CLIENTID_PARAMETER_NAME], clientID, clientTransactionID, serverTransactionID);
                         return;
                     }
@@ -1202,21 +1210,29 @@ namespace ASCOM.Remote
                                 {
                                     string deviceKey = elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + @"/" + elements[URL_ELEMENT_DEVICE_NUMBER].ToLowerInvariant(); // Create a unique key from device type and device number
 
-                                    // Ensure that we only process one command at a time for this driver
-                                    lock (ActiveObjects[deviceKey].CommandLock) // Proceed when we have a lock for this device
+                                    // Ensure that the device exists
+                                    if (ActiveObjects.ContainsKey(deviceKey)) // Device is configured
                                     {
-                                        // Confirm that the device requested is available on this server and process the request
-                                        if (RunDriversOnSeparateThreads)
+                                        // Ensure that we only process one command at a time for this driver
+                                        lock (ActiveObjects[deviceKey].CommandLock) // Proceed when we have a lock for this device
                                         {
-                                            LogMessage(clientID, clientTransactionID, serverTransactionID, "ProcessRequestAsync", string.Format("Sending driver command to {0} from thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
-                                            DriverCommandDelegate driverCommandDelegate = new DriverCommandDelegate(ActiveObjects[deviceKey].DriverHostForm.DriverCommand);
-                                            ActiveObjects[deviceKey].DriverHostForm.Invoke(driverCommandDelegate, new RequestData(clientID, clientTransactionID, serverTransactionID, suppliedParameters, request, response, elements, deviceKey));
-                                            LogMessage(clientID, clientTransactionID, serverTransactionID, "ProcessRequestAsync", string.Format("Completed driver command to {0} from thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
+                                            // Confirm that the device requested is available on this server and process the request
+                                            if (RunDriversOnSeparateThreads)
+                                            {
+                                                LogMessage(clientID, clientTransactionID, serverTransactionID, "ProcessRequestAsync", string.Format("Sending driver command to {0} from thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
+                                                DriverCommandDelegate driverCommandDelegate = new DriverCommandDelegate(ActiveObjects[deviceKey].DriverHostForm.DriverCommand);
+                                                ActiveObjects[deviceKey].DriverHostForm.Invoke(driverCommandDelegate, new RequestData(clientID, clientTransactionID, serverTransactionID, suppliedParameters, request, response, elements, deviceKey));
+                                                LogMessage(clientID, clientTransactionID, serverTransactionID, "ProcessRequestAsync", string.Format("Completed driver command to {0} from thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
+                                            }
+                                            else // Driver is running on the UI thread so just process the command
+                                            {
+                                                ProcessDriverCommand(clientID, clientTransactionID, serverTransactionID, suppliedParameters, request, response, elements, deviceKey);
+                                            }
                                         }
-                                        else // Driver is running on the UI thread so just process the command
-                                        {
-                                            ProcessDriverCommand(clientID, clientTransactionID, serverTransactionID, suppliedParameters, request, response, elements, deviceKey);
-                                        }
+                                    }
+                                    else // Specified device is not configured so return an error message
+                                    {
+                                        Return400Error(response, string.Format("Device {0} is not configured on this server", deviceKey), clientID, clientTransactionID, serverTransactionID);
                                     }
                                 }
                                 else
@@ -1410,22 +1426,19 @@ namespace ASCOM.Remote
                 else // A URI that did not start with /api/ or /configuration/ was requested
                 {
                     LogMessage(clientID, clientTransactionID, serverTransactionID, "Request", string.Format("Non API call - {0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, System.Threading.Thread.CurrentThread.ManagedThreadId.ToString()));
-                    byte[] simulatorBytes = Encoding.UTF8.GetBytes("You have reached the <i><b>ASCOM Remote Device Server</b></i> API portal");
-                    simulatorBytes = simulatorBytes.Append(Encoding.UTF8.GetBytes("<p><b>Available devices:</b></p>"));
+                    string returnMessage = "You have reached the <i><b>ASCOM Remote Device Server</b></i> API portal<p><b>Available devices:</b></p>";
 
                     foreach (KeyValuePair<string, ConfiguredDevice> device in ConfiguredDevices)
                     {
                         if (device.Value.ProgID != SharedConstants.DEVICE_NOT_CONFIGURED)
                         {
-                            simulatorBytes = simulatorBytes.Append(Encoding.UTF8.GetBytes(string.Format("{0} {1}: {2} ({3})<br>", device.Value.DeviceType, device.Value.DeviceNumber, device.Value.Description, device.Value.ProgID)));
+                            returnMessage += string.Format("{0} {1}: {2} ({3})<br>", device.Value.DeviceType, device.Value.DeviceNumber, device.Value.Description, device.Value.ProgID);
                         }
                     }
-                    response.ContentType = "text/html; charset=utf-8";
-                    response.ContentLength64 = simulatorBytes.Length;
-                    response.OutputStream.Write(simulatorBytes, 0, simulatorBytes.Length);
-                    response.OutputStream.Close();
+                    TransmitResponse("text/html; charset=utf-8", HttpStatusCode.OK, "200 OK", returnMessage, "Request", response, clientID, clientTransactionID, serverTransactionID);
                 }
             }
+
             catch (Exception ex) // Something serious has gone wrong with the ASCOM Rest server itself so report this to the user
             {
                 LogException(clientID, clientTransactionID, serverTransactionID, "Request", ex.ToString());
@@ -2117,38 +2130,22 @@ namespace ASCOM.Remote
         private void Return400Error(HttpListenerResponse response, string message, int clientID, int clientTransactionID, int serverTransactionID)
         {
             LogMessage(clientID, clientTransactionID, serverTransactionID, "HTTP 400 Error", message);
-            response.StatusCode = (int)HttpStatusCode.BadRequest;
-            response.StatusDescription = "400 " + CleanMessage(message);
-            byte[] bytesToSend = Encoding.UTF8.GetBytes(response.StatusDescription);
-            response.ContentType = "text/html; charset=utf-8";
-            response.ContentLength64 = bytesToSend.Length;
-            response.OutputStream.Write(bytesToSend, 0, bytesToSend.Length);
-            response.OutputStream.Close();
-
             LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", clientID, clientTransactionID, message));
+
+            TransmitResponse("text/html; charset=utf-8", HttpStatusCode.BadRequest, "400 " + CleanMessage(message), "400 " + CleanMessage(message), "Request", response, clientID, clientTransactionID, serverTransactionID);
         }
         private void Return403Error(HttpListenerResponse response, string message, int clientID, int clientTransactionID, int serverTransactionID)
         {
             LogMessage(clientID, clientTransactionID, serverTransactionID, "HTTP 403 Error", message);
-            response.StatusCode = (int)HttpStatusCode.Forbidden;
-            response.StatusDescription = "403 " + CleanMessage(message);
-            byte[] bytesToSend = Encoding.UTF8.GetBytes(response.StatusDescription);
-            response.ContentType = "text/html; charset=utf-8";
-            response.ContentLength64 = bytesToSend.Length;
-            response.OutputStream.Write(bytesToSend, 0, bytesToSend.Length);
-            response.OutputStream.Close();
             LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", clientID, clientTransactionID, message));
+
+            TransmitResponse("text/html; charset=utf-8", HttpStatusCode.Forbidden, "403 " + CleanMessage(message), "403 " + CleanMessage(message), "Request", response, clientID, clientTransactionID, serverTransactionID);
         }
         internal void Return500Error(HttpListenerRequest request, HttpListenerResponse response, string errorMessage, int clientID, int clientTransactionID, int serverTransactionID)
         {
             LogMessage(clientID, clientTransactionID, serverTransactionID, "HTTP 500 Error", errorMessage);
-            response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            response.StatusDescription = "500 " + CleanMessage(errorMessage);
-            byte[] bytesToSend = Encoding.UTF8.GetBytes(response.StatusDescription);
-            response.ContentType = "text/html; charset=utf-8";
-            response.ContentLength64 = bytesToSend.Length;
-            response.OutputStream.Write(bytesToSend, 0, bytesToSend.Length);
-            response.OutputStream.Close();
+
+            TransmitResponse("text/html; charset=utf-8", HttpStatusCode.InternalServerError, "500 " + CleanMessage(errorMessage), "500 " + CleanMessage(errorMessage), "Request", response, clientID, clientTransactionID, serverTransactionID);
         }
 
         private void ReturnBool(string deviceType, string method, HttpListenerRequest request, HttpListenerResponse response, NameValueCollection suppliedparameters, int clientID, int clientTransactionID, int serverTransactionID)
@@ -3390,7 +3387,7 @@ namespace ASCOM.Remote
                         if (deviceResponse != null)
                         {
                             LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("ImageArray Rank: {0}", deviceResponse.Rank));
-                            LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("ImageArray Rank: {0}, Length: {1}", deviceResponse.Rank, deviceResponse.Length));
+                            LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("ImageArray Rank: {0}, Length: {1:n0}", deviceResponse.Rank, deviceResponse.Length));
 
                             switch (deviceResponse.Rank)
                             {
@@ -3415,7 +3412,7 @@ namespace ASCOM.Remote
                         deviceResponse = device.ImageArrayVariant;
                         string arrayType = deviceResponse.GetType().Name;
                         string elementType = "";
-                        LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("Received array of Rank {0} of Length {1} with element type {2} {3}", deviceResponse.Rank, deviceResponse.Length, deviceResponse.GetType().Name, deviceResponse.GetType().UnderlyingSystemType.Name));
+                        LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("Received array of Rank {0} of Length {1:n0} with element type {2} {3}", deviceResponse.Rank, deviceResponse.Length, deviceResponse.GetType().Name, deviceResponse.GetType().UnderlyingSystemType.Name));
 
                         switch (arrayType) // Process 2D and 3D variant arrays, all other types are unsupported
                         {
@@ -3491,7 +3488,7 @@ namespace ASCOM.Remote
             if (DebugTraceState) LogMessage(clientID, clientTransactionID, serverTransactionID, method, "Starting array serialisation");
 
             string responseJson = JsonConvert.SerializeObject(responseClass);
-            if (DebugTraceState) LogMessage(clientID, clientTransactionID, serverTransactionID, method, "Completed array serialisation, Length: " + responseJson.Length);
+            if (DebugTraceState) LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("Completed array serialisation, Length: {0:n0}", responseJson.Length));
 
             SendResponseToClient(method, request, response, exReturn, responseJson, clientID, clientTransactionID, serverTransactionID);
         }
@@ -3828,49 +3825,61 @@ namespace ASCOM.Remote
             SendResponseToClient(method, request, response, ex, responseJson, clientID, clientTransactionID, serverTransactionID);
         }
 
-        private void SendResponseToClient(string method, HttpListenerRequest request, HttpListenerResponse response, Exception ex, string JsonResponse, int clientID, int clientTransactionID, int serverTransactionID)
+        private void SendResponseToClient(string method, HttpListenerRequest request, HttpListenerResponse response, Exception ex, string jsonResponse, int clientID, int clientTransactionID, int serverTransactionID)
         {
-            byte[] bytesToSend;
-
-            response.ContentType = "application/json; charset=utf-8";
-            response.ContentEncoding = Encoding.UTF8;
-
             if (ex == null) // Command ran successfully so return the JSON encoded result
             {
-                LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("OK - no exception. Thread: {0}, Json: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), (JsonResponse.Length < 1000) ? JsonResponse : JsonResponse.Substring(0, 1000)));
-                response.StatusCode = (int)HttpStatusCode.OK;
-                response.StatusDescription = "200 OK";
-                bytesToSend = Encoding.UTF8.GetBytes(JsonResponse);
-                if (DebugTraceState) LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("Completed Encoding.GetBytes, array length: {0}", bytesToSend.Length));
-                if (ScreenLogResponses) LogToScreen(string.Format("  OK - JSON: {0}", JsonResponse));
+                LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("OK - no exception. Thread: {0}, Json: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), (jsonResponse.Length < 1000) ? jsonResponse : jsonResponse.Substring(0, 1000)));
+                if (ScreenLogResponses) LogToScreen(string.Format("  OK - JSON: {0}", jsonResponse));
+                TransmitResponse("application/json; charset=utf-8", HttpStatusCode.OK, "200 OK", jsonResponse, method, response, clientID, clientTransactionID, serverTransactionID);
             }
             else // Some sort of exception was thrown during command execution
             {
                 if (ex.GetType() == typeof(InvalidParameterException)) // A required parameter is missing or invalid in the supplied http call
                 {
-                    response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    response.StatusDescription = "400 " + ex.Message;
-                    bytesToSend = Encoding.UTF8.GetBytes(response.StatusDescription);
                     if (ScreenLogResponses) LogToScreen(string.Format("  PARAMETER ERROR - ClientId: {0}, ClientTxnID: {1}, ServerTxnID: {2} - {3}", clientID, clientTransactionID, serverTransactionID, ex.Message));
+                    TransmitResponse("text/plain; charset=utf-8", HttpStatusCode.BadRequest, "400 " + ex.Message, "400 " + ex.Message, method, response, clientID, clientTransactionID, serverTransactionID);
                 }
                 else
                 {
-                    response.StatusCode = (int)HttpStatusCode.OK;
-                    response.StatusDescription = "200 OK";
-                    bytesToSend = Encoding.UTF8.GetBytes(JsonResponse);
                     if (ScreenLogResponses) LogToScreen(string.Format("  DEVICE ERROR - ClientId: {0}, ClientTxnID: {1}, ServerTxnID: {2} - {3}", clientID, clientTransactionID, serverTransactionID, ex.Message));
+                    TransmitResponse("application/json; charset=utf-8", HttpStatusCode.OK, "200 OK", jsonResponse, method, response, clientID, clientTransactionID, serverTransactionID);
                 }
+
                 if (DebugTraceState) LogException(clientID, clientTransactionID, serverTransactionID, method, "Exception: " + ex.ToString());
                 else LogException(clientID, clientTransactionID, serverTransactionID, method, "Exception: " + ex.Message);
-                LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("Thread: {0}, Json: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), JsonResponse));
 
+                LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("Thread: {0}, Json: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), jsonResponse));
+            }
+        }
+
+        void TransmitResponse(string contentType, HttpStatusCode httpStatusCode, string statusDescription, string messageToSend, string method, HttpListenerResponse response, int clientID, int clientTransactionID, int serverTransactionID)
+        {
+            byte[] bytesToSend; // Array to hold the encoded message
+
+            try
+            {
+                response.ContentType = contentType;
+                response.StatusCode = (int)httpStatusCode; // Set the response status and status code
+                response.StatusDescription = statusDescription;
+
+                bytesToSend = Encoding.UTF8.GetBytes(messageToSend); // Convert the message to be returned into UTF8 bytes that can be sent over the wire
+                if (DebugTraceState) LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("Completed Encoding.GetBytes, array length: {0:n0}", bytesToSend.Length));
+
+                if (DebugTraceState) LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("Before setting response bytes - Length: {0:n0}, Response is null: {1}", bytesToSend.Length, response == null));
+                response.ContentLength64 = bytesToSend.Length;
+                if (DebugTraceState) LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("Before writing {0:n0} bytes to output stream", response.ContentLength64));
+                response.OutputStream.Write(bytesToSend, 0, bytesToSend.Length);
+                if (DebugTraceState) LogMessage(clientID, clientTransactionID, serverTransactionID, method, "After writing bytes to output stream");
+                response.OutputStream.Close();
+                if (DebugTraceState) LogMessage(clientID, clientTransactionID, serverTransactionID, method, "After closing output stream");
+            }
+            catch (HttpListenerException ex) // Deal with communications errors here but allow any other errors to go through and be picked up by the main error handler
+            {
+                LogException(clientID, clientTransactionID, serverTransactionID, "ListenerException", string.Format("Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
             }
 
-            if (DebugTraceState) LogMessage(clientID, clientTransactionID, serverTransactionID, method, "Before writing bytes");
-            response.ContentLength64 = bytesToSend.Length;
-            response.OutputStream.Write(bytesToSend, 0, bytesToSend.Length);
-            if (DebugTraceState) LogMessage(clientID, clientTransactionID, serverTransactionID, method, "After writing bytes");
-            response.OutputStream.Close();
+
         }
 
         #endregion
