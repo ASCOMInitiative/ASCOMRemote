@@ -92,7 +92,6 @@
             // PboxDriverStatus
             // 
             this.PboxDriverStatus.BackColor = System.Drawing.Color.Red;
-            this.PboxDriverStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PboxDriverStatus.Location = new System.Drawing.Point(738, 309);
             this.PboxDriverStatus.Name = "PboxDriverStatus";
             this.PboxDriverStatus.Size = new System.Drawing.Size(160, 25);
@@ -184,7 +183,6 @@
             // PboxRESTStatus
             // 
             this.PboxRESTStatus.BackColor = System.Drawing.Color.Red;
-            this.PboxRESTStatus.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PboxRESTStatus.Location = new System.Drawing.Point(738, 220);
             this.PboxRESTStatus.Name = "PboxRESTStatus";
             this.PboxRESTStatus.Size = new System.Drawing.Size(160, 25);
