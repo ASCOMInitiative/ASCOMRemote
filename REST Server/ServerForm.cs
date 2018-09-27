@@ -130,7 +130,6 @@ namespace ASCOM.Remote
         // These are available anywhere in the Remote Device Server and have the same value in all threads
 
         internal static HttpListener httpListener;
-        internal static TraceLoggerPlus TL;
         internal static TraceLoggerPlus AccessLog;
         internal readonly object counterLock = new object();
         internal readonly object managementCommandLock = new object();
@@ -178,6 +177,11 @@ namespace ASCOM.Remote
 
         #endregion
 
+        #region Private Variables
+        private static readonly object logLockObject = new object(); // Lock object to ensure that midnight log change overs happen smoothly
+        private static TraceLoggerPlus TL; // Variable to hold the trace logger
+        #endregion
+
         #region Delegates for Form callbacks
 
         private delegate void SetTextCallback(string text);
@@ -200,10 +204,11 @@ namespace ASCOM.Remote
                 ActiveObjects = new ConcurrentDictionary<string, ActiveObject>();
 
                 ReadProfile();
+
                 TL.Enabled = TraceState; // Initialise with the trace state enabled or disabled as configured
 
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
-                LogMessage(0, 0, 0, "New", "Connected OK, Version: " + version.ToString());
+                LogMessage(0, 0, 0, "New", string.Format("Remote Server Version {0}, Started on {1}", version.ToString(), DateTime.Now.ToString("dddd d MMMM yyyy HH:mm:ss")));
 
                 AccessLog = new TraceLoggerPlus("", ACCESSLOG_TRACELOGGER_NAME)
                 {
@@ -528,7 +533,7 @@ namespace ASCOM.Remote
             string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber); // Recreate the device key to use in log messages
 
             LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("About to create driver host form"));
-            DriverHostForm driverHostForm = new DriverHostForm(TL, configuredDevice, this); // Create the form
+            DriverHostForm driverHostForm = new DriverHostForm(configuredDevice, this); // Create the form
             LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Created driver host form"));
             driverHostForm.Show(); // Make it come into existence - it doesn't exist until its shown for some reason
             LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Shown driver host form"));
@@ -660,45 +665,49 @@ namespace ASCOM.Remote
 
         internal static void LogMessage(int clientID, int clientTransactionID, int serverTransactionID, string Method, string Message)
         {
-            CheckWhetherNewLogRequired(clientID, clientTransactionID, serverTransactionID);
-            TL.LogMessage(clientID, clientTransactionID, serverTransactionID, Method, Message);
+            lock (logLockObject) // Ensure that only one message is logged at once and that the midnight log change over is effected within just one log message call
+            {
+                CheckWhetherNewLogRequired(clientID, clientTransactionID, serverTransactionID);
+                TL.LogMessage(clientID, clientTransactionID, serverTransactionID, Method, Message);
+            }
         }
 
         internal static void LogException(int clientID, int clientTransactionID, int serverTransactionID, string Method, string Message)
         {
-            CheckWhetherNewLogRequired(clientID, clientTransactionID, serverTransactionID);
-            TL.LogMessageCrLf(clientID, clientTransactionID, serverTransactionID, Method, Message);
+            lock (logLockObject) // Ensure that only one message is logged at once and that the midnight log change over is effected within just one log message call
+            {
+                CheckWhetherNewLogRequired(clientID, clientTransactionID, serverTransactionID);
+                TL.LogMessageCrLf(clientID, clientTransactionID, serverTransactionID, Method, Message);
+            }
         }
 
         internal static void LogBlankLine(int clientID, int clientTransactionID, int serverTransactionID)
         {
-            CheckWhetherNewLogRequired(clientID, clientTransactionID, serverTransactionID);
-            TL.BlankLine();
+            lock (logLockObject) // Ensure that only one message is logged at once and that the midnight log change over is effected within just one log message call
+            {
+                CheckWhetherNewLogRequired(clientID, clientTransactionID, serverTransactionID);
+                TL.BlankLine();
+            }
         }
 
         private static void CheckWhetherNewLogRequired(int clientID, int clientTransactionID, int serverTransactionID)
         {
-            object lockObject = new object();
-
-            lock (lockObject)
+            if (TL.Enabled) // We are logging so we have to close the current log and start a new one if we have moved to a new day
             {
-                if (TL.Enabled) // We are logging so we have to close the current log and start a new one if we have moved to a new day
+                DateTime now = DateTime.Now;
+                if (LastTraceLogTime.DayOfYear != now.DayOfYear) // We have moved onto tomorrow so close the current log and start another
                 {
-                    DateTime now = DateTime.Now;
-                    if (LastTraceLogTime.DayOfYear != now.DayOfYear) // We have moved onto tomorrow so close the current log and start another
+                    TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "EndOfDay", "Closing this log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+                    TL.Enabled = false;
+                    TL.Dispose();
+                    TL = null;
+                    TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME)
                     {
-                        TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "EndOfDay", "Closing this log because a new day has started. " + now.ToString("dddd d MMMM yyyy hh:mm:ss"));
-                        TL.Enabled = false;
-                        TL.Dispose();
-                        TL = null;
-                        TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME)
-                        {
-                            Enabled = true
-                        };
-                        TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy hh:mm:ss"));
-                    }
-                    LastTraceLogTime = now; // Update the last log time so that it can be tested on the next logging call
+                        Enabled = true
+                    };
+                    TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
                 }
+                LastTraceLogTime = now; // Update the last log time so that it can be tested on the next logging call
             }
         }
 
@@ -795,7 +804,6 @@ namespace ASCOM.Remote
                 StartWithApiEnabled = driverProfile.GetValue<bool>(START_WITH_API_ENABLED_PROFILENAME, string.Empty, START_WITH_API_ENABLED_DEFAULT);
                 RunDriversOnSeparateThreads = driverProfile.GetValue<bool>(RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME, string.Empty, RUN_DRIVERS_ON_SEPARATE_THREADS_DEFAULT);
 
-                LogMessage(0, 0, 0, "Readprofile", string.Format("Number of served devices: {0}.", ServerDeviceNames.Count));
                 foreach (string deviceName in ServerDeviceNames)
                 {
                     string deviceType = driverProfile.GetValue<string>(DEVICETYPE_PROFILENAME, deviceName, DEVICETYPE_DEFAULT);
@@ -805,7 +813,6 @@ namespace ASCOM.Remote
                     bool allowConnectedSetFalse = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_FALSE_PROFILENAME, deviceName, ALLOW_CONNECTED_SET_FALSE_DEFAULT));
                     bool allowConnectedSetTrue = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_TRUE_PROFILENAME, deviceName, ALLOW_CONNECTED_SET_TRUE_DEFAULT));
 
-                    LogMessage(0, 0, 0, "Readprofile", string.Format("Adding configured device: {0}  {1}", deviceType, progID));
                     ConfiguredDevices[deviceName] = new ConfiguredDevice(deviceType, progID, description, deviceNumber, allowConnectedSetFalse, allowConnectedSetTrue);
                 }
             }
@@ -862,7 +869,7 @@ namespace ASCOM.Remote
             DisconnectDevices(); // Disconnect all devices so we can use their Setup screens if necessary
 
             LogMessage(0, 0, 0, "SetupButton", string.Format("Loading Setup form"));
-            SetupForm frm = new SetupForm(TL);
+            SetupForm frm = new SetupForm();
             DialogResult outcome = frm.ShowDialog();
             LogMessage(0, 0, 0, "SetupButton", string.Format("Setup dialogue outcome: {0}", outcome.ToString()));
 

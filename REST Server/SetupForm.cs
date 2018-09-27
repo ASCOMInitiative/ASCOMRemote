@@ -16,7 +16,6 @@ namespace ASCOM.Remote
 
         #region Variables
 
-        private TraceLoggerPlus TL;
         private List<string> registeredDeviceTypes = new List<string>();
         // Create a dictionary to hold the current device instance numbers of every device type
         private Dictionary<string, int> deviceNumberIndexes;
@@ -40,11 +39,6 @@ namespace ASCOM.Remote
 
         }
 
-        public SetupForm(TraceLoggerPlus Logger) : this()
-        {
-            TL = Logger;
-        }
-
         private void Form_Load(object sender, EventArgs e)
         {
             // Declare local variables
@@ -53,7 +47,7 @@ namespace ASCOM.Remote
             bool foundTheIPAddress = false;
             int selectedIndex = 0;
 
-            TL.LogMessage(0, 0, 0, "SetupForm Load", "Start");
+            ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Start");
 
             profile = new Profile();
             host = Dns.GetHostEntry(Dns.GetHostName()); // Get an IPHostEntry so that we can get the list of IP addresses on this PC
@@ -65,7 +59,7 @@ namespace ASCOM.Remote
             {
                 if ((ip.AddressFamily == AddressFamily.InterNetwork) & !foundAnIPAddress) // Only process IPv4 addresses and ignore the rest including IPv6
                 {
-                    TL.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Found {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
+                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Found {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
                     foundAnIPAddress = true;
                     addressList.Items.Add(ip.ToString());
                     if (ip.ToString() == ServerForm.ServerIPAddressString)
@@ -76,10 +70,10 @@ namespace ASCOM.Remote
                 }
                 else
                 {
-                    TL.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Ignored {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
+                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Ignored {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
                 }
             }
-            TL.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Found an IP address: {0}, Found the IP address: {1}, Stored IP Address: {2}", foundAnIPAddress, foundTheIPAddress, ServerForm.ServerIPAddressString));
+            ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Found an IP address: {0}, Found the IP address: {1}, Stored IP Address: {2}", foundAnIPAddress, foundTheIPAddress, ServerForm.ServerIPAddressString));
 
             if ((!foundTheIPAddress) & (ServerForm.ServerIPAddressString != "")) // Add the last stored IP address if it isn't found in the search above
             {
@@ -103,22 +97,22 @@ namespace ASCOM.Remote
             // Populate the device types list
             foreach (string deviceType in profile.RegisteredDeviceTypes)
             {
-                TL.LogMessage(0, 0, 0, "SetupForm Load", "Adding device type: " + deviceType);
+                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Adding device type: " + deviceType);
                 registeredDeviceTypes.Add(deviceType); // Remember the device types on this system
             }
 
-            TL.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Number of configured devices: {0}.", ServerForm.ConfiguredDevices.Count));
+            ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Number of configured devices: {0}.", ServerForm.ConfiguredDevices.Count));
             foreach(string deviceName in ServerForm.ConfiguredDevices.Keys)
             {
-                TL.LogMessage(0, 0, 0, "SetupForm Load", string.Format("ConfiguredDevices contains key {0}.", deviceName));
+                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("ConfiguredDevices contains key {0}.", deviceName));
             }
 
             // Initialise each of the device GUI components
             foreach (ServedDevice item in this.Controls.OfType<ServedDevice>())
             {
-                TL.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Starting Init for {0}.", item.Name));
-                item.InitUI(this, TL);
-                TL.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}, now setting its parameters.", item.Name));
+                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Starting Init for {0}.", item.Name));
+                item.InitUI(this);
+                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}, now setting its parameters.", item.Name));
                 item.DeviceType = ServerForm.ConfiguredDevices[item.Name].DeviceType;
                 item.ProgID = ServerForm.ConfiguredDevices[item.Name].ProgID;
                 item.DeviceNumber = ServerForm.ConfiguredDevices[item.Name].DeviceNumber;
@@ -126,7 +120,7 @@ namespace ASCOM.Remote
                 item.AllowConnectedSetTrue = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetTrue;
                 item.DevicesAreConnected = ServerForm.devicesAreConnected;
 
-                TL.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}.", item.Name));
+                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}.", item.Name));
             }
 
             RecalculateDeviceNumbers();
@@ -176,7 +170,6 @@ namespace ASCOM.Remote
         private void ChkTrace_CheckedChanged(object sender, EventArgs e)
         {
             chkDebugTrace.Enabled = chkTrace.Checked; // Enable or disable the debug trace check box depending on whether normal trace is enabled
-            TL.Enabled = chkTrace.Checked; // Enable or disable the trace log itself
         }
 
         /// <summary>
@@ -253,25 +246,25 @@ namespace ASCOM.Remote
             {
                 deviceNumberIndexes.Add(device, 0);
             }
-            TL.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Initialised device numbers");
+            ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Initialised device numbers");
 
             foreach (string deviceType in registeredDeviceTypes)
             {
-                TL.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Processing device type: " + deviceType);
+                ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Processing device type: " + deviceType);
                 SortedDictionary<string, ServedDevice> servedDevices = new SortedDictionary<string, ServedDevice>();
                 foreach (ServedDevice c in this.Controls.OfType<ServedDevice>().Where(asd => asd.DeviceType == deviceType))
                 {
                     servedDevices.Add(c.Name, c);
                 }
-                TL.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Added served devices");
+                ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Added served devices");
                 Dictionary<string, string> x = new Dictionary<string, string>();
 
                 foreach (KeyValuePair<string, ServedDevice> item in servedDevices)
                 {
-                    TL.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Processing item number: " + item.Value.Name + " ");
+                    ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Processing item number: " + item.Value.Name + " ");
                     if (item.Value.DeviceType == deviceType)
                     {
-                        TL.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Setting " + deviceType + " item number: " + deviceNumberIndexes[deviceType].ToString());
+                        ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Setting " + deviceType + " item number: " + deviceNumberIndexes[deviceType].ToString());
                         item.Value.DeviceNumber = deviceNumberIndexes[deviceType];
                         deviceNumberIndexes[deviceType] += 1;
                     }
