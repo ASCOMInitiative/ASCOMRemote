@@ -3605,7 +3605,8 @@ namespace ASCOM.Remote
             bool raw, light, switchState;
             string switchName;
             PierSide pierSideValue = PierSide.pierUnknown;
-            int positionInt, guideDuration, switchIndex;
+            short switchIndex;
+            int positionInt, guideDuration;
             float positionFloat;
             GuideDirections guideDirection = GuideDirections.guideNorth;
             TelescopeAxes axis = TelescopeAxes.axisPrimary;
@@ -3622,6 +3623,7 @@ namespace ASCOM.Remote
                         raw = GetParameter<bool>(clientID, clientTransactionID, serverTransactionID, suppliedparameters, method, SharedConstants.RAW_PARAMETER_NAME);
                         device.CommandBlind(command, raw);
                         break;
+
                     //TELESCOPE
                     case "telescope.sideofpier":
                         pierSideValue = (PierSide)GetParameter<int>(clientID, clientTransactionID, serverTransactionID, suppliedparameters, method, SharedConstants.SIDEOFPIER_PARAMETER_NAME);
@@ -3683,6 +3685,7 @@ namespace ASCOM.Remote
                         guideDuration = GetParameter<int>(clientID, clientTransactionID, serverTransactionID, suppliedparameters, method, SharedConstants.DURATION_PARAMETER_NAME);
                         device.PulseGuide(guideDirection, guideDuration);
                         break;
+
                     // FOCUSER
                     case "focuser.halt":
                         device.Halt(); break;
@@ -3690,6 +3693,7 @@ namespace ASCOM.Remote
                         positionInt = GetParameter<int>(clientID, clientTransactionID, serverTransactionID, suppliedparameters, method, SharedConstants.POSITION_PARAMETER_NAME);
                         device.Move(positionInt);
                         break;
+
                     //CAMERA
                     case "camera.abortexposure":
                         device.AbortExposure(); break;
@@ -3705,6 +3709,7 @@ namespace ASCOM.Remote
                         break;
                     case "camera.stopexposure":
                         device.StopExposure(); break;
+
                     // DOME
                     case "dome.abortslew":
                         device.AbortSlew(); break;
@@ -3730,25 +3735,28 @@ namespace ASCOM.Remote
                         az = GetParameter<double>(clientID, clientTransactionID, serverTransactionID, suppliedparameters, method, SharedConstants.AZ_PARAMETER_NAME);
                         device.SyncToAzimuth(az);
                         break;
+
                     // OBSERVINGCONDITIONS
                     case "observingconditions.refresh":
                         device.Refresh(); break;
+
                     // SWITCH
                     case "switch.setswitchname":
-                        switchIndex = GetParameter<int>(clientID, clientTransactionID, serverTransactionID, suppliedparameters, method, SharedConstants.ID_PARAMETER_NAME);
+                        switchIndex = GetParameter<short>(clientID, clientTransactionID, serverTransactionID, suppliedparameters, method, SharedConstants.ID_PARAMETER_NAME);
                         switchName = GetParameter<string>(clientID, clientTransactionID, serverTransactionID, suppliedparameters, method, SharedConstants.NAME_PARAMETER_NAME);
                         device.SetSwitchName(switchIndex, switchName);
                         break;
                     case "switch.setswitch":
-                        switchIndex = GetParameter<int>(clientID, clientTransactionID, serverTransactionID, suppliedparameters, method, SharedConstants.ID_PARAMETER_NAME);
+                        switchIndex = GetParameter<short>(clientID, clientTransactionID, serverTransactionID, suppliedparameters, method, SharedConstants.ID_PARAMETER_NAME);
                         switchState = GetParameter<bool>(clientID, clientTransactionID, serverTransactionID, suppliedparameters, method, SharedConstants.STATE_PARAMETER_NAME);
                         device.SetSwitch(switchIndex, switchState);
                         break;
                     case "switch.setswitchvalue":
-                        switchIndex = GetParameter<int>(clientID, clientTransactionID, serverTransactionID, suppliedparameters, method, SharedConstants.ID_PARAMETER_NAME);
+                        switchIndex = GetParameter<short>(clientID, clientTransactionID, serverTransactionID, suppliedparameters, method, SharedConstants.ID_PARAMETER_NAME);
                         switchValue = GetParameter<double>(clientID, clientTransactionID, serverTransactionID, suppliedparameters, method, SharedConstants.VALUE_PARAMETER_NAME);
                         device.SetSwitchValue(switchIndex, switchValue);
                         break;
+
                     // FOCUSER
                     case "rotator.halt":
                         device.Halt(); break;
@@ -3808,31 +3816,37 @@ namespace ASCOM.Remote
                     if (!float.TryParse(parameterStringValue, out singleValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to a floating point value", parameterStringValue, ParameterName));
                     LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("{0} = {1}", ParameterName, singleValue.ToString()));
                     return (T)(object)singleValue;
+
                 case "Double":
                     double doubleValue;
                     if (!double.TryParse(parameterStringValue, out doubleValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to a floating point value", parameterStringValue, ParameterName));
                     LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("{0} = {1}", ParameterName, doubleValue.ToString()));
                     return (T)(object)doubleValue;
+
                 case "Int16":
                     short shortValue;
                     if (!short.TryParse(parameterStringValue, out shortValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to an Int16 value", parameterStringValue, ParameterName));
                     LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("{0} = {1}", ParameterName, shortValue.ToString()));
                     return (T)(object)shortValue;
+
                 case "Int32":
                     int intValue;
                     if (!int.TryParse(parameterStringValue, out intValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to an Int32 value", parameterStringValue, ParameterName));
                     LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("{0} = {1}", ParameterName, intValue.ToString()));
                     return (T)(object)intValue;
+
                 case "Boolean":
                     bool boolValue;
                     if (!bool.TryParse(parameterStringValue, out boolValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to a boolean value", parameterStringValue, ParameterName));
                     LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("{0} = {1}", ParameterName, boolValue.ToString()));
                     return (T)(object)boolValue;
+
                 case "DateTime":
                     DateTime dateTimeValue;
                     if (!DateTime.TryParse(parameterStringValue, out dateTimeValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to a DateTime value", parameterStringValue, ParameterName));
                     LogMessage(clientID, clientTransactionID, serverTransactionID, method, string.Format("{0} = {1}", ParameterName, dateTimeValue.ToString()));
                     return (T)(object)dateTimeValue;
+
                 default:
                     string errorMessage = string.Format("Unsupported type: {0} called by method: ", typeof(T).Name, method);
                     LogMessage(clientID, clientTransactionID, serverTransactionID, "GetParameter", errorMessage);
