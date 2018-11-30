@@ -709,7 +709,7 @@ namespace ASCOM.Remote
                         throw restResponseBase.DriverException;
                     }
 
-                    // Internal error if an unsuported type is requested 
+                    // Internal error if an unsupported type is requested 
                     throw new InvalidOperationException("Type " + typeof(T).ToString() + " is not supported.");
                 }
                 else
