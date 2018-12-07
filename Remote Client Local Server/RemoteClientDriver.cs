@@ -711,9 +711,12 @@ namespace ASCOM.Remote
                         throw restResponseBase.DriverException;
                     }
 
+                    TL.LogMessageCrLf(clientNumber, method, string.Format("Pre driver error test - ErrorMessage: {0}, ErrorNumber: 0x{1}", restResponseBase.ErrorMessage, restResponseBase.ErrorNumber.ToString("X8")));
+
                     // Errors reported by non-Windows drivers that use the error number and error message fields
                     if ((restResponseBase.ErrorMessage != "") || (restResponseBase.ErrorNumber != 0))
                     {
+                        TL.LogMessageCrLf(clientNumber, method, string.Format("Non Windows error detected, throwing DriverException - ErrorMessage: {0}, ErrorNumber: 0x{1}", restResponseBase.ErrorMessage, restResponseBase.ErrorNumber.ToString("X8")));
                         throw new DriverException(restResponseBase.ErrorMessage, restResponseBase.ErrorNumber);
                     }
 
