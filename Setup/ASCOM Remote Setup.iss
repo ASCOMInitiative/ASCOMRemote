@@ -104,6 +104,9 @@ Name: "ClientOnly"; Description: "Client components only"
 Name: "ServerOnly"; Description: "Server components only"
 Name: "Custom"; Description: "Custom"; Flags: iscustom
 
+[PreCompile]
+Name: "..\BuildRemote.cmd"; Flags: CmdPrompt
+
 [Code]
 const
    REQUIRED_PLATFORM_VERSION = 6.2;    // Set this to the minimum required ASCOM Platform version for this application
