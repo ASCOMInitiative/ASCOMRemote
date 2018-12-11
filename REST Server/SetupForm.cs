@@ -81,6 +81,10 @@ namespace ASCOM.Remote
                 selectedIndex = addressList.Items.Count - 1; // Select this item in the list
             }
 
+            // Add the wild card addresses at the end of the list
+            if (ServerForm.ServerIPAddressString != SharedConstants.STRONG_WILDCARD_NAME) addressList.Items.Add(SharedConstants.STRONG_WILDCARD_NAME); // Include the strong wild card character in the list of addresses if not already in use
+            if (ServerForm.ServerIPAddressString != SharedConstants.WEAK_WILDCARD_NAME) addressList.Items.Add(SharedConstants.WEAK_WILDCARD_NAME); // Include the weak wild card character in the list of addresses if not already in use
+
             // Set up the GUI components
             addressList.SelectedIndex = selectedIndex;
             numPort.Value = ServerForm.ServerPortNumber;
@@ -102,7 +106,7 @@ namespace ASCOM.Remote
             }
 
             ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Number of configured devices: {0}.", ServerForm.ConfiguredDevices.Count));
-            foreach(string deviceName in ServerForm.ConfiguredDevices.Keys)
+            foreach (string deviceName in ServerForm.ConfiguredDevices.Keys)
             {
                 ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("ConfiguredDevices contains key {0}.", deviceName));
             }
@@ -275,6 +279,18 @@ namespace ASCOM.Remote
         public bool ValidIPAddress(string emailAddress, out string errorMessage)
         {
             if (addressList.Text.ToLower() == SharedConstants.LOCALHOST_NAME)
+            {
+                errorMessage = "";
+                return true;
+            }
+
+            if (addressList.Text.ToLower() == "*")
+            {
+                errorMessage = "";
+                return true;
+            }
+
+            if (addressList.Text.ToLower() == "+")
             {
                 errorMessage = "";
                 return true;

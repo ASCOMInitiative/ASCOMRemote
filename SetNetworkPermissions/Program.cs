@@ -9,6 +9,8 @@ using CommandLine;
 using WindowsFirewallHelper;
 
 using ASCOM.Utilities;
+using System.Net;
+using System.Net.Sockets;
 
 namespace ASCOM.Remote
 {
@@ -152,40 +154,86 @@ namespace ASCOM.Remote
                 string command = string.Format(@"http add urlacl url={0} user={1}\{2}", Uri, Environment.UserDomainName, Environment.UserName);
                 TL.LogMessage("SetAcl", "Enable arguments: " + command);
 
-                ProcessStartInfo psi = new ProcessStartInfo("netsh")
+                // Parse out the port number and resource value
+                int doubleSlashIndex = Uri.IndexOf("//");
+                int colonIndex = Uri.IndexOf(":", doubleSlashIndex + 2);
+                string portAndUri = Uri.Substring(colonIndex + 1);
+
+                string strHostName = "";
+                strHostName = Dns.GetHostName();
+                TL.LogMessage("Network", string.Format("Colon index: {0}, Port and URI: {1}", colonIndex, portAndUri));
+
+                IPHostEntry ipEntry = Dns.GetHostEntry(strHostName);
+
+                foreach (IPAddress curAdd in ipEntry.AddressList)
                 {
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    UseShellExecute = false,
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                };
+                    if (curAdd.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        TL.LogMessage("Network", "IP V4 Network Address: " + curAdd.ToString());
+                        // Remove the URLACL if it exists
+                        string removeCommand = string.Format(@"http delete urlacl url=http://{0}:{1}", curAdd.ToString(), portAndUri);
+                        TL.LogMessage("Network", string.Format("Sending UrlAcl Delete command to NetSh: {0}", removeCommand));
+                        SendNetshCommand(removeCommand);
+                        TL.BlankLine();
+                    }
+                }
 
-                TL.LogMessage("SetAcl", "Creating netsh process");
-                Process process = new Process();
-                process.StartInfo = psi;
-                process.OutputDataReceived += (sender, args) => TL.LogMessage("SetAcl", string.Format("NetSh output: {0}", args.Data));
+                // Remove localhost entry if present
+                string localHostCommand = string.Format(@"http delete urlacl url=http://127.0.0.1:{0}", portAndUri);
+                TL.LogMessage("Network", string.Format("Sending UrlAcl Delete command to NetSh: {0}", localHostCommand));
+                SendNetshCommand(localHostCommand);
 
-                TL.LogMessage("SetAcl", "Starting process");
-                process.Start();
-                process.BeginOutputReadLine();
-                TL.LogMessage("SetAcl", "Process started");
+                // Remove + and * wild card entries if present
+                string plusCommand = string.Format(@"http delete urlacl url=http://+:{0}",  portAndUri);
+                TL.LogMessage("Network", string.Format("Sending UrlAcl Delete command to NetSh: {0}", plusCommand));
+                SendNetshCommand(plusCommand);
+                string starCommand = string.Format(@"http delete urlacl url=http://*:{0}", portAndUri);
+                TL.LogMessage("Network", string.Format("Sending UrlAcl Delete command to NetSh: {0}", starCommand));
+                SendNetshCommand(starCommand);
 
-                TL.LogMessage("SetAcl", string.Format("Sending netsh command: {0}", command));
-                process.StandardInput.WriteLine(command);
-                TL.LogMessage("SetAcl", string.Format("Sent netsh command: {0}", command));
+                // Now send the new UrlAcl
+                TL.LogMessage("SetAcl", "Sending new UrlAcl command to NetSh: " + command);
+                SendNetshCommand(command);
 
-                TL.LogMessage("SetAcl", string.Format("Sending netsh command: exit"));
-                process.StandardInput.WriteLine("exit");
-                TL.LogMessage("SetAcl", string.Format("Sent netsh command: exit"));
-
-                process.WaitForExit();
-                TL.LogMessage("SetAcl", "Process ended");
             }
             catch (Exception ex)
             {
                 TL.LogMessageCrLf("SetAcl", "Process exception: " + ex.ToString());
             }
+        }
+
+        private static void SendNetshCommand(string command)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo("netsh")
+            {
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                UseShellExecute = false,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+            };
+
+            TL.LogMessage("SendNetshCommand", "Creating netsh process");
+            Process process = new Process();
+            process.StartInfo = psi;
+            process.OutputDataReceived += (sender, args) => TL.LogMessage("SetAcl", string.Format("NetSh output: {0}", args.Data));
+
+            TL.LogMessage("SendNetshCommand", "Starting process");
+            process.Start();
+            process.BeginOutputReadLine();
+            TL.LogMessage("SendNetshCommand", "Process started");
+
+            TL.LogMessage("SendNetshCommand", string.Format("Sending netsh command: {0}", command));
+            process.StandardInput.WriteLine(command);
+            TL.LogMessage("SendNetshCommand", string.Format("Sent netsh command: {0}", command));
+
+            TL.LogMessage("SendNetshCommand", string.Format("Sending netsh command: exit"));
+            process.StandardInput.WriteLine("exit");
+            TL.LogMessage("SendNetshCommand", string.Format("Sent netsh command: exit"));
+
+            process.WaitForExit();
+            TL.LogMessage("SendNetshCommand", "Process ended");
+
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

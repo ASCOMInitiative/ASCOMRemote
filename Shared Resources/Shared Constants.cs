@@ -32,8 +32,11 @@ namespace ASCOM.Remote
 
         public static string ISO8601_DATE_FORMAT_STRING = "yyyy-MM-ddTHH:mm:ss.fffffff";
 
+        // Remote server setup form constants
         public const string LOCALHOST_NAME = "localhost";
         public const string LOCALHOST_ADDRESS = "127.0.0.1"; // Get the localhost loop back address
+        public const string STRONG_WILDCARD_NAME = "+"; // Symbol for strong IP address wild card
+        public const string WEAK_WILDCARD_NAME = "*"; // Symbol for weak IP address wild card
 
         // Constants shared by Remote Client Drivers and the ASCOM REST Server
         public const string API_URL_BASE = "/api/"; // This constant must always be lower case to make the logic tests work properly 
