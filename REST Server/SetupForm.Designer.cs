@@ -62,6 +62,7 @@
             this.ServedDevice2 = new ASCOM.Remote.ServedDevice();
             this.ServedDevice1 = new ASCOM.Remote.ServedDevice();
             this.ChkRunDriversInSeparateThreadss = new System.Windows.Forms.CheckBox();
+            this.ChkLogClientIPAddress = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
@@ -423,6 +424,16 @@
             this.ChkRunDriversInSeparateThreadss.Text = "Run Drivers in Separate Threads";
             this.ChkRunDriversInSeparateThreadss.UseVisualStyleBackColor = true;
             // 
+            // ChkLogClientIPAddress
+            // 
+            this.ChkLogClientIPAddress.AutoSize = true;
+            this.ChkLogClientIPAddress.Location = new System.Drawing.Point(309, 524);
+            this.ChkLogClientIPAddress.Name = "ChkLogClientIPAddress";
+            this.ChkLogClientIPAddress.Size = new System.Drawing.Size(134, 17);
+            this.ChkLogClientIPAddress.TabIndex = 35;
+            this.ChkLogClientIPAddress.Text = "Log Client\'s IP Address";
+            this.ChkLogClientIPAddress.UseVisualStyleBackColor = true;
+            // 
             // SetupForm
             // 
             this.AcceptButton = this.BtnCancel;
@@ -430,6 +441,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.BtnCancel;
             this.ClientSize = new System.Drawing.Size(920, 560);
+            this.Controls.Add(this.ChkLogClientIPAddress);
             this.Controls.Add(this.ChkRunDriversInSeparateThreadss);
             this.Controls.Add(this.LblDevicesNotDisconnoected);
             this.Controls.Add(this.label9);
@@ -506,5 +518,6 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label LblDevicesNotDisconnoected;
         private System.Windows.Forms.CheckBox ChkRunDriversInSeparateThreadss;
+        private System.Windows.Forms.CheckBox ChkLogClientIPAddress;
     }
 }

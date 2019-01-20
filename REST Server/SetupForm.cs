@@ -97,6 +97,7 @@ namespace ASCOM.Remote
             ChkStartWithApiEnabled.Checked = ServerForm.StartWithApiEnabled;
             LblDevicesNotDisconnoected.Visible = ServerForm.devicesAreConnected;
             ChkRunDriversInSeparateThreadss.Checked = ServerForm.RunDriversOnSeparateThreads;
+            ChkLogClientIPAddress.Checked = ServerForm.LogClientIPAddress;
 
             // Populate the device types list
             foreach (string deviceType in profile.RegisteredDeviceTypes)
@@ -221,6 +222,7 @@ namespace ASCOM.Remote
             ServerForm.ManagementInterfaceEnabled = chkManagementInterfaceEnabled.Checked;
             ServerForm.StartWithApiEnabled = ChkStartWithApiEnabled.Checked;
             ServerForm.RunDriversOnSeparateThreads = ChkRunDriversInSeparateThreadss.Checked;
+            ServerForm.LogClientIPAddress = ChkLogClientIPAddress.Checked;
 
             foreach (ServedDevice item in this.Controls.OfType<ServedDevice>())
             {

@@ -72,15 +72,15 @@ namespace ASCOM.Remote
         {
             try // Process the command
             {
-                if (ServerForm.DebugTraceState) ServerForm.LogMessage(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, "DriverCommand", string.Format("Received command for {0} on thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
+                if (ServerForm.DebugTraceState) ServerForm.LogMessage1(requestData, requestData.Elements[ServerForm.URL_ELEMENT_METHOD], string.Format("DriverCommand has received a command for {0} on thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
                 Application.DoEvents();
-                restServer.ProcessDriverCommand(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.SuppliedParameters, requestData.Request, requestData.Response, requestData.Elements, requestData.DeviceKey);
-                if (ServerForm.DebugTraceState) ServerForm.LogMessage(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, "DriverCommand", string.Format("Completed command for {0} on thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
+                restServer.ProcessDriverCommand(requestData);
+                if (ServerForm.DebugTraceState) ServerForm.LogMessage1(requestData, requestData.Elements[ServerForm.URL_ELEMENT_METHOD], string.Format("DriverCommand has completed the command for {0} on thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
             }
             catch (Exception ex) // Something serious has gone wrong with the ASCOM Rest server itself so report this to the user
             {
-                ServerForm.LogException(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, "DriverCommand", ex.ToString());
-                restServer.Return500Error(requestData.Request, requestData.Response, "Internal server error (DriverOnSeparateThread): " + ex.ToString(), requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID);
+                ServerForm.LogException1(requestData, "DriverCommand", ex.ToString());
+                restServer.Return500Error(requestData, "Internal server error (DriverOnSeparateThread): " + ex.ToString());
             }
         }
 

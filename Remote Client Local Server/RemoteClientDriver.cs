@@ -30,7 +30,7 @@ namespace ASCOM.Remote
         private const string RANK_VARIABLE_NAME = "Rank";
         private const string ARRAYTYPE_VARIABLE_NAME = "Type";
 
-        private const string FIND_TYPE_AND_RANK_REGEX_PATTERN = @"^*""Type"":(?<" + ARRAYTYPE_VARIABLE_NAME + @">\d*),""Rank"":(?<" + RANK_VARIABLE_NAME + @">\d*)"; // Regex to extract array type and rank from the returned JSON imagarray and imagearrayvariant responses
+        private const string FIND_TYPE_AND_RANK_REGEX_PATTERN = @"^*""Type"":(?<" + ARRAYTYPE_VARIABLE_NAME + @">\d*),""Rank"":(?<" + RANK_VARIABLE_NAME + @">\d*)"; // Regular expression to extract array type and rank from the returned JSON imagearray and imagearrayvariant responses
 
         //Private variables
         private static TraceLoggerPlus TLLocalServer;
@@ -77,7 +77,7 @@ namespace ASCOM.Remote
         #region Utility code
 
         /// <summary>
-        /// Returns a unique client numnber to the calling instance
+        /// Returns a unique client number to the calling instance in the range 1::65536
         /// </summary>
         public static int GetUniqueClientNumber()
         {
@@ -85,17 +85,19 @@ namespace ASCOM.Remote
 
             using (RNGCryptoServiceProvider rg = new RNGCryptoServiceProvider())
             {
-                byte[] rno = new byte[5];
-                rg.GetBytes(rno);
+                byte[] rno = new byte[5]; // Create a four byte array
+                rg.GetBytes(rno); // Fill the array with four random bytes
+                rno[2] = 0; // Zero the higher two bytes to limit the resulting integer to the range 0::65535
                 rno[3] = 0;
-                randomvalue = BitConverter.ToInt32(rno, 0);
+                rno[4] = 0;
+                randomvalue = BitConverter.ToInt32(rno, 0) + 1; // Convert the bytes to an integer in the range 0::65535 and add 1 to get an integer in the range 1::65536
             }
 
             return randomvalue;
         }
 
         /// <summary>
-        /// Returns a unique client numnber to the calling instance
+        /// Returns a unique client number to the calling instance
         /// </summary>
         public static int TransactionNumber()
         {
@@ -104,7 +106,7 @@ namespace ASCOM.Remote
         }
 
         /// <summary>
-        /// Tests whether the hub is already conected
+        /// Tests whether the hub is already connected
         /// </summary>
         /// <param name="clientNumber">Number of the client making the call</param>
         /// <returns>Boolean true if the hub is already connected</returns>
@@ -232,7 +234,7 @@ namespace ASCOM.Remote
                 password = driverProfile.GetValue(driverProgID, SharedConstants.PASSWORD_PROFILENAME, string.Empty, SharedConstants.PASSWORD_DEFAULT);
                 manageConnectLocally = Convert.ToBoolean(driverProfile.GetValue(driverProgID, SharedConstants.MANAGE_CONNECT_LOCALLY_PROFILENAME, string.Empty, SharedConstants.MANAGE_CONNECT_LOCALLY_DEFAULT));
 
-                TL.DebugTraceState = debugTraceState; // Save the debug state for use when needed wherever the tracelogger is used
+                TL.DebugTraceState = debugTraceState; // Save the debug state for use when needed wherever the trace logger is used
 
                 TL.LogMessage(clientNumber, "ReadProfile", string.Format("New values: Device IP: {0} {1}, Remote device number: {2}", ipAddressString, portNumber.ToString(), remoteDeviceNumber.ToString()));
             }
@@ -274,7 +276,7 @@ namespace ASCOM.Remote
                 driverProfile.WriteValue(driverProgID, SharedConstants.PASSWORD_PROFILENAME, password.ToString(CultureInfo.InvariantCulture));
                 driverProfile.WriteValue(driverProgID, SharedConstants.MANAGE_CONNECT_LOCALLY_PROFILENAME, manageConnectLocally.ToString(CultureInfo.InvariantCulture));
 
-                TL.DebugTraceState = debugTraceState; // Save the new debug state for use when needed wherever the tracelogger is used
+                TL.DebugTraceState = debugTraceState; // Save the new debug state for use when needed wherever the trace logger is used
 
                 TL.LogMessage(clientNumber, "WriteProfile", string.Format("New values: Device IP: {0} {1}, Remote device number: {2}", ipAddressString, portNumber.ToString(), remoteDeviceNumber.ToString()));
             }
