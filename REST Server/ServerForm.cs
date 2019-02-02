@@ -1165,6 +1165,15 @@ namespace ASCOM.Remote
                 // Create a single collection holding all supplied parameters including both those supplied as query variables in the url string and those contained within the form post (http PUT only).
                 suppliedParameters.Add(request.QueryString); // Add the query string parameters to the collection
 
+                // List query string parameters if in debug mode
+                if (DebugTraceState)
+                {
+                    foreach (string key in suppliedParameters)
+                    {
+                        LogMessage1(requestData, "Query Parameter", string.Format("{0} = {1}", key, suppliedParameters[key]));
+                    }
+                }
+
                 if (request.HasEntityBody) // Now add any parameters supplied in the form POST
                 {
                     string formParameters;
@@ -1181,6 +1190,7 @@ namespace ASCOM.Remote
                         string key = kvPair[0];
                         string value = HttpUtility.UrlDecode(kvPair[1]);
                         suppliedParameters.Add(key, value);
+                        if (DebugTraceState) LogMessage1(requestData, "Body Parameter", string.Format("{0} = {1}", key, value));
                     }
                 }
                 requestData.SuppliedParameters = suppliedParameters;
