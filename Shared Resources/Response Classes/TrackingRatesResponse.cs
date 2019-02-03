@@ -10,10 +10,9 @@ namespace ASCOM.Remote
 
         public TrackingRatesResponse() { }
 
-        public TrackingRatesResponse(int clientTransactionID, int transactionID, string method)
+        public TrackingRatesResponse(int clientTransactionID, int transactionID)
         {
             base.ServerTransactionID = transactionID;
-            base.Method = method;
             base.ClientTransactionID = clientTransactionID;
         }
 

@@ -9,10 +9,9 @@ namespace ASCOM.Remote
         private const int RANK = 2;
         private const SharedConstants.ImageArrayElementTypes TYPE = SharedConstants.ImageArrayElementTypes.Short;
 
-        public ShortArray2DResponse(int clientTransactionID, int transactionID, string method, short[,] value)
+        public ShortArray2DResponse(int clientTransactionID, int transactionID, short[,] value)
         {
             base.ServerTransactionID = transactionID;
-            base.Method = method;
             shortArray2D = value;
             base.Type = (int)TYPE;
             base.Rank = RANK;

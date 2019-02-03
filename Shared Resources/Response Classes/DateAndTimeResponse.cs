@@ -6,10 +6,9 @@ namespace ASCOM.Remote
     {
         public DateTimeResponse() { }
 
-        public DateTimeResponse(int clientTransactionID, int transactionID, string method, DateTime value)
+        public DateTimeResponse(int clientTransactionID, int transactionID, DateTime value)
         {
             base.ServerTransactionID = transactionID;
-            base.Method = method;
             base.ClientTransactionID = clientTransactionID;
             Value = value;
         }

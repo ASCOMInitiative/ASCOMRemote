@@ -13,10 +13,9 @@ namespace ASCOM.Remote
     public class MethodResponse : RestResponseBase
     {
         public MethodResponse() { }
-        public MethodResponse(int clientTransactionID, int transactionID, string method)
+        public MethodResponse(int clientTransactionID, int transactionID)
         {
             base.ServerTransactionID = transactionID;
-            base.Method = method;
             base.ClientTransactionID = clientTransactionID; 
         }
         // No additional fields for this class

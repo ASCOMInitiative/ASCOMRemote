@@ -7,10 +7,9 @@ namespace ASCOM.Remote
     {
         public AxisRatesResponse() { }
 
-        public AxisRatesResponse(int clientTransactionID, int transactionID, string method, List<RateResponse> value)
+        public AxisRatesResponse(int clientTransactionID, int transactionID, List<RateResponse> value)
         {
             base.ServerTransactionID = transactionID;
-            base.Method = method;
             base.ClientTransactionID = clientTransactionID;
             Value = value;
         }

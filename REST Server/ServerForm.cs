@@ -1379,7 +1379,7 @@ namespace ASCOM.Remote
                                                         // Returns the number of concurrent device calls. 
                                                         // This call will have incremented the concurrent call counter in its own right so the value returned by this call is one less than the numberOfConcurrentTransactions counter value,
                                                         // which will be the number of concurrent device calls.
-                                                        IntResponse intResponseClass = new IntResponse(clientTransactionID, serverTransactionID, commandName, numberOfConcurrentTransactions - 1);
+                                                        IntResponse intResponseClass = new IntResponse(clientTransactionID, serverTransactionID, numberOfConcurrentTransactions - 1);
                                                         string intResponseJson = JsonConvert.SerializeObject(intResponseClass);
                                                         SendResponseValueToClient(requestData, null, intResponseJson);
                                                         break;
@@ -1401,7 +1401,7 @@ namespace ASCOM.Remote
                                                                     }
                                                                 }
                                                             }
-                                                            ProfileResponse profileResponse = new ProfileResponse(clientTransactionID, serverTransactionID, elements[URL_ELEMENT_SERVER_COMMAND], profileDevices)
+                                                            ProfileResponse profileResponse = new ProfileResponse(clientTransactionID, serverTransactionID, profileDevices)
                                                             {
                                                                 DriverException = null
                                                             };
@@ -1415,7 +1415,7 @@ namespace ASCOM.Remote
                                                         break;
 
                                                     case SharedConstants.MANGEMENT_CONFIGURATION:
-                                                        ConfigurationResponse configurationResponse = new ConfigurationResponse(clientTransactionID, serverTransactionID, elements[URL_ELEMENT_SERVER_COMMAND], ConfiguredDevices)
+                                                        ConfigurationResponse configurationResponse = new ConfigurationResponse(clientTransactionID, serverTransactionID, ConfiguredDevices)
                                                         {
                                                             DriverException = null
                                                         };
@@ -2396,7 +2396,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            BoolResponse responseClass = new BoolResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], deviceResponse)
+            BoolResponse responseClass = new BoolResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -2434,7 +2434,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            BoolResponse responseClass = new BoolResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], deviceResponse)
+            BoolResponse responseClass = new BoolResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -2565,7 +2565,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            StringResponse responseClass = new StringResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], deviceResponse)
+            StringResponse responseClass = new StringResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -2603,7 +2603,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            StringResponse responseClass = new StringResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], deviceResponse)
+            StringResponse responseClass = new StringResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -2634,7 +2634,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            StringArrayResponse responseClass = new StringArrayResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], deviceResponse)
+            StringArrayResponse responseClass = new StringArrayResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -2685,7 +2685,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            StringListResponse responseClass = new StringListResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], responseList)
+            StringListResponse responseClass = new StringListResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, responseList)
             {
                 DriverException = exReturn
             };
@@ -2816,7 +2816,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            DoubleResponse responseClass = new DoubleResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], deviceResponse)
+            DoubleResponse responseClass = new DoubleResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -2858,7 +2858,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            DoubleResponse responseClass = new DoubleResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], deviceResponse)
+            DoubleResponse responseClass = new DoubleResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -2940,7 +2940,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            DoubleResponse responseClass = new DoubleResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], deviceResponse)
+            DoubleResponse responseClass = new DoubleResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -3004,7 +3004,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            ShortResponse responseClass = new ShortResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], deviceResponse)
+            ShortResponse responseClass = new ShortResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -3094,7 +3094,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], deviceResponse)
+            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -3125,7 +3125,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntArray1DResponse responseClass = new IntArray1DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], deviceResponse)
+            IntArray1DResponse responseClass = new IntArray1DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -3187,7 +3187,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            DateTimeResponse responseClass = new DateTimeResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], deviceResponse)
+            DateTimeResponse responseClass = new DateTimeResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -3245,7 +3245,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            TrackingRatesResponse responseClass = new TrackingRatesResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD])
+            TrackingRatesResponse responseClass = new TrackingRatesResponse(requestData.ClientTransactionID, requestData.ServerTransactionID)
             {
                 DriverException = exReturn
             };
@@ -3278,7 +3278,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], (int)deviceResponse)
+            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -3302,7 +3302,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], (int)deviceResponse)
+            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -3325,7 +3325,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], (int)deviceResponse)
+            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -3365,7 +3365,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], (int)deviceResponse)
+            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -3388,7 +3388,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], (int)deviceResponse)
+            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -3411,7 +3411,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], (int)deviceResponse)
+            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -3434,7 +3434,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], (int)deviceResponse)
+            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -3447,7 +3447,7 @@ namespace ASCOM.Remote
 
             Array deviceResponse = null;
             //ImageArrayResponse 
-            dynamic responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD]); // Initialise here so that there is a class ready to convey back an error message
+            dynamic responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID); // Initialise here so that there is a class ready to convey back an error message
             Exception exReturn = null;
 
             // Create small 3D test array to illustrate the order of elements in the serialised JSON array.
@@ -3482,13 +3482,13 @@ namespace ASCOM.Remote
                             switch (deviceResponse.Rank)
                             {
                                 case 2:
-                                    responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD]);
+                                    responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
 
                                     if (returnTestResponse) responseClass.Value = testArray2DInt;
                                     else responseClass.Value = (int[,])deviceResponse;
                                     break;
                                 case 3:
-                                    responseClass = new IntArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD]);
+                                    responseClass = new IntArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
 
                                     if (returnTestResponse) responseClass.Value = testArray3DInt;
                                     else responseClass.Value = (int[,,])deviceResponse;
@@ -3524,16 +3524,16 @@ namespace ASCOM.Remote
                                 {
 
                                     case "Int16":
-                                        responseClass = new ShortArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], Library.Array2DToShort(deviceResponse));
+                                        responseClass = new ShortArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array2DToShort(deviceResponse));
                                         break;
                                     case "Int32":
-                                        responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD]);
+                                        responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
 
                                         if (returnTestResponse) responseClass.Value = testArray2DInt;
                                         else responseClass.Value = Library.Array2DToInt(deviceResponse);
                                         break;
                                     case "Double":
-                                        responseClass = new DoubleArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], Library.Array2DToDouble(deviceResponse));
+                                        responseClass = new DoubleArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array2DToDouble(deviceResponse));
                                         break;
                                     default:
                                         throw new InvalidValueException("ReturnImageArray: Received an unsupported return array type: " + arrayType + ", with elements of type: " + elementType);
@@ -3543,16 +3543,16 @@ namespace ASCOM.Remote
                                 switch (elementType)
                                 {
                                     case "Int16":
-                                        responseClass = new ShortArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], Library.Array3DToShort(deviceResponse));
+                                        responseClass = new ShortArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array3DToShort(deviceResponse));
                                         break;
                                     case "Int32":
-                                        responseClass = new IntArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD]);
+                                        responseClass = new IntArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
 
                                         if (returnTestResponse) responseClass.Value = testArray3DInt;
                                         else responseClass.Value = Library.Array3DToInt(deviceResponse);
                                         break;
                                     case "Double":
-                                        responseClass = new DoubleArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], Library.Array3DToDouble(deviceResponse));
+                                        responseClass = new DoubleArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array3DToDouble(deviceResponse));
                                         break;
                                     default:
                                         throw new InvalidValueException("ReturnImageArray: Received an unsupported return array type: " + arrayType + ", with elements of type: " + elementType);
@@ -3598,7 +3598,7 @@ namespace ASCOM.Remote
             {
                 exReturn = ex;
             }
-            BoolResponse responseClass = new BoolResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], deviceResponse)
+            BoolResponse responseClass = new BoolResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -3623,7 +3623,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], (int)deviceResponse)
+            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn
             };
@@ -3654,7 +3654,7 @@ namespace ASCOM.Remote
                 rateResponse.Add(new RateResponse(r.Minimum, r.Maximum));
             }
 
-            AxisRatesResponse responseClass = new AxisRatesResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD], rateResponse)
+            AxisRatesResponse responseClass = new AxisRatesResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, rateResponse)
             {
                 DriverException = exReturn
             };
@@ -3921,7 +3921,7 @@ namespace ASCOM.Remote
 
         private void SendEmptyResponseToClient(RequestData requestData, Exception ex)
         {
-            MethodResponse responseClass = new MethodResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, requestData.Elements[URL_ELEMENT_METHOD])
+            MethodResponse responseClass = new MethodResponse(requestData.ClientTransactionID, requestData.ServerTransactionID)
             {
                 DriverException = ex
             };

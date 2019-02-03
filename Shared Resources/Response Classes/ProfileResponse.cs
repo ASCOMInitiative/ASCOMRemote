@@ -8,10 +8,9 @@ namespace ASCOM.Remote
 
         public ProfileResponse() { }
 
-        public ProfileResponse(int clientTransactionID, int transactionID, string method, List<ProfileDevice> value)
+        public ProfileResponse(int clientTransactionID, int transactionID, List<ProfileDevice> value)
         {
             base.ServerTransactionID = transactionID;
-            base.Method = method;
             list = value;
             base.ClientTransactionID = clientTransactionID;
         }

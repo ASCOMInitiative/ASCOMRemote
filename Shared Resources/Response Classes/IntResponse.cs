@@ -6,10 +6,9 @@ namespace ASCOM.Remote
     {
         public IntResponse() { }
 
-        public IntResponse(int clientTransactionID, int transactionID, string method, int value)
+        public IntResponse(int clientTransactionID, int transactionID, int value)
         {
             base.ServerTransactionID = transactionID;
-            base.Method = method;
             base.ClientTransactionID = clientTransactionID;
             Value = value;
         }
