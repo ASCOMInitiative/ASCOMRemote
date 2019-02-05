@@ -1,64 +1,38 @@
 openapi: 3.0.0
 info:
-  title: ASCOM Remote Device Server - Access API
+  title: ASCOM Alpaca API
   description: >
-    This restful API provides access to ASCOM devices remotely over the web
-    through the ASCOM Remote Device Server. 
+    This restful API enables ASCOM Alpaca clients to access remote ASCOM Alpaca devices.
 
 
     ## Parameters and Returned values
 
-    For GET operations, parameters should be placed in the URI string and for
-    PUT operations they should be placed in the body of the message.
+    For GET operations, parameters should be placed in the URI string and for PUT operations they should be placed in the body of the message.
 
 
-    Responses, as described below, are returned in JSON format and always
-    include a common set of values including: the client's 
+    Responses, as described below, are returned in JSON format and always include a common set of values including the client's transaction number, 
+    the server's transaction number, any error message and error number.
 
-    identity number, the client's transaction number, the server's transaction
-    number, the error message, error number and serialised Windows exception.
-
-    The ErrorMessage field will be an empty string, the ErrorNumber field will
-    be zero and the DriverException field will be null if the device driver
-    method executes successfully.
+    If the transaction completes successfully, the ErrorMessage field will be an empty string and the ErrorNumber field will be zero.
 
 
     ## HTTP Status Codes and ASCOM Error codes
 
-    The returned HTTP status code refers to the status of the transaction from
-    the perspective of the web application server. 
-
-    Under most circumstances you will receive an http return status code of
-    `200`, indicating that the 
-
-    operation completed successfully within the web application server at the
-    remote location. This does not necessarily mean
-
-    that the operation completed as expected and you must always check one of
-    the ErrorMessage, ErrorNumber or DriverException fields to confirm that the 
-    returned result is valid. 
+    The returned HTTP status code gives a high level view of whether the device understood the request and whether it attempted to process it.
     
     
-    An HTTP status code of `400` indicates that the web application server
-    received a bad URI path or parameter value that it cannot 
+    Under most circumstances the returned status will be `200`, indicating that the request was correctly formatted and that it was passed to the device's handler to execute.
+    A 200 status does not necessarily mean that the operation completed as expected, without error, and you must always check the ErrorMessage and ErrorNumber fields to confirm
+    whether the returned result is valid. The 200 status simply means that the transaction was successfully managed by the device's transaction management layer.
+    
+    
+    An HTTP status code of `400` indicates that the device could not interpret the request e.g. an invalid device number or misspelt device type was supplied. Check the body of the response for a text error message.
 
-    understand and thus cannot forward the command to the device. Check the body
-    of the response for an error message.
+
+    An HTTP status code of `500` indicates an unexpected error within the device from which it could not recover. Check the body of the response for a text error message.
 
 
-    An HTTP status code of `500` indicates an unexpected error within the
-    application server itself, from which it could not recover. Check 
-
-    the body of the response for an error message.
-    
-    
-    Version 1.0.1 - Change ClientID and ClientTransactionID from string to 
-    integer when supplied as body parameters to match use as query parameters.
-    
-    
-    Version 1.0.2 - Remove the Method parameter from return responses
-    
-  version: "1.0.2-oas3"
+  version: "1.0.0-oas3"
 paths:
   '/{DeviceType}/{DeviceNumber}/Action':
     put:
@@ -8185,7 +8159,7 @@ paths:
 servers:
 # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/ASCOMInitiative/ASCOMDeviceAPI/1.0.1-oas3
+    url: https://virtserver.swaggerhub.com/ASCOMInitiative/ASCOMAlpacaAPI/1.0.0-oas3
 components:
   parameters:
     DeviceType:
@@ -8377,43 +8351,43 @@ components:
           type: integer
           format: int32
           description: >-
-            0 = Unknown, 1 = Short(Int16), 2 = Int (Int32), 3 = Double (Double
+            0 = Unknown, 1 = Short(int16), 2 = Integer (int32), 3 = Double (Double
             precision real number).
           minimum: 0
           maximum: 3
         Rank:
           type: integer
           format: int32
-          description: >-
-            The array's rank, will be 2 (single plane image (monochrome))or 3
-            (multi-plane image).
+          description: The array's rank, will be 2 (single plane image (monochrome)) or 3 (multi-plane image).
         Value:
           type: array
           items:
             type: array
             items:
               type: number
-              description: Returned integer value
-        ClientTransactionIDForm:
+              description: Returned integer or double value
+        ClientTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Client's transaction ID.
         ServerTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Server's transaction ID.
         ErrorNumber:
           type: integer
           format: int32
-          description: Error number from device.
+          minimum: -2147483648
+          maximum: 2147483647
+          description: Zero for a successful transaction, or a non-zero integer if the device encountered an issue. 
+            (See developer documentation for special meanings assigned to ASCOM Alpaca reserved error codes 0x400 to 0xFFF)
         ErrorMessage:
           type: string
-          description: Error message description from device.
-        DriverException:
-          type: object
-          description: >-
-            Windows error exception object (only of value if client is Windows
-            in which case deserialise to a .NET Exception object).
+          description: Empty string for a successful transaction, or a message describing the issue that was encountered.
     ErrorMessage:
       type: string
       properties:
@@ -8426,26 +8400,28 @@ components:
         Value:
           type: boolean
           description: True or False value
-        ClientTransactionIDForm:
+        ClientTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Client's transaction ID.
         ServerTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Server's transaction ID.
         ErrorNumber:
           type: integer
           format: int32
-          description: Error number from device.
+          minimum: -2147483648
+          maximum: 2147483647
+          description: Zero for a successful transaction, or a non-zero integer if the device encountered an issue. 
+            (See developer documentation for special meanings assigned to ASCOM Alpaca reserved error codes 0x400 to 0xFFF)
         ErrorMessage:
           type: string
-          description: Error message description from device.
-        DriverException:
-          type: object
-          description: >-
-            Windows error exception object (only of value if client is Windows
-            in which case deserialise to a .NET Exception object).
+          description: Empty string for a successful transaction, or a message describing the issue that was encountered.
     DoubleResponse:
       type: object
       properties:
@@ -8453,26 +8429,28 @@ components:
           type: number
           format: double
           description: Returned double value
-        ClientTransactionIDForm:
+        ClientTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Client's transaction ID.
         ServerTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Server's transaction ID.
         ErrorNumber:
           type: integer
           format: int32
-          description: Error number from device.
+          minimum: -2147483648
+          maximum: 2147483647
+          description: Zero for a successful transaction, or a non-zero integer if the device encountered an issue. 
+            (See developer documentation for special meanings assigned to ASCOM Alpaca reserved error codes 0x400 to 0xFFF)
         ErrorMessage:
           type: string
-          description: Error message description from device.
-        DriverException:
-          type: object
-          description: >-
-            Windows error exception object (only of value if client is Windows
-            in which case deserialise to a .NET Exception object).
+          description: Empty string for a successful transaction, or a message describing the issue that was encountered.
     IntResponse:
       type: object
       properties:
@@ -8480,26 +8458,28 @@ components:
           type: integer
           format: int32
           description: Returned integer value
-        ClientTransactionIDForm:
+        ClientTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Client's transaction ID.
         ServerTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Server's transaction ID.
         ErrorNumber:
           type: integer
           format: int32
-          description: Error number from device.
+          minimum: -2147483648
+          maximum: 2147483647
+          description: Zero for a successful transaction, or a non-zero integer if the device encountered an issue. 
+            (See developer documentation for special meanings assigned to ASCOM Alpaca reserved error codes 0x400 to 0xFFF)
         ErrorMessage:
           type: string
-          description: Error message description from device.
-        DriverException:
-          type: object
-          description: >-
-            Windows error exception object (only of value if client is Windows
-            in which case deserialise to a .NET Exception object).
+          description: Empty string for a successful transaction, or a message describing the issue that was encountered.
     IntArrayResponse:
       type: object
       properties:
@@ -8509,75 +8489,81 @@ components:
             type: integer
             format: int32
           description: Array of integer values.
-        ClientTransactionIDForm:
+        ClientTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Client's transaction ID.
         ServerTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Server's transaction ID.
         ErrorNumber:
           type: integer
           format: int32
-          description: Error number from device.
+          minimum: -2147483648
+          maximum: 2147483647
+          description: Zero for a successful transaction, or a non-zero integer if the device encountered an issue. 
+            (See developer documentation for special meanings assigned to ASCOM Alpaca reserved error codes 0x400 to 0xFFF)
         ErrorMessage:
           type: string
-          description: Error message description from device.
-        DriverException:
-          type: object
-          description: >-
-            Windows error exception object (only of value if client is Windows
-            in which case deserialise to a .NET Exception object).
+          description: Empty string for a successful transaction, or a message describing the issue that was encountered.
     MethodResponse:
       type: object
       properties:
-        ClientTransactionIDForm:
+        ClientTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Client's transaction ID.
         ServerTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Server's transaction ID.
         ErrorNumber:
           type: integer
           format: int32
-          description: Error number from device.
+          minimum: -2147483648
+          maximum: 2147483647
+          description: Zero for a successful transaction, or a non-zero integer if the device encountered an issue. 
+            (See developer documentation for special meanings assigned to ASCOM Alpaca reserved error codes 0x400 to 0xFFF)
         ErrorMessage:
           type: string
-          description: Error message description from device.
-        DriverException:
-          type: object
-          description: >-
-            Windows error exception object (only of value if client is Windows
-            in which case deserialise to a .NET Exception object).
+          description: Empty string for a successful transaction, or a message describing the issue that was encountered.
     StringResponse:
       type: object
       properties:
         Value:
           type: string
           description: String response from the device.
-        ClientTransactionIDForm:
+        ClientTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Client's transaction ID.
         ServerTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Server's transaction ID.
         ErrorNumber:
           type: integer
           format: int32
-          description: Error number from device.
+          minimum: -2147483648
+          maximum: 2147483647
+          description: Zero for a successful transaction, or a non-zero integer if the device encountered an issue. 
+            (See developer documentation for special meanings assigned to ASCOM Alpaca reserved error codes 0x400 to 0xFFF)
         ErrorMessage:
           type: string
-          description: Error message description from device.
-        DriverException:
-          type: object
-          description: >-
-            Windows error exception object (only of value if client is Windows
-            in which case deserialise to a .NET Exception object).
+          description: Empty string for a successful transaction, or a message describing the issue that was encountered.
     StringArrayResponse:
       type: object
       properties:
@@ -8586,26 +8572,28 @@ components:
           items:
             type: string
           description: Array of string values.
-        ClientTransactionIDForm:
+        ClientTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Client's transaction ID.
         ServerTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Server's transaction ID.
         ErrorNumber:
           type: integer
           format: int32
-          description: Error number from device.
+          minimum: -2147483648
+          maximum: 2147483647
+          description: Zero for a successful transaction, or a non-zero integer if the device encountered an issue. 
+            (See developer documentation for special meanings assigned to ASCOM Alpaca reserved error codes 0x400 to 0xFFF)
         ErrorMessage:
           type: string
-          description: Error message description from device.
-        DriverException:
-          type: object
-          description: >-
-            Windows error exception object (only of value if client is Windows
-            in which case deserialise to a .NET Exception object).
+          description: Empty string for a successful transaction, or a message describing the issue that was encountered.
     AxisRatesResponse:
       type: object
       properties:
@@ -8614,26 +8602,28 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AxisRate'
-        ClientTransactionIDForm:
+        ClientTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Client's transaction ID.
         ServerTransactionID:
           type: integer
-          format: int32
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
           description: Server's transaction ID.
         ErrorNumber:
           type: integer
           format: int32
-          description: Error number from device.
+          minimum: -2147483648
+          maximum: 2147483647
+          description: Zero for a successful transaction, or a non-zero integer if the device encountered an issue. 
+            (See developer documentation for special meanings assigned to ASCOM Alpaca reserved error codes 0x400 to 0xFFF)
         ErrorMessage:
           type: string
-          description: Error message description from device.
-        DriverException:
-          type: object
-          description: >-
-            Windows error exception object (only of value if client is Windows
-            in which case deserialise to a .NET Exception object).
+          description: Empty string for a successful transaction, or a message describing the issue that was encountered.
     AxisRate:
       description: Rate object
       type: object
