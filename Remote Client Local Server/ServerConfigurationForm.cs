@@ -113,7 +113,7 @@ namespace ASCOM.Remote
                 };
 
                 request.AddParameter(SharedConstants.CLIENTID_PARAMETER_NAME, clientNumber.ToString());
-                int transaction = RemoteClientDriver.TransactionNumber();
+                uint transaction = RemoteClientDriver.TransactionNumber();
                 request.AddParameter(SharedConstants.CLIENTTRANSACTION_PARAMETER_NAME, transaction.ToString());
 
                 TL.LogMessage("GetConfiguration", "Client Txn ID: " + transaction.ToString() + ", Sending command to remote server");
@@ -208,7 +208,7 @@ namespace ASCOM.Remote
                 };
 
                 request.AddParameter(SharedConstants.CLIENTID_PARAMETER_NAME, clientNumber.ToString());
-                int transaction = RemoteClientDriver.TransactionNumber();
+                uint transaction = RemoteClientDriver.TransactionNumber();
                 request.AddParameter(SharedConstants.CLIENTTRANSACTION_PARAMETER_NAME, transaction.ToString());
 
                 TL.LogMessage("Reload", "Client Txn ID: " + transaction.ToString() + ", Sending command to remote server");

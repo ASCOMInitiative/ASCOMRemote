@@ -30,7 +30,7 @@ namespace ASCOM.Remote
         private const string RANK_VARIABLE_NAME = "Rank";
         private const string ARRAYTYPE_VARIABLE_NAME = "Type";
         private const int ASCOM_ERROR_NUMBER_OFFSET = unchecked((int)0x80040000); // Offset value that relates the ASCOM Alpaca reserved error code range to the ASCOM COM HResult error code range
-        private const int ALPACA_ERROR_CODE_BASE =  0x400; // Start of the Alpaca error code range 0x400 to 0xFFF
+        private const int ALPACA_ERROR_CODE_BASE = 0x400; // Start of the Alpaca error code range 0x400 to 0xFFF
         private const int ALPACA_ERROR_CODE_MAX = 0xFFF; // End of Alpaca error code range 0x400 to 0xFFF
 
         private const string FIND_TYPE_AND_RANK_REGEX_PATTERN = @"^*""Type"":(?<" + ARRAYTYPE_VARIABLE_NAME + @">\d*),""Rank"":(?<" + RANK_VARIABLE_NAME + @">\d*)"; // Regular expression to extract array type and rank from the returned JSON imagearray and imagearrayvariant responses
@@ -40,9 +40,12 @@ namespace ASCOM.Remote
         private static bool traceState = true;
         private static bool debugTraceState = true;
 
-        private static int uniqueTransactionNumber = 0; // Unique number that increments on each call to TransactionNumber
+        private static uint uniqueTransactionNumber = 0; // Unique number that increments on each call to TransactionNumber
 
+        // Lock objects
         private readonly static object connectLockObject = new object();
+        private readonly static object transactionCountlockObject = new object();
+
         private static ConcurrentDictionary<long, bool> connectStates;
 
         #endregion
@@ -82,9 +85,9 @@ namespace ASCOM.Remote
         /// <summary>
         /// Returns a unique client number to the calling instance in the range 1::65536
         /// </summary>
-        public static int GetUniqueClientNumber()
+        public static uint GetUniqueClientNumber()
         {
-            int randomvalue;
+            uint randomvalue;
 
             using (RNGCryptoServiceProvider rg = new RNGCryptoServiceProvider())
             {
@@ -93,7 +96,7 @@ namespace ASCOM.Remote
                 rno[2] = 0; // Zero the higher two bytes to limit the resulting integer to the range 0::65535
                 rno[3] = 0;
                 rno[4] = 0;
-                randomvalue = BitConverter.ToInt32(rno, 0) + 1; // Convert the bytes to an integer in the range 0::65535 and add 1 to get an integer in the range 1::65536
+                randomvalue = BitConverter.ToUInt32(rno, 0) + 1; // Convert the bytes to an integer in the range 0::65535 and add 1 to get an integer in the range 1::65536
             }
 
             return randomvalue;
@@ -102,9 +105,12 @@ namespace ASCOM.Remote
         /// <summary>
         /// Returns a unique client number to the calling instance
         /// </summary>
-        public static int TransactionNumber()
+        public static uint TransactionNumber()
         {
-            Interlocked.Increment(ref uniqueTransactionNumber);
+            lock (transactionCountlockObject)
+            {
+                uniqueTransactionNumber += 1;
+            }
             return uniqueTransactionNumber;
         }
 
@@ -124,7 +130,7 @@ namespace ASCOM.Remote
         /// </summary>
         /// <param name="clientNumber">Number of the calling client</param>
         /// <returns></returns>
-        public static bool IsClientConnected(int clientNumber, RestClient client, TraceLoggerPlus TL)
+        public static bool IsClientConnected(uint clientNumber, RestClient client, TraceLoggerPlus TL)
         {
             foreach (KeyValuePair<long, bool> kvp in connectStates)
             {
@@ -139,10 +145,10 @@ namespace ASCOM.Remote
         /// <summary>
         /// Returns the number of connected clients
         /// </summary>
-        public static int ConnectionCount(TraceLoggerPlus TL)
+        public static uint ConnectionCount(TraceLoggerPlus TL)
         {
             TL.LogMessage("ConnectionCount", connectStates.Count.ToString());
-            return connectStates.Count;
+            return (uint)connectStates.Count;
         }
 
         /// <summary>
@@ -173,7 +179,7 @@ namespace ASCOM.Remote
             client.ReadWriteTimeout = serverResponseTimeout * 1000;
         }
 
-        public static void ConnectToRemoteServer(ref RestClient client, string ipAddressString, decimal portNumber, string serviceType, TraceLoggerPlus TL, int clientNumber, string deviceType, int serverResponseTimeout, string userName, string password)
+        public static void ConnectToRemoteServer(ref RestClient client, string ipAddressString, decimal portNumber, string serviceType, TraceLoggerPlus TL, uint clientNumber, string deviceType, int serverResponseTimeout, string userName, string password)
         {
             TL.LogMessage(clientNumber, deviceType, "Connecting to device: " + ipAddressString + ":" + portNumber.ToString());
 
@@ -201,7 +207,7 @@ namespace ASCOM.Remote
         /// <summary>
         /// Read the device configuration from the ASCOM Profile store
         /// </summary>
-        public static void ReadProfile(int clientNumber, TraceLoggerPlus TL, string deviceType, string driverProgID,
+        public static void ReadProfile(uint clientNumber, TraceLoggerPlus TL, string deviceType, string driverProgID,
                                        ref bool traceState,
                                        ref bool debugTraceState,
                                        ref string ipAddressString,
@@ -246,7 +252,7 @@ namespace ASCOM.Remote
         /// <summary>
         /// Write the device configuration to the  ASCOM  Profile store
         /// </summary>
-        public static void WriteProfile(int clientNumber, TraceLoggerPlus TL, string deviceType, string driverProgID,
+        public static void WriteProfile(uint clientNumber, TraceLoggerPlus TL, string deviceType, string driverProgID,
                                         bool traceState,
                                         bool debugTraceState,
                                         string ipAddressString,
@@ -289,19 +295,19 @@ namespace ASCOM.Remote
 
         #region Remote access methods
 
-        public static void CallMethodWithNoParameters(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method)
+        public static void CallMethodWithNoParameters(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>();
             SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, method, Parameters, Method.PUT);
         }
 
-        public static T GetValue<T>(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method)
+        public static T GetValue<T>(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>();
             return SendToRemoteDriver<T>(clientNumber, client, URIBase, TL, method, Parameters, Method.GET);
         }
 
-        public static void SetBool(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, bool parmeterValue)
+        public static void SetBool(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, bool parmeterValue)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -310,7 +316,7 @@ namespace ASCOM.Remote
             SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, method, Parameters, Method.PUT);
         }
 
-        public static void SetInt(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, int parmeterValue)
+        public static void SetInt(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, int parmeterValue)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -319,7 +325,7 @@ namespace ASCOM.Remote
             SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, method, Parameters, Method.PUT);
         }
 
-        public static void SetShort(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, short parmeterValue)
+        public static void SetShort(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, short parmeterValue)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -328,7 +334,7 @@ namespace ASCOM.Remote
             SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, method, Parameters, Method.PUT);
         }
 
-        public static void SetDouble(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, double parmeterValue)
+        public static void SetDouble(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, double parmeterValue)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -337,7 +343,7 @@ namespace ASCOM.Remote
             SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, method, Parameters, Method.PUT);
         }
 
-        public static void SetDoubleWithShortParameter(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, short index, double parmeterValue)
+        public static void SetDoubleWithShortParameter(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, short index, double parmeterValue)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -347,7 +353,7 @@ namespace ASCOM.Remote
             SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, method, Parameters, Method.PUT);
         }
 
-        public static void SetBoolWithShortParameter(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, short index, bool parmeterValue)
+        public static void SetBoolWithShortParameter(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, short index, bool parmeterValue)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -357,7 +363,7 @@ namespace ASCOM.Remote
             SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, method, Parameters, Method.PUT);
         }
 
-        public static void SetStringWithShortParameter(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, short index, string parmeterValue)
+        public static void SetStringWithShortParameter(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, short index, string parmeterValue)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -367,7 +373,7 @@ namespace ASCOM.Remote
             SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, method, Parameters, Method.PUT);
         }
 
-        public static string GetStringIndexedString(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, string parameterValue)
+        public static string GetStringIndexedString(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, string parameterValue)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -375,7 +381,7 @@ namespace ASCOM.Remote
             };
             return SendToRemoteDriver<string>(clientNumber, client, URIBase, TL, method, Parameters, Method.GET);
         }
-        public static double GetStringIndexedDouble(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, string parameterValue)
+        public static double GetStringIndexedDouble(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, string parameterValue)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -384,7 +390,7 @@ namespace ASCOM.Remote
             return SendToRemoteDriver<double>(clientNumber, client, URIBase, TL, method, Parameters, Method.GET);
         }
 
-        public static double GetShortIndexedDouble(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, short parameterValue)
+        public static double GetShortIndexedDouble(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, short parameterValue)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -393,7 +399,7 @@ namespace ASCOM.Remote
             return SendToRemoteDriver<double>(clientNumber, client, URIBase, TL, method, Parameters, Method.GET);
         }
 
-        public static bool GetShortIndexedBool(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, short parameterValue)
+        public static bool GetShortIndexedBool(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, short parameterValue)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -402,7 +408,7 @@ namespace ASCOM.Remote
             return SendToRemoteDriver<bool>(clientNumber, client, URIBase, TL, method, Parameters, Method.GET);
         }
 
-        public static string GetShortIndexedString(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, short parameterValue)
+        public static string GetShortIndexedString(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, short parameterValue)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -411,7 +417,7 @@ namespace ASCOM.Remote
             return SendToRemoteDriver<string>(clientNumber, client, URIBase, TL, method, Parameters, Method.GET);
         }
 
-        public static T SendToRemoteDriver<T>(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, Dictionary<string, string> Parameters, Method HttpMethod)
+        public static T SendToRemoteDriver<T>(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, Dictionary<string, string> Parameters, Method HttpMethod)
         {
             try
             {
@@ -424,7 +430,7 @@ namespace ASCOM.Remote
                 };
 
                 request.AddParameter(SharedConstants.CLIENTID_PARAMETER_NAME, clientNumber.ToString());
-                int transaction = TransactionNumber();
+                uint transaction = TransactionNumber();
                 request.AddParameter(SharedConstants.CLIENTTRANSACTION_PARAMETER_NAME, transaction.ToString());
 
                 foreach (KeyValuePair<string, string> parameter in Parameters) // Add any supplied parameters to the request
@@ -839,7 +845,7 @@ namespace ASCOM.Remote
 
         #region ASCOM Common members
 
-        public static string Action(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string actionName, string actionParameters)
+        public static string Action(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string actionName, string actionParameters)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -852,7 +858,7 @@ namespace ASCOM.Remote
             return remoteString;
         }
 
-        public static void CommandBlind(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string command, bool raw)
+        public static void CommandBlind(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string command, bool raw)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -863,7 +869,7 @@ namespace ASCOM.Remote
             TL.LogMessage(clientNumber, "CommandBlind", "Completed OK");
         }
 
-        public static bool CommandBool(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string command, bool raw)
+        public static bool CommandBool(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string command, bool raw)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -876,7 +882,7 @@ namespace ASCOM.Remote
             return remoteBool;
         }
 
-        public static string CommandString(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string command, bool raw)
+        public static string CommandString(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string command, bool raw)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
@@ -889,7 +895,7 @@ namespace ASCOM.Remote
             return remoteString;
         }
 
-        public static void Connect(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
+        public static void Connect(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
         {
             if (debugTraceState) TL.LogMessage(clientNumber, "Connect", "Acquiring connection lock");
             lock (connectLockObject) // Ensure that only one connection attempt can happen at a time
@@ -917,12 +923,12 @@ namespace ASCOM.Remote
             }
         }
 
-        public static string Description(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
+        public static string Description(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
         {
             return GetValue<string>(clientNumber, client, URIBase, TL, "Description");
         }
 
-        public static void Disconnect(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
+        public static void Disconnect(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
         {
 
             if (IsClientConnected(clientNumber, client, TL)) // If we are already connected then disconnect, otherwise ignore disconnect 
@@ -938,26 +944,26 @@ namespace ASCOM.Remote
             }
         }
 
-        public static string DriverInfo(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
+        public static string DriverInfo(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
         {
             return GetValue<string>(clientNumber, client, URIBase, TL, "DriverInfo");
         }
 
-        public static string DriverVersion(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
+        public static string DriverVersion(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
         {
             string remoteString = GetValue<string>(clientNumber, client, URIBase, TL, "DriverVersion");
             TL.LogMessage(clientNumber, "DriverVersion", remoteString);
             return remoteString;
         }
 
-        public static short InterfaceVersion(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
+        public static short InterfaceVersion(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
         {
             short interfaceVersion = GetValue<short>(clientNumber, client, URIBase, TL, "InterfaceVersion");
             TL.LogMessage(clientNumber, "InterfaceVersion", interfaceVersion.ToString());
             return interfaceVersion;
         }
 
-        public static ArrayList SupportedActions(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
+        public static ArrayList SupportedActions(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
         {
             List<string> supportedActions = GetValue<List<string>>(clientNumber, client, URIBase, TL, "SupportedActions");
             TL.LogMessage(clientNumber, "SupportedActions", string.Format("Returning {0} actions", supportedActions.Count));
@@ -976,7 +982,7 @@ namespace ASCOM.Remote
 
         #region Complex Camera Properties
 
-        public static object ImageArrayVariant(int clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
+        public static object ImageArrayVariant(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
         {
             Array returnArray;
             string variantType = null;

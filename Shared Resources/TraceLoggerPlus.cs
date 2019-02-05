@@ -17,12 +17,12 @@ namespace ASCOM.Remote
 
         public bool IpAddressTraceState { get; set; }
 
-        public void LogMessage(int instance, string prefix, string message)
+        public void LogMessage(uint instance, string prefix, string message)
         {
             base.LogMessage(prefix + " " + instance.ToString(), message);
         }
 
-        public void LogMessage(int clientID, uint clientTransactionID, uint serverTransactionID, string prefix, string message)
+        public void LogMessage(uint clientID, uint clientTransactionID, uint serverTransactionID, string prefix, string message)
         {
             if (IpAddressTraceState)
             {
@@ -46,12 +46,12 @@ namespace ASCOM.Remote
             }
         }
 
-        public void LogMessageCrLf(int instance, string prefix, string message)
+        public void LogMessageCrLf(uint instance, string prefix, string message)
         {
             base.LogMessageCrLf(prefix + " " + instance.ToString(), message);
         }
 
-        public void LogMessageCrLf(int clientID, uint clientTransactionID, uint serverTransactionID, string prefix, string message)
+        public void LogMessageCrLf(uint clientID, uint clientTransactionID, uint serverTransactionID, string prefix, string message)
         {
             if (IpAddressTraceState)
             {

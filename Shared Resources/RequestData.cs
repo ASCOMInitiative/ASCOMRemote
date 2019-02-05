@@ -9,7 +9,7 @@ namespace ASCOM.Remote
         {
         }
 
-        public RequestData(string clientIpAddress, int clientID, uint clientTransactionID, uint serverTransactionID, NameValueCollection suppliedParameters, HttpListenerRequest request, HttpListenerResponse response, string[] elements, string deviceKey)
+        public RequestData(string clientIpAddress, uint clientID, uint clientTransactionID, uint serverTransactionID, NameValueCollection suppliedParameters, HttpListenerRequest request, HttpListenerResponse response, string[] elements, string deviceKey)
         {
             ClientIpAddress = clientIpAddress;
             ClientID = clientID;
@@ -22,7 +22,7 @@ namespace ASCOM.Remote
             DeviceKey = deviceKey;
         }
 
-        public int ClientID { get; set; }
+        public uint ClientID { get; set; }
         public uint ClientTransactionID { get; set; }
         public uint ServerTransactionID { get; set; }
         public NameValueCollection SuppliedParameters { get; set; }

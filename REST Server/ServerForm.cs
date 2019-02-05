@@ -665,7 +665,7 @@ namespace ASCOM.Remote
             } while (remainingDuration > 0);
         }
 
-        internal static void LogMessage(int clientID, uint clientTransactionID, uint serverTransactionID, string Method, string Message)
+        internal static void LogMessage(uint clientID, uint clientTransactionID, uint serverTransactionID, string Method, string Message)
         {
             lock (logLockObject) // Ensure that only one message is logged at once and that the midnight log change over is effected within just one log message call
             {
@@ -683,7 +683,7 @@ namespace ASCOM.Remote
             }
         }
 
-        internal static void LogException(int clientID, uint clientTransactionID, uint serverTransactionID, string Method, string Message)
+        internal static void LogException(uint clientID, uint clientTransactionID, uint serverTransactionID, string Method, string Message)
         {
             lock (logLockObject) // Ensure that only one message is logged at once and that the midnight log change over is effected within just one log message call
             {
@@ -702,7 +702,7 @@ namespace ASCOM.Remote
         }
 
 
-        internal static void LogBlankLine(int clientID, uint clientTransactionID, uint serverTransactionID)
+        internal static void LogBlankLine(uint clientID, uint clientTransactionID, uint serverTransactionID)
         {
             lock (logLockObject) // Ensure that only one message is logged at once and that the midnight log change over is effected within just one log message call
             {
@@ -711,7 +711,7 @@ namespace ASCOM.Remote
             }
         }
 
-        private static void CheckWhetherNewLogRequired(int clientID, uint clientTransactionID, uint serverTransactionID)
+        private static void CheckWhetherNewLogRequired(uint clientID, uint clientTransactionID, uint serverTransactionID)
         {
             if (TL.Enabled) // We are logging so we have to close the current log and start a new one if we have moved to a new day
             {
@@ -1140,7 +1140,7 @@ namespace ASCOM.Remote
         private void ProcessRestRequest(HttpListenerContext context)
         {
             // Local convenience variables to hold this transaction's information
-            int clientID = 0;
+            uint clientID = 0;
             uint clientTransactionID = 0;
             uint serverTransactionID = 0;
             NameValueCollection suppliedParameters;
@@ -1208,7 +1208,7 @@ namespace ASCOM.Remote
                 if (clientIDString != null) // Some value was supplied for this parameter
                 {
                     // Parse the integer value out or throw a 400 error if the value is not an integer
-                    if (!int.TryParse(clientIDString, out clientID))
+                    if (!uint.TryParse(clientIDString, out clientID))
                     {
                         LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}, Concurrent requests: {3}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString(), numberOfConcurrentTransactions));
                         Return400Error(requestData, "Client ID is not an integer: " + suppliedParameters[SharedConstants.CLIENTID_PARAMETER_NAME]);
