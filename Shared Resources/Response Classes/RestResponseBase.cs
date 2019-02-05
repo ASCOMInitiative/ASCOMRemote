@@ -9,8 +9,8 @@ namespace ASCOM.Remote
     {
         private Exception exception;
 
-        public int ClientTransactionID { get; set; }
-        public int ServerTransactionID { get; set; }
+        public uint ClientTransactionID { get; set; }
+        public uint ServerTransactionID { get; set; }
         public int ErrorNumber { get; set; } = 0;
         public string ErrorMessage { get; set; } = "";
         public Exception DriverException

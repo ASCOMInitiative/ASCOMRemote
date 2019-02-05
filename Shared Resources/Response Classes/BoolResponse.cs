@@ -5,7 +5,7 @@ namespace ASCOM.Remote
     public class BoolResponse : RestResponseBase
     {
         public BoolResponse() { }
-        public BoolResponse(int clientTransactionID, int transactionID, bool value)
+        public BoolResponse(uint clientTransactionID, uint transactionID, bool value)
         {
             base.ServerTransactionID = transactionID;
             base.ClientTransactionID = clientTransactionID;

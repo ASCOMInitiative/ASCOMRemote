@@ -12,7 +12,7 @@ namespace ASCOM.Remote
 
         public IntArray1DResponse() { }
 
-        public IntArray1DResponse(int clientTransactionID, int transactionID, int[] value)
+        public IntArray1DResponse(uint clientTransactionID, uint transactionID, int[] value)
         {
             base.ServerTransactionID = transactionID;
             base.ClientTransactionID = clientTransactionID;

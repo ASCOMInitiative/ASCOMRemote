@@ -12,7 +12,7 @@ namespace ASCOM.Remote
 
         public StringListResponse() { }
 
-        public StringListResponse(int clientTransactionID, int transactionID, List<string> value)
+        public StringListResponse(uint clientTransactionID, uint transactionID, List<string> value)
         {
             base.ServerTransactionID = transactionID;
             list = value;

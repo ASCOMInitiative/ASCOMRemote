@@ -6,7 +6,7 @@ namespace ASCOM.Remote
     {
         public DoubleResponse() { }
 
-        public DoubleResponse(int clientTransactionID, int transactionID, double value)
+        public DoubleResponse(uint clientTransactionID, uint transactionID, double value)
         {
             base.ServerTransactionID = transactionID;
             base.ClientTransactionID = clientTransactionID;

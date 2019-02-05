@@ -12,7 +12,7 @@ namespace ASCOM.Remote
 
         public StringArrayResponse() { }
 
-        public StringArrayResponse(int clientTransactionID, int transactionID, string[] value)
+        public StringArrayResponse(uint clientTransactionID, uint transactionID, string[] value)
         {
             base.ServerTransactionID = transactionID;
             stringArray = value;

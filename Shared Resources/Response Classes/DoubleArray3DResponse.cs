@@ -9,7 +9,7 @@ namespace ASCOM.Remote
         private const int RANK = 3;
         private const SharedConstants.ImageArrayElementTypes TYPE = SharedConstants.ImageArrayElementTypes.Double;
 
-        public DoubleArray3DResponse(int clientTransactionID, int transactionID, double[,,] value)
+        public DoubleArray3DResponse(uint clientTransactionID, uint transactionID, double[,,] value)
         {
             base.ServerTransactionID = transactionID;
             doubleArray3D = value;

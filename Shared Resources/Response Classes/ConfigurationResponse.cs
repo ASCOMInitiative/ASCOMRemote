@@ -9,7 +9,7 @@ namespace ASCOM.Remote
 
         public ConfigurationResponse() { }
 
-        public ConfigurationResponse(int clientTransactionID, int transactionID, ConcurrentDictionary<string, ConfiguredDevice> value)
+        public ConfigurationResponse(uint clientTransactionID, uint transactionID, ConcurrentDictionary<string, ConfiguredDevice> value)
         {
             base.ClientTransactionID = clientTransactionID;
             base.ServerTransactionID = transactionID;

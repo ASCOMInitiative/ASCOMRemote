@@ -22,7 +22,7 @@ namespace ASCOM.Remote
             base.LogMessage(prefix + " " + instance.ToString(), message);
         }
 
-        public void LogMessage(int clientID, int clientTransactionID, int serverTransactionID, string prefix, string message)
+        public void LogMessage(int clientID, uint clientTransactionID, uint serverTransactionID, string prefix, string message)
         {
             if (IpAddressTraceState)
             {
@@ -51,7 +51,7 @@ namespace ASCOM.Remote
             base.LogMessageCrLf(prefix + " " + instance.ToString(), message);
         }
 
-        public void LogMessageCrLf(int clientID, int clientTransactionID, int serverTransactionID, string prefix, string message)
+        public void LogMessageCrLf(int clientID, uint clientTransactionID, uint serverTransactionID, string prefix, string message)
         {
             if (IpAddressTraceState)
             {

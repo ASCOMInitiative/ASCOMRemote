@@ -6,7 +6,7 @@ namespace ASCOM.Remote
     {
         public ShortResponse() { }
 
-        public ShortResponse(int clientTransactionID, int transactionID, short value)
+        public ShortResponse(uint clientTransactionID, uint transactionID, short value)
         {
             base.ServerTransactionID = transactionID;
             base.ClientTransactionID = clientTransactionID;
