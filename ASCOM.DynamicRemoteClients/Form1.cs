@@ -70,7 +70,7 @@ namespace ASCOM.DynamicRemoteClients
         }
 
         /// <summary>
-        /// Reads the current device configuration from tyhe Profile and saves this for use elsewhere
+        /// Reads the current device configuration from the Profile and saves this for use elsewhere
         /// </summary>
         private void ReadConfiguration()
         {
@@ -317,12 +317,12 @@ namespace ASCOM.DynamicRemoteClients
         /// </summary>
         /// <param name="DeviceType">The ASCOM device type to create</param>
         /// <param name="DeviceNumber">The number of this device type to create</param>
-        /// <param name="OutputDirectory">The directory in which to place the compiled assmenbly</param>
+        /// <param name="OutputDirectory">The directory in which to place the compiled assembly</param>
         /// <remarks>
-        /// This subroutine creates compiler source line definitions (not source code as such) and stores them in memoy
+        /// This subroutine creates compiler source line definitions (not source code as such) and stores them in memory
         /// When complete, the compiler is called and the resultant assembly is stored in the specified output directory.
         /// The code created has no function as such it is just a shell with all of the heavy lifting undertaken by an inherited base class that is supplied pre-compiled
-        /// The reusltant assembly for Camera device 1 has this form:
+        /// The resultant assembly for Camera device 1 has this form:
         /// 
         /// using System;
         /// using System.Runtime.InteropServices;
@@ -470,7 +470,7 @@ namespace ASCOM.DynamicRemoteClients
 
                 TL.LogMessage("CreateDriver", "Added assembly references");
 
-                // Create formatting options for the generated code that wil be logged into the trace logger
+                // Create formatting options for the generated code that will be logged into the trace logger
                 CodeGeneratorOptions codeGeneratorOptions = new CodeGeneratorOptions()
                 {
                     BracingStyle = "C",

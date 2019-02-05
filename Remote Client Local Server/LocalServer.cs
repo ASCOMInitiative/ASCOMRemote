@@ -3,7 +3,7 @@
 //
 // This is the core of a managed COM Local Server, capable of serving
 // multiple instances of multiple interfaces, within a single
-// executable. This implementes the equivalent functionality of VB6
+// executable. This implements the equivalent functionality of VB6
 // which has been extensively used in ASCOM for drivers that provide
 // multiple interfaces to multiple clients (e.g. Meade Telescope
 // and Focuser) as well as hubs (e.g., POTH).
@@ -291,7 +291,7 @@ namespace ASCOM.Remote
         // assembly loading, it registers each one for COM as served by our
         // exe/local server, as well as registering it for ASCOM. It also
         // adds DCOM info for the local server itself, so it can be activated
-        // via an outboiud connection from TheSky.
+        // via an outbound connection from TheSky.
         //
         private static void RegisterObjects()
         {
@@ -480,7 +480,7 @@ namespace ASCOM.Remote
                 Registry.ClassesRoot.DeleteSubKey(String.Format("CLSID\\{0}", clsid), false);
 
                 /* This is commented out so that profile values are retained when the driver is uninstalled and as part of the upgrade process.
-                 * Unfortunatley it does mean that drivers will have to be manually deleted from the Profile if they are no longer required.
+                 * Unfortunately it does mean that drivers will have to be manually deleted from the Profile if they are no longer required.
                 try
                 {
                   //
@@ -502,7 +502,7 @@ namespace ASCOM.Remote
         #region Class Factory Support
         //
         // On startup, we register the class factories of the COM objects
-        // that we serve. This requires the class facgtory name to be
+        // that we serve. This requires the class factory name to be
         // equal to the served class name + "ClassFactory".
         //
         private static bool RegisterClassFactories()

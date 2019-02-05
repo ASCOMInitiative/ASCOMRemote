@@ -54,7 +54,7 @@ namespace ASCOM.Remote
             TL.LogMessage("ProcessOptions", string.Format("Local server path: {0}", opts.LocalServerPath));
             TL.LogMessage("ProcessOptions", string.Format("Remote server path: {0}", opts.RemoteServerPath));
             TL.LogMessage("ProcessOptions", string.Format("API URI: {0}", opts.SetApiUriAcl));
-            TL.LogMessage("ProcessOptions", string.Format("Manafgement URI: {0}", opts.SetManagementUriAcl));
+            TL.LogMessage("ProcessOptions", string.Format("Management URI: {0}", opts.SetManagementUriAcl));
             TL.BlankLine();
 
             // Set firewall rules depending on which command line parameter was supplied

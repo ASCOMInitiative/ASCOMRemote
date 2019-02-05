@@ -364,7 +364,7 @@ namespace ASCOM.Remote
                 { SharedConstants.POSITION_PARAMETER_NAME, Position.ToString(CultureInfo.InvariantCulture) }
             };
             RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "MoveAbsolute", Parameters, Method.PUT);
-            TL.LogMessage(clientNumber, "MoveAbsolute", string.Format("Rotator moved to abolute position {0} OK", Position));
+            TL.LogMessage(clientNumber, "MoveAbsolute", string.Format("Rotator moved to absolute position {0} OK", Position));
         }
 
         #endregion

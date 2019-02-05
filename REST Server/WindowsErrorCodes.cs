@@ -1662,7 +1662,7 @@ public enum WindowsErrorCodes
     //
     // MessageText:
     //
-    //  The session was canceled.
+    //  The session was cancelled.
     //
     ERROR_VC_DISCONNECTED = 240,
 
@@ -3262,7 +3262,7 @@ public enum WindowsErrorCodes
     //
     // MessageText:
     //
-    //  The operation was canceled by the user.
+    //  The operation was cancelled by the user.
     //
     ERROR_CANCELLED = 1223,
 
@@ -3589,7 +3589,7 @@ public enum WindowsErrorCodes
     //
     // MessageText:
     //
-    //  AppHelp dialog canceled thus preventing the application from starting.
+    //  AppHelp dialog cancelled thus preventing the application from starting.
     //
     ERROR_APPHELP_BLOCK = 1259,
 
@@ -6845,7 +6845,7 @@ public enum WindowsErrorCodes
     //
     // MessageText:
     //
-    //  Thread is not canceled.
+    //  Thread is not cancelled.
     //
     RPC_S_NOT_CANCELLED = 1826,
 
@@ -14885,7 +14885,7 @@ Do not add any more error codes in that range.
     //
     // MessageText:
     //
-    //  A call to WSALookupServiceEnd was made while this call was still processing. The call has been canceled.
+    //  A call to WSALookupServiceEnd was made while this call was still processing. The call has been cancelled.
     //
     WSAECANCELLED = 10103,
 
@@ -14957,7 +14957,7 @@ Do not add any more error codes in that range.
     //
     // MessageText:
     //
-    //  A call to WSALookupServiceEnd was made while this call was still processing. The call has been canceled.
+    //  A call to WSALookupServiceEnd was made while this call was still processing. The call has been cancelled.
     //
     WSA_E_CANCELLED = 10111,
 
@@ -17784,7 +17784,7 @@ __inline HRESULT HRESULT_FROM_WIN32(long x) { return x <= 0 ? (HRESULT)x : (HRES
     //
     // MessageText:
     //
-    //  User canceled out of save dialog
+    //  User cancelled out of save dialog
     //
     OLE_E_PROMPTSAVECANCELLED = unchecked((int)0x8004000C),
 
@@ -19656,7 +19656,7 @@ __inline HRESULT HRESULT_FROM_WIN32(long x) { return x <= 0 ? (HRESULT)x : (HRES
     //
     // MessageText:
     //
-    //  Drag-drop operation canceled
+    //  Drag-drop operation cancelled
     //
     DRAGDROP_S_CANCEL = unchecked(0x00040101),
 
@@ -21049,7 +21049,7 @@ copy protection errors.
     //
     // MessageText:
     //
-    //  Call was canceled by the message filter.
+    //  Call was cancelled by the message filter.
     //
     RPC_E_CALL_CANCELED = unchecked((int)0x80010002),
 

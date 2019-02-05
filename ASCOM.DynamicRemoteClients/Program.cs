@@ -28,8 +28,8 @@ namespace ASCOM.DynamicRemoteClients
 
             try
             {
-                string parameter = ""; // Iniitialise the supplied parameter to empty string
-                if (args.Length > 0) parameter = args[0]; // Copy any supplied parameter to the paramemter variable
+                string parameter = ""; // Initialise the supplied parameter to empty string
+                if (args.Length > 0) parameter = args[0]; // Copy any supplied parameter to the parameter variable
 
                 TL.LogMessage("Main", string.Format(@"Supplied parameter: ""{0}""", parameter));
                 parameter = parameter.TrimStart(' ', '-', '/', '\\'); // Remove any parameter prefixes and leading spaces
@@ -79,7 +79,7 @@ namespace ASCOM.DynamicRemoteClients
                                 MigrateProfiles("Switch");
                                 MigrateProfiles("Telescope");
 
-                                // Remove any driver or pdb driver files left in the , local server directopry
+                                // Remove any driver or pdb driver files left in the , local server directory
                                 DeleteFiles(localServerPath, @"ascom\.remote\d\.\w+\.dll", "ASCOM.RemoteX.DLL");
                                 DeleteFiles(localServerPath, @"ascom\.remote\d\.\w+\.pdb", "ASCOM.RemoteX.PDB");
                                 DeleteFiles(localServerPath, @"ascom\.web\d\.\w+\.dll", "ASCOM.WebX.DLL");
@@ -115,7 +115,7 @@ namespace ASCOM.DynamicRemoteClients
                         }
                         else // Drivers are already installed so no action required
                         {
-                            TL.LogMessage("Main", string.Format("This applicaiton has already run successful so this is not a first time installation - no action taken"));
+                            TL.LogMessage("Main", string.Format("This application has already run successful so this is not a first time installation - no action taken"));
                         }
                         break;
 
@@ -142,7 +142,7 @@ namespace ASCOM.DynamicRemoteClients
         /// Migrate profile names from previous client version
         /// </summary>
         /// <param name="DeviceType"></param>
-        /// <remarks>The first ASCOM Remote release used device ProgIds of the the form ASCOM.WebX.DEVICETYPE. This and future versions use ProgIDs of the the form ASCOM.RemoteX.DEVICETYPE. This routine renames the 
+        /// <remarks>The first ASCOM Remote release used device ProgIds of the form ASCOM.WebX.DEVICETYPE. This and future versions use ProgIDs of the form ASCOM.RemoteX.DEVICETYPE. This routine renames the 
         /// Profile entries of any original release drivers to match the new form.</remarks>
         private static void MigrateProfiles(string DeviceType)
         {
@@ -183,7 +183,7 @@ namespace ASCOM.DynamicRemoteClients
                                     if (valueName == "") // Special handling for the default value - need to change chooser description to ASCOM Remote Client X
                                     {
                                         value = string.Format("ASCOM Remote Client {0}", i);
-                                        TL.LogMessage("MigrateProfiles", string.Format("Changing Chooser decription to {0} ", value));
+                                        TL.LogMessage("MigrateProfiles", string.Format("Changing Chooser description to {0} ", value));
                                     }
                                     else
                                     {

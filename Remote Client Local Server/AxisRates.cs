@@ -11,7 +11,7 @@ namespace ASCOM.Remote
     // this polymorphism. 
     //
     // The Guid attribute sets the CLSID for ASCOM.Remote.AxisRates
-    // The ClassInterface/None addribute prevents an empty interface called
+    // The ClassInterface/None attribute prevents an empty interface called
     // _AxisRates from being created and used as the [default] interface
     //
     [Guid("29F65429-4492-4323-9746-F718EBCD8FF3")]
@@ -57,7 +57,7 @@ namespace ASCOM.Remote
             Rate[] NewRateArray = new Rate[m_Rates.Length + 1]; // Create a new Rate array to replace the current one
             TL.LogMessage("AxisRates.Add", "NewRateArray.Length: " + NewRateArray.Length);
             Array.Copy(m_Rates, NewRateArray, m_Rates.Length); // Copy the current contents of the m_Rated array to the new array
-            NewRateArray[m_Rates.Length] = r; // Add the new rate the the new Rates array.
+            NewRateArray[m_Rates.Length] = r; // Add the new rate the new Rates array.
             m_Rates = NewRateArray; // Make m_Rates point at the new larger array
             TL.LogMessage("AxisRates.Add", "After m_Rates.Length: " + m_Rates.Length);
         }

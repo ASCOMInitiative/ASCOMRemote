@@ -22,4 +22,4 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("53D91A93-30EC-4B7A-BEBF-5DC6F0564D8A")]
 
-// An overall assmebly version number is now in the Remote Device Server SharedAssemblyVersionNumber file
+// An overall assembly version number is now in the Remote Device Server SharedAssemblyVersionNumber file

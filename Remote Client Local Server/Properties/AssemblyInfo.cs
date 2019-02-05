@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-// An overall assmebly version number is now in the Remote Device Server SharedAssemblyVersionNumber file
+// An overall assembly version number is now in the Remote Device Server SharedAssemblyVersionNumber file
 
 [assembly: ComVisible(false)]
 [assembly: Guid("10A694FA-6391-4E79-92DA-DE347CAE6F66")]

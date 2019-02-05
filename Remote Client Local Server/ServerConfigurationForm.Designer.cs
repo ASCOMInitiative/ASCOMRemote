@@ -283,7 +283,7 @@
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(109, 13);
             this.label7.TabIndex = 50;
-            this.label7.Text = "Remote Configurarion";
+            this.label7.Text = "Remote Configuration";
             // 
             // BtnReloadConfiguration
             // 
