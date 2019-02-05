@@ -29,6 +29,9 @@ namespace ASCOM.Remote
         private const string NOT_CONNECTED_MESSAGE = "ASCOM Remote Client Driver is not connected.";
         private const string RANK_VARIABLE_NAME = "Rank";
         private const string ARRAYTYPE_VARIABLE_NAME = "Type";
+        private const int ASCOM_ERROR_NUMBER_OFFSET = unchecked((int)0x80040000); // Offset value that relates the ASCOM Alpaca reserved error code range to the ASCOM COM HResult error code range
+        private const int ALPACA_ERROR_CODE_BASE =  0x400; // Start of the Alpaca error code range 0x400 to 0xFFF
+        private const int ALPACA_ERROR_CODE_MAX = 0xFFF; // End of Alpaca error code range 0x400 to 0xFFF
 
         private const string FIND_TYPE_AND_RANK_REGEX_PATTERN = @"^*""Type"":(?<" + ARRAYTYPE_VARIABLE_NAME + @">\d*),""Rank"":(?<" + RANK_VARIABLE_NAME + @">\d*)"; // Regular expression to extract array type and rank from the returned JSON imagearray and imagearrayvariant responses
 
@@ -704,26 +707,90 @@ namespace ASCOM.Remote
                         }
                     }
 
-                    // HANDLE DRIVER ERRORS REPORTED IN THE RESPONSE
-
-                    // Windows exceptions thrown by Windows based drivers running in the remote server
+                    // HANDLE COM EXCEPTIONS THROWN BY WINDOWS BASED DRIVERS RUNNING IN THE REMOTE SERVER
                     if (restResponseBase.DriverException != null)
                     {
                         TL.LogMessageCrLf(clientNumber, method, string.Format("Exception Message: {0}, Exception Number: 0x{1}", restResponseBase.ErrorMessage, restResponseBase.ErrorNumber.ToString("X8")));
                         throw restResponseBase.DriverException;
                     }
 
-                    TL.LogMessageCrLf(clientNumber, method, string.Format("Pre driver error test - ErrorMessage: {0}, ErrorNumber: 0x{1}", restResponseBase.ErrorMessage, restResponseBase.ErrorNumber.ToString("X8")));
-
-                    // Errors reported by non-Windows drivers that use the error number and error message fields
+                    // HANDLE ERRORS REPORTED BY ALPACA DEVICES THAT USE THE ERROR NUMBER AND ERROR MESSAGE FIELDS
                     if ((restResponseBase.ErrorMessage != "") || (restResponseBase.ErrorNumber != 0))
                     {
-                        TL.LogMessageCrLf(clientNumber, method, string.Format("Non Windows error detected, throwing DriverException - ErrorMessage: {0}, ErrorNumber: 0x{1}", restResponseBase.ErrorMessage, restResponseBase.ErrorNumber.ToString("X8")));
-                        throw new DriverException(restResponseBase.ErrorMessage, restResponseBase.ErrorNumber);
+                        TL.LogMessageCrLf(clientNumber, method, string.Format("Received an Alpaca error - ErrorMessage: {0}, ErrorNumber: 0x{1}", restResponseBase.ErrorMessage, restResponseBase.ErrorNumber.ToString("X8")));
+
+                        // Handle ASCOM Alpaca reserved error numbers between 0x400 and 0xFFF by translating these to the COM HResult error number range: 0x80040400 to 0x80040FFF and throwing the translated value as an exception
+                        if ((restResponseBase.ErrorNumber >= ALPACA_ERROR_CODE_BASE) & (restResponseBase.ErrorNumber <= ALPACA_ERROR_CODE_MAX)) // This error is within the ASCOM Alpaca reserved error number range
+                        {
+                            // Calculate the equivalent COM HResult error number from the supplied Alpaca error number so that comparison can be made with the original ASCOM COM exception HResult numbers that Windows clients expect in their exceptions
+                            int ascomCOMErrorNumber = restResponseBase.ErrorNumber + ASCOM_ERROR_NUMBER_OFFSET;
+                            TL.LogMessageCrLf(clientNumber, method, string.Format("Received Alpaca error code: {0} ({0:X8}), the equivalent COM error HResult error code is {1} ({1:X8})", restResponseBase.ErrorNumber, ascomCOMErrorNumber));
+
+                            // Now check whether the COM HResult matches any of the built-in ASCOM exception types. If so, we throw that exception type otherwise we throw a generic DriverException
+                            if (ascomCOMErrorNumber == ErrorCodes.ActionNotImplementedException) // Handle ActionNotImplementedException
+                            {
+                                TL.LogMessageCrLf(clientNumber, method, string.Format("Alpaca action not implemented error, throwing ActionNotImplementedException - ErrorMessage: {0}, ErrorNumber: 0x{1:X8}", restResponseBase.ErrorMessage, ascomCOMErrorNumber));
+                                throw new ActionNotImplementedException(restResponseBase.ErrorMessage);
+                            }
+                            else if (ascomCOMErrorNumber == ErrorCodes.InvalidOperationException) // Handle InvalidOperationException
+                            {
+                                TL.LogMessageCrLf(clientNumber, method, string.Format("Alpaca invalid operation error, throwing InvalidOperationException - ErrorMessage: {0}, ErrorNumber: 0x{1:X8}", restResponseBase.ErrorMessage, ascomCOMErrorNumber));
+                                throw new InvalidOperationException(restResponseBase.ErrorMessage);
+                            }
+                            else if (ascomCOMErrorNumber == ErrorCodes.InvalidValue) // Handle InvalidValueException
+                            {
+                                TL.LogMessageCrLf(clientNumber, method, string.Format("Alpaca invalid value error, throwing InvalidValueException - ErrorMessage: {0}, ErrorNumber: 0x{1:X8}", restResponseBase.ErrorMessage, ascomCOMErrorNumber));
+                                throw new InvalidValueException(restResponseBase.ErrorMessage);
+                            }
+                            else if (ascomCOMErrorNumber == ErrorCodes.InvalidWhileParked) // Handle ParkedException
+                            {
+                                TL.LogMessageCrLf(clientNumber, method, string.Format("Alpaca invalid while parked error, throwing ParkedException - ErrorMessage: {0}, ErrorNumber: 0x{1:X8}", restResponseBase.ErrorMessage, ascomCOMErrorNumber));
+                                throw new ParkedException(restResponseBase.ErrorMessage);
+                            }
+                            else if (ascomCOMErrorNumber == ErrorCodes.InvalidWhileSlaved) // Handle SlavedException
+                            {
+                                TL.LogMessageCrLf(clientNumber, method, string.Format(" Alpaca invalid while slaved error, throwing SlavedException - ErrorMessage: {0}, ErrorNumber: 0x{1:X8}", restResponseBase.ErrorMessage, ascomCOMErrorNumber));
+                                throw new SlavedException(restResponseBase.ErrorMessage);
+                            }
+                            else if (ascomCOMErrorNumber == ErrorCodes.NotConnected) // Handle NotConnectedException
+                            {
+                                TL.LogMessageCrLf(clientNumber, method, string.Format(" Alpaca not connected error, throwing NotConnectedException - ErrorMessage: {0}, ErrorNumber: 0x{1:X8}", restResponseBase.ErrorMessage, ascomCOMErrorNumber));
+                                throw new NotConnectedException(restResponseBase.ErrorMessage);
+                            }
+                            else if (ascomCOMErrorNumber == ErrorCodes.NotImplemented) // Handle PropertyNotImplementedException and MethodNotImplementedException (both have the same error code)
+                            {
+                                // Need to determine whether a property not implemented or a method not implemented exception is intended by examining the message text - ugh - but I can't see another way!
+                                if (restResponseBase.ErrorMessage.ToLowerInvariant().Contains("property"))  // Found the string "property" so assume a PropertyNotImplementedException is appropriate...
+                                {
+                                    TL.LogMessageCrLf(clientNumber, method, string.Format("Alpaca property not implemented error, throwing PropertyNotImplementedException - ErrorMessage: {0}, ErrorNumber: 0x{1:X8}", restResponseBase.ErrorMessage, ascomCOMErrorNumber));
+                                    throw new PropertyNotImplementedException(restResponseBase.ErrorMessage);
+                                }
+                                else // Otherwise assume that a MethodNotImplementedException is appropriate...
+                                {
+                                    TL.LogMessageCrLf(clientNumber, method, string.Format(" Alpaca method not implemented error, throwing MethodNotImplementedException - ErrorMessage: {0}, ErrorNumber: 0x{1:X8}", restResponseBase.ErrorMessage, ascomCOMErrorNumber));
+                                    throw new MethodNotImplementedException(restResponseBase.ErrorMessage);
+                                }
+                            }
+                            else if (ascomCOMErrorNumber == ErrorCodes.ValueNotSet) // Handle ValueNotSetException
+                            {
+                                TL.LogMessageCrLf(clientNumber, method, string.Format(" Alpaca value not set error, throwing ValueNotSetException - ErrorMessage: {0}, ErrorNumber: 0x{1:X8}", restResponseBase.ErrorMessage, ascomCOMErrorNumber));
+                                throw new ValueNotSetException(restResponseBase.ErrorMessage);
+                            }
+                            else // The exception is inside the ASCOM Alpaca reserved range but is not one of those with their own specific exception types above, so wrap it in a DriverException and throw this to the client
+                            {
+                                TL.LogMessageCrLf(clientNumber, method, string.Format("Alpaca undefined ASCOM error, throwing DriverException - ErrorMessage: {0}, ErrorNumber: 0x{1:X8}", restResponseBase.ErrorMessage, ascomCOMErrorNumber));
+                                throw new DriverException(restResponseBase.ErrorMessage, ascomCOMErrorNumber);
+                            }
+                        }
+                        else // An exception has been thrown with an error number outside the ASCOM Alpaca reserved range, so wrap it in a DriverException and throw this to the client.
+                        {
+                            TL.LogMessageCrLf(clientNumber, method, string.Format("Alpaca error outside ASCOM reserved range, throwing DriverException - ErrorMessage: {0}, ErrorNumber: 0x{1:X8}", restResponseBase.ErrorMessage, restResponseBase.ErrorNumber));
+                            throw new DriverException(restResponseBase.ErrorMessage, restResponseBase.ErrorNumber);
+                        }
                     }
 
                     // Internal error if an unsupported type is requested - should only occur during development and not in production operation!
-                    throw new InvalidOperationException("Type " + typeof(T).ToString() + " is not supported.");
+                    throw new InvalidOperationException("Type " + typeof(T).ToString() + " is not supported. You should never see this message, if you do, please report it on the ASCOM Talk Forum!");
                 }
                 else
                 {
