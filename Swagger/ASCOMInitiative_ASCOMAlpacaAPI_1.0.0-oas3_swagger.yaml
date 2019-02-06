@@ -49,7 +49,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MethodResponse'
+                $ref: '#/components/schemas/StringResponse'
         '400':
           description: 'Method or parameter value error, check error message'
           content:
