@@ -5,32 +5,31 @@ namespace ASCOM.Remote
     public static class SharedConstants
     {
         // HTTP Parameter names shared by driver and remote server
-        //public static string HTTP_PARAMETER_NAME = "ParameterValue";
-        public static string RA_PARAMETER_NAME = "RightAscension";
-        public static string DEC_PARAMETER_NAME = "Declination";
-        public static string ALT_PARAMETER_NAME = "Altitude";
-        public static string AZ_PARAMETER_NAME = "Azimuth";
-        public static string AXIS_PARAMETER_NAME = "Axis";
-        public static string RATE_PARAMETER_NAME = "Rate";
-        public static string DIRECTION_PARAMETER_NAME = "Direction";
-        public static string DURATION_PARAMETER_NAME = "Duration";
-        public static string CLIENTID_PARAMETER_NAME = "ClientID";
-        public static string CLIENTTRANSACTION_PARAMETER_NAME = "ClientTransactionID";
-        public static string COMMAND_PARAMETER_NAME = "Command";
-        public static string RAW_PARAMETER_NAME = "Raw";
-        public static string LIGHT_PARAMETER_NAME = "Light";
-        public static string ACTION_COMMAND_PARAMETER_NAME = "Action";
-        public static string ACTION_PARAMETERS_PARAMETER_NAME = "Parameters";
-        public static string ID_PARAMETER_NAME = "ID";
-        public static string STATE_PARAMETER_NAME = "State";
-        public static string NAME_PARAMETER_NAME = "Name";
-        public static string VALUE_PARAMETER_NAME = "Value";
-        public static string POSITION_PARAMETER_NAME = "Position";
-        public static string SIDEOFPIER_PARAMETER_NAME = "SideOfPier";
-        public static string UTCDATE_PARAMETER_NAME = "UTCDate";
-        public static string SENSORNAME_PARAMETER_NAME = "SensorName";
+        public const string RA_PARAMETER_NAME = "RightAscension";
+        public const string DEC_PARAMETER_NAME = "Declination";
+        public const string ALT_PARAMETER_NAME = "Altitude";
+        public const string AZ_PARAMETER_NAME = "Azimuth";
+        public const string AXIS_PARAMETER_NAME = "Axis";
+        public const string RATE_PARAMETER_NAME = "Rate";
+        public const string DIRECTION_PARAMETER_NAME = "Direction";
+        public const string DURATION_PARAMETER_NAME = "Duration";
+        public const string CLIENTID_PARAMETER_NAME = "ClientID";
+        public const string CLIENTTRANSACTION_PARAMETER_NAME = "ClientTransactionID";
+        public const string COMMAND_PARAMETER_NAME = "Command";
+        public const string RAW_PARAMETER_NAME = "Raw";
+        public const string LIGHT_PARAMETER_NAME = "Light";
+        public const string ACTION_COMMAND_PARAMETER_NAME = "Action";
+        public const string ACTION_PARAMETERS_PARAMETER_NAME = "Parameters";
+        public const string ID_PARAMETER_NAME = "ID";
+        public const string STATE_PARAMETER_NAME = "State";
+        public const string NAME_PARAMETER_NAME = "Name";
+        public const string VALUE_PARAMETER_NAME = "Value";
+        public const string POSITION_PARAMETER_NAME = "Position";
+        public const string SIDEOFPIER_PARAMETER_NAME = "SideOfPier";
+        public const string UTCDATE_PARAMETER_NAME = "UTCDate";
+        public const string SENSORNAME_PARAMETER_NAME = "SensorName";
 
-        public static string ISO8601_DATE_FORMAT_STRING = "yyyy-MM-ddTHH:mm:ss.fffffff";
+        public const string ISO8601_DATE_FORMAT_STRING = "yyyy-MM-ddTHH:mm:ss.fffffff";
 
         // Remote server setup form constants
         public const string LOCALHOST_NAME = "localhost";

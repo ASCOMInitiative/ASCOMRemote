@@ -39,21 +39,34 @@ namespace ASCOM.Remote
         private const int SCREEN_LOG_MAXIMUM_LENGTH = 50000; // Maximum length of the screen log - The screen log will be pruned to ensure it never exceeds this length, which would start to degrade performance
 
         private const string CORRECT_API_FORMAT_STRING = "<br>Required format is: <b>" +
-                            "<font color=\"red\">API/V</font>" +
+                            "<font color=\"red\">api/v</font>" +
                             "<font color=\"blue\">x</font>" +
                             "<font color=\"red\">/</font>" +
-                            "<font color=\"blue\">DeviceType</font>" +
+                            "<font color=\"blue\">devicetype</font>" +
                             "<font color=\"red\">/</font>" +
                             "<font color=\"blue\">y</font>" +
                             "<font color=\"red\">/</font>" +
-                            "<font color=\"blue\">Method</font>" +
-                            "</b> where x is the one based API version number and y is the zero based number of the device.";
+                            "<font color=\"blue\">method</font>" +
+                            "</b> where " +
+                            "<font color=\"blue\">x</font>" +
+                            " is the one based API version number and " +
+                            "<font color=\"blue\">y</font>" +
+                            " is the zero based number of the device. The " +
+                            "<font color=\"blue\">devicetype</font>" +
+                            " and " +
+                            "<font color=\"blue\">method</font>" +
+                            " fields must be in lower case."; // HTML error message when an unrecognised is received
         private const string CORRECT_SERVER_FORMAT_STRING = "<br>Required format is: <b>" +
-                            "<font color=\"red\">SERVER/V</font>" +
+                            "<font color=\"red\">server/v</font>" +
                             "<font color=\"blue\">x</font>" +
                             "<font color=\"red\">/</font>" +
-                            "<font color=\"blue\">CONFIGURATION | PROFILE</font>" +
-                            "</b> where x is the one based API version number.";
+                            "<font color=\"blue\">configuration | profile | concurrency</font>" +
+                            "</b> where x is the one based API version number. The" +
+                            "<font color=\"blue\">server</font>" +
+                            " and " +
+                            "<font color=\"blue\">command</font>" +
+                            " fields must be in lower case."; // HTML error message when an unknown server command is received.
+
         private const string GET_UNKNOWN_METHOD_MESSAGE = "GET - Unknown device method: ";
         private const string PUT_UNKNOWN_METHOD_MESSAGE = "PUT - Unknown device method: ";
         private const string MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE = "The management interface is not enabled, please enable it using the remote access server configuration dialogue";
@@ -703,7 +716,6 @@ namespace ASCOM.Remote
             }
         }
 
-
         internal static void LogBlankLine(uint clientID, uint clientTransactionID, uint serverTransactionID)
         {
             lock (logLockObject) // Ensure that only one message is logged at once and that the midnight log change over is effected within just one log message call
@@ -1250,7 +1262,7 @@ namespace ASCOM.Remote
                     }
                 }
 
-                if (request.Url.AbsolutePath.Trim().ToLowerInvariant().StartsWith(SharedConstants.API_URL_BASE)) // Process requests whose URIs start with /api
+                if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.API_URL_BASE)) // Process requests whose URIs start with /api
                 {
                     // Return a 403 error if the API is not enabled through the management console
                     if (!apiIsEnabled)
@@ -1282,12 +1294,12 @@ namespace ASCOM.Remote
                             elements[i] = elements[i].Trim();
                         }
 
-                        switch (elements[URL_ELEMENT_API_VERSION].ToLowerInvariant()) // Process each API version as necessary (at 8/8/17 only V1 is implemented)
+                        switch (elements[URL_ELEMENT_API_VERSION]) // Process each API version as necessary (at 8/8/17 only V1 is implemented)
                         {
                             case SharedConstants.API_VERSION_V1: // OK so we have a V1 request
-                                if ((ServerDeviceNumbers.Contains(elements[URL_ELEMENT_DEVICE_NUMBER].ToLowerInvariant())) & (elements[URL_ELEMENT_DEVICE_NUMBER].ToLowerInvariant() != "")) // OK so we have a valid device number
+                                if ((ServerDeviceNumbers.Contains(elements[URL_ELEMENT_DEVICE_NUMBER])) & (elements[URL_ELEMENT_DEVICE_NUMBER] != "")) // OK so we have a valid device number
                                 {
-                                    string deviceKey = elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + @"/" + elements[URL_ELEMENT_DEVICE_NUMBER].ToLowerInvariant(); // Create a unique key from device type and device number
+                                    string deviceKey = elements[URL_ELEMENT_DEVICE_TYPE] + @"/" + elements[URL_ELEMENT_DEVICE_NUMBER]; // Create a unique key from device type and device number
                                     requestData.DeviceKey = deviceKey;
 
                                     // Ensure that the device exists
@@ -1296,8 +1308,6 @@ namespace ASCOM.Remote
                                         // Ensure that we only process one command at a time for this driver
                                         lock (ActiveObjects[deviceKey].CommandLock) // Proceed when we have a lock for this device
                                         {
-                                            //RequestData requestData = new RequestData(clientIpAddress, clientID, clientTransactionID, serverTransactionID, suppliedParameters, request, response, elements, deviceKey);
-
                                             // Confirm that the device requested is available on this server and process the request
                                             if (RunDriversOnSeparateThreads)
                                             {
@@ -1332,51 +1342,50 @@ namespace ASCOM.Remote
 
                     LogBlankLine(clientID, clientTransactionID, serverTransactionID);
                 }
-                else if (request.Url.AbsolutePath.Trim().ToLowerInvariant().StartsWith(SharedConstants.MANAGEMENT_URL_BASE)) // Process server requests
+                else if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.MANAGEMENT_URL_BASE)) // Process server requests
                 {
-                    // Only permit processing if access has been granted through the setup dialogue
-                    if (ManagementInterfaceEnabled)
+                    // Split the supplied URI into its elements demarked by the / character and remove any leading / trailing space characters from each element
+                    // Element [0] will be "server"
+                    // Element [1] will be the API version (whole number prefixed by V e.g. V1)
+                    // Element [2] will be the configuration command
+                    string[] elements = request.Url.AbsolutePath.Trim(FORWARD_SLASH).Split(FORWARD_SLASH);
+
+                    // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid API request so check this here:
+                    if (elements.Length != 3)
                     {
-                        // Split the supplied URI into its elements demarked by the / character and remove any leading / trailing space characters from each element
-                        // Element [0] will be "server"
-                        // Element [1] will be the API version (whole number prefixed by V e.g. V1)
-                        // Element [2] will be the configuration command
-                        string[] elements = request.Url.AbsolutePath.Trim(FORWARD_SLASH).Split(FORWARD_SLASH);
-
-                        // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid API request so check this here:
-                        if (elements.Length != 3)
+                        Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_SERVER_FORMAT_STRING);
+                        return;
+                    }
+                    else // We have received the required 3 elements in the URI
+                    {
+                        for (int i = 0; i < elements.Length; i++)
                         {
-                            Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_SERVER_FORMAT_STRING);
-                            return;
+                            elements[i] = elements[i].Trim();// Remove leading and trailing space characters
+                            LogMessage1(requestData, "ManagmentCommand", string.Format("Received element {0} = {1}", i, elements[i]));
                         }
-                        else // We have received the required 3 elements in the URI
+
+                        // We have an array of size 3, now resize it to 5 elements so that we can add the command into the equivalent position that it occupies for a "device API" call.
+                        // This is necessary so that the logging commands will work for both device API and MANAGEMENT commands
+                        Array.Resize<string>(ref elements, 5);
+                        elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
+                        elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND]; // Copy the command name to the device method field
+                        requestData.Elements = elements;
+
+                        // Only permit processing if access has been granted through the setup dialogue
+                        if (ManagementInterfaceEnabled)
                         {
-                            for (int i = 0; i < elements.Length; i++)
-                            {
-                                elements[i] = elements[i].Trim();// Remove leading and trailing space characters
-                                LogMessage1(requestData, "ManagmentCommand", string.Format("Received element {0} = {1}", i, elements[i]));
-                            }
-
-                            // We have an array of size 3, now resize it to 5 elements so that we can add the command into the equivalent position that it occupies for a "device API" call.
-                            // This is necessary so that the logging commands will work for both device API and MANAGEMENT commands
-                            Array.Resize<string>(ref elements, 5);
-                            elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
-                            elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND]; // Copy the command name to the device method field
-
-                            requestData.Elements = elements;
-
-                            switch (elements[URL_ELEMENT_API_VERSION].ToLowerInvariant())
+                            switch (elements[URL_ELEMENT_API_VERSION])
                             {
                                 case SharedConstants.API_VERSION_V1: // OK so we have a V1 request
                                     try // Confirm that the command requested is available on this server
                                     {
                                         string commandName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(elements[URL_ELEMENT_SERVER_COMMAND].ToLowerInvariant()); // Capitalise the first letter of the command
-                                        //RequestData requestData = new RequestData(clientIpAddress, clientID, clientTransactionID, serverTransactionID, suppliedParameters, request, response, elements, "");
+                                                                                                                                                                         //RequestData requestData = new RequestData(clientIpAddress, clientID, clientTransactionID, serverTransactionID, suppliedParameters, request, response, elements, "");
 
                                         switch (request.HttpMethod.ToUpperInvariant())
                                         {
                                             case "GET": // Read methods
-                                                switch (elements[URL_ELEMENT_SERVER_COMMAND].ToLowerInvariant())
+                                                switch (elements[URL_ELEMENT_SERVER_COMMAND])
                                                 {
                                                     // BOOL Get Values
                                                     // MANGEMENT_API_ENABLED removed because it won't work if the management api is disabled
@@ -1448,7 +1457,7 @@ namespace ASCOM.Remote
                                                 }
                                                 break;
                                             case "PUT": // Write or action methods
-                                                switch (elements[URL_ELEMENT_SERVER_COMMAND].ToLowerInvariant())
+                                                switch (elements[URL_ELEMENT_SERVER_COMMAND])
                                                 {
                                                     // MANGEMENT_API_ENABLED removed because it won't work if the management api is disabled
                                                     /*case SharedConstants.MANGEMENT_API_ENABLED:
@@ -1514,17 +1523,17 @@ namespace ASCOM.Remote
                                     break;
                             }
                         }
-                    }
-                    else // The management interface is not enabled so return an error
-                    {
-                        LogMessage1(requestData, "Management", MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
-                        Return403Error(requestData, MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
+                        else // The management interface is not enabled so return an error
+                        {
+                            LogMessage1(requestData, "Management", MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
+                            Return403Error(requestData, MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
+                        }
                     }
                 }
                 else // A URI that did not start with /api/ or /configuration/ was requested
                 {
                     LogMessage1(requestData, "Request", string.Format("Non API call - {0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, System.Threading.Thread.CurrentThread.ManagedThreadId.ToString()));
-                    string returnMessage = "You have reached the <i><b>ASCOM Remote Device Server</b></i> API portal<p><b>Available devices:</b></p>";
+                    string returnMessage = "You have reached the <i><b>ASCOM Remote Server</b></i> API portal but your url did not start with /api or /server (must be lower case) <p><b>Available devices:</b></p>";
 
                     foreach (KeyValuePair<string, ConfiguredDevice> device in ConfiguredDevices)
                     {
@@ -1560,7 +1569,7 @@ namespace ASCOM.Remote
                 switch (requestData.Request.HttpMethod.ToUpperInvariant()) // Handle GET and PUT requestData.Requests
                 {
                     case "GET": // Read and return data methods
-                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                         {
                             #region Common methods
                             // Common methods are indicated in ReturnXXX methods by having the device type parameter set to "*" rather than the name of one of the ASCOM device types
@@ -1587,11 +1596,11 @@ namespace ASCOM.Remote
                                 break;
                             #endregion
                             default: // Not a common method so check for device specific methods
-                                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant())
+                                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE])
                                 {
                                     case "telescope": // OK so we have a Telescope requestData.Request
                                         #region Telescope
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             #region Properties
                                             // BOOL Get Values
@@ -1677,14 +1686,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "camera":
                                         #region Camera
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             // SHORT Get Values
                                             case "binx":
@@ -1757,14 +1766,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "dome":
                                         #region Dome
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             // BOOL Get Values
                                             case "athome":
@@ -1789,14 +1798,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "filterwheel":
                                         #region Filter Wheel
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             // INT ARRAY Get Values
                                             case "focusoffsets":
@@ -1812,14 +1821,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "focuser":
                                         #region Focuser
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             #region Focuser Properties
                                             // BOOL Get Values
@@ -1844,14 +1853,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "observingconditions":
                                         #region ObservingConditions
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             // DOUBLE Get Values
                                             case "averageperiod":
@@ -1876,14 +1885,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "rotator":
                                         #region Rotator
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             // BOOL Get Values
                                             case "canreverse":
@@ -1899,14 +1908,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "safetymonitor":
                                         #region SafetyMonitor
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             // BOOL Get Values
                                             case "issafe":
@@ -1914,14 +1923,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "switch":
                                         #region Switch
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             // BOOL Get Values
                                             case "canwrite":
@@ -1943,7 +1952,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break;
@@ -1957,7 +1966,7 @@ namespace ASCOM.Remote
                         }
                         break;
                     case "PUT": // Write or action methods
-                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                         {
                             #region Common methods
                             // Process common methods shared by all drivers
@@ -1978,11 +1987,11 @@ namespace ASCOM.Remote
                                 break;
                             #endregion
                             default:
-                                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant())
+                                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE])
                                 {
                                     case "telescope": // OK so we have a Telescope requestData.Request
                                         #region Telescope
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             #region Telescope Properties
                                             //BOOL Set values
@@ -2039,14 +2048,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "camera":
                                         #region Camera
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             // METHODS
                                             case "abortexposure":
@@ -2076,14 +2085,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break; // End of valid device types
                                     #endregion
                                     case "dome":
                                         #region Dome
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             // METHODS
                                             case "abortslew":
@@ -2102,14 +2111,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break; // End of valid device types
                                     #endregion
                                     case "filterwheel":
                                         #region Filter Wheel
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             //SHORT Set values
                                             case "position":
@@ -2117,14 +2126,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break; // End of valid device types
                                     #endregion
                                     case "focuser":
                                         #region Focuser
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             #region Focuser Properties
                                             //BOOL Set values
@@ -2142,14 +2151,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "observingconditions":
                                         #region ObservingConditions
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             // METHODS
                                             case "refresh":
@@ -2160,14 +2169,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break; // End of valid device types
                                     #endregion
                                     case "rotator":
                                         #region Rotator
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             // METHODS
                                             case "halt":
@@ -2180,14 +2189,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break; // End of valid device types
                                     #endregion
                                     case "switch":
                                         #region Switch
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
                                         {
                                             // METHODS
                                             case "setswitchname":
@@ -2197,7 +2206,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant() + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
                                                 break;
                                         }
                                         break; // End of valid device types
@@ -2228,22 +2237,45 @@ namespace ASCOM.Remote
         // Return server error responses to clients
         private void Return400Error(RequestData requestData, string message)
         {
-            LogMessage(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, "HTTP 400 Error", message);
-            LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, message));
+            try
+            {
+                //LogMessage(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, "HTTP 400 Error", message);
+                LogMessage1(requestData, "HTTP 400 Error", message);
+                LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, message));
 
-            TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.BadRequest, "400 " + CleanMessage(message), "400 " + CleanMessage(message));
+                TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.BadRequest, "400 " + CleanMessage(message), "400 " + CleanMessage(message));
+            }
+            catch (Exception ex)
+            {
+                LogException(0, 0, 0, "Exception while returning HTTP 400 Error", ex.ToString());
+            }
         }
         private void Return403Error(RequestData requestData, string message)
         {
-            LogMessage(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, "HTTP 403 Error", message);
-            LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, message));
+            try
+            {
+                //LogMessage(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, "HTTP 403 Error", message);
+                LogMessage1(requestData, "HTTP 403 Error", message);
+                LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, message));
 
-            TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.Forbidden, "403 " + CleanMessage(message), "403 " + CleanMessage(message));
+                TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.Forbidden, "403 " + CleanMessage(message), "403 " + CleanMessage(message));
+            }
+            catch (Exception ex)
+            {
+                LogException(0, 0, 0, "Exception while returning HTTP 403 Error", ex.ToString());
+            }
         }
         internal void Return500Error(RequestData requestData, string errorMessage)
         {
-            LogMessage(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, "HTTP 500 Error", errorMessage);
-
+            try
+            {
+                // LogMessage(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, "HTTP 500 Error", errorMessage);
+                LogMessage1(requestData, "HTTP 500 Error", errorMessage);
+            }
+            catch (Exception ex)
+            {
+                LogException(0, 0, 0, "Exception while returning HTTP 500 Error", ex.ToString());
+            }
             TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.InternalServerError, "500 " + CleanMessage(errorMessage), "500 " + CleanMessage(errorMessage));
         }
 
@@ -2257,7 +2289,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (deviceType.ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (deviceType + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     #region Common methods
                     case "*.connected":
@@ -2432,7 +2464,7 @@ namespace ASCOM.Remote
             {
                 short index = GetParameter<short>(requestData, SharedConstants.ID_PARAMETER_NAME);
 
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     #region Switch Methods
 
@@ -2469,7 +2501,7 @@ namespace ASCOM.Remote
             try
             {
                 boolValue = GetParameter<bool>(requestData, requestData.Elements[URL_ELEMENT_METHOD]);
-                switch (deviceType.ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (deviceType + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     // COMMON METHODS
                     case "*.connected":
@@ -2544,7 +2576,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (deviceType.ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (deviceType + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     // COMMON METHODS
                     case "*.description":
@@ -2603,7 +2635,7 @@ namespace ASCOM.Remote
             {
                 short index = GetParameter<short>(requestData, SharedConstants.ID_PARAMETER_NAME);
 
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     #region Switch Methods
 
@@ -2640,7 +2672,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     // FILTER WHEEL
                     case "filterwheel.names":
@@ -2673,7 +2705,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (deviceType.ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (deviceType + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     case "*.supportedactions":
                         deviceResponse = (ArrayList)device.SupportedActions;
@@ -2725,7 +2757,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     // TELESCOPE
                     case "telescope.altitude":
@@ -2858,7 +2890,7 @@ namespace ASCOM.Remote
             {
                 short index = GetParameter<short>(requestData, SharedConstants.ID_PARAMETER_NAME);
 
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     #region Switch Methods
 
@@ -2899,7 +2931,7 @@ namespace ASCOM.Remote
             try
             {
                 doubleValue = GetParameter<double>(requestData, requestData.Elements[URL_ELEMENT_METHOD]);
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     case "telescope.declinationrate":
                         device.DeclinationRate = doubleValue; break;
@@ -2946,7 +2978,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     // ROTATOR
                     case "rotator.position":
@@ -2983,7 +3015,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (deviceType.ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (deviceType + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     // COMMON METHODS
                     case "*.interfaceversion":
@@ -3048,7 +3080,7 @@ namespace ASCOM.Remote
             try
             {
                 shortValue = GetParameter<short>(requestData, requestData.Elements[URL_ELEMENT_METHOD]);
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     // TELESCOPE
                     case "telescope.slewsettletime":
@@ -3087,7 +3119,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     // FOCUSER
                     case "focuser.maxincrement":
@@ -3138,7 +3170,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     // FILTER WHEEL
                     case "filterwheel.focusoffsets":
@@ -3171,7 +3203,7 @@ namespace ASCOM.Remote
             try
             {
                 intValue = GetParameter<int>(requestData, requestData.Elements[URL_ELEMENT_METHOD]);
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     // CAMERA
                     case "camera.numx":
@@ -3202,7 +3234,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     case "telescope.utcdate":
                         deviceResponse = device.UTCDate; break;
@@ -3244,7 +3276,7 @@ namespace ASCOM.Remote
             {
                 dateTimeValue = GetParameter<DateTime>(requestData, SharedConstants.UTCDATE_PARAMETER_NAME);
                 LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "Converted DateTime value (UTC): " + dateTimeValue.ToUniversalTime().ToString(SharedConstants.ISO8601_DATE_FORMAT_STRING));
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE].ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     case "telescope.utcdate":
                         device.UTCDate = dateTimeValue.ToUniversalTime(); break;
@@ -3509,7 +3541,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     case "imagearray":
                         deviceResponse = device.ImageArray;
@@ -3724,7 +3756,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (deviceType.ToLowerInvariant() + "." + requestData.Elements[URL_ELEMENT_METHOD].ToLowerInvariant())
+                switch (deviceType + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     // COMMON METHODS
                     case "*.commandblind":
@@ -4013,13 +4045,25 @@ namespace ASCOM.Remote
                 requestData.Response.StatusCode = (int)httpStatusCode; // Set the response status and status code
                 requestData.Response.StatusDescription = statusDescription;
 
+                // Condition requestData.Element so that the logging lines below will work correctly
+                if (requestData.Elements == null) requestData.Elements = new string[5] { "", "", "", "", "SendResponseToClient" };
+                if (requestData.Elements.Length < 5)
+                {
+                    string[] elements = requestData.Elements;
+                    Array.Resize<string>(ref elements, 5);
+                    elements[3] = "";
+                    elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND];
+                }
+
                 bytesToSend = Encoding.UTF8.GetBytes(messageToSend); // Convert the message to be returned into UTF8 bytes that can be sent over the wire
                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Completed Encoding.GetBytes, array length: {0:n0}", bytesToSend.Length));
 
                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Before setting response bytes - Length: {0:n0}, Response is null: {1}", bytesToSend.Length, requestData.Response == null));
                 requestData.Response.ContentLength64 = bytesToSend.Length;
+
                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
                 requestData.Response.OutputStream.Write(bytesToSend, 0, bytesToSend.Length);
+
                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "After writing bytes to output stream");
                 requestData.Response.OutputStream.Close();
                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "After closing output stream");

@@ -107,7 +107,7 @@ namespace ASCOM.Remote
                 RemoteClientDriver.SetClientTimeout(client, 10);
 
                 string managementUri = string.Format("{0}{1}/{2}", SharedConstants.MANAGEMENT_URL_BASE, SharedConstants.API_VERSION_V1, SharedConstants.MANGEMENT_CONFIGURATION);
-                RestRequest request = new RestRequest(managementUri, Method.GET)
+                RestRequest request = new RestRequest(managementUri.ToLowerInvariant(), Method.GET)
                 {
                     RequestFormat = DataFormat.Json
                 };
@@ -202,7 +202,7 @@ namespace ASCOM.Remote
                 RemoteClientDriver.SetClientTimeout(client, 10);
 
                 string managementUri = string.Format("{0}{1}/{2}", SharedConstants.MANAGEMENT_URL_BASE, SharedConstants.API_VERSION_V1, SharedConstants.MANGEMENT_CONFIGURATION);
-                RestRequest request = new RestRequest(managementUri, Method.GET)
+                RestRequest request = new RestRequest(managementUri.ToLowerInvariant(), Method.GET)
                 {
                     RequestFormat = DataFormat.Json
                 };

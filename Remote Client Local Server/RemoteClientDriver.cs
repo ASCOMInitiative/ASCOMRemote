@@ -424,7 +424,7 @@ namespace ASCOM.Remote
                 const string LOG_FORMAT_STRING = "Client Txn ID: {0}, Server Txn ID: {1}, Value: {2}, Method: {2}";
 
                 RestResponseBase restResponseBase = null; // This has to be the base class of the data type classes in order for exception and error responses to be handled generically
-                RestRequest request = new RestRequest(URIBase + method, HttpMethod)
+                RestRequest request = new RestRequest((URIBase + method).ToLowerInvariant(), HttpMethod)
                 {
                     RequestFormat = DataFormat.Json
                 };
