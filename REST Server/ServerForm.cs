@@ -1361,7 +1361,7 @@ namespace ASCOM.Remote
                             // This is necessary so that the logging commands will work for both device API and MANAGEMENT commands
                             Array.Resize<string>(ref elements, 5);
                             elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
-                            elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND]; // COPy the command name to the device method field
+                            elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND]; // Copy the command name to the device method field
 
                             requestData.Elements = elements;
 
@@ -1391,7 +1391,11 @@ namespace ASCOM.Remote
                                                         // Returns the number of concurrent device calls. 
                                                         // This call will have incremented the concurrent call counter in its own right so the value returned by this call is one less than the numberOfConcurrentTransactions counter value,
                                                         // which will be the number of concurrent device calls.
-                                                        IntResponse intResponseClass = new IntResponse(clientTransactionID, serverTransactionID, numberOfConcurrentTransactions - 1);
+                                                        IntResponse intResponseClass = new IntResponse(clientTransactionID, serverTransactionID, numberOfConcurrentTransactions - 1)
+                                                        {
+                                                            DriverException = null,
+                                                            SerializeDriverException = IncludeDriverExceptionInJsonResponse
+                                                        };
                                                         string intResponseJson = JsonConvert.SerializeObject(intResponseClass);
                                                         SendResponseValueToClient(requestData, null, intResponseJson);
                                                         break;
@@ -1415,7 +1419,8 @@ namespace ASCOM.Remote
                                                             }
                                                             ProfileResponse profileResponse = new ProfileResponse(clientTransactionID, serverTransactionID, profileDevices)
                                                             {
-                                                                DriverException = null
+                                                                DriverException = null,
+                                                                SerializeDriverException = IncludeDriverExceptionInJsonResponse
                                                             };
                                                             string profileResponseJson = JsonConvert.SerializeObject(profileResponse);
                                                             SendResponseValueToClient(requestData, null, profileResponseJson);
@@ -1429,7 +1434,8 @@ namespace ASCOM.Remote
                                                     case SharedConstants.MANGEMENT_CONFIGURATION:
                                                         ConfigurationResponse configurationResponse = new ConfigurationResponse(clientTransactionID, serverTransactionID, ConfiguredDevices)
                                                         {
-                                                            DriverException = null
+                                                            DriverException = null,
+                                                            SerializeDriverException = IncludeDriverExceptionInJsonResponse
                                                         };
                                                         ;
                                                         string configurationResponseJson = JsonConvert.SerializeObject(configurationResponse);
