@@ -25,7 +25,7 @@ namespace ASCOM.Remote
         private string DriverProgId; // Drivers ProgID
         private string NotConnectedMessage; // Custom message to return if the driver is not connected to the server
         private SetupDialogForm setupForm; // Private variable to hold an instance of the Driver's setup form when invoked by the user
-        private RestClient client; // Client to send and receive REST stles messages to / from the remote server
+        private RestClient client; // Client to send and receive REST style messages to / from the remote server
         private uint clientNumber; // Unique number for this driver within the locaL server, i.e. across all drivers that the local server is serving
         private bool clientIsConnected;  // Connection state of this driver
         private string URIBase; // URI base unique to this driver
