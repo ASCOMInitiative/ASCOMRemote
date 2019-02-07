@@ -26,7 +26,7 @@ namespace ASCOM.Remote
         {
             if (IpAddressTraceState)
             {
-                base.LogMessage(string.Format(ID_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID), string.Format(MESSAGE_FORMAT_STRING_NO_IP_ADDRESS, prefix, message));
+                base.LogMessage(string.Format(ID_FORMAT_STRING, clientID, clientTransactionID, serverTransactionID), string.Format(MESSAGE_FORMAT_STRING_WITH_IP_ADDRESS, "", prefix, message));
             }
             else
             {
