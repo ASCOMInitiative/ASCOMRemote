@@ -84,6 +84,7 @@ namespace ASCOM.Remote
         internal const string START_WITH_API_ENABLED_PROFILENAME = "Start WIth API Enabled"; public const bool START_WITH_API_ENABLED_DEFAULT = true;
         internal const string RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME = "Run Drivers On Separate Threads"; public const bool RUN_DRIVERS_ON_SEPARATE_THREADS_DEFAULT = true;
         internal const string LOG_CLIENT_IPADDRESS_PROFILENAME = "Log Client IP Address"; public const bool LOG_CLIENT_IPADDRESS_DEFAULT = false;
+        internal const string INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME = "Include Driver Exception In JSON Response"; public const bool INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_DEFAULT = false;
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -163,6 +164,7 @@ namespace ASCOM.Remote
         internal static bool StartWithApiEnabled;
         internal static bool RunDriversOnSeparateThreads;
         internal static bool LogClientIPAddress;
+        internal static bool IncludeDriverExceptionInJsonResponse;
 
         #endregion
 
@@ -827,6 +829,7 @@ namespace ASCOM.Remote
                 RunDriversOnSeparateThreads = driverProfile.GetValue<bool>(RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME, string.Empty, RUN_DRIVERS_ON_SEPARATE_THREADS_DEFAULT);
                 LogClientIPAddress = driverProfile.GetValue<bool>(LOG_CLIENT_IPADDRESS_PROFILENAME, string.Empty, LOG_CLIENT_IPADDRESS_DEFAULT);
                 TL.IpAddressTraceState = LogClientIPAddress; // Persist the IP address trace state to the TraceLogger so that it can be used to format lines as required
+                IncludeDriverExceptionInJsonResponse = driverProfile.GetValue<bool>(INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME, string.Empty, INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_DEFAULT);
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
@@ -863,6 +866,7 @@ namespace ASCOM.Remote
                 driverProfile.SetValue<bool>(RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME, string.Empty, RunDriversOnSeparateThreads);
                 driverProfile.SetValue<bool>(LOG_CLIENT_IPADDRESS_PROFILENAME, string.Empty, LogClientIPAddress);
                 TL.IpAddressTraceState = LogClientIPAddress; // Persist the IP address trace state to the TraceLogger so that it can be used to format lines as required
+                driverProfile.SetValue<bool>(INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME, string.Empty, IncludeDriverExceptionInJsonResponse);
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
@@ -2398,7 +2402,8 @@ namespace ASCOM.Remote
 
             BoolResponse responseClass = new BoolResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -2436,7 +2441,8 @@ namespace ASCOM.Remote
 
             BoolResponse responseClass = new BoolResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -2567,7 +2573,8 @@ namespace ASCOM.Remote
 
             StringResponse responseClass = new StringResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -2605,7 +2612,8 @@ namespace ASCOM.Remote
 
             StringResponse responseClass = new StringResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -2636,7 +2644,8 @@ namespace ASCOM.Remote
 
             StringArrayResponse responseClass = new StringArrayResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -2687,7 +2696,8 @@ namespace ASCOM.Remote
 
             StringListResponse responseClass = new StringListResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, responseList)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -2818,7 +2828,8 @@ namespace ASCOM.Remote
 
             DoubleResponse responseClass = new DoubleResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -2860,7 +2871,8 @@ namespace ASCOM.Remote
 
             DoubleResponse responseClass = new DoubleResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -2942,7 +2954,8 @@ namespace ASCOM.Remote
 
             DoubleResponse responseClass = new DoubleResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -3006,7 +3019,8 @@ namespace ASCOM.Remote
 
             ShortResponse responseClass = new ShortResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -3096,7 +3110,8 @@ namespace ASCOM.Remote
 
             IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -3127,7 +3142,8 @@ namespace ASCOM.Remote
 
             IntArray1DResponse responseClass = new IntArray1DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -3189,7 +3205,8 @@ namespace ASCOM.Remote
 
             DateTimeResponse responseClass = new DateTimeResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -3247,7 +3264,8 @@ namespace ASCOM.Remote
 
             TrackingRatesResponse responseClass = new TrackingRatesResponse(requestData.ClientTransactionID, requestData.ServerTransactionID)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
 
             List<DriveRates> rates = new List<DriveRates>();
@@ -3280,7 +3298,8 @@ namespace ASCOM.Remote
 
             IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -3304,7 +3323,8 @@ namespace ASCOM.Remote
 
             IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -3327,7 +3347,8 @@ namespace ASCOM.Remote
 
             IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -3367,7 +3388,8 @@ namespace ASCOM.Remote
 
             IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -3390,7 +3412,8 @@ namespace ASCOM.Remote
 
             IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -3413,7 +3436,8 @@ namespace ASCOM.Remote
 
             IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -3436,7 +3460,8 @@ namespace ASCOM.Remote
 
             IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -3575,6 +3600,8 @@ namespace ASCOM.Remote
             }
 
             responseClass.DriverException = exReturn;
+            responseClass.SerializeDriverException = IncludeDriverExceptionInJsonResponse;
+
             if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "Starting array serialisation");
 
             string responseJson = JsonConvert.SerializeObject(responseClass);
@@ -3600,7 +3627,8 @@ namespace ASCOM.Remote
             }
             BoolResponse responseClass = new BoolResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -3625,7 +3653,8 @@ namespace ASCOM.Remote
 
             IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
 
@@ -3656,7 +3685,8 @@ namespace ASCOM.Remote
 
             AxisRatesResponse responseClass = new AxisRatesResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, rateResponse)
             {
-                DriverException = exReturn
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
 
@@ -3923,7 +3953,8 @@ namespace ASCOM.Remote
         {
             MethodResponse responseClass = new MethodResponse(requestData.ClientTransactionID, requestData.ServerTransactionID)
             {
-                DriverException = ex
+                DriverException = ex,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, ex, responseJson);

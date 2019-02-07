@@ -63,6 +63,7 @@
             this.ServedDevice1 = new ASCOM.Remote.ServedDevice();
             this.ChkRunDriversInSeparateThreadss = new System.Windows.Forms.CheckBox();
             this.ChkLogClientIPAddress = new System.Windows.Forms.CheckBox();
+            this.ChkIncludeDriverExceptionsInJsonResponses = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
@@ -78,7 +79,7 @@
             // BtnCancel
             // 
             this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.BtnCancel.Location = new System.Drawing.Point(736, 530);
+            this.BtnCancel.Location = new System.Drawing.Point(735, 543);
             this.BtnCancel.Name = "BtnCancel";
             this.BtnCancel.Size = new System.Drawing.Size(75, 23);
             this.BtnCancel.TabIndex = 19;
@@ -87,7 +88,7 @@
             // 
             // BtnOK
             // 
-            this.BtnOK.Location = new System.Drawing.Point(736, 501);
+            this.BtnOK.Location = new System.Drawing.Point(735, 514);
             this.BtnOK.Name = "BtnOK";
             this.BtnOK.Size = new System.Drawing.Size(75, 23);
             this.BtnOK.TabIndex = 18;
@@ -434,13 +435,24 @@
             this.ChkLogClientIPAddress.Text = "Log Client\'s IP Address";
             this.ChkLogClientIPAddress.UseVisualStyleBackColor = true;
             // 
+            // ChkIncludeDriverExceptionsInJsonResponses
+            // 
+            this.ChkIncludeDriverExceptionsInJsonResponses.AutoSize = true;
+            this.ChkIncludeDriverExceptionsInJsonResponses.Location = new System.Drawing.Point(96, 547);
+            this.ChkIncludeDriverExceptionsInJsonResponses.Name = "ChkIncludeDriverExceptionsInJsonResponses";
+            this.ChkIncludeDriverExceptionsInJsonResponses.Size = new System.Drawing.Size(376, 17);
+            this.ChkIncludeDriverExceptionsInJsonResponses.TabIndex = 36;
+            this.ChkIncludeDriverExceptionsInJsonResponses.Text = "Include driver exceptions in JSON responses (useful for debugging drivers)";
+            this.ChkIncludeDriverExceptionsInJsonResponses.UseVisualStyleBackColor = true;
+            // 
             // SetupForm
             // 
             this.AcceptButton = this.BtnCancel;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.BtnCancel;
-            this.ClientSize = new System.Drawing.Size(920, 560);
+            this.ClientSize = new System.Drawing.Size(920, 577);
+            this.Controls.Add(this.ChkIncludeDriverExceptionsInJsonResponses);
             this.Controls.Add(this.ChkLogClientIPAddress);
             this.Controls.Add(this.ChkRunDriversInSeparateThreadss);
             this.Controls.Add(this.LblDevicesNotDisconnoected);
@@ -519,5 +531,6 @@
         private System.Windows.Forms.Label LblDevicesNotDisconnoected;
         private System.Windows.Forms.CheckBox ChkRunDriversInSeparateThreadss;
         private System.Windows.Forms.CheckBox ChkLogClientIPAddress;
+        private System.Windows.Forms.CheckBox ChkIncludeDriverExceptionsInJsonResponses;
     }
 }

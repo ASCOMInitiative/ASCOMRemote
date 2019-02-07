@@ -98,6 +98,7 @@ namespace ASCOM.Remote
             LblDevicesNotDisconnoected.Visible = ServerForm.devicesAreConnected;
             ChkRunDriversInSeparateThreadss.Checked = ServerForm.RunDriversOnSeparateThreads;
             ChkLogClientIPAddress.Checked = ServerForm.LogClientIPAddress;
+            ChkIncludeDriverExceptionsInJsonResponses.Checked = ServerForm.IncludeDriverExceptionInJsonResponse;
 
             // Populate the device types list
             foreach (string deviceType in profile.RegisteredDeviceTypes)
@@ -223,6 +224,7 @@ namespace ASCOM.Remote
             ServerForm.StartWithApiEnabled = ChkStartWithApiEnabled.Checked;
             ServerForm.RunDriversOnSeparateThreads = ChkRunDriversInSeparateThreadss.Checked;
             ServerForm.LogClientIPAddress = ChkLogClientIPAddress.Checked;
+            ServerForm.IncludeDriverExceptionInJsonResponse = ChkIncludeDriverExceptionsInJsonResponses.Checked;
 
             foreach (ServedDevice item in this.Controls.OfType<ServedDevice>())
             {

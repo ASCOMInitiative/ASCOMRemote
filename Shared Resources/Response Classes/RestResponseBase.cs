@@ -29,5 +29,19 @@ namespace ASCOM.Remote
                 }
             }
         }
+
+        /// <summary>
+        /// Method used by NewtonSoft JSON to determine whether the DriverException field should be included in the serialise JSON response.
+        /// </summary>
+        /// <returns></returns>
+        public bool ShouldSerializeDriverException()
+        {
+            return SerializeDriverException;
+        }
+
+        /// <summary>
+        /// Control variable that determines whether the DriverException field will be included in serialised JSON responses
+        /// </summary>
+        internal bool SerializeDriverException { get; set; } = true;
     }
 }
