@@ -1357,6 +1357,14 @@ namespace ASCOM.Remote
                                 LogMessage1(requestData, "ManagmentCommand", string.Format("Received element {0} = {1}", i, elements[i]));
                             }
 
+                            // We have an array of size 3, now resize it to 5 elements so that we can add the command into the equivalent position that it occupies for a "device API" call.
+                            // This is necessary so that the logging commands will work for both device API and MANAGEMENT commands
+                            Array.Resize<string>(ref elements, 5);
+                            elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
+                            elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND]; // COPy the command name to the device method field
+
+                            requestData.Elements = elements;
+
                             switch (elements[URL_ELEMENT_API_VERSION].ToLowerInvariant())
                             {
                                 case SharedConstants.API_VERSION_V1: // OK so we have a V1 request
