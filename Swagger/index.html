@@ -71,7 +71,10 @@
         dom_id: '#swagger-ui',
         deepLinking: true,
 				docExpansion: 'none',
-        presets: [
+        showCommonExtensions: true,
+        defaultModelRendering: 'model',
+				defaultModelExpandDepth: 5,
+				presets: [
           SwaggerUIBundle.presets.apis,
           SwaggerUIStandalonePreset
         ],
