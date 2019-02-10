@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -345,7 +346,7 @@ namespace ASCOM.Remote
             RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
-                { SharedConstants.AXIS_PARAMETER_NAME, ((int)Axis).ToString() }
+                { SharedConstants.AXIS_PARAMETER_NAME, ((int)Axis).ToString(CultureInfo.InvariantCulture) }
             };
             return RemoteClientDriver.SendToRemoteDriver<IAxisRates>(clientNumber, client, URIBase, TL, "AxisRates", Parameters, Method.GET);
         }
@@ -373,7 +374,7 @@ namespace ASCOM.Remote
             RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
-                { SharedConstants.AXIS_PARAMETER_NAME, ((int)Axis).ToString() }
+                { SharedConstants.AXIS_PARAMETER_NAME, ((int)Axis).ToString(CultureInfo.InvariantCulture) }
             };
             return RemoteClientDriver.SendToRemoteDriver<bool>(clientNumber, client, URIBase, TL, "CanMoveAxis", Parameters, Method.GET);
         }
@@ -541,8 +542,8 @@ namespace ASCOM.Remote
             RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
-                { SharedConstants.RA_PARAMETER_NAME, RightAscension.ToString() },
-                { SharedConstants.DEC_PARAMETER_NAME, Declination.ToString() }
+                { SharedConstants.RA_PARAMETER_NAME, RightAscension.ToString(CultureInfo.InvariantCulture) },
+                { SharedConstants.DEC_PARAMETER_NAME, Declination.ToString(CultureInfo.InvariantCulture) }
             };
             return RemoteClientDriver.SendToRemoteDriver<PierSide>(clientNumber, client, URIBase, TL, "DestinationSideOfPier", Parameters, Method.GET);
         }
@@ -628,8 +629,8 @@ namespace ASCOM.Remote
             RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
-                { SharedConstants.AXIS_PARAMETER_NAME, ((int)Axis).ToString() },
-                { SharedConstants.RATE_PARAMETER_NAME, Rate.ToString() }
+                { SharedConstants.AXIS_PARAMETER_NAME, ((int)Axis).ToString(CultureInfo.InvariantCulture) },
+                { SharedConstants.RATE_PARAMETER_NAME, Rate.ToString(CultureInfo.InvariantCulture) }
             };
             RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "MoveAxis", Parameters, Method.PUT);
         }
@@ -646,8 +647,8 @@ namespace ASCOM.Remote
             RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
-                { SharedConstants.DIRECTION_PARAMETER_NAME, ((int)Direction).ToString() },
-                { SharedConstants.DURATION_PARAMETER_NAME, Duration.ToString() }
+                { SharedConstants.DIRECTION_PARAMETER_NAME, ((int)Direction).ToString(CultureInfo.InvariantCulture) },
+                { SharedConstants.DURATION_PARAMETER_NAME, Duration.ToString(CultureInfo.InvariantCulture) }
             };
             RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "PulseGuide", Parameters, Method.PUT);
         }
@@ -694,7 +695,7 @@ namespace ASCOM.Remote
                 RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
                 Dictionary<string, string> Parameters = new Dictionary<string, string>
                 {
-                    { SharedConstants.SIDEOFPIER_PARAMETER_NAME, ((int)value).ToString() }
+                    { SharedConstants.SIDEOFPIER_PARAMETER_NAME, ((int)value).ToString(CultureInfo.InvariantCulture) }
                 };
                 RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "SideOfPier", Parameters, Method.PUT);
             }
@@ -769,8 +770,8 @@ namespace ASCOM.Remote
             RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
-                { SharedConstants.AZ_PARAMETER_NAME, Azimuth.ToString() },
-                { SharedConstants.ALT_PARAMETER_NAME, Altitude.ToString() }
+                { SharedConstants.AZ_PARAMETER_NAME, Azimuth.ToString(CultureInfo.InvariantCulture) },
+                { SharedConstants.ALT_PARAMETER_NAME, Altitude.ToString(CultureInfo.InvariantCulture) }
             };
             RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "SlewToAltAz", Parameters, Method.PUT);
         }
@@ -780,8 +781,8 @@ namespace ASCOM.Remote
             RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
-                { SharedConstants.AZ_PARAMETER_NAME, Azimuth.ToString() },
-                { SharedConstants.ALT_PARAMETER_NAME, Altitude.ToString() }
+                { SharedConstants.AZ_PARAMETER_NAME, Azimuth.ToString(CultureInfo.InvariantCulture) },
+                { SharedConstants.ALT_PARAMETER_NAME, Altitude.ToString(CultureInfo.InvariantCulture) }
             };
             RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "SlewToAltAzAsync", Parameters, Method.PUT);
         }
@@ -791,8 +792,8 @@ namespace ASCOM.Remote
             RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
-                { SharedConstants.RA_PARAMETER_NAME, RightAscension.ToString() },
-                { SharedConstants.DEC_PARAMETER_NAME, Declination.ToString() }
+                { SharedConstants.RA_PARAMETER_NAME, RightAscension.ToString(CultureInfo.InvariantCulture) },
+                { SharedConstants.DEC_PARAMETER_NAME, Declination.ToString(CultureInfo.InvariantCulture) }
             };
             RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "SlewToCoordinates", Parameters, Method.PUT);
         }
@@ -802,8 +803,8 @@ namespace ASCOM.Remote
             RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
-                { SharedConstants.RA_PARAMETER_NAME, RightAscension.ToString() },
-                { SharedConstants.DEC_PARAMETER_NAME, Declination.ToString() }
+                { SharedConstants.RA_PARAMETER_NAME, RightAscension.ToString(CultureInfo.InvariantCulture) },
+                { SharedConstants.DEC_PARAMETER_NAME, Declination.ToString(CultureInfo.InvariantCulture) }
             };
             RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "SlewToCoordinatesAsync", Parameters, Method.PUT);
         }
@@ -836,8 +837,8 @@ namespace ASCOM.Remote
             RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
-                { SharedConstants.AZ_PARAMETER_NAME, Azimuth.ToString() },
-                { SharedConstants.ALT_PARAMETER_NAME, Altitude.ToString() }
+                { SharedConstants.AZ_PARAMETER_NAME, Azimuth.ToString(CultureInfo.InvariantCulture) },
+                { SharedConstants.ALT_PARAMETER_NAME, Altitude.ToString(CultureInfo.InvariantCulture) }
             };
             RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "SyncToAltAz", Parameters, Method.PUT);
         }
@@ -847,8 +848,8 @@ namespace ASCOM.Remote
             RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
-                { SharedConstants.RA_PARAMETER_NAME, RightAscension.ToString() },
-                { SharedConstants.DEC_PARAMETER_NAME, Declination.ToString() }
+                { SharedConstants.RA_PARAMETER_NAME, RightAscension.ToString(CultureInfo.InvariantCulture) },
+                { SharedConstants.DEC_PARAMETER_NAME, Declination.ToString(CultureInfo.InvariantCulture) }
             };
             RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "SyncToCoordinates", Parameters, Method.PUT);
         }
