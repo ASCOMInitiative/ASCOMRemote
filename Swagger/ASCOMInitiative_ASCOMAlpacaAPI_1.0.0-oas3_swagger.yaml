@@ -3897,8 +3897,7 @@ paths:
               properties:
                 Duration:
                   description: Duration of exposure in seconds
-                  type: integer
-                  format: int32
+                  type: number
                 Light:
                   description: 'True if light frame, false if dark frame.'
                   type: boolean
