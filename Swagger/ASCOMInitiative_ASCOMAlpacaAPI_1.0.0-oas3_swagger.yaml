@@ -7395,7 +7395,7 @@ paths:
                 - TrackingRate
   '/telescope/{device_number}/trackingrates':
     get:
-      summary: Returns an array of supported DriveRates values.
+      summary: Returns a collection of supported DriveRates values.
       description: >-
         Returns an array of supported DriveRates values that describe the
         permissible values of the TrackingRate property for this telescope type.
@@ -7411,7 +7411,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IntArrayResponse'
+                $ref: '#/components/schemas/DriveRatesResponse'
         '400':
           description: 'Method or parameter value error, check error message'
           content:
@@ -8378,8 +8378,7 @@ components:
           type: integer
           format: int32
           description: >-
-            0 = Unknown, 1 = Short(int16), 2 = Integer (int32), 3 = Double (Double
-            precision real number).
+            0 = Unknown, 1 = Short(int16), 2 = Integer (int32), 3 = Double (Double precision real number).
           minimum: 0
           maximum: 3
         Rank:
@@ -8625,8 +8624,10 @@ components:
       type: object
       properties:
         Value:
-          description: Array of rate objects
+          description: Array of AxisRate objects
           type: array
+          minItems: 0
+          uniqueItems: true
           items:
             $ref: '#/components/schemas/AxisRate'
         ClientTransactionID:
@@ -8652,7 +8653,7 @@ components:
           type: string
           description: Empty string for a successful transaction, or a message describing the issue that was encountered. If an error message is returned, a non zero error number must also be returned.
     AxisRate:
-      description: Rate object
+      description: Axis rate object
       type: object
       properties:
         Maximum:
@@ -8670,3 +8671,47 @@ components:
       required:
         - Maximum
         - Minimum
+    DriveRatesResponse:
+      type: object
+      properties:
+        Value:
+          description: Array of DriveRate values
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/DriveRate'
+        ClientTransactionID:
+          type: integer
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
+          description: Client's transaction ID (0 to 4294967295), as supplied by the client in the command request.
+        ServerTransactionID:
+          type: integer
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
+          description: Server's transaction ID (0 to 4294967295), should be unique for each client transaction so that log messages on the client can be associated with logs on the device.
+        ErrorNumber:
+          type: integer
+          format: int32
+          minimum: -2147483648
+          maximum: 2147483647
+          description: >- 
+            Zero for a successful transaction, or a non-zero integer (-2147483648 to 2147483647) if the device encountered an issue. Devices must use ASCOM reserved error numbers whenever appropriate so that clients can take informed actions. E.g. returning 0x401 (1025) to indicate that an invalid value was received (see Alpaca API definition and developer documentation for further information).
+        ErrorMessage:
+          type: string
+          description: Empty string for a successful transaction, or a message describing the issue that was encountered. If an error message is returned, a non zero error number must also be returned.
+    DriveRate:
+      description: >-
+        DriveRate object corresponding to one of the standard drive rates  
+
+          driveSidereal =	0	- Sidereal tracking rate (15.041 arcseconds per second).  
+          driveLunar = 1 - Lunar tracking rate (14.685 arcseconds per second).  
+          driveSolar = 2 - Solar tracking rate (15.0 arcseconds per second).  
+          driveKing = 3 - King tracking rate (15.0369 arcseconds per second).  
+      type: number
+      format: int32
+      minimum: 0
+      maximum: 3

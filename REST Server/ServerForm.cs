@@ -3322,7 +3322,7 @@ namespace ASCOM.Remote
             }
 
             LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Number of rates: {0}", rates.Count));
-            responseClass.Rates = rates;
+            responseClass.Value = rates;
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
 

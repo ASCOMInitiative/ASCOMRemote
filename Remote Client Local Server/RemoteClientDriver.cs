@@ -539,11 +539,11 @@ namespace ASCOM.Remote
                     if (typeof(T) == typeof(ITrackingRates))
                     {
                         TrackingRatesResponse trackingRatesResponse = JsonConvert.DeserializeObject<TrackingRatesResponse>(response.Content);
-                        TL.LogMessage(clientNumber, method, string.Format("Trackingrates Count: {0} - Txn ID: {1}, Method: {1}", trackingRatesResponse.Rates.Count.ToString(), trackingRatesResponse.ServerTransactionID.ToString())); //, trackingRatesResponse.Method));
+                        TL.LogMessage(clientNumber, method, string.Format("Trackingrates Count: {0} - Txn ID: {1}, Method: {1}", trackingRatesResponse.Value.Count.ToString(), trackingRatesResponse.ServerTransactionID.ToString())); //, trackingRatesResponse.Method));
                         List<DriveRates> rates = new List<DriveRates>();
-                        DriveRates[] ratesArray = new DriveRates[trackingRatesResponse.Rates.Count];
+                        DriveRates[] ratesArray = new DriveRates[trackingRatesResponse.Value.Count];
                         int i = 0;
-                        foreach (DriveRates rate in trackingRatesResponse.Rates)
+                        foreach (DriveRates rate in trackingRatesResponse.Value)
                         {
                             TL.LogMessage(clientNumber, method, string.Format("Rate: {0}", rate.ToString()));
                             ratesArray[i] = rate;

@@ -16,7 +16,7 @@ namespace ASCOM.Remote
             base.ClientTransactionID = clientTransactionID;
         }
 
-        public List<DriveRates> Rates
+        public List<DriveRates> Value
         {
             get { return rates; }
             set { rates = value; }
