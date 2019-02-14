@@ -71,7 +71,7 @@ Source: "..\SetNetworkPermissions\bin\Release\WindowsFirewallHelper.dll"; DestDi
 Source: "..\SetNetworkPermissions\bin\Release\CommandLine.dll"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
 Source: "..\SetNetworkPermissions\bin\Release\Interop.NetFwTypeLib.dll"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion; Components: ServerComponents
 ; DOCUMENTATION
-Source: "..\Documentation\ASCOM Remote Concept.pdf"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion
+Source: "..\Documentation\ASCOM Remote Installation and Configuration.pdf"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion
 ; INSTALLER SUPPORT FILES
 Source: "ASCOM.ico"; DestDir: "{pf}\ASCOM\Remote"; Flags: ignoreversion
 ; WEB CONTENT
