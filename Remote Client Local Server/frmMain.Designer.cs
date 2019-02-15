@@ -42,7 +42,7 @@ namespace ASCOM.Remote
             this.label1.TabIndex = 0;
             this.label1.Text = "This is the ASCOM Remote Client driver local server.";
             // 
-            // frmMain
+            // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -50,9 +50,9 @@ namespace ASCOM.Remote
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmMain";
+            this.Name = "FrmMain";
             this.ShowInTaskbar = false;
-            this.Text = "Remote Driver Server";
+            this.Text = "ASCOM Remote Client Driver Host";
             this.ResumeLayout(false);
 
         }

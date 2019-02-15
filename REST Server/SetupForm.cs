@@ -321,5 +321,16 @@ namespace ASCOM.Remote
 
         #endregion
 
+        /// <summary>
+        /// Called when debug trace is enabled to make sure that normal logging is also enabled
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void chkDebugTrace_CheckedChanged(object sender, EventArgs e)
+        {
+            // If debug logging is requested, make sure that normal logging is enabled!
+            CheckBox checkBox = (CheckBox)sender;
+            if (checkBox.Checked) chkTrace.Checked = true;
+        }
     }
 }

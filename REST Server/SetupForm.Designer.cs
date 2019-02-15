@@ -64,6 +64,7 @@
             this.ChkRunDriversInSeparateThreadss = new System.Windows.Forms.CheckBox();
             this.ChkLogClientIPAddress = new System.Windows.Forms.CheckBox();
             this.ChkIncludeDriverExceptionsInJsonResponses = new System.Windows.Forms.CheckBox();
+            this.label10 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
@@ -162,7 +163,7 @@
             this.chkTrace.Name = "chkTrace";
             this.chkTrace.Size = new System.Drawing.Size(96, 17);
             this.chkTrace.TabIndex = 6;
-            this.chkTrace.Text = "Trace Enabled";
+            this.chkTrace.Text = "Write Log Files";
             this.chkTrace.UseVisualStyleBackColor = true;
             // 
             // chkDebugTrace
@@ -170,10 +171,11 @@
             this.chkDebugTrace.AutoSize = true;
             this.chkDebugTrace.Location = new System.Drawing.Point(96, 524);
             this.chkDebugTrace.Name = "chkDebugTrace";
-            this.chkDebugTrace.Size = new System.Drawing.Size(131, 17);
+            this.chkDebugTrace.Size = new System.Drawing.Size(135, 17);
             this.chkDebugTrace.TabIndex = 7;
-            this.chkDebugTrace.Text = "Debug Trace Enabled";
+            this.chkDebugTrace.Text = "Enable Debug Logging";
             this.chkDebugTrace.UseVisualStyleBackColor = true;
+            this.chkDebugTrace.CheckedChanged += new System.EventHandler(this.chkDebugTrace_CheckedChanged);
             // 
             // chkAccessLog
             // 
@@ -233,6 +235,7 @@
             // chkManagementInterfaceEnabled
             // 
             this.chkManagementInterfaceEnabled.AutoSize = true;
+            this.chkManagementInterfaceEnabled.Enabled = false;
             this.chkManagementInterfaceEnabled.Location = new System.Drawing.Point(309, 442);
             this.chkManagementInterfaceEnabled.Name = "chkManagementInterfaceEnabled";
             this.chkManagementInterfaceEnabled.Size = new System.Drawing.Size(169, 17);
@@ -440,10 +443,22 @@
             this.ChkIncludeDriverExceptionsInJsonResponses.AutoSize = true;
             this.ChkIncludeDriverExceptionsInJsonResponses.Location = new System.Drawing.Point(96, 547);
             this.ChkIncludeDriverExceptionsInJsonResponses.Name = "ChkIncludeDriverExceptionsInJsonResponses";
-            this.ChkIncludeDriverExceptionsInJsonResponses.Size = new System.Drawing.Size(376, 17);
+            this.ChkIncludeDriverExceptionsInJsonResponses.Size = new System.Drawing.Size(364, 17);
             this.ChkIncludeDriverExceptionsInJsonResponses.TabIndex = 36;
-            this.ChkIncludeDriverExceptionsInJsonResponses.Text = "Include driver exceptions in JSON responses (useful for debugging drivers)";
+            this.ChkIncludeDriverExceptionsInJsonResponses.Text = "Include driver exceptions in JSON responses (only useful for debugging)";
             this.ChkIncludeDriverExceptionsInJsonResponses.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.ForeColor = System.Drawing.Color.Red;
+            this.label10.Location = new System.Drawing.Point(484, 443);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(138, 13);
+            this.label10.TabIndex = 37;
+            this.label10.Text = "(Disabled pending redesign)";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // SetupForm
             // 
@@ -452,6 +467,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.BtnCancel;
             this.ClientSize = new System.Drawing.Size(920, 577);
+            this.Controls.Add(this.label10);
             this.Controls.Add(this.ChkIncludeDriverExceptionsInJsonResponses);
             this.Controls.Add(this.ChkLogClientIPAddress);
             this.Controls.Add(this.ChkRunDriversInSeparateThreadss);
@@ -532,5 +548,6 @@
         private System.Windows.Forms.CheckBox ChkRunDriversInSeparateThreadss;
         private System.Windows.Forms.CheckBox ChkLogClientIPAddress;
         private System.Windows.Forms.CheckBox ChkIncludeDriverExceptionsInJsonResponses;
+        private System.Windows.Forms.Label label10;
     }
 }

@@ -58,7 +58,7 @@ namespace ASCOM.Remote
 
         // Client driver profile persistence constants
         public const string TRACE_LEVEL_PROFILENAME = "Trace Level"; public const string CLIENT_TRACE_LEVEL_DEFAULT = "True";
-        public const string DEBUG_TRACE_PROFILENAME = "Include Debug Trace"; public const string DEBUG_TRACE_DEFAULT = "True";
+        public const string DEBUG_TRACE_PROFILENAME = "Include Debug Trace"; public const string DEBUG_TRACE_DEFAULT = "False";
         public const string IPADDRESS_PROFILENAME = "IP Address"; public const string IPADDRESS_DEFAULT = SharedConstants.LOCALHOST_ADDRESS;
         public const string PORTNUMBER_PROFILENAME = "Port Number"; public const string PORTNUMBER_DEFAULT = "11111";
         public const string REMOTE_DEVICE_NUMBER_PROFILENAME = "Remote Device Number"; public const string REMOTE_DEVICE_NUMBER_DEFAULT = "0";
