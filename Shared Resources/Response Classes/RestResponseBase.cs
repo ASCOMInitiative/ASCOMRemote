@@ -24,8 +24,15 @@ namespace ASCOM.Remote
                 exception = value;
                 if (exception != null)
                 {
+                    // Set the error number and message fields from the exception
                     ErrorNumber = exception.HResult;
                     ErrorMessage = exception.Message;
+
+                    // Convert ASCOM exception error numbers (0x80040400 - 0x80040FFF) to equivalent Alpaca error numbers (0x400 to 0xFFF) so that they will be interpreted correctly by native Alpaca clients
+                    if ((ErrorNumber >= SharedConstants.ASCOM_ERROR_NUMBER_BASE) && (ErrorNumber <= SharedConstants.ASCOM_ERROR_NUMBER_MAX))
+                    {
+                        ErrorNumber = ErrorNumber - SharedConstants.ASCOM_ERROR_NUMBER_OFFSET;
+                    }
                 }
             }
         }

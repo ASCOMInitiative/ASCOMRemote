@@ -4,6 +4,13 @@ namespace ASCOM.Remote
 {
     public static class SharedConstants
     {
+        // Alpaca and ASCOM error number constants
+        public const int ASCOM_ERROR_NUMBER_OFFSET = unchecked((int)0x80040000); // Offset value that relates the ASCOM Alpaca reserved error number range to the ASCOM COM HResult error number range
+        public const int ASCOM_ERROR_NUMBER_BASE = unchecked((int)0x80040400); // Lowest ASCOM error number
+        public const int ASCOM_ERROR_NUMBER_MAX = unchecked((int)0x80040FFF); // Highest ASCOM error number
+        public const int ALPACA_ERROR_CODE_BASE = 0x400; // Start of the Alpaca error code range 0x400 to 0xFFF
+        public const int ALPACA_ERROR_CODE_MAX = 0xFFF; // End of Alpaca error code range 0x400 to 0xFFF
+
         // HTTP Parameter names shared by driver and remote server
         public const string RA_PARAMETER_NAME = "RightAscension";
         public const string DEC_PARAMETER_NAME = "Declination";
