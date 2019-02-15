@@ -58,17 +58,12 @@
             this.groupBoxConnectDisconnect = new System.Windows.Forms.GroupBox();
             this.radManageConnectRemotely = new System.Windows.Forms.RadioButton();
             this.radManageConnectLocally = new System.Windows.Forms.RadioButton();
-            this.btnServerConfiguration = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRemoteDeviceNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStandardTimeout)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numLongTimeout)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numEstablishCommunicationsTimeout)).BeginInit();
             this.groupBoxConnectDisconnect.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // numPort
@@ -399,46 +394,6 @@
             this.radManageConnectLocally.Text = "Manage connect / disconnect locally - don\'t send commands to remote server";
             this.radManageConnectLocally.UseVisualStyleBackColor = true;
             // 
-            // btnServerConfiguration
-            // 
-            this.btnServerConfiguration.Enabled = false;
-            this.btnServerConfiguration.Location = new System.Drawing.Point(26, 48);
-            this.btnServerConfiguration.Name = "btnServerConfiguration";
-            this.btnServerConfiguration.Size = new System.Drawing.Size(92, 45);
-            this.btnServerConfiguration.TabIndex = 33;
-            this.btnServerConfiguration.TabStop = false;
-            this.btnServerConfiguration.Text = "Configure Server";
-            this.btnServerConfiguration.UseVisualStyleBackColor = true;
-            this.btnServerConfiguration.Click += new System.EventHandler(this.BtnServerConfiguration_Click);
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.label15);
-            this.panel1.Controls.Add(this.label14);
-            this.panel1.Controls.Add(this.btnServerConfiguration);
-            this.panel1.Location = new System.Drawing.Point(502, 195);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(142, 110);
-            this.panel1.TabIndex = 34;
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(13, 22);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(109, 13);
-            this.label15.TabIndex = 36;
-            this.label15.Text = "(Not implemented yet)";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(8, 7);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(126, 13);
-            this.label14.TabIndex = 35;
-            this.label14.Text = "Configure Remote Server";
-            // 
             // SetupDialogForm
             // 
             this.AcceptButton = this.btnOK;
@@ -446,7 +401,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(692, 402);
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.groupBoxConnectDisconnect);
             this.Controls.Add(this.chkDebugTrace);
             this.Controls.Add(this.chkTrace);
@@ -486,8 +440,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numEstablishCommunicationsTimeout)).EndInit();
             this.groupBoxConnectDisconnect.ResumeLayout(false);
             this.groupBoxConnectDisconnect.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -522,10 +474,6 @@
         private System.Windows.Forms.CheckBox chkTrace;
         private System.Windows.Forms.CheckBox chkDebugTrace;
         private System.Windows.Forms.GroupBox groupBoxConnectDisconnect;
-        private System.Windows.Forms.Button btnServerConfiguration;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label15;
         private System.Windows.Forms.RadioButton radManageConnectRemotely;
         private System.Windows.Forms.RadioButton radManageConnectLocally;
     }

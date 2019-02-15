@@ -29,9 +29,6 @@ namespace ASCOM.Remote
         private const string NOT_CONNECTED_MESSAGE = "ASCOM Remote Client Driver is not connected.";
         private const string RANK_VARIABLE_NAME = "Rank";
         private const string ARRAYTYPE_VARIABLE_NAME = "Type";
-        private const int ASCOM_ERROR_NUMBER_OFFSET = unchecked((int)0x80040000); // Offset value that relates the ASCOM Alpaca reserved error code range to the ASCOM COM HResult error code range
-        private const int ALPACA_ERROR_CODE_BASE = 0x400; // Start of the Alpaca error code range 0x400 to 0xFFF
-        private const int ALPACA_ERROR_CODE_MAX = 0xFFF; // End of Alpaca error code range 0x400 to 0xFFF
 
         private const string FIND_TYPE_AND_RANK_REGEX_PATTERN = @"^*""Type"":(?<" + ARRAYTYPE_VARIABLE_NAME + @">\d*),""Rank"":(?<" + RANK_VARIABLE_NAME + @">\d*)"; // Regular expression to extract array type and rank from the returned JSON imagearray and imagearrayvariant responses
 
@@ -726,10 +723,10 @@ namespace ASCOM.Remote
                         TL.LogMessageCrLf(clientNumber, method, string.Format("Received an Alpaca error - ErrorMessage: {0}, ErrorNumber: 0x{1}", restResponseBase.ErrorMessage, restResponseBase.ErrorNumber.ToString("X8")));
 
                         // Handle ASCOM Alpaca reserved error numbers between 0x400 and 0xFFF by translating these to the COM HResult error number range: 0x80040400 to 0x80040FFF and throwing the translated value as an exception
-                        if ((restResponseBase.ErrorNumber >= ALPACA_ERROR_CODE_BASE) & (restResponseBase.ErrorNumber <= ALPACA_ERROR_CODE_MAX)) // This error is within the ASCOM Alpaca reserved error number range
+                        if ((restResponseBase.ErrorNumber >= SharedConstants.ALPACA_ERROR_CODE_BASE) & (restResponseBase.ErrorNumber <= SharedConstants.ALPACA_ERROR_CODE_MAX)) // This error is within the ASCOM Alpaca reserved error number range
                         {
                             // Calculate the equivalent COM HResult error number from the supplied Alpaca error number so that comparison can be made with the original ASCOM COM exception HResult numbers that Windows clients expect in their exceptions
-                            int ascomCOMErrorNumber = restResponseBase.ErrorNumber + ASCOM_ERROR_NUMBER_OFFSET;
+                            int ascomCOMErrorNumber = restResponseBase.ErrorNumber + SharedConstants.ASCOM_ERROR_NUMBER_OFFSET;
                             TL.LogMessageCrLf(clientNumber, method, string.Format("Received Alpaca error code: {0} ({0:X8}), the equivalent COM error HResult error code is {1} ({1:X8})", restResponseBase.ErrorNumber, ascomCOMErrorNumber));
 
                             // Now check whether the COM HResult matches any of the built-in ASCOM exception types. If so, we throw that exception type otherwise we throw a generic DriverException
