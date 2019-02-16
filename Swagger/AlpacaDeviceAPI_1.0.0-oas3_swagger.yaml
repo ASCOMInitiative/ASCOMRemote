@@ -1,18 +1,21 @@
 openapi: 3.0.0
 info:
-  title: ASCOM Alpaca API
+  title: ASCOM Alpaca Device API
   description: >
     This restful API enables ASCOM Alpaca clients to access remote ASCOM Alpaca devices.
 
 
-    ## Case Sensitivity
+    ## URLs and Case Sensitivity
 
-    The URL is case sensitive and all elements must be in lower case. This means that both the device type and command name must always be in lower case. Parameter names are not case sensitive, so clients and drivers should be prepared for parameter names to be supplied and returned with any casing. Parameter values can be in mixed case as required.
+    Alpaca Device API URLs are of the form **http(s)://api/v1/path** where path is one of the method URLs listed below.
 
 
+    URLs are case sensitive and all elements must be in lower case. This means that both the device type and command name must always be in lower case. Parameter names are not case sensitive, so clients and drivers should be prepared for parameter names to be supplied and returned with any casing. Parameter values can be in mixed case as required.
+    
+    
     ## Parameters and Returned values
 
-    For GET operations, parameters should be placed in the URI query string and for PUT operations they should be placed in the body of the message.
+    For GET operations, parameters should be placed in the URL query string and for PUT operations they should be placed in the body of the message.
 
 
     Responses, as described below, are returned in JSON format and always include a common set of values including the client's transaction number, 

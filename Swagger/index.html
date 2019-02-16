@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>ASCOM UI</title>
+    <title>ASCOM Alpaca API</title>
     <link rel="stylesheet" type="text/css" href="./swagger-ui.css" >
     <link rel="icon" type="image/jpg" href="./Bug72T.jpg" sizes="32x32" />
     <link rel="icon" type="image/jpg" href="./Bug72T.jpg" sizes="16x16" />
@@ -67,7 +67,7 @@
         // Build a system
 				const ui = SwaggerUIBundle({
 				// ASCOM Customisation: original "url" line removed and replaced with "urls" line below
-        urls: [{url: "https://www.ascom-standards.org/api/ASCOMInitiative_ASCOMAlpacaAPI_1.0.0-oas3_swagger.yaml", name: "ASCOM Alpaca API"},{url: "https://www.ascom-standards.org/api/ASCOMInitiative_ASCOMServerAPI_1.0.0-oas3_swagger.yaml", name: "Remote Management API"}],
+        urls: [{url: "https://www.ascom-standards.org/api/AlpacaDeviceAPI_1.0.0-oas3_swagger.yaml", name: "ASCOM Alpaca Device API"},{url: "https://www.ascom-standards.org/api/AlpacaManagementAPI_1.0.0-oas3_swagger.yaml", name: "ASCOM Alpaca Management API"}],
         dom_id: '#swagger-ui',
         deepLinking: true,
 				docExpansion: 'none',
