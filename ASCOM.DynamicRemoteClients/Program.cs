@@ -6,6 +6,9 @@ using ASCOM.Utilities;
 using System.IO;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
+using System.Diagnostics;
+using System.Threading;
+using System.Reflection;
 using ASCOM.Remote;
 
 namespace ASCOM.DynamicRemoteClients
@@ -22,6 +25,15 @@ namespace ASCOM.DynamicRemoteClients
         [STAThread]
         static void Main(string[] args)
         {
+
+            // Add the event handler for handling UI thread exceptions to the event.
+            Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+
+            // Set the unhandled exception mode to force all exceptions to go through our handler.
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+
+            // Add the event handler for handling non-UI thread exceptions to the event. 
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
             TL = new TraceLogger("", "DynamicClients");
             TL.Enabled = true;
@@ -248,5 +260,48 @@ namespace ASCOM.DynamicRemoteClients
                 }
             }
         }
+
+        static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            Version assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+
+            // Create a trace logger and log the exception 
+            TraceLogger TL = new TraceLogger("DynamicClientThreadException")
+            {
+                Enabled = true
+            };
+            TL.LogMessage("Main", string.Format("ASCOM Remote Dynamic Client Manager - Thread exception. Version: {0}", assemblyVersion.ToString()));
+            TL.LogMessageCrLf("Main", e.Exception.ToString());
+            TL.Enabled = false;
+            TL.Dispose();
+            TL = null;
+
+            // Display the exception in the default .txt editor and exit
+            Process.Start(TL.LogFileName);
+            Environment.Exit(0);
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception exception = (Exception)e.ExceptionObject;
+
+            Version assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+
+            // Create a trace logger and log the exception 
+            TraceLogger TL = new TraceLogger("DynamicClientUnhandledException")
+            {
+                Enabled = true
+            };
+            TL.LogMessage("Main", string.Format("ASCOM Remote Dynamic Client Manager - Unhandled exception. Version: {0}", assemblyVersion.ToString()));
+            TL.LogMessageCrLf("Main", exception.ToString());
+            TL.Enabled = false;
+            TL.Dispose();
+            TL = null;
+
+            // Display the exception in the default .txt editor and exit
+            Process.Start(TL.LogFileName);
+            Environment.Exit(0);
+        }
+
     }
 }

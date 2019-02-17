@@ -52,6 +52,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.NumVideo = new System.Windows.Forms.NumericUpDown();
+            this.LblVersionNumber = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.NumTelescope)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumCamera)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumFilterWheel)).BeginInit();
@@ -257,6 +258,15 @@
             this.NumVideo.TabIndex = 22;
             this.NumVideo.Visible = false;
             // 
+            // LblVersionNumber
+            // 
+            this.LblVersionNumber.AutoSize = true;
+            this.LblVersionNumber.Location = new System.Drawing.Point(12, 335);
+            this.LblVersionNumber.Name = "LblVersionNumber";
+            this.LblVersionNumber.Size = new System.Drawing.Size(131, 13);
+            this.LblVersionNumber.TabIndex = 23;
+            this.LblVersionNumber.Text = "Version Number Unknown";
+            // 
             // Form1
             // 
             this.AcceptButton = this.BtnApply;
@@ -264,6 +274,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.BtnApply;
             this.ClientSize = new System.Drawing.Size(407, 365);
+            this.Controls.Add(this.LblVersionNumber);
             this.Controls.Add(this.NumVideo);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
@@ -330,6 +341,7 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.NumericUpDown NumVideo;
+        private System.Windows.Forms.Label LblVersionNumber;
     }
 }
 

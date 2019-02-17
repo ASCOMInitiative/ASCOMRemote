@@ -28,7 +28,7 @@ namespace ASCOM.DynamicRemoteClients
     {
         private const string DEVICE_NUMBER = "DeviceNumber"; // Regex device number placeholder name
         private const string DEVICE_TYPE = "DeviceType"; // Regex device type placeholder name
-        private const string NUMERIC_UPDOWN_CONTROLNAME_PREXIX = "Num"; // Prefix to numeric updown controls that enables them to be identified
+        private const string NUMERIC_UPDOWN_CONTROLNAME_PREXIX = "Num"; // Prefix to numeric up-down controls that enables them to be identified
         private const string BASE_CLASS_POSTFIX = "BaseClass"; // Postfix to the device type to create the base class name e.g. "CamerabaseClass". Must match the last characters of the device base class names!
 
         private const string REGEX_FORMAT_STRING = @"^ascom\.remote(?'" + DEVICE_NUMBER + @"'\d+)\.(?'" + DEVICE_TYPE + @"'[a-z]+)$"; // Regex for extracting device type and number
@@ -51,13 +51,17 @@ namespace ASCOM.DynamicRemoteClients
 
             TL = TLParameter; // Save the supplied trace logger
 
+            Version assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            LblVersionNumber.Text = "Version " + assemblyVersion.ToString();
+            TL.LogMessage("Initialise", string.Format("Application Version: {0}", assemblyVersion.ToString()));
+
             profile = new Profile();
             remoteDrivers = new List<DriverRegistration>();
             deviceTypeSummary = new Dictionary<string, int>();
 
             ReadConfiguration(); // Get the current configuration
 
-            // Add event handlers for the number of devices numeric updown controls
+            // Add event handlers for the number of devices numeric up-down controls
             NumCamera.ValueChanged += NumValueChanged;
             NumDome.ValueChanged += NumValueChanged;
             NumFilterWheel.ValueChanged += NumValueChanged;
@@ -67,6 +71,7 @@ namespace ASCOM.DynamicRemoteClients
             NumSafetyMonitor.ValueChanged += NumValueChanged;
             NumSwitch.ValueChanged += NumValueChanged;
             NumTelescope.ValueChanged += NumValueChanged;
+            TL.LogMessage("Initialise", string.Format("Initialisation completed"));
         }
 
         /// <summary>
@@ -203,6 +208,9 @@ namespace ASCOM.DynamicRemoteClients
         /// </remarks>
         private void BtnApply_Click(object sender, EventArgs e)
         {
+            // Disable controls so that the process can't be stopped part way through 
+            DisableControls();
+
             string localServerExe = Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86) + REMOTE_SERVER_PATH + REMOTE_SERVER;
             if (File.Exists(localServerExe)) // Local server does exist
             {
@@ -276,6 +284,7 @@ namespace ASCOM.DynamicRemoteClients
                 TL.LogMessage("Apply", errorMessage);
                 MessageBox.Show(errorMessage);
             }
+            EnableControls();
         }
 
         /// <summary>
@@ -443,7 +452,7 @@ namespace ASCOM.DynamicRemoteClients
                 // Copy required assemblies to the application's working directory
                 Assembly a = Assembly.Load(@"ASCOM.Attributes, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL");
                 TL.LogMessage("CreateDriver", string.Format("Copying ASCOM.Attributes assembly from {0} to {1}", a.Location, Application.StartupPath));
-                File.Copy(a.Location, Application.StartupPath+"\\" + Path.GetFileName(a.Location), true);
+                File.Copy(a.Location, Application.StartupPath + "\\" + Path.GetFileName(a.Location), true);
                 TL.LogMessage("CreateDriver", string.Format("Copied ASCOM.Attributes assembly OK"));
 
                 a = Assembly.Load(@"ASCOM.DeviceInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL");
@@ -522,6 +531,44 @@ namespace ASCOM.DynamicRemoteClients
             {
                 TL.LogMessageCrLf("CreateDriver", ex.ToString());
             }
+        }
+
+        /// <summary>
+        /// Disables all UI controls - used when drivers are being created
+        /// </summary>
+        private void DisableControls()
+        {
+            BtnApply.Enabled = false;
+            BtnExit.Enabled = false;
+            NumCamera.Enabled = false;
+            NumDome.Enabled = false;
+            NumFilterWheel.Enabled = false;
+            NumFocuser.Enabled = false;
+            NumObservingConditions.Enabled = false;
+            NumRotator.Enabled = false;
+            NumSafetyMonitor.Enabled = false;
+            NumSwitch.Enabled = false;
+            NumTelescope.Enabled = false;
+            NumVideo.Enabled = false;
+        }
+
+        /// <summary>
+        /// Enables all UI controls - used after drivers have been created
+        /// </summary>
+        private void EnableControls()
+        {
+            BtnApply.Enabled = true;
+            BtnExit.Enabled = true;
+            NumCamera.Enabled = true;
+            NumDome.Enabled = true;
+            NumFilterWheel.Enabled = true;
+            NumFocuser.Enabled = true;
+            NumObservingConditions.Enabled = true;
+            NumRotator.Enabled = true;
+            NumSafetyMonitor.Enabled = true;
+            NumSwitch.Enabled = true;
+            NumTelescope.Enabled = true;
+            NumVideo.Enabled = true;
         }
     }
 }
