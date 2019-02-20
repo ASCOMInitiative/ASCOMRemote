@@ -272,12 +272,14 @@ namespace ASCOM.DynamicRemoteClients
             };
             TL.LogMessage("Main", string.Format("ASCOM Remote Dynamic Client Manager - Thread exception. Version: {0}", assemblyVersion.ToString()));
             TL.LogMessageCrLf("Main", e.Exception.ToString());
+
+            // Display the exception in the default .txt editor and exit
+            Process.Start(TL.LogFileName);
+
             TL.Enabled = false;
             TL.Dispose();
             TL = null;
 
-            // Display the exception in the default .txt editor and exit
-            Process.Start(TL.LogFileName);
             Environment.Exit(0);
         }
 
@@ -294,12 +296,14 @@ namespace ASCOM.DynamicRemoteClients
             };
             TL.LogMessage("Main", string.Format("ASCOM Remote Dynamic Client Manager - Unhandled exception. Version: {0}", assemblyVersion.ToString()));
             TL.LogMessageCrLf("Main", exception.ToString());
+
+            // Display the exception in the default .txt editor and exit
+            Process.Start(TL.LogFileName);
+
             TL.Enabled = false;
             TL.Dispose();
             TL = null;
 
-            // Display the exception in the default .txt editor and exit
-            Process.Start(TL.LogFileName);
             Environment.Exit(0);
         }
 

@@ -26,17 +26,24 @@ namespace ASCOM.DynamicRemoteClients
 {
     public partial class Form1 : Form
     {
-        private const string DEVICE_NUMBER = "DeviceNumber"; // Regex device number placeholder name
-        private const string DEVICE_TYPE = "DeviceType"; // Regex device type placeholder name
+        // Constants only used within this form
+        private const string DEVICE_NUMBER = "DeviceNumber"; // Regular expression device number placeholder name
+        private const string DEVICE_TYPE = "DeviceType"; // Regular expression device type placeholder name
         private const string NUMERIC_UPDOWN_CONTROLNAME_PREXIX = "Num"; // Prefix to numeric up-down controls that enables them to be identified
         private const string BASE_CLASS_POSTFIX = "BaseClass"; // Postfix to the device type to create the base class name e.g. "CamerabaseClass". Must match the last characters of the device base class names!
 
-        private const string REGEX_FORMAT_STRING = @"^ascom\.remote(?'" + DEVICE_NUMBER + @"'\d+)\.(?'" + DEVICE_TYPE + @"'[a-z]+)$"; // Regex for extracting device type and number
-        internal static string REMOTE_SERVER_PATH = @"\ASCOM\RemoteClients\"; // Relative path from CommonFiles\ASCOM
-        internal static string REMOTE_SERVER = @"ASCOM.RemoteClientLocalServer.exe"; // Name of the remote client local server application
-        internal static string REMOTE_CLIENT_DRIVER_NAME_TEMPLATE = @"ASCOM.Remote*.{0}.*"; // Template for finding remote client driver files
+        private const string REGEX_FORMAT_STRING = @"^ascom\.remote(?'" + DEVICE_NUMBER + @"'\d+)\.(?'" + DEVICE_TYPE + @"'[a-z]+)$"; // Regular expression for extracting device type and number
         private const int LOCALSERVER_WAIT_TIME = 5000; // Length of time (milliseconds) to wait for the local server to (un)register its drivers
 
+        // Constants shared with the main program
+        internal const string REMOTE_SERVER_PATH = @"\ASCOM\RemoteClients\"; // Relative path from CommonFiles\ASCOM
+        internal const string REMOTE_SERVER = @"ASCOM.RemoteClientLocalServer.exe"; // Name of the remote client local server application
+        internal const string REMOTE_CLIENT_DRIVER_NAME_TEMPLATE = @"ASCOM.Remote*.{0}.*"; // Template for finding remote client driver files
+
+        // List of supported device types - this must be kept in sync with the device type numeric up-down controls on the form dialogue!
+        private readonly List<string> supportedDeviceTypes = new List<string>() { "Camera", "Dome", "FilterWheel", "Focuser", "ObservingConditions", "Rotator", "SafetyMonitor", "Switch", "Telescope" };
+
+        // Global variables within this class
         TraceLogger TL;
         Profile profile;
         List<DriverRegistration> remoteDrivers;
@@ -47,31 +54,40 @@ namespace ASCOM.DynamicRemoteClients
         /// </summary>
         public Form1(TraceLogger TLParameter)
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
 
-            TL = TLParameter; // Save the supplied trace logger
+                TL = TLParameter; // Save the supplied trace logger
 
-            Version assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            LblVersionNumber.Text = "Version " + assemblyVersion.ToString();
-            TL.LogMessage("Initialise", string.Format("Application Version: {0}", assemblyVersion.ToString()));
+                Version assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                LblVersionNumber.Text = "Version " + assemblyVersion.ToString();
+                TL.LogMessage("Initialise", string.Format("Application Version: {0}", assemblyVersion.ToString()));
 
-            profile = new Profile();
-            remoteDrivers = new List<DriverRegistration>();
-            deviceTypeSummary = new Dictionary<string, int>();
+                profile = new Profile();
+                remoteDrivers = new List<DriverRegistration>();
+                deviceTypeSummary = new Dictionary<string, int>(StringComparer.InvariantCultureIgnoreCase); // Create a dictionary using a case insensitive key comparer
 
-            ReadConfiguration(); // Get the current configuration
+                ReadConfiguration(); // Get the current configuration
 
-            // Add event handlers for the number of devices numeric up-down controls
-            NumCamera.ValueChanged += NumValueChanged;
-            NumDome.ValueChanged += NumValueChanged;
-            NumFilterWheel.ValueChanged += NumValueChanged;
-            NumFocuser.ValueChanged += NumValueChanged;
-            NumObservingConditions.ValueChanged += NumValueChanged;
-            NumRotator.ValueChanged += NumValueChanged;
-            NumSafetyMonitor.ValueChanged += NumValueChanged;
-            NumSwitch.ValueChanged += NumValueChanged;
-            NumTelescope.ValueChanged += NumValueChanged;
-            TL.LogMessage("Initialise", string.Format("Initialisation completed"));
+                // Add event handlers for the number of devices numeric up-down controls
+                NumCamera.ValueChanged += NumValueChanged;
+                NumDome.ValueChanged += NumValueChanged;
+                NumFilterWheel.ValueChanged += NumValueChanged;
+                NumFocuser.ValueChanged += NumValueChanged;
+                NumObservingConditions.ValueChanged += NumValueChanged;
+                NumRotator.ValueChanged += NumValueChanged;
+                NumSafetyMonitor.ValueChanged += NumValueChanged;
+                NumSwitch.ValueChanged += NumValueChanged;
+                NumTelescope.ValueChanged += NumValueChanged;
+                TL.LogMessage("Initialise", string.Format("Initialisation completed"));
+            }
+            catch (Exception ex)
+            {
+                TL.LogMessageCrLf("initialise - Exception", ex.ToString());
+                MessageBox.Show("Sorry, en error occurred on start up, please report this error message on the ASCOM Talk forum hosted at Groups.Io.\r\n\n" + ex.Message, "ASCOM Dynamic Clients", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DisableControls(false); // Disable all controls except exit
+            }
         }
 
         /// <summary>
@@ -86,7 +102,7 @@ namespace ASCOM.DynamicRemoteClients
             deviceTypeSummary.Clear();
             remoteDrivers.Clear();
 
-            // List all the updown controls present
+            // List all the up-down controls present
             foreach (Control ctrl in this.Controls)
             {
                 if (ctrl.GetType() == typeof(NumericUpDown))
@@ -135,7 +151,7 @@ namespace ASCOM.DynamicRemoteClients
                 TL.LogMessage("ReadConfiguration", string.Format("There are {0} {1} remote drivers", deviceTypeSummary[deviceType], deviceType));
             }
 
-            // Set the numeric updown controls to the current number of drivers of each type
+            // Set the numeric up-down controls to the current number of drivers of each type
             NumCamera.Value = deviceTypeSummary["Camera"];
             NumDome.Value = deviceTypeSummary["Dome"];
             NumFilterWheel.Value = deviceTypeSummary["FilterWheel"];
@@ -148,7 +164,7 @@ namespace ASCOM.DynamicRemoteClients
         }
 
         /// <summary>
-        /// Event handler for all numeric updown controls - sets the background yellow if it is changes from the current value
+        /// Event handler for all numeric up-down controls - sets the background yellow if it is changes from the current value
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -208,83 +224,105 @@ namespace ASCOM.DynamicRemoteClients
         /// </remarks>
         private void BtnApply_Click(object sender, EventArgs e)
         {
-            // Disable controls so that the process can't be stopped part way through 
-            DisableControls();
-
-            string localServerExe = Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86) + REMOTE_SERVER_PATH + REMOTE_SERVER;
-            if (File.Exists(localServerExe)) // Local server does exist
+            try
             {
-                TL.LogMessage("Apply", string.Format("Found local server {0}", localServerExe));
+                // Disable controls so that the process can't be stopped part way through 
+                DisableControls(true);
 
-                ArrayList deviceTypes = profile.RegisteredDeviceTypes;
-
-                // Unregister existing drivers
-                RunLocalServer(localServerExe, "-unregserver", TL);
-
-                foreach (string deviceType in deviceTypes)
+                string localServerExe = Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86) + REMOTE_SERVER_PATH + REMOTE_SERVER;
+                if (File.Exists(localServerExe)) // Local server does exist
                 {
-                    Control[] c = this.Controls.Find(NUMERIC_UPDOWN_CONTROLNAME_PREXIX + deviceType, true);
-                    NumericUpDown numControl = (NumericUpDown)c[0];
+                    TL.LogMessage("Apply", string.Format("Found local server {0}", localServerExe));
+                    ArrayList deviceTypes = profile.RegisteredDeviceTypes;
 
-                    // Delete files above the number required
-                    string localServerPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86) + REMOTE_SERVER_PATH;
-                    string searchPattern = string.Format(REMOTE_CLIENT_DRIVER_NAME_TEMPLATE, deviceType);
+                    // Unregister existing drivers
+                    RunLocalServer(localServerExe, "-unregserver", TL);
 
-                    TL.LogMessage("Apply", string.Format("Searching for {0} driver files in {1} using pattern: {2}", deviceType, localServerPath, searchPattern));
-
-                    List<string> files = Directory.GetFiles(localServerPath, searchPattern, SearchOption.TopDirectoryOnly).ToList();
-                    TL.LogMessage("Apply", string.Format("Found {0} driver files", files.Count));
-
-                    foreach (string file in files)
+                    // Iterate over all of the installed device types
+                    foreach (string deviceType in deviceTypes)
                     {
-                        TL.LogMessage("Apply", string.Format("Found driver file {0}", file));
-                        try
+                        // Only attempt to process a device type if it is one that we support, otherwise ignore it
+                        if (supportedDeviceTypes.Contains(deviceType, StringComparer.OrdinalIgnoreCase))
                         {
-                            File.Delete(file);
-                            TL.LogMessage("Apply", string.Format("Successfully deleted driver file {0}", file));
-                        }
-                        catch (Exception ex)
-                        {
-                            string errorMessage = string.Format("Unable to delete driver file {0} - {1}", file, ex.Message);
-                            TL.LogMessage("Apply", errorMessage);
-                            MessageBox.Show(errorMessage);
-                        }
-                    }
+                            // This device type is recognised so process it
+                            TL.LogMessage("Apply", string.Format("Processing device type: \"{0}\"", deviceType));
+                            Control[] c = this.Controls.Find(NUMERIC_UPDOWN_CONTROLNAME_PREXIX + deviceType, true);
+                            NumericUpDown numControl = (NumericUpDown)c[0];
 
-                    // Unregister drivers
-                    List<DriverRegistration> result = (from s in remoteDrivers where s.DeviceType.Equals(deviceType, StringComparison.InvariantCultureIgnoreCase) select s).ToList();
-                    foreach (DriverRegistration driver in result)
-                    {
-                        if (driver.Number > numControl.Value)
-                        {
-                            TL.LogMessage("Apply", string.Format("Removing driver Profile registration for {0} driver: {1} - {2} - {3}", deviceType, driver.ProgId, driver.Number, driver.DeviceType));
-                            profile.DeviceType = deviceType;
-                            profile.Unregister(driver.ProgId);
+                            // Delete files above the number required
+                            string localServerPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86) + REMOTE_SERVER_PATH;
+                            string searchPattern = string.Format(REMOTE_CLIENT_DRIVER_NAME_TEMPLATE, deviceType);
+
+                            TL.LogMessage("Apply", string.Format("Searching for {0} driver files in {1} using pattern: {2}", deviceType, localServerPath, searchPattern));
+
+                            List<string> files = Directory.GetFiles(localServerPath, searchPattern, SearchOption.TopDirectoryOnly).ToList();
+                            TL.LogMessage("Apply", string.Format("Found {0} driver files", files.Count));
+
+                            foreach (string file in files)
+                            {
+                                TL.LogMessage("Apply", string.Format("Found driver file {0}", file));
+                                try
+                                {
+                                    File.Delete(file);
+                                    TL.LogMessage("Apply", string.Format("Successfully deleted driver file {0}", file));
+                                }
+                                catch (Exception ex)
+                                {
+                                    string errorMessage = string.Format("Unable to delete driver file {0} - {1}", file, ex.Message);
+                                    TL.LogMessage("Apply", errorMessage);
+                                    MessageBox.Show(errorMessage);
+                                }
+                            }
+
+                            // Unregister drivers
+                            List<DriverRegistration> result = (from s in remoteDrivers where s.DeviceType.Equals(deviceType, StringComparison.InvariantCultureIgnoreCase) select s).ToList();
+                            foreach (DriverRegistration driver in result)
+                            {
+                                if (driver.Number > numControl.Value)
+                                {
+                                    TL.LogMessage("Apply", string.Format("Removing driver Profile registration for {0} driver: {1} - {2} - {3}", deviceType, driver.ProgId, driver.Number, driver.DeviceType));
+                                    profile.DeviceType = deviceType;
+                                    profile.Unregister(driver.ProgId);
+                                }
+                                else
+                                {
+                                    TL.LogMessage("Apply", string.Format("Leaving driver Profile in place for {0} driver: {1} - {2} - {3}", deviceType, driver.ProgId, driver.Number, driver.DeviceType));
+                                }
+                            }
+
+                            // Create required number of drivers
+                            for (int i = 1; i <= numControl.Value; i++)
+                            {
+                                CreateDriver(deviceType, i, localServerPath, TL);
+                            }
                         }
                         else
                         {
-                            TL.LogMessage("Apply", string.Format("Leaving driver Profile in place for {0} driver: {1} - {2} - {3}", deviceType, driver.ProgId, driver.Number, driver.DeviceType));
+                            TL.LogMessage("Apply", string.Format("Ignoring unsupported device type: \"{0}\"", deviceType));
+                            TL.BlankLine();
                         }
                     }
 
-                    // Create required number of drivers
-                    for (int i = 1; i <= numControl.Value; i++)
-                    {
-                        CreateDriver(deviceType, i, localServerPath, TL);
-                    }
+                    // Register the drivers
+                    RunLocalServer(localServerExe, "-regserver", TL);
+                    ReadConfiguration();
                 }
-
-                // Register the drivers
-                RunLocalServer(localServerExe, "-regserver", TL);
-                ReadConfiguration();
+                else // Local server can not be found
+                {
+                    string errorMessage = string.Format("Could not find local server {0}", localServerExe);
+                    TL.LogMessage("Apply", errorMessage);
+                    MessageBox.Show(errorMessage);
+                }
             }
-            else // Local server can not be found
+            catch (Exception ex)
             {
-                string errorMessage = string.Format("Could not find local server {0}", localServerExe);
-                TL.LogMessage("Apply", errorMessage);
-                MessageBox.Show(errorMessage);
+                TL.LogMessageCrLf("Apply - Exception", ex.ToString());
+                MessageBox.Show("Sorry, en error occurred during Apply, please report this error message on the ASCOM Talk forum hosted at Groups.Io.\r\n\n" + ex.Message, "ASCOM Dynamic Clients", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            EnableControls();
+            finally
+            {
+                EnableControls(); // Ensure that controls are re-enabled regardless of whatever happened
+            }
         }
 
         /// <summary>
@@ -305,14 +343,14 @@ namespace ASCOM.DynamicRemoteClients
             start.CreateNoWindow = true;
 
             // Run the external process & wait for it to finish
-            TL.LogMessage("RunLocalServer", string.Format("Starting server with parmeter {0}...", serverParameter));
+            TL.LogMessage("RunLocalServer", string.Format("Starting server with parameter {0}...", serverParameter));
             using (Process proc = Process.Start(start))
             {
                 exitOK = proc.WaitForExit(LOCALSERVER_WAIT_TIME);
                 if (exitOK) exitCode = proc.ExitCode; // Save the exit code
             }
 
-            if (exitOK) TL.LogMessage("RunLocalServer", string.Format("Local server exited ok with return code: {0}", exitCode));
+            if (exitOK) TL.LogMessage("RunLocalServer", string.Format("Local server exited OK with return code: {0}", exitCode));
             else
             {
                 string errorMessage = string.Format("local server did not complete within {0} milliseconds, return code: {0}", LOCALSERVER_WAIT_TIME, exitCode);
@@ -536,10 +574,10 @@ namespace ASCOM.DynamicRemoteClients
         /// <summary>
         /// Disables all UI controls - used when drivers are being created
         /// </summary>
-        private void DisableControls()
+        private void DisableControls(bool DisableExit)
         {
+            if (DisableExit) BtnExit.Enabled = false;
             BtnApply.Enabled = false;
-            BtnExit.Enabled = false;
             NumCamera.Enabled = false;
             NumDome.Enabled = false;
             NumFilterWheel.Enabled = false;
