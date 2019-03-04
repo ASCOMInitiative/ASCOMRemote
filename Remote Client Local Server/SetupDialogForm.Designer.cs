@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupDialogForm));
             this.numPort = new System.Windows.Forms.NumericUpDown();
             this.addressList = new System.Windows.Forms.ComboBox();
@@ -58,17 +59,19 @@
             this.groupBoxConnectDisconnect = new System.Windows.Forms.GroupBox();
             this.radManageConnectRemotely = new System.Windows.Forms.RadioButton();
             this.radManageConnectLocally = new System.Windows.Forms.RadioButton();
+            this.SetupErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRemoteDeviceNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStandardTimeout)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numLongTimeout)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numEstablishCommunicationsTimeout)).BeginInit();
             this.groupBoxConnectDisconnect.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.SetupErrorProvider)).BeginInit();
             this.SuspendLayout();
             // 
             // numPort
             // 
-            this.numPort.Location = new System.Drawing.Point(466, 35);
+            this.numPort.Location = new System.Drawing.Point(476, 35);
             this.numPort.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -98,7 +101,7 @@
             // 
             // numRemoteDeviceNumber
             // 
-            this.numRemoteDeviceNumber.Location = new System.Drawing.Point(577, 35);
+            this.numRemoteDeviceNumber.Location = new System.Drawing.Point(587, 35);
             this.numRemoteDeviceNumber.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -112,7 +115,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(564, 18);
+            this.label1.Location = new System.Drawing.Point(574, 18);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(117, 13);
             this.label1.TabIndex = 8;
@@ -150,7 +153,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(488, 18);
+            this.label3.Location = new System.Drawing.Point(498, 18);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(39, 13);
             this.label3.TabIndex = 12;
@@ -189,7 +192,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(456, 37);
+            this.label7.Location = new System.Drawing.Point(461, 37);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(10, 13);
             this.label7.TabIndex = 17;
@@ -394,13 +397,17 @@
             this.radManageConnectLocally.Text = "Manage connect / disconnect locally - don\'t send commands to remote server";
             this.radManageConnectLocally.UseVisualStyleBackColor = true;
             // 
+            // SetupErrorProvider
+            // 
+            this.SetupErrorProvider.ContainerControl = this;
+            // 
             // SetupDialogForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(692, 402);
+            this.ClientSize = new System.Drawing.Size(697, 402);
             this.Controls.Add(this.groupBoxConnectDisconnect);
             this.Controls.Add(this.chkDebugTrace);
             this.Controls.Add(this.chkTrace);
@@ -440,6 +447,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numEstablishCommunicationsTimeout)).EndInit();
             this.groupBoxConnectDisconnect.ResumeLayout(false);
             this.groupBoxConnectDisconnect.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.SetupErrorProvider)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -476,5 +484,6 @@
         private System.Windows.Forms.GroupBox groupBoxConnectDisconnect;
         private System.Windows.Forms.RadioButton radManageConnectRemotely;
         private System.Windows.Forms.RadioButton radManageConnectLocally;
+        private System.Windows.Forms.ErrorProvider SetupErrorProvider;
     }
 }

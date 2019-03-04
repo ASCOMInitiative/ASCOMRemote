@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace ASCOM.Remote
@@ -27,8 +28,11 @@ namespace ASCOM.Remote
         public bool DebugTraceState { get; set; }
         public bool ManageConnectLocally { get; set; }
 
-        private bool selectByMouse = false; // Variable to help select the whole contents of a numeric updown box when tabbed into our selected by mouse
+        private bool selectByMouse = false; // Variable to help select the whole contents of a numeric up-down box when tabbed into our selected by mouse
 
+        // Create validating regular expression
+        Regex validHostnameRegex = new Regex(SharedConstants.ValidHostnameRegex, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        Regex validIpAddressRegex = new Regex(SharedConstants.ValidIpAddressRegex, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         #endregion
 
         #region Initialisation and Form Load
@@ -42,7 +46,7 @@ namespace ASCOM.Remote
             cmbServiceType.DrawItem += new DrawItemEventHandler(ComboBox_DrawItem);
             cmbServiceType.DrawMode = DrawMode.OwnerDrawFixed;
 
-            // Create event handlers to select the whole contents of the numeric updown boxes when tabbed into or selected by mouse click
+            // Create event handlers to select the whole contents of the numeric up-down boxes when tabbed into or selected by mouse click
             numPort.Enter += NumericUpDown_Enter;
             numPort.MouseDown += NumericUpDown_MouseDown;
             numRemoteDeviceNumber.Enter += NumericUpDown_Enter;
@@ -53,6 +57,59 @@ namespace ASCOM.Remote
             numStandardTimeout.MouseDown += NumericUpDown_MouseDown;
             numLongTimeout.Enter += NumericUpDown_Enter;
             numLongTimeout.MouseDown += NumericUpDown_MouseDown;
+
+            // Add event handler to validate the supplied host name
+            addressList.Validating += AddressList_Validating;
+        }
+
+        public bool IsIpAddress(string s)
+        {
+            foreach (char c in s)
+            {
+                if ((!Char.IsDigit(c)) && (c != '.')) return false; // Make sure that the strong only contains digits and the point character
+            }
+            return true;
+        }
+
+        private void AddressList_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool isValid = false;
+
+            if (IsIpAddress(addressList.Text)) // The host name is an IP address so test whether this is valid
+            {
+                MatchCollection matches = validIpAddressRegex.Matches(addressList.Text);
+                if (matches.Count == 0)
+                {
+                    SetupErrorProvider.SetError(addressList, "IP addresses can only contain digits and the point character in the form WWW.XXX.YYY.ZZZ.");
+                }
+                else
+                {
+                    isValid = true;
+                }
+            }
+            else // The host name is a string rather than an IP address so validate this
+            {
+                MatchCollection matches = validHostnameRegex.Matches(addressList.Text);
+                if (matches.Count == 0)
+                {
+                    SetupErrorProvider.SetError(addressList, "Not a valid host name.");
+                }
+                else
+                {
+                    isValid = true;
+                }
+            }
+
+            if (isValid)
+            {
+                SetupErrorProvider.Clear();
+                btnOK.Enabled = true;
+            }
+            else
+            {
+                btnOK.Enabled = false;
+            }
+
         }
 
         public SetupDialogForm(TraceLoggerPlus TraceLogger) : this()
@@ -141,7 +198,6 @@ namespace ASCOM.Remote
             UserName = txtUserName.Text.Encrypt(TL); // Encrypt the provided username and password
             Password = txtPassword.Text.Encrypt(TL);
             ManageConnectLocally = radManageConnectLocally.Checked;
-
             this.DialogResult = DialogResult.OK;
             Close();
         }
