@@ -107,8 +107,9 @@ namespace ASCOM.Remote
         internal const string DEVICENUMBER_PROFILENAME = "Device Number"; public const int DEVICENUMBER_DEFAULT = 0;
 
         // !!!!! This list must match the names of the ServedDevice instances on the SetupForm !!!!!
-        internal static ConcurrentBag<string> ServerDeviceNames = new ConcurrentBag<string>() { "ServedDevice0", "ServedDevice1", "ServedDevice2", "ServedDevice3", "ServedDevice4", "ServedDevice5", "ServedDevice6", "ServedDevice7", "ServedDevice8", "ServedDevice9" };
-        internal static List<string> ServerDeviceNumbers = new List<string>() { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+        // The list is in reverse order because ForEach enumerates items starting with the last added and working towards the first. ServedDevice0 must be last in the order so that it is printed first in the log...
+        internal static ConcurrentBag<string> ServerDeviceNames = new ConcurrentBag<string>() { "ServedDevice9", "ServedDevice8", "ServedDevice7", "ServedDevice6", "ServedDevice5", "ServedDevice4", "ServedDevice3", "ServedDevice2", "ServedDevice1", "ServedDevice0" };
+        internal static List<string> ServerDeviceNumbers = new List<string>() { "9", "8", "7", "6", "5", "4", "3", "2", "1", "0" };
 
         // Form size and resize constants
         internal const int FORM_MINIMUM_WIDTH = 400; // Server form minimum width
@@ -252,6 +253,8 @@ namespace ASCOM.Remote
                 LblRESTStatus.Parent = PboxRESTStatus;
                 LblRESTStatus.Location = new Point(0, 0);
 
+                // Write starting configuration to log
+                WriteConfigurationToLog();
 
                 LogMessage(0, 0, 0, "New", "Initialisation complete");
             }
@@ -485,6 +488,7 @@ namespace ASCOM.Remote
                 DisconnectDevices(); // Shut down all the ASCOM device instances
                 ActiveObjects.Clear();
                 GC.Collect();
+                LogBlankLine(0, 0, 0);
 
                 // Create new ASCOM device instances
                 foreach (KeyValuePair<string, ConfiguredDevice> configuredDevice in ConfiguredDevices)
@@ -493,18 +497,21 @@ namespace ASCOM.Remote
                     {
                         try
                         {
+
+                            // Create an active object for this device
+                            ActiveObjects[configuredDevice.Value.DeviceKey] = new ActiveObject(configuredDevice.Value.AllowConnectedSetFalse, configuredDevice.Value.AllowConnectedSetTrue);
+
                             if (RunDriversOnSeparateThreads)
                             {
-                                LogMessage(0, 0, 0, "ConnectDevices", string.Format("Creating driver on separate thread. This is thread: {0}", Thread.CurrentThread.ManagedThreadId));
+                                LogMessage(0, 0, 0, "ConnectDevices", string.Format("Creating driver {0} on separate thread. This is thread: {1}", configuredDevice.Value.ProgID, Thread.CurrentThread.ManagedThreadId));
                                 Thread driverThread = new Thread(DriverOnSeparateThread);
                                 driverThread.SetApartmentState(ApartmentState.STA);
                                 driverThread.DisableComObjectEagerCleanup();
                                 driverThread.IsBackground = true;
                                 driverThread.Start(configuredDevice);
-                                LogMessage(0, 0, 0, "ConnectDevices", string.Format("Thread started successfully. This is thread: {0}", Thread.CurrentThread.ManagedThreadId));
+                                LogMessage(0, 0, 0, "ConnectDevices", string.Format("Thread started successfully for {0}. This is thread: {1}", configuredDevice.Value.ProgID, Thread.CurrentThread.ManagedThreadId));
 
                                 string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber);
-                                ActiveObjects[deviceKey] = new ActiveObject();
 
                                 do
                                 {
@@ -512,7 +519,7 @@ namespace ASCOM.Remote
                                     Application.DoEvents();
                                 } while (ActiveObjects[deviceKey].DriverHostForm == null);
 
-                                LogMessage(0, 0, 0, "ConnectDevices", string.Format("Completed create driver delegate on thread {0}", Thread.CurrentThread.ManagedThreadId));
+                                LogMessage(0, 0, 0, "ConnectDevices", string.Format("Completed create driver delegate for {0} on thread {1}", configuredDevice.Value.ProgID, Thread.CurrentThread.ManagedThreadId));
                             }
                             else
                             {
@@ -529,6 +536,7 @@ namespace ASCOM.Remote
                             LogToScreen(string.Format("Exception while attempting to create thread for device: {0} {1}", configuredDevice.Value.ProgID, ex.Message));
                             LogException(0, 0, 0, "ConnectDevices", ex.ToString());
                         }
+                        LogBlankLine(0, 0, 0);
                     }
                 }
 
@@ -547,7 +555,6 @@ namespace ASCOM.Remote
         private void DriverOnSeparateThread(object arg)
         {
             KeyValuePair<string, ConfiguredDevice> configuredDevice = (KeyValuePair<string, ConfiguredDevice>)arg; // Convert the supplied argument to the correct type
-            string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber); // Recreate the device key to use in log messages
 
             LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("About to create driver host form"));
             DriverHostForm driverHostForm = new DriverHostForm(configuredDevice, this); // Create the form
@@ -557,9 +564,9 @@ namespace ASCOM.Remote
             driverHostForm.Hide(); // Hide the form from view
             LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Hidden driver host form"));
 
-            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Starting driver host environment for {0} on thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Starting driver host environment for {0} on thread {1}", configuredDevice.Value.DeviceKey, Thread.CurrentThread.ManagedThreadId));
             Application.Run();  // Start the message loop on this thread to bring the form to life
-            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Environment for driver host {0} shut down on thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Environment for driver host {0} shut down on thread {1}", configuredDevice.Value.DeviceKey, Thread.CurrentThread.ManagedThreadId));
 
             // Thread will finish at this point
         }
@@ -568,32 +575,46 @@ namespace ASCOM.Remote
         {
             try
             {
-                string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber);
-                LogMessage(0, 0, 0, "CreateInstance", string.Format("Creating device: {0}, ProgID: {1}, Key: {2} on thread {3}", configuredDevice.Key, configuredDevice.Value.ProgID, deviceKey, Thread.CurrentThread.ManagedThreadId));
+                LogMessage(0, 0, 0, "CreateInstance", string.Format("Creating device: {0}, ProgID: {1}, Key: {2} on thread {3}", configuredDevice.Key, configuredDevice.Value.ProgID, configuredDevice.Value.DeviceKey, Thread.CurrentThread.ManagedThreadId));
 
-                dynamic deviceObject = Activator.CreateInstance(Type.GetTypeFromProgID(configuredDevice.Value.ProgID));
-                LogMessage(0, 0, 0, "CreateInstance", string.Format("Device object is null: {0}", (deviceObject == null)));
-                ActiveObjects[deviceKey] = new ActiveObject(deviceObject, configuredDevice.Value.AllowConnectedSetFalse, configuredDevice.Value.AllowConnectedSetTrue);
-                LogMessage(0, 0, 0, "CreateInstance", string.Format("ActiveObjects.DeviceObject is null: {0}", (ActiveObjects[deviceKey].DeviceObject == null)));
+                // Create the device and save its reference to the ActiveObject instance
+                Type deviceType = Type.GetTypeFromProgID(configuredDevice.Value.ProgID);
+                dynamic deviceObject = Activator.CreateInstance(deviceType);
+                ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject = deviceObject;
+                LogMessage(0, 0, 0, "CreateInstance", string.Format("Device {0} created OK!", configuredDevice.Value.ProgID));
 
-                try
+                // make sure that a device object was actually returned
+                if (ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject != null) // A device object was returned
                 {
-                    LogMessage(0, 0, 0, "CreateInstance", "Connecting device");
-                    deviceObject.Connected = true;
+                    try
+                    {
+                        LogMessage(0, 0, 0, "CreateInstance", string.Format("Connecting device {0}", configuredDevice.Value.ProgID));
+                        ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject.Connected = true;
+                        ActiveObjects[configuredDevice.Value.DeviceKey].InitialisedOk = true; // Set flag indicating that this device initialised and connected OK
+                        LogMessage(0, 0, 0, "CreateInstance", string.Format("Device {0} connected OK", configuredDevice.Value.ProgID));
+                    }
+                    catch (Exception ex1)
+                    {
+                        ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - it threw an error while being connected: {1}", configuredDevice.Value.ProgID, ex1.Message);
+                        LogException(0, 0, 0, "CreateInstance", string.Format("Error connecting to device {0}: \r\n{1}", configuredDevice.Value.ProgID, ex1.ToString()));
+                    }
                 }
-                catch (Exception ex1)
+                else // No device object was returned so flag that an error occurred
                 {
-                    LogException(0, 0, 0, "CreateInstance", "Error connecting to device: \r\n" + ex1.ToString());
+                    ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - no device was returned from CreateInstance but no exception was generated either!", configuredDevice.Value.ProgID);
+                    LogMessage(0, 0, 0, "CreateInstance", string.Format("Device created OK - ActiveObjects.DeviceObject is null: {0}", (ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject == null)));
                 }
             }
             catch (Exception ex)
             {
+                ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - it threw an error while being created: {1}", configuredDevice.Value.ProgID, ex.Message);
                 LogException(0, 0, 0, "CreateInstance", "Error creating device: \r\n" + ex.ToString());
             }
         }
 
         private void DisconnectDevices()
         {
+            LogBlankLine(0, 0, 0);
             LogMessage(0, 0, 0, "DisconnectDevices", "Clearing devices");
             int RemainingObjectCount;
 
@@ -624,6 +645,7 @@ namespace ASCOM.Remote
                 {
                     LogException(0, 0, 0, "DisconnectDevices", "  ReleaseComObject Exception: " + ex.ToString());
                 }
+                LogBlankLine(0, 0, 0);
             }
 
             ActiveObjects.Clear(); // Clear the list of active objects now that all active device instances have been destroyed
@@ -744,6 +766,37 @@ namespace ASCOM.Remote
                     TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
                 }
                 LastTraceLogTime = now; // Update the last log time so that it can be tested on the next logging call
+            }
+        }
+
+        private static void WriteConfigurationToLog()
+        {
+            LogBlankLine(0, 0, 0);
+            LogMessage(0, 0, 0, "Configuration", "Variables");
+            LogMessage(0, 0, 0, "Trace State", TraceState.ToString());
+            LogMessage(0, 0, 0, "Debug Trace State", DebugTraceState.ToString());
+            LogMessage(0, 0, 0, "Server IP Address", ServerIPAddressString);
+            LogMessage(0, 0, 0, "Server IP Port", ServerPortNumber.ToString());
+            LogMessage(0, 0, 0, "Start Connected", StartWithDevicesConnected.ToString());
+            LogMessage(0, 0, 0, "Access Log Enabled", AccessLogEnabled.ToString());
+            LogMessage(0, 0, 0, "Log Request To Screen", ScreenLogRequests.ToString());
+            LogMessage(0, 0, 0, "Log Response To Screen", ScreenLogResponses.ToString());
+            LogMessage(0, 0, 0, "Management Interface", ManagementInterfaceEnabled.ToString());
+            LogMessage(0, 0, 0, "Start With API Enabled", StartWithApiEnabled.ToString());
+            LogMessage(0, 0, 0, "Use Separate Threads", RunDriversOnSeparateThreads.ToString());
+            LogMessage(0, 0, 0, "Log Client IP Address", LogClientIPAddress.ToString());
+            LogMessage(0, 0, 0, "Include Exceptions", IncludeDriverExceptionInJsonResponse.ToString());
+            LogBlankLine(0, 0, 0);
+
+            foreach (string deviceName in ServerDeviceNames)
+            {
+                LogMessage(0, 0, 0, deviceName, string.Format("Device Type               = {0}", ConfiguredDevices[deviceName].DeviceType.ToString()));
+                LogMessage(0, 0, 0, deviceName, string.Format("ProgID                    = {0}", ConfiguredDevices[deviceName].ProgID.ToString()));
+                LogMessage(0, 0, 0, deviceName, string.Format("Description               = {0}", ConfiguredDevices[deviceName].Description.ToString()));
+                LogMessage(0, 0, 0, deviceName, string.Format("Device Number             = {0}", ConfiguredDevices[deviceName].DeviceNumber.ToString()));
+                LogMessage(0, 0, 0, deviceName, string.Format("Allow Connected Set False = {0}", ConfiguredDevices[deviceName].AllowConnectedSetFalse.ToString()));
+                LogMessage(0, 0, 0, deviceName, string.Format("Allow Connected Set True  = {0}", ConfiguredDevices[deviceName].AllowConnectedSetTrue.ToString()));
+                LogBlankLine(0, 0, 0);
             }
         }
 
@@ -915,7 +968,10 @@ namespace ASCOM.Remote
             DialogResult outcome = frm.ShowDialog();
             LogMessage(0, 0, 0, "SetupButton", string.Format("Setup dialogue outcome: {0}", outcome.ToString()));
 
-            // Restore original server state
+            // Log new configuration
+            WriteConfigurationToLog();
+
+            // Start with new configuration
             if (devicesConnected)
             {
                 LogMessage(0, 0, 0, "SetupButton", string.Format("Connecting devices"));
@@ -1299,32 +1355,40 @@ namespace ASCOM.Remote
                             case SharedConstants.API_VERSION_V1: // OK so we have a V1 request
                                 if ((ServerDeviceNumbers.Contains(elements[URL_ELEMENT_DEVICE_NUMBER])) & (elements[URL_ELEMENT_DEVICE_NUMBER] != "")) // OK so we have a valid device number
                                 {
-                                    string deviceKey = elements[URL_ELEMENT_DEVICE_TYPE] + @"/" + elements[URL_ELEMENT_DEVICE_NUMBER]; // Create a unique key from device type and device number
-                                    requestData.DeviceKey = deviceKey;
+                                    string deviceKey = string.Format("{0}/{1}", elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_DEVICE_NUMBER]); // Create the device key from the supplied device type and device number parameters
 
-                                    // Ensure that the device exists
-                                    if (ActiveObjects.ContainsKey(deviceKey)) // Device is configured
+                                    requestData.DeviceKey = deviceKey; // Save the device key for use throughout the remainder of the application
+
+                                    // Check whether the device is configured on the Remote Server
+                                    if (ActiveObjects.ContainsKey(deviceKey)) // Device is configured on the server, now check whether it initialised OK
                                     {
-                                        // Ensure that we only process one command at a time for this driver
-                                        lock (ActiveObjects[deviceKey].CommandLock) // Proceed when we have a lock for this device
+                                        if (ActiveObjects[deviceKey].InitialisedOk) // The device did initialise OK
                                         {
-                                            // Confirm that the device requested is available on this server and process the request
-                                            if (RunDriversOnSeparateThreads)
+                                            // Ensure that we only process one command at a time for this driver
+                                            lock (ActiveObjects[deviceKey].CommandLock) // Proceed when we have a lock for this device
                                             {
-                                                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("ProcessRequestAsync is sending driver command to {0} from thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
-                                                DriverCommandDelegate driverCommandDelegate = new DriverCommandDelegate(ActiveObjects[deviceKey].DriverHostForm.DriverCommand);
-                                                ActiveObjects[deviceKey].DriverHostForm.Invoke(driverCommandDelegate, requestData);
-                                                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("ProcessRequestAsync has completed driver command to {0} from thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
+                                                // Process the request on this thread or pass to the Windows Form hosting the driver when drivers are configured to run on separate threads
+                                                if (RunDriversOnSeparateThreads)
+                                                {
+                                                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("ProcessRequestAsync is sending driver command to {0} from thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
+                                                    DriverCommandDelegate driverCommandDelegate = new DriverCommandDelegate(ActiveObjects[deviceKey].DriverHostForm.DriverCommand);
+                                                    ActiveObjects[deviceKey].DriverHostForm.Invoke(driverCommandDelegate, requestData);
+                                                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("ProcessRequestAsync has completed driver command to {0} from thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
+                                                }
+                                                else // Driver is running on the UI thread so just process the command
+                                                {
+                                                    ProcessDriverCommand(requestData);
+                                                }
                                             }
-                                            else // Driver is running on the UI thread so just process the command
-                                            {
-                                                ProcessDriverCommand(requestData);
-                                            }
+                                        }
+                                        else // Specified is configured but threw an error when created or when Connected was set True so return the error message
+                                        {
+                                            Return400Error(requestData, string.Format("Device {0} did not start correctly and is unavailable: {1}", deviceKey, ActiveObjects[deviceKey].InitialisationErrorMessage));
                                         }
                                     }
                                     else // Specified device is not configured so return an error message
                                     {
-                                        Return400Error(requestData, string.Format("Device {0} is not configured on this server", deviceKey));
+                                        Return400Error(requestData, string.Format("Device {0} is not configured on the Remote Server", deviceKey));
                                     }
                                 }
                                 else
@@ -2243,7 +2307,7 @@ namespace ASCOM.Remote
                 LogMessage1(requestData, "HTTP 400 Error", message);
                 LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, message));
 
-                TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.BadRequest, "400 " + CleanMessage(message), "400 " + CleanMessage(message));
+                TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.BadRequest, "400 - Unable to process request - see response content for details", CleanMessage(message));
             }
             catch (Exception ex)
             {
@@ -3262,15 +3326,6 @@ namespace ASCOM.Remote
         {
             DateTime dateTimeValue = DateTime.Now;
             Exception exReturn = null;
-
-            /*   string deviceType =                      requestData.Elements[URL_ELEMENT_DEVICE_TYPE]
-                 string method =                          requestData.Elements[URL_ELEMENT_METHOD]
-                 HttpListenerRequest request =            requestData.Request
-                 HttpListenerResponse response =          requestData.Response
-                 NameValueCollection suppliedparameters = requestData.SuppliedParameters
-                 int clientID =                           requestData.ClientID
-                 int clientTransactionID =                requestData.ClientTransactionID
-                 int serverTransactionID =                requestData.ServerTransactionID      */
 
             try
             {

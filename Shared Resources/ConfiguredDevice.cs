@@ -4,7 +4,7 @@ using System.Threading;
 namespace ASCOM.Remote
 {
     /// <summary>
-    /// Data response class to return the server device configuration. i.e. which devices are accessible through the http/JSON interface
+    /// Class to hold COM activation and access information for a served device
     /// </summary>
     public class ConfiguredDevice
     {
@@ -24,5 +24,16 @@ namespace ASCOM.Remote
         public int DeviceNumber { get; set; }
         public bool AllowConnectedSetFalse { get; set; }
         public bool AllowConnectedSetTrue { get; set; }
+
+        /// <summary>
+        /// Return a unique key for this device based on its device type and device number
+        /// </summary>
+        public string DeviceKey
+        {
+            get
+            {
+                return string.Format("{0}/{1}", DeviceType.ToLowerInvariant(), DeviceNumber); // Create the device key
+            }
+        }
     }
 }
