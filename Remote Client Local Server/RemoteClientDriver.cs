@@ -805,7 +805,7 @@ namespace ASCOM.Remote
                     else
                     {
                         TL.LogMessage(clientNumber, method + " Error", string.Format("RestRequest response status: {0}, HTTP response code: {1}, HTTP response description: {2}", response.ResponseStatus.ToString(), response.StatusCode, response.StatusDescription));
-                        throw new DriverException(method + " Error - Status: " + response.ResponseStatus + " " + response.StatusDescription);
+                        throw new DriverException(string.Format("Error calling method: {0}, HTTP Completion Status: {1}, Error Message:\r\n{2}", method, response.ResponseStatus, response.Content));
                     }
                 }
             }
