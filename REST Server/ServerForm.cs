@@ -592,23 +592,27 @@ namespace ASCOM.Remote
                         ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject.Connected = true;
                         ActiveObjects[configuredDevice.Value.DeviceKey].InitialisedOk = true; // Set flag indicating that this device initialised and connected OK
                         LogMessage(0, 0, 0, "CreateInstance", string.Format("Device {0} connected OK", configuredDevice.Value.ProgID));
+                        LogToScreen(string.Format("Device {0} {1} ({2}) connected OK and is available", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID));
                     }
-                    catch (Exception ex1)
+                    catch (Exception ex1) // Exception on setting Connected to True
                     {
                         ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - it threw an error while being connected: {1}", configuredDevice.Value.ProgID, ex1.Message);
                         LogException(0, 0, 0, "CreateInstance", string.Format("Error connecting to device {0}: \r\n{1}", configuredDevice.Value.ProgID, ex1.ToString()));
+                        LogToScreen(string.Format("ERROR - Device {0} {1} ({2}) failed to connect and is NOT available: {3}", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID, ex1.Message));
                     }
                 }
                 else // No device object was returned so flag that an error occurred
                 {
                     ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - no device was returned from CreateInstance but no exception was generated either!", configuredDevice.Value.ProgID);
                     LogMessage(0, 0, 0, "CreateInstance", string.Format("Device created OK - ActiveObjects.DeviceObject is null: {0}", (ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject == null)));
+                    LogToScreen(string.Format("ERROR - Device {0} {1} ({2}) could not be created and is NOT available. It did not create an exception or error message!", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID));
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) // Exception when creating device
             {
                 ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - it threw an error while being created: {1}", configuredDevice.Value.ProgID, ex.Message);
                 LogException(0, 0, 0, "CreateInstance", "Error creating device: \r\n" + ex.ToString());
+                LogToScreen(string.Format("ERROR - Device {0} {1} ({2}) could not be created and is NOT available: {3}", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID, ex.Message));
             }
         }
 
@@ -661,8 +665,13 @@ namespace ASCOM.Remote
 
             device = ActiveObjects[DeviceKey].DeviceObject;
 
+            if (DebugTraceState) LogMessage(0, 0, 0, "DestroyDriver", string.Format("Before setting Connected false for driver: {0}", DeviceKey));
             try { device.Connected = false; } catch { }// Don't throw exceptions from these
+
+            if (DebugTraceState) LogMessage(0, 0, 0, "DestroyDriver", string.Format("Before setting Link false for driver: {0}", DeviceKey));
             try { device.Link = false; } catch { }
+
+            if (DebugTraceState) LogMessage(0, 0, 0, "DestroyDriver", string.Format("Before calling Dispose() for driver: {0}", DeviceKey));
             try { device.Dispose(); } catch { }
 
             // Now destroy the device instance
@@ -674,6 +683,7 @@ namespace ASCOM.Remote
                 do
                 {
                     LoopCount += 1;
+                    if (DebugTraceState) LogMessage(0, 0, 0, "DestroyDriver", string.Format("Before calling ReleaseComObject() for driver: {0}", DeviceKey));
                     try { RemainingObjectCount = Marshal.ReleaseComObject(device); } catch { } // Don't throw exceptions from this
                     LogMessage(0, 0, 0, "DestroyDriver", string.Format("Remaining {0} count: {1}, LoopCount: {2}", DeviceKey, RemainingObjectCount, LoopCount));
                 }
@@ -686,13 +696,14 @@ namespace ASCOM.Remote
             return RemainingObjectCount;
         }
 
-        internal void WaitFor(int Duration)
+        internal static void WaitFor(int Duration)
         {
             const int SLEEP_TIME = 20;
             int remainingDuration;
 
             remainingDuration = Duration;
 
+            if (DebugTraceState) LogMessage(0, 0, 0, "WaitFor", string.Format("Starting wait for {0} milli-seconds", Duration));
             do
             {
                 remainingDuration -= SLEEP_TIME;
@@ -700,6 +711,7 @@ namespace ASCOM.Remote
                 Application.DoEvents();
 
             } while (remainingDuration > 0);
+            if (DebugTraceState) LogMessage(0, 0, 0, "WaitFor", string.Format("Completed wait for {0} milli-seconds", Duration));
         }
 
         internal static void LogMessage(uint clientID, uint clientTransactionID, uint serverTransactionID, string Method, string Message)
