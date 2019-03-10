@@ -42,10 +42,10 @@
     </StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>ASCOM Remote Signing Key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Remote Server Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>ASCOM.ico</ApplicationIcon>
@@ -206,7 +206,7 @@
       <DependentUpon>ServerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="ASCOM Remote Signing Key.snk" />
+    <None Include="Remote Server Key.snk" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ASCOM.ico" />
