@@ -60,10 +60,10 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>LocalServer.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>ASCOM Remote Signing Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ASCOM.Attributes, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL" />
@@ -228,7 +228,7 @@
     <Content Include="ReadMe.htm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="LocalServer.snk" />
+    <None Include="ASCOM Remote Signing Key.snk" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
