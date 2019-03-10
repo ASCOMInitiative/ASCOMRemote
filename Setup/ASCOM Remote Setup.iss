@@ -1,5 +1,5 @@
 ;
-; Script to sinatll the ASCOM Remote Drivers and ASCOM Remote Server
+; Script to install the ASCOM Remote Drivers and ASCOM Remote Server
 ;
 
 ; Install direrctory names
