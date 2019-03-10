@@ -70,7 +70,7 @@ namespace ASCOM.Remote
         {
             try // Make sure that we still try and set the firewall rules even if we bomb out trying to get information on the firewall configuration
             {
-                TL.LogMessage("QueryFireWall", string.Format("Firewall version: {0}", FirewallManager.Version.ToString())); // Log the firfewall version in use
+                TL.LogMessage("QueryFireWall", string.Format("Firewall version: {0}", FirewallManager.Version.ToString())); // Log the firewall version in use
                 foreach (IProfile profile in FirewallManager.Instance.Profiles)
                 {
                     TL.LogMessage("QueryFireWall", string.Format("Found current firewall profile {0}, enabled: {1}", profile.Type.ToString(), profile.IsActive));
@@ -184,7 +184,7 @@ namespace ASCOM.Remote
                 SendNetshCommand(localHostCommand);
 
                 // Remove + and * wild card entries if present
-                string plusCommand = string.Format(@"http delete urlacl url=http://+:{0}",  portAndUri);
+                string plusCommand = string.Format(@"http delete urlacl url=http://+:{0}", portAndUri);
                 TL.LogMessage("Network", string.Format("Sending UrlAcl Delete command to NetSh: {0}", plusCommand));
                 SendNetshCommand(plusCommand);
                 string starCommand = string.Format(@"http delete urlacl url=http://*:{0}", portAndUri);
