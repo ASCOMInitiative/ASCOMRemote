@@ -146,7 +146,11 @@ namespace ASCOM.Remote
                         rule = FirewallManager.Instance.CreateApplicationRule(FirewallManager.Instance.GetProfile().Type, FirewallRuleName + INBOUND_RULE_NAME, FirewallAction.Allow, applicationPathFull);
                         rule.Direction = FirewallDirection.Inbound;
                         rule.Profiles = FirewallProfiles.Domain | FirewallProfiles.Private | FirewallProfiles.Public;
+
+                        // Add edge traversal permission to the inbound rule so that the rule will apply to packets delivered in encapsulated transmission formats such as VPNs
+                        ((WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin7)rule).EdgeTraversalOptions = WindowsFirewallHelper.FirewallAPIv2.EdgeTraversalAction.Allow;
                         TL.LogMessage("SetFireWallRules", "Created inbound rule");
+
                         FirewallManager.Instance.Rules.Add(rule);
                         TL.LogMessage("SetFireWallRules", string.Format("Added inbound rule for {0}", applicationPathFull));
                     }
