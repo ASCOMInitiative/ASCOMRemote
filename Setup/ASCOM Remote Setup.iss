@@ -77,6 +77,8 @@ Source: "..\Remote Server\bin\Release\Newtonsoft.Json.dll"; DestDir: "{#RemoteSe
 ; SET NETWORK PERMISSIONS FILES
 Source: "..\SetNetworkPermissions\bin\Release\{#SetNetworkPermissionsName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
 Source: "..\SetNetworkPermissions\bin\Release\{#SetNetworkPermissionsName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+; The following file is required on installations where only .NET 4.6 is installed. This is because the netstandard.dll is only loaded into the GAC in .NET version 4.7 and later
+Source: "..\SetNetworkPermissions\bin\Release\netstandard.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents; Check: not IsDotNet4Point7Installed
 ; SET NETWORK PERMISSIONS SUPPORT FILES
 Source: "..\SetNetworkPermissions\bin\Release\WindowsFirewallHelper.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
 Source: "..\SetNetworkPermissions\bin\Release\CommandLine.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
@@ -259,4 +261,13 @@ begin
           sleep(100);    //Give enough time for the install screen to be repainted before continuing
         end
    end;
+end;
+
+// Function to determine whether .NET 4.7 is installed
+function IsDotNet4Point7Installed: Boolean;
+begin
+  if IsDotNetDetected('v4.7', 0) then  // Test whether the .NET version 4.7 is installed
+    Result := TRUE     // .NET 4.7 or later is installed so return TRUE
+  else
+    Result := FALSE;   // A .NET version earlier than 4.7 is installed so return FALSE
 end;
