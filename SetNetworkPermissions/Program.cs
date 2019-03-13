@@ -11,6 +11,8 @@ using WindowsFirewallHelper;
 using ASCOM.Utilities;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.ExceptionServices;
+using System.Reflection;
 
 namespace ASCOM.Remote
 {
@@ -24,20 +26,42 @@ namespace ASCOM.Remote
 
         static TraceLogger TL;
 
+        [HandleProcessCorruptedStateExceptions]
         static void Main(string[] args)
         {
 
-            TL = new TraceLogger("", "SetFireWallRules");
-            TL.Enabled = true;
-            // Add the event handler for handling non-UI thread exceptions to the event. 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-            CommandLine.Parser.Default.ParseArguments<Options>(args)
-                .WithParsed<Options>(opts => ProcessOptions(opts))
-                .WithNotParsed<Options>((errs) => HandleParseError(errs));
+            try
+            {
+                TL = new TraceLogger("", "SetFireWallRules");
+                TL.Enabled = true;
 
-            TL.Enabled = false;
-            TL = null;
+                Version version = Assembly.GetEntryAssembly().GetName().Version;
+                TL.LogMessage("SetFireWallRules", string.Format("Version {0}, Run on {1}", version.ToString(), DateTime.Now.ToString("dddd d MMMM yyyy HH:mm:ss")));
+                TL.BlankLine();
+
+                // Add the event handler for handling non-UI thread exceptions to the event. 
+
+                CommandLine.Parser.Default.ParseArguments<Options>(args)
+                    .WithParsed<Options>(opts => ProcessOptions(opts))
+                    .WithNotParsed<Options>((errs) => HandleParseError(errs));
+
+                TL.Enabled = false;
+                TL = null;
+            }
+            catch (Exception ex)
+            {
+                TraceLogger TL = new TraceLogger("SetFireWallRulesMainException")
+                {
+                    Enabled = true
+                };
+                TL.LogMessageCrLf("Main", "Unhandled exception: " + ex.ToString());
+                TL.Enabled = false;
+                TL.Dispose();
+                TL = null;
+
+            }
         }
 
         private static void HandleParseError(IEnumerable<Error> errs)
