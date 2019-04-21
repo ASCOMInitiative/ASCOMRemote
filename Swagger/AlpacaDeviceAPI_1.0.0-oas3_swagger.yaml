@@ -39,8 +39,11 @@ info:
 
     An HTTP status code of `500` indicates an unexpected error within the device from which it could not recover. Check the body of the response for a text error message.
 
+    ## SetupDialog and Alpaca Device Configuration
 
-  version: "1.0.0-oas3"
+    The SetupDialog method has been omitted from the Alpaca Device API because it presents a user interface rather than returning data. Alpaca device configuration is covered in the "ASCOM Alpaca Management API" specification, which can be selected through the drop-down box at the head of this page.
+    
+version: "1.0.0-oas3"
 paths:
   '/{device_type}/{device_number}/action':
     put:
