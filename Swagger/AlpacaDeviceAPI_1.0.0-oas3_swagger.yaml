@@ -1,6 +1,8 @@
 openapi: 3.0.0
+
 info:
   title: ASCOM Alpaca Device API
+  version: "1.0.0-oas3"
   description: >
     This restful API enables ASCOM Alpaca clients to access remote ASCOM Alpaca devices.
 
@@ -43,7 +45,8 @@ info:
 
     The SetupDialog method has been omitted from the Alpaca Device API because it presents a user interface rather than returning data. Alpaca device configuration is covered in the "ASCOM Alpaca Management API" specification, which can be selected through the drop-down box at the head of this page.
     
-version: "1.0.0-oas3"
+    
+
 paths:
   '/{device_type}/{device_number}/action':
     put:
@@ -7678,7 +7681,6 @@ paths:
       description: Move the telescope in one axis at the given rate.
       parameters:
         - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/AxisQuery'
       tags:
         - Telescope Specific Methods
       responses:
@@ -7706,6 +7708,13 @@ paths:
             schema:
               type: object
               properties:
+                Axis:
+                  description: >-
+                    The axis about which rate information is desired. 0 = axisPrimary, 1 = axisSecondary, 2 = axisTertiary.
+                  type: integer
+                  default: 0
+                  minimum: 0
+                  maximum: 2
                 Rate:
                   description: The rate of motion (deg/sec) about the specified axis
                   type: number
@@ -7719,6 +7728,7 @@ paths:
                   type: integer
                   format: uint32
               required:
+                - Axis
                 - Rate
   '/telescope/{device_number}/park':
     put:
@@ -8713,7 +8723,7 @@ components:
       description: >-
         DriveRate object corresponding to one of the standard drive rates  
 
-          driveSidereal =	0	- Sidereal tracking rate (15.041 arcseconds per second).  
+          driveSidereal =  0  - Sidereal tracking rate (15.041 arcseconds per second).  
           driveLunar = 1 - Lunar tracking rate (14.685 arcseconds per second).  
           driveSolar = 2 - Solar tracking rate (15.0 arcseconds per second).  
           driveKing = 3 - King tracking rate (15.0369 arcseconds per second).  
