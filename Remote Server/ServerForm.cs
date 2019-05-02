@@ -579,33 +579,43 @@ namespace ASCOM.Remote
 
                 // Create the device and save its reference to the ActiveObject instance
                 Type deviceType = Type.GetTypeFromProgID(configuredDevice.Value.ProgID);
-                dynamic deviceObject = Activator.CreateInstance(deviceType);
-                ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject = deviceObject;
-                LogMessage(0, 0, 0, "CreateInstance", string.Format("Device {0} created OK!", configuredDevice.Value.ProgID));
 
-                // make sure that a device object was actually returned
-                if (ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject != null) // A device object was returned
+                if (deviceType != null) // Attempt to create the driver object if we successfully got a Type from Type.GetTypeFromProgID
                 {
-                    try
+                    dynamic deviceObject = Activator.CreateInstance(deviceType);
+                    ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject = deviceObject;
+                    LogMessage(0, 0, 0, "CreateInstance", string.Format("Device {0} created OK!", configuredDevice.Value.ProgID));
+
+                    // make sure that a device object was actually returned
+                    if (ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject != null) // A device object was returned
                     {
-                        LogMessage(0, 0, 0, "CreateInstance", string.Format("Connecting device {0}", configuredDevice.Value.ProgID));
-                        ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject.Connected = true;
-                        ActiveObjects[configuredDevice.Value.DeviceKey].InitialisedOk = true; // Set flag indicating that this device initialised and connected OK
-                        LogMessage(0, 0, 0, "CreateInstance", string.Format("Device {0} connected OK", configuredDevice.Value.ProgID));
-                        LogToScreen(string.Format("Device {0} {1} ({2}) connected OK and is available", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID));
+                        try
+                        {
+                            LogMessage(0, 0, 0, "CreateInstance", string.Format("Connecting device {0}", configuredDevice.Value.ProgID));
+                            ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject.Connected = true;
+                            ActiveObjects[configuredDevice.Value.DeviceKey].InitialisedOk = true; // Set flag indicating that this device initialised and connected OK
+                            LogMessage(0, 0, 0, "CreateInstance", string.Format("Device {0} connected OK", configuredDevice.Value.ProgID));
+                            LogToScreen(string.Format("Device {0} {1} ({2}) connected OK and is available", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID));
+                        }
+                        catch (Exception ex1) // Exception on setting Connected to True
+                        {
+                            ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - it threw an error while being connected: {1}", configuredDevice.Value.ProgID, ex1.Message);
+                            LogException(0, 0, 0, "CreateInstance", string.Format("Error connecting to device {0}: \r\n{1}", configuredDevice.Value.ProgID, ex1.ToString()));
+                            LogToScreen(string.Format("ERROR - Device {0} {1} ({2}) failed to connect and is NOT available: {3}", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID, ex1.Message));
+                        }
                     }
-                    catch (Exception ex1) // Exception on setting Connected to True
+                    else // No device object was returned so flag that an error occurred
                     {
-                        ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - it threw an error while being connected: {1}", configuredDevice.Value.ProgID, ex1.Message);
-                        LogException(0, 0, 0, "CreateInstance", string.Format("Error connecting to device {0}: \r\n{1}", configuredDevice.Value.ProgID, ex1.ToString()));
-                        LogToScreen(string.Format("ERROR - Device {0} {1} ({2}) failed to connect and is NOT available: {3}", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID, ex1.Message));
+                        ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - no device was returned from CreateInstance but no exception was generated either!", configuredDevice.Value.ProgID);
+                        LogMessage(0, 0, 0, "CreateInstance", string.Format("Device created OK - ActiveObjects.DeviceObject is null: {0}", (ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject == null)));
+                        LogToScreen(string.Format("ERROR - Device {0} {1} ({2}) could not be created and is NOT available. It did not create an exception or error message!", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID));
                     }
                 }
-                else // No device object was returned so flag that an error occurred
+                else // We did not get a Type from Type.GetTypeFromProgID, it returned null. Record an error instead
                 {
-                    ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - no device was returned from CreateInstance but no exception was generated either!", configuredDevice.Value.ProgID);
-                    LogMessage(0, 0, 0, "CreateInstance", string.Format("Device created OK - ActiveObjects.DeviceObject is null: {0}", (ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject == null)));
-                    LogToScreen(string.Format("ERROR - Device {0} {1} ({2}) could not be created and is NOT available. It did not create an exception or error message!", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID));
+                    ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - unable to create a Type from its ProgID. This implies that the driver may not be correctly registered for COM.", configuredDevice.Value.ProgID);
+                    LogMessage(0, 0, 0, "CreateInstance", string.Format("Device {0} is unavailable - unable to create a Type from its ProgID. This implies that the driver may not be correctly registered for COM.", configuredDevice.Value.ProgID));
+                    LogToScreen(string.Format("ERROR - Device {0} {1} ({2}) could not be created and is NOT available: Unable to create a Type from its ProgID. This implies that the driver may not be correctly registered for COM.", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID));
                 }
             }
             catch (Exception ex) // Exception when creating device
@@ -1246,38 +1256,46 @@ namespace ASCOM.Remote
 
                 response.Headers.Add(HttpResponseHeader.Server, "ASCOM Rest API Server -");
 
-                // Create a single collection holding all supplied parameters including both those supplied as query variables in the url string and those contained within the form post (http PUT only).
-                suppliedParameters.Add(request.QueryString); // Add the query string parameters to the collection
+                // Create a collection of supplied parameters: query variables in the URL string for HTTP GET requests and form parametrers from the request body for HTTP PUT requests.
 
-                // List query string parameters if in debug mode
-                if (DebugTraceState)
+                if (requestData.Request.HttpMethod.ToUpperInvariant() == "GET") // Process query parameters from an HTTP GET
                 {
-                    foreach (string key in suppliedParameters)
+                    suppliedParameters.Add(request.QueryString); // Add the query string parameters to the collection
+                    
+                    // List query string parameters if in debug mode
+                    if (DebugTraceState)
                     {
-                        LogMessage1(requestData, "Query Parameter", string.Format("{0} = {1}", key, suppliedParameters[key]));
+                        foreach (string key in suppliedParameters)
+                        {
+                            LogMessage1(requestData, "Query Parameter", string.Format("{0} = {1}", key, suppliedParameters[key]));
+                        }
                     }
                 }
 
-                if (request.HasEntityBody) // Now add any parameters supplied in the form POST
+                if (requestData.Request.HttpMethod.ToUpperInvariant() == "PUT") // Process form parameters from an HTTP PUT
                 {
-                    string formParameters;
-                    using (var reader = new StreamReader(request.InputStream, request.ContentEncoding)) // Extract the aggregated parameter string from the form within the request
+                    if (request.HasEntityBody) // Add any parameters supplied in the form POST
                     {
-                        formParameters = reader.ReadToEnd();
-                    }
+                        string formParameters;
+                        using (var reader = new StreamReader(request.InputStream, request.ContentEncoding)) // Extract the aggregated parameter string from the form within the request
+                        {
+                            formParameters = reader.ReadToEnd();
+                        }
 
-                    string[] rawParams = formParameters.Split('&'); // Parse the aggregated parameter string into an array of key / value pair strings
+                        string[] rawParams = formParameters.Split('&'); // Parse the aggregated parameter string into an array of key / value pair strings
 
-                    foreach (string param in rawParams) // Parse each key / value pair string into its key and value and add these to the parameters collection
-                    {
-                        string[] kvPair = param.Split('=');
-                        string key = kvPair[0];
-                        string value = HttpUtility.UrlDecode(kvPair[1]);
-                        suppliedParameters.Add(key, value);
-                        if (DebugTraceState) LogMessage1(requestData, "Body Parameter", string.Format("{0} = {1}", key, value));
+                        foreach (string param in rawParams) // Parse each key / value pair string into its key and value and add these to the parameters collection
+                        {
+                            string[] kvPair = param.Split('=');
+                            string key = kvPair[0];
+                            string value = HttpUtility.UrlDecode(kvPair[1]);
+                            suppliedParameters.Add(key, value);
+                            if (DebugTraceState) LogMessage1(requestData, "Body Parameter", string.Format("{0} = {1}", key, value));
+                        }
                     }
                 }
-                requestData.SuppliedParameters = suppliedParameters;
+
+                requestData.SuppliedParameters = suppliedParameters; // Add the query or body parameters to the request data
 
                 // Extract the caller's IP address into hostIPAddress
                 string clientIpAddress;

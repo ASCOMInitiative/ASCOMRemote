@@ -175,7 +175,7 @@
             this.chkDebugTrace.TabIndex = 7;
             this.chkDebugTrace.Text = "Enable Debug Logging";
             this.chkDebugTrace.UseVisualStyleBackColor = true;
-            this.chkDebugTrace.CheckedChanged += new System.EventHandler(this.chkDebugTrace_CheckedChanged);
+            this.chkDebugTrace.CheckedChanged += new System.EventHandler(this.ChkDebugTrace_CheckedChanged);
             // 
             // chkAccessLog
             // 

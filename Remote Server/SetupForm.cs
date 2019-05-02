@@ -47,90 +47,97 @@ namespace ASCOM.Remote
             bool foundTheIPAddress = false;
             int selectedIndex = 0;
 
-            ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Start");
-
-            profile = new Profile();
-            host = Dns.GetHostEntry(Dns.GetHostName()); // Get an IPHostEntry so that we can get the list of IP addresses on this PC
-            deviceNumberIndexes = new Dictionary<string, int>(); // Create a dictionary to hold the current device instance numbers of every device type
-
-            // Create a list of valid IP addresses on this PC so that the user can select one on which to run the ASCOM device server.
-            addressList.Items.Add(SharedConstants.LOCALHOST_NAME); // Make "localhost" the first entry in the list of addresses
-            foreach (IPAddress ip in host.AddressList) // Add the other addresses on this PC
+            try
             {
-                if ((ip.AddressFamily == AddressFamily.InterNetwork) & !foundAnIPAddress) // Only process IPv4 addresses and ignore the rest including IPv6
+                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Start");
+
+                profile = new Profile();
+                host = Dns.GetHostEntry(Dns.GetHostName()); // Get an IPHostEntry so that we can get the list of IP addresses on this PC
+                deviceNumberIndexes = new Dictionary<string, int>(); // Create a dictionary to hold the current device instance numbers of every device type
+
+                // Create a list of valid IP addresses on this PC so that the user can select one on which to run the ASCOM device server.
+                addressList.Items.Add(SharedConstants.LOCALHOST_NAME); // Make "localhost" the first entry in the list of addresses
+                foreach (IPAddress ip in host.AddressList) // Add the other addresses on this PC
                 {
-                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Found {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
-                    foundAnIPAddress = true;
-                    addressList.Items.Add(ip.ToString());
-                    if (ip.ToString() == ServerForm.ServerIPAddressString)
+                    if ((ip.AddressFamily == AddressFamily.InterNetwork) & !foundAnIPAddress) // Only process IPv4 addresses and ignore the rest including IPv6
                     {
-                        selectedIndex = addressList.Items.Count - 1;
-                        foundTheIPAddress = true;
+                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Found {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
+                        foundAnIPAddress = true;
+                        addressList.Items.Add(ip.ToString());
+                        if (ip.ToString() == ServerForm.ServerIPAddressString)
+                        {
+                            selectedIndex = addressList.Items.Count - 1;
+                            foundTheIPAddress = true;
+                        }
+                    }
+                    else
+                    {
+                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Ignored {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
                     }
                 }
-                else
+                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Found an IP address: {0}, Found the IP address: {1}, Stored IP Address: {2}", foundAnIPAddress, foundTheIPAddress, ServerForm.ServerIPAddressString));
+
+                if ((!foundTheIPAddress) & (ServerForm.ServerIPAddressString != "")) // Add the last stored IP address if it isn't found in the search above
                 {
-                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Ignored {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
+                    addressList.Items.Add(ServerForm.ServerIPAddressString); // Add the stored address to the list
+                    selectedIndex = addressList.Items.Count - 1; // Select this item in the list
                 }
-            }
-            ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Found an IP address: {0}, Found the IP address: {1}, Stored IP Address: {2}", foundAnIPAddress, foundTheIPAddress, ServerForm.ServerIPAddressString));
 
-            if ((!foundTheIPAddress) & (ServerForm.ServerIPAddressString != "")) // Add the last stored IP address if it isn't found in the search above
+                // Add the wild card addresses at the end of the list
+                if (ServerForm.ServerIPAddressString != SharedConstants.STRONG_WILDCARD_NAME) addressList.Items.Add(SharedConstants.STRONG_WILDCARD_NAME); // Include the strong wild card character in the list of addresses if not already in use
+                if (ServerForm.ServerIPAddressString != SharedConstants.WEAK_WILDCARD_NAME) addressList.Items.Add(SharedConstants.WEAK_WILDCARD_NAME); // Include the weak wild card character in the list of addresses if not already in use
+
+                // Set up the GUI components
+                addressList.SelectedIndex = selectedIndex;
+                numPort.Value = ServerForm.ServerPortNumber;
+                chkAutoConnect.Checked = ServerForm.StartWithDevicesConnected;
+                chkAccessLog.Checked = ServerForm.AccessLogEnabled;
+                chkTrace.Checked = ServerForm.TraceState;
+                chkDebugTrace.Checked = ServerForm.DebugTraceState;
+                chkDebugTrace.Enabled = ServerForm.TraceState; // Enable or disable the debug trace check box depending on whether normal trace is enabled
+                chkManagementInterfaceEnabled.Checked = ServerForm.ManagementInterfaceEnabled;
+                ChkStartWithApiEnabled.Checked = ServerForm.StartWithApiEnabled;
+                LblDevicesNotDisconnoected.Visible = ServerForm.devicesAreConnected;
+                ChkRunDriversInSeparateThreadss.Checked = ServerForm.RunDriversOnSeparateThreads;
+                ChkLogClientIPAddress.Checked = ServerForm.LogClientIPAddress;
+                ChkIncludeDriverExceptionsInJsonResponses.Checked = ServerForm.IncludeDriverExceptionInJsonResponse;
+
+                // Populate the device types list
+                foreach (string deviceType in profile.RegisteredDeviceTypes)
+                {
+                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Adding device type: " + deviceType);
+                    registeredDeviceTypes.Add(deviceType); // Remember the device types on this system
+                }
+
+                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Number of configured devices: {0}.", ServerForm.ConfiguredDevices.Count));
+                foreach (string deviceName in ServerForm.ConfiguredDevices.Keys)
+                {
+                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("ConfiguredDevices contains key {0}.", deviceName));
+                }
+
+                // Initialise each of the device GUI components
+                foreach (ServedDevice item in this.Controls.OfType<ServedDevice>())
+                {
+                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Starting Init for {0}.", item.Name));
+                    item.InitUI(this);
+                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}, now setting its parameters.", item.Name));
+                    item.DeviceType = ServerForm.ConfiguredDevices[item.Name].DeviceType;
+                    item.ProgID = ServerForm.ConfiguredDevices[item.Name].ProgID;
+                    item.DeviceNumber = ServerForm.ConfiguredDevices[item.Name].DeviceNumber;
+                    item.AllowConnectedSetFalse = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetFalse;
+                    item.AllowConnectedSetTrue = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetTrue;
+                    item.DevicesAreConnected = ServerForm.devicesAreConnected;
+
+                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}.", item.Name));
+                }
+
+                RecalculateDeviceNumbers();
+            }
+            catch (Exception ex)
             {
-                addressList.Items.Add(ServerForm.ServerIPAddressString); // Add the stored address to the list
-                selectedIndex = addressList.Items.Count - 1; // Select this item in the list
+                ServerForm.LogException(0, 0, 0, "SetupForm Load", string.Format("Exception on loading form: {0}.", ex.ToString()));
+                MessageBox.Show(string.Format("Setup exception: {0}\r\nThe form may not function correctly.", ex.Message), "Setup form load error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
-            // Add the wild card addresses at the end of the list
-            if (ServerForm.ServerIPAddressString != SharedConstants.STRONG_WILDCARD_NAME) addressList.Items.Add(SharedConstants.STRONG_WILDCARD_NAME); // Include the strong wild card character in the list of addresses if not already in use
-            if (ServerForm.ServerIPAddressString != SharedConstants.WEAK_WILDCARD_NAME) addressList.Items.Add(SharedConstants.WEAK_WILDCARD_NAME); // Include the weak wild card character in the list of addresses if not already in use
-
-            // Set up the GUI components
-            addressList.SelectedIndex = selectedIndex;
-            numPort.Value = ServerForm.ServerPortNumber;
-            chkAutoConnect.Checked = ServerForm.StartWithDevicesConnected;
-            chkAccessLog.Checked = ServerForm.AccessLogEnabled;
-            chkTrace.Checked = ServerForm.TraceState;
-            chkDebugTrace.Checked = ServerForm.DebugTraceState;
-            chkDebugTrace.Enabled = ServerForm.TraceState; // Enable or disable the debug trace check box depending on whether normal trace is enabled
-            chkManagementInterfaceEnabled.Checked = ServerForm.ManagementInterfaceEnabled;
-            ChkStartWithApiEnabled.Checked = ServerForm.StartWithApiEnabled;
-            LblDevicesNotDisconnoected.Visible = ServerForm.devicesAreConnected;
-            ChkRunDriversInSeparateThreadss.Checked = ServerForm.RunDriversOnSeparateThreads;
-            ChkLogClientIPAddress.Checked = ServerForm.LogClientIPAddress;
-            ChkIncludeDriverExceptionsInJsonResponses.Checked = ServerForm.IncludeDriverExceptionInJsonResponse;
-
-            // Populate the device types list
-            foreach (string deviceType in profile.RegisteredDeviceTypes)
-            {
-                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Adding device type: " + deviceType);
-                registeredDeviceTypes.Add(deviceType); // Remember the device types on this system
-            }
-
-            ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Number of configured devices: {0}.", ServerForm.ConfiguredDevices.Count));
-            foreach (string deviceName in ServerForm.ConfiguredDevices.Keys)
-            {
-                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("ConfiguredDevices contains key {0}.", deviceName));
-            }
-
-            // Initialise each of the device GUI components
-            foreach (ServedDevice item in this.Controls.OfType<ServedDevice>())
-            {
-                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Starting Init for {0}.", item.Name));
-                item.InitUI(this);
-                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}, now setting its parameters.", item.Name));
-                item.DeviceType = ServerForm.ConfiguredDevices[item.Name].DeviceType;
-                item.ProgID = ServerForm.ConfiguredDevices[item.Name].ProgID;
-                item.DeviceNumber = ServerForm.ConfiguredDevices[item.Name].DeviceNumber;
-                item.AllowConnectedSetFalse = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetFalse;
-                item.AllowConnectedSetTrue = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetTrue;
-                item.DevicesAreConnected = ServerForm.devicesAreConnected;
-
-                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}.", item.Name));
-            }
-
-            RecalculateDeviceNumbers();
-
         }
 
         #endregion
@@ -207,39 +214,58 @@ namespace ASCOM.Remote
         }
 
         /// <summary>
+        /// Called when debug trace is enabled to make sure that normal logging is also enabled
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChkDebugTrace_CheckedChanged(object sender, EventArgs e)
+        {
+            // If debug logging is requested, make sure that normal logging is enabled!
+            CheckBox checkBox = (CheckBox)sender;
+            if (checkBox.Checked) chkTrace.Checked = true;
+        }
+
+        /// <summary>
         /// Called when the user presses the OK button to commit any new set up values
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void BtnOK_Click(object sender, EventArgs e)
         {
-            if (addressList.Text == SharedConstants.LOCALHOST_NAME) ServerForm.ServerIPAddressString = SharedConstants.LOCALHOST_ADDRESS;
-            else ServerForm.ServerIPAddressString = addressList.Text;
-            ServerForm.ServerPortNumber = numPort.Value;
-            ServerForm.StartWithDevicesConnected = chkAutoConnect.Checked;
-            ServerForm.AccessLogEnabled = chkAccessLog.Checked;
-            ServerForm.TraceState = chkTrace.Checked;
-            ServerForm.DebugTraceState = chkDebugTrace.Checked;
-            ServerForm.ManagementInterfaceEnabled = chkManagementInterfaceEnabled.Checked;
-            ServerForm.StartWithApiEnabled = ChkStartWithApiEnabled.Checked;
-            ServerForm.RunDriversOnSeparateThreads = ChkRunDriversInSeparateThreadss.Checked;
-            ServerForm.LogClientIPAddress = ChkLogClientIPAddress.Checked;
-            ServerForm.IncludeDriverExceptionInJsonResponse = ChkIncludeDriverExceptionsInJsonResponses.Checked;
-
-            foreach (ServedDevice item in this.Controls.OfType<ServedDevice>())
+            try
             {
-                ServerForm.ConfiguredDevices[item.Name].DeviceType = item.DeviceType;
-                ServerForm.ConfiguredDevices[item.Name].ProgID = item.ProgID;
-                ServerForm.ConfiguredDevices[item.Name].Description = item.Description;
-                ServerForm.ConfiguredDevices[item.Name].DeviceNumber = item.DeviceNumber;
-                ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetFalse = item.AllowConnectedSetFalse;
-                ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetTrue = item.AllowConnectedSetTrue;
+                if (addressList.Text == SharedConstants.LOCALHOST_NAME) ServerForm.ServerIPAddressString = SharedConstants.LOCALHOST_ADDRESS;
+                else ServerForm.ServerIPAddressString = addressList.Text;
+                ServerForm.ServerPortNumber = numPort.Value;
+                ServerForm.StartWithDevicesConnected = chkAutoConnect.Checked;
+                ServerForm.AccessLogEnabled = chkAccessLog.Checked;
+                ServerForm.TraceState = chkTrace.Checked;
+                ServerForm.DebugTraceState = chkDebugTrace.Checked;
+                ServerForm.ManagementInterfaceEnabled = chkManagementInterfaceEnabled.Checked;
+                ServerForm.StartWithApiEnabled = ChkStartWithApiEnabled.Checked;
+                ServerForm.RunDriversOnSeparateThreads = ChkRunDriversInSeparateThreadss.Checked;
+                ServerForm.LogClientIPAddress = ChkLogClientIPAddress.Checked;
+                ServerForm.IncludeDriverExceptionInJsonResponse = ChkIncludeDriverExceptionsInJsonResponses.Checked;
+
+                foreach (ServedDevice item in this.Controls.OfType<ServedDevice>())
+                {
+                    ServerForm.ConfiguredDevices[item.Name].DeviceType = item.DeviceType;
+                    ServerForm.ConfiguredDevices[item.Name].ProgID = item.ProgID;
+                    ServerForm.ConfiguredDevices[item.Name].Description = item.Description;
+                    ServerForm.ConfiguredDevices[item.Name].DeviceNumber = item.DeviceNumber;
+                    ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetFalse = item.AllowConnectedSetFalse;
+                    ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetTrue = item.AllowConnectedSetTrue;
+                }
+
+                ServerForm.WriteProfile();
+
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
-
-            ServerForm.WriteProfile();
-
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            catch(Exception ex)
+            {
+                ServerForm.LogException(0, 0, 0, "OK Button", string.Format("Exception on closing form: {0}.", ex.ToString()));
+            }
         }
 
         #endregion
@@ -321,16 +347,5 @@ namespace ASCOM.Remote
 
         #endregion
 
-        /// <summary>
-        /// Called when debug trace is enabled to make sure that normal logging is also enabled
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void chkDebugTrace_CheckedChanged(object sender, EventArgs e)
-        {
-            // If debug logging is requested, make sure that normal logging is enabled!
-            CheckBox checkBox = (CheckBox)sender;
-            if (checkBox.Checked) chkTrace.Checked = true;
-        }
     }
 }
