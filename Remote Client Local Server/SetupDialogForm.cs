@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -121,7 +122,9 @@ namespace ASCOM.Remote
         {
             TL.LogMessage("SetupForm Load", "Start");
 
-            this.Text = DriverDisplayName + " Configuration";
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+
+            this.Text = string.Format("{0} Configuration - Version {1}", DriverDisplayName, version.ToString());
             addressList.Items.Add(SharedConstants.LOCALHOST_NAME);
 
             cmbServiceType.Text = ServiceType;

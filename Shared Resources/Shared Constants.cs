@@ -42,6 +42,10 @@ namespace ASCOM.Remote
 
         public const string ISO8601_DATE_FORMAT_STRING = "yyyy-MM-ddTHH:mm:ss.fffffff";
 
+        // Remote client configuration constants
+        public const int SOCKET_ERROR_MAXIMUM_RETRIES = 2; // The number of retries that the client will make when it receives a socket actively refused error from the remote server
+        public const int SOCKET_ERROR_RETRY_DELAY_TIME = 1000; // The delay time (milliseconds) between socket actively refused retries
+
         // Remote server setup form constants
         public const string LOCALHOST_NAME = "localhost";
         public const string LOCALHOST_ADDRESS = "127.0.0.1"; // Get the localhost loop back address
