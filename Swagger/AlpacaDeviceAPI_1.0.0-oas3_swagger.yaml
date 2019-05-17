@@ -4,10 +4,17 @@ info:
   title: ASCOM Alpaca Device API
   version: "1.0.0-oas3"
   description: >
-    This restful API enables ASCOM Alpaca clients to access remote ASCOM Alpaca devices.
+    The Alpaca API uses RESTful techniques and TCP/IP to enable ASCOM applications and devices to communicate across modern network environments.
 
 
-    ## URLs and Case Sensitivity
+    ## Interface Behaviour
+
+    The ASCOM Interface behavioural requirements for Alpaca drivers are the same as for COM based drivers and are documented in the
+    <a href="https://ascom-standards.org/Help/Developer/html/N_ASCOM_DeviceInterface.htm">API Interface Definitions</a> e.g.
+    the <a href="https://ascom-standards.org/Help/Developer/html/M_ASCOM_DeviceInterface_ITelescopeV3_SlewToCoordinates.htm">Telescope.SlewToCoordinates</a> method.      
+    This document focuses on how to use the ASCOM Interface standards in their RESTful Alpaca form.
+    
+    ## Alpaca URLs, Case Sensitivity, Parameters and Returned values
 
     Alpaca Device API URLs are of the form **http(s)://api/v1/path** where path is one of the method URLs listed below.
 
@@ -15,8 +22,6 @@ info:
     URLs are case sensitive and all elements must be in lower case. This means that both the device type and command name must always be in lower case. Parameter names are not case sensitive, so clients and drivers should be prepared for parameter names to be supplied and returned with any casing. Parameter values can be in mixed case as required.
     
     
-    ## Parameters and Returned values
-
     For GET operations, parameters should be placed in the URL query string and for PUT operations they should be placed in the body of the message.
 
 
@@ -50,8 +55,26 @@ info:
 paths:
   '/{device_type}/{device_number}/action':
     put:
-      summary: Invokes the specified device-specific action.
-      description: Invokes the specified device-specific action.
+      summary: Invokes the named device-specific action.
+      description:  >-
+        Actions and SupportedActions are a standardised means for drivers to extend functionality beyond the built-in capabilities of the ASCOM device interfaces.
+        
+        
+        The key advantage of using Actions is that drivers can expose any device specific functionality required. The downside is that, in order to use these unique features, every application author would need to create bespoke code to present or exploit them.
+        
+        
+        The Action parameter and return strings are deceptively simple, but can support transmission of arbitrarily complex data structures, for example through JSON encoding.
+        
+        
+        This capability will be of primary value to
+         * <span style="font-size:14px;">bespoke software and hardware configurations where a single entity controls both the consuming application software and the hardware / driver environment</span>
+         * <span style="font-size:14px;">a group of application and device authors to quickly formulate and try out new interface capabilities without requiring an immediate change to the ASCOM device interface, which will take a lot longer than just agreeing a name, input parameters and a standard response for an Action command.</span>
+        
+        
+        The list of Action commands supported by a driver can be discovered through the SupportedActions property.
+        
+        
+        This method should return an error message and NotImplementedException error number (0x400) if the driver just implements the standard ASCOM device methods and has no bespoke, unique, functionality.
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
