@@ -2625,8 +2625,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
     put:
-      summary: Sets the binning factor for the X axis.
-      description: Sets the binning factor for the X axis.
+      summary: Sets an index into the Gains array.
+      description: Sets an index into the Gains array for the selected camera gain.
       tags:
         - Camera Specific Methods
       parameters:
