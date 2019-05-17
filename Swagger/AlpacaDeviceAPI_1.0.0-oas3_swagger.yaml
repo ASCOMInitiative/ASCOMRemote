@@ -397,6 +397,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
+  '/{device_type}/{device_number}/interfaceversion':
+    get:
+      summary: The ASCOM Device interface version number that this device supports.
+      description: >-
+        This method returns the version of the ASCOM device interface contract to which this device complies. Only one interface version is current at a moment in time and all
+        new devices should be built to the latest interface version. Applications can choose which device interface versions they support and it is in their interest to support 
+        previous versions as well as the current version to ensure thay can use the largest number of devices.
+      parameters:
+        - $ref: '#/components/parameters/device_type'
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
   '/{device_type}/{device_number}/name':
     get:
       summary: Device name
