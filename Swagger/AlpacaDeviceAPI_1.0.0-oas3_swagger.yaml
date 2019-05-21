@@ -4511,7 +4511,7 @@ paths:
       summary: Return a sensor description
       description: >-
         Gets a description of the sensor with the name specified in the
-        PropertyName parameter
+        SensorName parameter
       parameters:
         - $ref: '#/components/parameters/device_number'
         - name: SensorName
@@ -4548,12 +4548,12 @@ paths:
     get:
       summary: Return the time since the sensor value was last updated
       description: >-
-        Gets the time since the sensor specified in the TimeSinceLastUpdate
+        Gets the time since the sensor specified in the SensorName
         parameter was last updated
       parameters:
         - $ref: '#/components/parameters/device_number'
         - name: SensorName
-          description: Name of the sensor whose description is required
+          description: Name of the sensor whose last update time is required
           in: query
           required: true
           schema:
@@ -4569,7 +4569,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StringResponse'
+                $ref: '#/components/schemas/DoubleResponse'
         '400':
           description: 'Method or parameter value error, check error message'
           content:
