@@ -631,21 +631,15 @@ namespace ASCOM.Remote
                         }
                         if (typeof(T) == typeof(Array)) // Used for Camera.ImageArray and Camera.ImageArrayVariant
                         {
-                            // Parse the first 30 characters of the returned JSON to extract the array type and rank
-                            TL.LogMessage(clientNumber, method, "Received type is Array");
-                            string responseString = response.Content.Substring(0, 30);
-                            TL.LogMessage(clientNumber, method, "Response SubString" + responseString);
-
-                            TL.LogMessage(clientNumber, method, "Before Regex.Matches");
-                            MatchCollection matches = Regex.Matches(responseString, FIND_TYPE_AND_RANK_REGEX_PATTERN, RegexOptions.IgnoreCase);
-                            TL.LogMessage(clientNumber, method, "After Regex.Matches");
-                            string arrayTypeString = matches[0].Groups[ARRAYTYPE_VARIABLE_NAME].Value;
-                            string arrayRankString = matches[0].Groups[RANK_VARIABLE_NAME].Value;
-                            TL.LogMessage(clientNumber, method, string.Format("Array Type String: '{0}', Array Rank String: '{1}', Response String(30 characters): '{2}'", arrayTypeString, arrayRankString, responseString));
-
-                            SharedConstants.ImageArrayElementTypes arrayType = (SharedConstants.ImageArrayElementTypes)Enum.Parse(typeof(SharedConstants.ImageArrayElementTypes), arrayTypeString);
-                            int arrayRank = Convert.ToInt32(arrayRankString);
-                            TL.LogMessage(clientNumber, method, string.Format("String values - Type: {0}, Rank: {1}, Actual values - Type: {2}, Rank: {3}", arrayTypeString, arrayRankString, arrayType.ToString(), arrayRank.ToString()));
+                            // Replaced the original mechanic for extracting array and rank because it required rank and type to be placed ahead of Value in the JSON response and this cannot be guaranteed from native Alpaca devices
+                            // This approach is slower but will handle the rank and type parameters wherever they are in the JSON response.
+                            Stopwatch sw = new Stopwatch();
+                            sw.Start();
+                            ImageArrayResponseBase responseBase = JsonConvert.DeserializeObject<ImageArrayResponseBase>(response.Content);
+                            SharedConstants.ImageArrayElementTypes arrayType = (SharedConstants.ImageArrayElementTypes)responseBase.Type;
+                            int arrayRank = responseBase.Rank;
+                            sw.Stop();
+                            TL.LogMessage(clientNumber, method, string.Format($"Extracted array type and rank in {sw.ElapsedMilliseconds}ms. Type: {arrayType}, Rank: {arrayRank}, Response values - Type: {responseBase.Type}, Rank: {responseBase.Rank}"));
 
                             switch (arrayType) // Handle the different return types that may come from ImageArrayVariant
                             {
