@@ -27,10 +27,6 @@ namespace ASCOM.Remote
 
         //Private constants
         private const string NOT_CONNECTED_MESSAGE = "ASCOM Remote Client Driver is not connected.";
-        private const string RANK_VARIABLE_NAME = "Rank";
-        private const string ARRAYTYPE_VARIABLE_NAME = "Type";
-
-        private const string FIND_TYPE_AND_RANK_REGEX_PATTERN = @"^*""Type"":(?<" + ARRAYTYPE_VARIABLE_NAME + @">\d*),""Rank"":(?<" + RANK_VARIABLE_NAME + @">\d*)"; // Regular expression to extract array type and rank from the returned JSON imagearray and imagearrayvariant responses
 
         //Private variables
         private static TraceLoggerPlus TLLocalServer;
