@@ -1077,7 +1077,7 @@ namespace ASCOM.Remote
                 // Transition from Form.Width =900 to Form.Width = Title.Width + CONTROL_SPACE_WIDTH + Form.Left
                 int titleLeftMessagesCentred = txtLog.Left + ((txtLog.Width - lblTitle.Width) / 2) - 20; // Centre the title over the log message text box
                 int titleLeftFormCentred = ((form.Width - lblTitle.Width) / 2) - 8; // If the text box is narrower than the title, centre the title within the overall width of the form
-                int titleLeft = 0;
+                int titleLeft;
                 int titleTransitionPositionStart = lblTitle.Width + CONTROL_SPACE_WIDTH + txtLog.Left;
 
                 if (form.Width < TITLE_TRANSITION_POSITION_END) // We may be in the transition region or smaller than this
@@ -2589,7 +2589,7 @@ namespace ASCOM.Remote
         }
         private void WriteBool(string deviceType, RequestData requestData)
         {
-            bool boolValue = false;
+            bool boolValue;
             Exception exReturn = null;
 
             try
@@ -2792,7 +2792,7 @@ namespace ASCOM.Remote
         }
         private void ReturnStringList(string deviceType, RequestData requestData)
         {
-            ArrayList deviceResponse = new ArrayList();
+            ArrayList deviceResponse;
             List<string> responseList = new List<string>();
             Exception exReturn = null;
 
@@ -3019,7 +3019,7 @@ namespace ASCOM.Remote
         }
         private void WriteDouble(RequestData requestData)
         {
-            double doubleValue = 0;
+            double doubleValue;
             Exception exReturn = null;
 
             try
@@ -3167,7 +3167,7 @@ namespace ASCOM.Remote
         }
         private void WriteShort(RequestData requestData)
         {
-            short shortValue = 0;
+            short shortValue;
             Exception exReturn = null;
 
 
@@ -3290,7 +3290,7 @@ namespace ASCOM.Remote
         }
         private void WriteInt(RequestData requestData)
         {
-            int intValue = 0;
+            int intValue;
             Exception exReturn = null;
 
 
@@ -3354,7 +3354,7 @@ namespace ASCOM.Remote
         }
         private void WriteDateTime(RequestData requestData)
         {
-            DateTime dateTimeValue = DateTime.Now;
+            DateTime dateTimeValue;
             Exception exReturn = null;
 
             try
@@ -3486,7 +3486,7 @@ namespace ASCOM.Remote
         }
         private void WriteTrackingRate(RequestData requestData)
         {
-            DriveRates driveRateValue = DriveRates.driveSidereal;
+            DriveRates driveRateValue;;
             Exception exReturn = null;
 
 
@@ -3601,7 +3601,7 @@ namespace ASCOM.Remote
         private void ReturnImageArray(RequestData requestData)
         {
 
-            Array deviceResponse = null;
+            Array deviceResponse;
             //ImageArrayResponse 
             dynamic responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID); // Initialise here so that there is a class ready to convey back an error message
             Exception exReturn = null;
@@ -3733,12 +3733,45 @@ namespace ASCOM.Remote
             responseClass.DriverException = exReturn;
             responseClass.SerializeDriverException = IncludeDriverExceptionInJsonResponse;
 
-            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "Starting array serialisation");
+            // if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "Starting array serialisation");
 
-            string responseJson = JsonConvert.SerializeObject(responseClass);
-            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Completed array serialisation, Length: {0:n0}", responseJson.Length));
+            // string responseJson = JsonConvert.SerializeObject(responseClass);
+            // if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Completed array serialisation, Length: {0:n0}", responseJson.Length));
 
-            SendResponseValueToClient(requestData, exReturn, responseJson);
+            // SendResponseValueToClient(requestData, exReturn, responseJson);
+
+            // Write the array back to the client using a stream to avoid running out of memory when serialising very large image arrays
+            try
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
+                requestData.Response.ContentType = "application/json; charset=utf-8";
+                requestData.Response.StatusCode = (int)HttpStatusCode.OK; // Set the response status and status code
+                requestData.Response.StatusDescription = "200 OK";
+
+                JsonSerializer serializer = new JsonSerializer();
+                StreamWriter streamWriter = new StreamWriter(requestData.Response.OutputStream);
+
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ReturnImageArray Before writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
+
+                using (JsonWriter writer = new JsonTextWriter(streamWriter))
+                {
+                    serializer.Serialize(writer, responseClass);
+                }
+
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ReturnImageArray After writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
+                requestData.Response.OutputStream.Close();
+                sw.Stop();
+
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ReturnImageArray After closing output stream ({sw.ElapsedMilliseconds}ms.");
+                sw = null;
+            }
+            catch (HttpListenerException ex) // Deal with communications errors here but allow any other errors to go through and be picked up by the main error handler
+            {
+                LogException1(requestData, "ListenerException", string.Format("ReturnImageArray Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
+            }
+
         }
 
         private void ReturnCanMoveAxis(RequestData requestData)
@@ -3830,12 +3863,12 @@ namespace ASCOM.Remote
             string command;
             bool raw, light, switchState;
             string switchName;
-            PierSide pierSideValue = PierSide.pierUnknown;
+            PierSide pierSideValue;
             short switchIndex;
             int positionInt, guideDuration;
             float positionFloat;
-            GuideDirections guideDirection = GuideDirections.guideNorth;
-            TelescopeAxes axis = TelescopeAxes.axisPrimary;
+            GuideDirections guideDirection;
+            TelescopeAxes axis;
 
             Exception exReturn = null;
 

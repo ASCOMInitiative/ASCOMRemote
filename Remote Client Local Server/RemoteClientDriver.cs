@@ -25,9 +25,6 @@ namespace ASCOM.Remote
     {
         #region Private variables and constants
 
-        //Private constants
-        private const string NOT_CONNECTED_MESSAGE = "ASCOM Remote Client Driver is not connected.";
-
         //Private variables
         private static TraceLoggerPlus TLLocalServer;
         private static bool traceState = true;
@@ -123,7 +120,7 @@ namespace ASCOM.Remote
         /// </summary>
         /// <param name="clientNumber">Number of the calling client</param>
         /// <returns></returns>
-        public static bool IsClientConnected(uint clientNumber, RestClient client, TraceLoggerPlus TL)
+        public static bool IsClientConnected(uint clientNumber, TraceLoggerPlus TL)
         {
             foreach (KeyValuePair<long, bool> kvp in connectStates)
             {
@@ -142,15 +139,6 @@ namespace ASCOM.Remote
         {
             TL.LogMessage("ConnectionCount", connectStates.Count.ToString());
             return (uint)connectStates.Count;
-        }
-
-        /// <summary>
-        /// Test whether the we are connected, if not throw a NotConnectedException
-        /// </summary>
-        /// <param name="MethodName">Name of the calling method</param>
-        static void CheckConnected(string MethodName, TraceLoggerPlus TL)
-        {
-            if (!IsHardwareConnected(TL)) throw new NotConnectedException(MethodName + " - " + NOT_CONNECTED_MESSAGE);
         }
 
         /// <summary>
@@ -182,7 +170,6 @@ namespace ASCOM.Remote
             if (client != null)
             {
                 client.ClearHandlers();
-                client = null;
             }
 
             client = new RestClient(clientHostAddress)
@@ -425,6 +412,7 @@ namespace ASCOM.Remote
         public static T SendToRemoteDriver<T>(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, Dictionary<string, string> Parameters, Method HttpMethod)
         {
             int retryCounter = 0; // Initialise the socket error retry counter
+            Stopwatch sw = new Stopwatch(); // Stopwatch to time activities
 
             do // Socket communications error retry loop
             {
@@ -629,14 +617,26 @@ namespace ASCOM.Remote
                         {
                             // Replaced the original mechanic for extracting array and rank because it required rank and type to be placed ahead of Value in the JSON response and this cannot be guaranteed from native Alpaca devices
                             // This approach is slower but will handle the rank and type parameters wherever they are in the JSON response.
-                            Stopwatch sw = new Stopwatch();
-                            sw.Start();
+
+                            sw.Restart(); // Clear and start the stopwatch
                             ImageArrayResponseBase responseBase = JsonConvert.DeserializeObject<ImageArrayResponseBase>(response.Content);
                             SharedConstants.ImageArrayElementTypes arrayType = (SharedConstants.ImageArrayElementTypes)responseBase.Type;
                             int arrayRank = responseBase.Rank;
-                            sw.Stop();
-                            TL.LogMessage(clientNumber, method, string.Format($"Extracted array type and rank in {sw.ElapsedMilliseconds}ms. Type: {arrayType}, Rank: {arrayRank}, Response values - Type: {responseBase.Type}, Rank: {responseBase.Rank}"));
+                            TL.LogMessage(clientNumber, method, string.Format($"Extracted array type and rank by JsonConvert.DeserializeObject in {sw.ElapsedMilliseconds}ms. Type: {arrayType}, Rank: {arrayRank}, Response values - Type: {responseBase.Type}, Rank: {responseBase.Rank}"));
 
+                            responseBase = null; // Remove the object to release memory
+                            GC.Collect();
+
+                            const string TYPE_STRING = "Type";
+                            const string RANK_STRING = "Rank";
+
+                            sw.Restart(); // Clear and start the stopwatch
+                            arrayType = (SharedConstants.ImageArrayElementTypes)GetIntParameter(TYPE_STRING, response.Content, TL);
+                            arrayRank = GetIntParameter(RANK_STRING, response.Content, TL);
+
+                            TL.LogMessage(clientNumber, method, $"*** Extracted array type and rank by GetIntParameter in {sw.ElapsedMilliseconds}ms. Type: {arrayType}, Rank: {arrayRank}");
+
+                            sw.Restart(); // Clear and start the stopwatch
                             switch (arrayType) // Handle the different return types that may come from ImageArrayVariant
                             {
                                 case SharedConstants.ImageArrayElementTypes.Int:
@@ -716,6 +716,8 @@ namespace ASCOM.Remote
 
                             }
                         }
+
+                        TL.LogMessage(clientNumber, method, $"*** Completed array de-serialisation in {sw.ElapsedMilliseconds}ms");
 
                         // HANDLE COM EXCEPTIONS THROWN BY WINDOWS BASED DRIVERS RUNNING IN THE REMOTE SERVER
                         if (restResponseBase.DriverException != null)
@@ -945,7 +947,7 @@ namespace ASCOM.Remote
             lock (connectLockObject) // Ensure that only one connection attempt can happen at a time
             {
                 TL.LogMessage(clientNumber, "Connect", "Has connection lock");
-                if (IsClientConnected(clientNumber, client, TL)) // If we are already connected then just log this 
+                if (IsClientConnected(clientNumber, TL)) // If we are already connected then just log this 
                 {
                     TL.LogMessage(clientNumber, "Connect", "Already connected, just incrementing connection count.");
                 }
@@ -975,12 +977,12 @@ namespace ASCOM.Remote
         public static void Disconnect(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
         {
 
-            if (IsClientConnected(clientNumber, client, TL)) // If we are already connected then disconnect, otherwise ignore disconnect 
+            if (IsClientConnected(clientNumber, TL)) // If we are already connected then disconnect, otherwise ignore disconnect 
             {
                 TL.LogMessage(clientNumber, "Disconnect", "We are connected, setting Connected to False on remote driver");
                 SetBool(clientNumber, client, URIBase, TL, "Connected", false);
                 bool successfullyRemoved = connectStates.TryRemove(clientNumber, out bool lastValue);
-                TL.LogMessage("Disconnect", "Set Connected to: False, Successfully removed: " + successfullyRemoved.ToString());
+                TL.LogMessage("Disconnect", $"Set Connected to: False, Successfully removed: {successfullyRemoved}, previous value: {lastValue}");
             }
             else
             {
@@ -1026,17 +1028,34 @@ namespace ASCOM.Remote
 
         #region Complex Camera Properties
 
+        public static int GetIntParameter(string parameterName, string response, TraceLoggerPlus TL)
+        {
+            const string COMMA = ",";
+
+            string formattedParameterName = $"\"{parameterName}\":";
+
+            int parameterTextStart = response.IndexOf(formattedParameterName, StringComparison.Ordinal);
+            int parameterStart = parameterTextStart + formattedParameterName.Length;
+            int parameterEnd = response.IndexOf(COMMA, parameterStart, StringComparison.Ordinal);
+            string parameterString = response.Substring(parameterStart, parameterEnd - parameterStart);
+
+            bool success = int.TryParse(parameterString, out int parameterValue);
+
+            TL.LogMessage("GetIntParameter", $"ParameterTextStart: {parameterTextStart}, ParameterStart: {parameterStart}, PArameterEnd: {parameterEnd}, ParameterString: {parameterString}, ParameterValue: {parameterValue}, Success: {success}");
+
+            return parameterValue;
+        }
+
         public static object ImageArrayVariant(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
         {
             Array returnArray;
-            string variantType = null;
-            object[,] objectArray2D = new object[1, 1];
-            object[,,] objectArray3D = new object[1, 1, 1];
+            object[,] objectArray2D;
+            object[,,] objectArray3D;
 
             returnArray = GetValue<Array>(clientNumber, client, URIBase, TL, "ImageArrayVariant");
 
-            variantType = returnArray.GetType().Name;
-            TL.LogMessage(clientNumber, "ImageArrayVariant", string.Format("Received array of Rank {0} of Length {1} with element type {2} {3}", returnArray.Rank, returnArray.Length, returnArray.GetType().Name, returnArray.GetType().UnderlyingSystemType.Name));
+            string variantType = returnArray.GetType().Name;
+            TL.LogMessage(clientNumber, "ImageArrayVariant", $"Received {variantType} array of Rank {returnArray.Rank} with Length {returnArray.Length} and element type {returnArray.GetType().Name} {returnArray.GetType().UnderlyingSystemType.Name}");
 
             // convert to variant
 
