@@ -30,29 +30,36 @@ namespace ASCOM.Remote
         static void Main(string[] args)
         {
 
+            // Add the event handler for handling non-UI thread exceptions to the event. 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
             try
             {
-                TL = new TraceLogger("", "SetFireWallRules");
+                TL = new TraceLogger("", "SetNetworkPermissions");
                 TL.Enabled = true;
 
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
-                TL.LogMessage("SetFireWallRules", string.Format("Version {0}, Run on {1}", version.ToString(), DateTime.Now.ToString("dddd d MMMM yyyy HH:mm:ss")));
+                TL.LogMessage("SetNetworkPermissions", string.Format("Version {0}, Run on {1}", version.ToString(), DateTime.Now.ToString("dddd d MMMM yyyy HH:mm:ss")));
                 TL.BlankLine();
 
-                // Add the event handler for handling non-UI thread exceptions to the event. 
+                foreach (string arg in args)
+                {
+                    TL.LogMessage("SetNetworkPermissions", $"Received argument: {arg}");
+                }
+                TL.BlankLine();
 
                 CommandLine.Parser.Default.ParseArguments<Options>(args)
                     .WithParsed<Options>(opts => ProcessOptions(opts))
                     .WithNotParsed<Options>((errs) => HandleParseError(errs));
+
+                TL.LogMessage("SetNetworkPermissions", "Command line processing completed.");
 
                 TL.Enabled = false;
                 TL = null;
             }
             catch (Exception ex)
             {
-                TraceLogger TL = new TraceLogger("SetFireWallRulesMainException")
+                TraceLogger TL = new TraceLogger("SetNetworkPermissionsMainException")
                 {
                     Enabled = true
                 };
@@ -60,7 +67,6 @@ namespace ASCOM.Remote
                 TL.Enabled = false;
                 TL.Dispose();
                 TL = null;
-
             }
         }
 
@@ -68,7 +74,7 @@ namespace ASCOM.Remote
         {
             foreach (Error err in errs)
             {
-                //Console.WriteLine("Error stops processing: {0}, {1}", err.StopsProcessing,err.ToString());
+                TL.LogMessage("HandleParseError", $"Error stopped processing: {err.StopsProcessing}, {err.ToString()}");
             }
         }
 
@@ -78,7 +84,9 @@ namespace ASCOM.Remote
             TL.LogMessage("ProcessOptions", string.Format("Local server path: {0}", opts.LocalServerPath));
             TL.LogMessage("ProcessOptions", string.Format("Remote server path: {0}", opts.RemoteServerPath));
             TL.LogMessage("ProcessOptions", string.Format("API URI: {0}", opts.SetApiUriAcl));
-            TL.LogMessage("ProcessOptions", string.Format("Management URI: {0}", opts.SetManagementUriAcl));
+            TL.LogMessage("ProcessOptions", string.Format("Remote server management URI: {0}", opts.SetRemoteServerManagementUriAcl));
+            TL.LogMessage("ProcessOptions", string.Format("Alpaca device management URI: {0}", opts.SetAlpacaManagementUriAcl));
+            TL.LogMessage("ProcessOptions", string.Format("Alpaca device HTML setup URI: {0}", opts.SetAlpacaSetupUriAcl));
             TL.BlankLine();
 
             // Set firewall rules depending on which command line parameter was supplied
@@ -87,7 +95,9 @@ namespace ASCOM.Remote
 
             // Set http.sys ACLs as needed
             if (opts.SetApiUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetApiUriAcl);
-            if (opts.SetManagementUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetManagementUriAcl);
+            if (opts.SetRemoteServerManagementUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetRemoteServerManagementUriAcl);
+            if (opts.SetAlpacaManagementUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetAlpacaManagementUriAcl);
+            if (opts.SetAlpacaSetupUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetAlpacaSetupUriAcl);
         }
 
         private static void SetFireWallRules(string applicationPath, string FirewallRuleName)
@@ -139,20 +149,47 @@ namespace ASCOM.Remote
                         IRule rule = FirewallManager.Instance.CreateApplicationRule(FirewallManager.Instance.GetProfile().Type, FirewallRuleName + OUTBOUND_RULE_NAME, FirewallAction.Allow, applicationPathFull);
                         rule.Direction = FirewallDirection.Outbound;
                         rule.Profiles = FirewallProfiles.Domain | FirewallProfiles.Private | FirewallProfiles.Public;
-                        TL.LogMessage("SetFireWallRules", "Created outbound rule");
+                        TL.LogMessage("SetFireWallRules", "Successfully created outbound rule");
                         FirewallManager.Instance.Rules.Add(rule);
-                        TL.LogMessage("SetFireWallRules", string.Format("Added outbound rule for {0}", applicationPathFull));
+                        TL.LogMessage("SetFireWallRules", string.Format("Successfully added outbound rule for {0}", applicationPathFull));
 
                         rule = FirewallManager.Instance.CreateApplicationRule(FirewallManager.Instance.GetProfile().Type, FirewallRuleName + INBOUND_RULE_NAME, FirewallAction.Allow, applicationPathFull);
                         rule.Direction = FirewallDirection.Inbound;
                         rule.Profiles = FirewallProfiles.Domain | FirewallProfiles.Private | FirewallProfiles.Public;
 
                         // Add edge traversal permission to the inbound rule so that the rule will apply to packets delivered in encapsulated transmission formats such as VPNs
-                        ((WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin7)rule).EdgeTraversalOptions = WindowsFirewallHelper.FirewallAPIv2.EdgeTraversalAction.Allow;
-                        TL.LogMessage("SetFireWallRules", "Created inbound rule");
+                        if (rule is WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRule)
+                        {
+                            TL.LogMessage("SetFireWallRules", "Firewall rule is a standard rule");
+                            ((WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRule)rule).EdgeTraversal = true;
+                        }
+                        else
+                        {
+                            TL.LogMessage("SetFireWallRules", "Firewall rule is not a standard rule");
+                        }
+                        if (rule is WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin7)
+                        {
+                            TL.LogMessage("SetFireWallRules", "Firewall rule is a WIN7 rule");
+                            ((WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin7)rule).EdgeTraversalOptions = WindowsFirewallHelper.FirewallAPIv2.EdgeTraversalAction.Allow;
+                        }
+                        else
+                        {
+                            TL.LogMessage("SetFireWallRules", "Firewall rule is not a WIN7 rule");
+                        }
+                        if (rule is WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin8)
+                        {
+                            TL.LogMessage("SetFireWallRules", "Firewall rule is a WIN8 rule");
+                            ((WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin8)rule).EdgeTraversalOptions = WindowsFirewallHelper.FirewallAPIv2.EdgeTraversalAction.Allow;
+                        }
+                        else
+                        {
+                            TL.LogMessage("SetFireWallRules", "Firewall rule is not a WIN8 rule");
+                        }
+
+                        TL.LogMessage("SetFireWallRules", "Successfully created inbound firewall rule");
 
                         FirewallManager.Instance.Rules.Add(rule);
-                        TL.LogMessage("SetFireWallRules", string.Format("Added inbound rule for {0}", applicationPathFull));
+                        TL.LogMessage("SetFireWallRules", string.Format("Successfully added inbound firewall rule for {0}", applicationPathFull));
                     }
                     else
                     {
@@ -275,10 +312,7 @@ namespace ASCOM.Remote
             TL.LogMessageCrLf("Main", "Unhandled exception: " + exception.ToString());
             TL.Enabled = false;
             TL.Dispose();
-            TL = null;
-
             Environment.Exit(0);
         }
     }
 }
-

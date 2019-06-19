@@ -68,7 +68,7 @@
       <Version>2.4.3</Version>
     </PackageReference>
     <PackageReference Include="WindowsFirewallHelper">
-      <Version>1.6.2.36</Version>
+      <Version>1.6.3.40</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
