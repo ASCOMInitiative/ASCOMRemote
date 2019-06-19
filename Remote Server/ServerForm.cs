@@ -412,7 +412,8 @@ namespace ASCOM.Remote
                                     string args = $"--{SharedConstants.ENABLE_API_URI_COMMAND_NAME} {apiOperatingUri} " +
                                         $"--{SharedConstants.ENABLE_REMOTE_SERVER_MANAGEMENT_URI_COMMAND_NAME} {remoteServerManagementUri} " +
                                         $"--{SharedConstants.ENABLE_ALPACA_DEVICE_MANAGEMENT_URI_COMMAND_NAME} {alpacaDeviceManagementUri} " +
-                                        $"--{SharedConstants.ENABLE_ALPACA_SETUP_URI_COMMAND_NAME} {alpacaDeviceSetupUri}";
+                                        $"--{SharedConstants.ENABLE_ALPACA_SETUP_URI_COMMAND_NAME} {alpacaDeviceSetupUri} " +
+                                        $"--{SharedConstants.ENABLE_HTTP_DOT_SYS_PORT_COMMAND_NAME} {ServerPortNumber}";
                                     LogMessage(0, 0, 0, "StartRESTServer", $"SetNetworkPermissions arguments: {args}");
 
                                     ProcessStartInfo psi = new ProcessStartInfo(setNetworkPermissionsPath, args)
