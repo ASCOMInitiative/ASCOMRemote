@@ -79,6 +79,8 @@ Source: "..\Remote Client Local Server\bin\{#BuildType}\Newtonsoft.Json.dll"; De
 ; REMOTE SERVER FILES
 Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
 Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\Remote Server\ASCOMAlpacaMidRes.jpg"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\Remote Server\ascomicon.ico"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
 ; Source: "..\Remote Server\bin\{#BuildType}\{#ASCOMStandardName}.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
 ; Source: "..\Remote Server\bin\{#BuildType}\{#ASCOMStandardName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
 

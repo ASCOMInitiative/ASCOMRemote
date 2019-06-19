@@ -106,7 +106,7 @@ namespace ASCOM.Remote
                 TL.LogMessage("GetConfiguration", "Setting timeout");
                 RemoteClientDriver.SetClientTimeout(client, 10);
 
-                string managementUri = string.Format("{0}{1}/{2}", SharedConstants.MANAGEMENT_URL_BASE, SharedConstants.API_VERSION_V1, SharedConstants.MANGEMENT_CONFIGURATION);
+                string managementUri = string.Format("{0}{1}/{2}", SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE, SharedConstants.API_VERSION_V1, SharedConstants.REMOTE_SERVER_MANGEMENT_GET_CONFIGURATION);
                 RestRequest request = new RestRequest(managementUri.ToLowerInvariant(), Method.GET)
                 {
                     RequestFormat = DataFormat.Json
@@ -201,7 +201,7 @@ namespace ASCOM.Remote
                 TL.LogMessage("Reload", "Setting timeout");
                 RemoteClientDriver.SetClientTimeout(client, 10);
 
-                string managementUri = string.Format("{0}{1}/{2}", SharedConstants.MANAGEMENT_URL_BASE, SharedConstants.API_VERSION_V1, SharedConstants.MANGEMENT_CONFIGURATION);
+                string managementUri = string.Format("{0}{1}/{2}", SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE, SharedConstants.API_VERSION_V1, SharedConstants.REMOTE_SERVER_MANGEMENT_GET_CONFIGURATION);
                 RestRequest request = new RestRequest(managementUri.ToLowerInvariant(), Method.GET)
                 {
                     RequestFormat = DataFormat.Json

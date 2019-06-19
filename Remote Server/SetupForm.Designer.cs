@@ -64,6 +64,7 @@
             this.ChkRunDriversInSeparateThreadss = new System.Windows.Forms.CheckBox();
             this.ChkLogClientIPAddress = new System.Windows.Forms.CheckBox();
             this.ChkIncludeDriverExceptionsInJsonResponses = new System.Windows.Forms.CheckBox();
+            this.TxtRemoteServerLocation = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
@@ -80,7 +81,7 @@
             // BtnCancel
             // 
             this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.BtnCancel.Location = new System.Drawing.Point(735, 543);
+            this.BtnCancel.Location = new System.Drawing.Point(798, 569);
             this.BtnCancel.Name = "BtnCancel";
             this.BtnCancel.Size = new System.Drawing.Size(75, 23);
             this.BtnCancel.TabIndex = 19;
@@ -89,7 +90,7 @@
             // 
             // BtnOK
             // 
-            this.BtnOK.Location = new System.Drawing.Point(735, 514);
+            this.BtnOK.Location = new System.Drawing.Point(798, 540);
             this.BtnOK.Name = "BtnOK";
             this.BtnOK.Size = new System.Drawing.Size(75, 23);
             this.BtnOK.TabIndex = 18;
@@ -149,7 +150,7 @@
             // chkAutoConnect
             // 
             this.chkAutoConnect.AutoSize = true;
-            this.chkAutoConnect.Location = new System.Drawing.Point(96, 442);
+            this.chkAutoConnect.Location = new System.Drawing.Point(96, 474);
             this.chkAutoConnect.Name = "chkAutoConnect";
             this.chkAutoConnect.Size = new System.Drawing.Size(133, 17);
             this.chkAutoConnect.TabIndex = 2;
@@ -159,7 +160,7 @@
             // chkTrace
             // 
             this.chkTrace.AutoSize = true;
-            this.chkTrace.Location = new System.Drawing.Point(96, 501);
+            this.chkTrace.Location = new System.Drawing.Point(96, 533);
             this.chkTrace.Name = "chkTrace";
             this.chkTrace.Size = new System.Drawing.Size(96, 17);
             this.chkTrace.TabIndex = 6;
@@ -169,7 +170,7 @@
             // chkDebugTrace
             // 
             this.chkDebugTrace.AutoSize = true;
-            this.chkDebugTrace.Location = new System.Drawing.Point(96, 524);
+            this.chkDebugTrace.Location = new System.Drawing.Point(96, 556);
             this.chkDebugTrace.Name = "chkDebugTrace";
             this.chkDebugTrace.Size = new System.Drawing.Size(135, 17);
             this.chkDebugTrace.TabIndex = 7;
@@ -180,7 +181,7 @@
             // chkAccessLog
             // 
             this.chkAccessLog.AutoSize = true;
-            this.chkAccessLog.Location = new System.Drawing.Point(96, 465);
+            this.chkAccessLog.Location = new System.Drawing.Point(96, 497);
             this.chkAccessLog.Name = "chkAccessLog";
             this.chkAccessLog.Size = new System.Drawing.Size(124, 17);
             this.chkAccessLog.TabIndex = 4;
@@ -235,8 +236,7 @@
             // chkManagementInterfaceEnabled
             // 
             this.chkManagementInterfaceEnabled.AutoSize = true;
-            this.chkManagementInterfaceEnabled.Enabled = false;
-            this.chkManagementInterfaceEnabled.Location = new System.Drawing.Point(309, 442);
+            this.chkManagementInterfaceEnabled.Location = new System.Drawing.Point(309, 474);
             this.chkManagementInterfaceEnabled.Name = "chkManagementInterfaceEnabled";
             this.chkManagementInterfaceEnabled.Size = new System.Drawing.Size(169, 17);
             this.chkManagementInterfaceEnabled.TabIndex = 3;
@@ -250,7 +250,7 @@
             // ChkStartWithApiEnabled
             // 
             this.ChkStartWithApiEnabled.AutoSize = true;
-            this.ChkStartWithApiEnabled.Location = new System.Drawing.Point(309, 465);
+            this.ChkStartWithApiEnabled.Location = new System.Drawing.Point(309, 497);
             this.ChkStartWithApiEnabled.Name = "ChkStartWithApiEnabled";
             this.ChkStartWithApiEnabled.Size = new System.Drawing.Size(131, 17);
             this.ChkStartWithApiEnabled.TabIndex = 5;
@@ -421,7 +421,7 @@
             // ChkRunDriversInSeparateThreadss
             // 
             this.ChkRunDriversInSeparateThreadss.AutoSize = true;
-            this.ChkRunDriversInSeparateThreadss.Location = new System.Drawing.Point(309, 501);
+            this.ChkRunDriversInSeparateThreadss.Location = new System.Drawing.Point(309, 533);
             this.ChkRunDriversInSeparateThreadss.Name = "ChkRunDriversInSeparateThreadss";
             this.ChkRunDriversInSeparateThreadss.Size = new System.Drawing.Size(181, 17);
             this.ChkRunDriversInSeparateThreadss.TabIndex = 34;
@@ -431,7 +431,7 @@
             // ChkLogClientIPAddress
             // 
             this.ChkLogClientIPAddress.AutoSize = true;
-            this.ChkLogClientIPAddress.Location = new System.Drawing.Point(309, 524);
+            this.ChkLogClientIPAddress.Location = new System.Drawing.Point(309, 556);
             this.ChkLogClientIPAddress.Name = "ChkLogClientIPAddress";
             this.ChkLogClientIPAddress.Size = new System.Drawing.Size(134, 17);
             this.ChkLogClientIPAddress.TabIndex = 35;
@@ -441,24 +441,28 @@
             // ChkIncludeDriverExceptionsInJsonResponses
             // 
             this.ChkIncludeDriverExceptionsInJsonResponses.AutoSize = true;
-            this.ChkIncludeDriverExceptionsInJsonResponses.Location = new System.Drawing.Point(96, 547);
+            this.ChkIncludeDriverExceptionsInJsonResponses.Location = new System.Drawing.Point(96, 579);
             this.ChkIncludeDriverExceptionsInJsonResponses.Name = "ChkIncludeDriverExceptionsInJsonResponses";
             this.ChkIncludeDriverExceptionsInJsonResponses.Size = new System.Drawing.Size(364, 17);
             this.ChkIncludeDriverExceptionsInJsonResponses.TabIndex = 36;
             this.ChkIncludeDriverExceptionsInJsonResponses.Text = "Include driver exceptions in JSON responses (only useful for debugging)";
             this.ChkIncludeDriverExceptionsInJsonResponses.UseVisualStyleBackColor = true;
             // 
+            // TxtRemoteServerLocation
+            // 
+            this.TxtRemoteServerLocation.Location = new System.Drawing.Point(76, 434);
+            this.TxtRemoteServerLocation.Name = "TxtRemoteServerLocation";
+            this.TxtRemoteServerLocation.Size = new System.Drawing.Size(328, 20);
+            this.TxtRemoteServerLocation.TabIndex = 37;
+            // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.ForeColor = System.Drawing.Color.Red;
-            this.label10.Location = new System.Drawing.Point(484, 443);
+            this.label10.Location = new System.Drawing.Point(191, 418);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(138, 13);
-            this.label10.TabIndex = 37;
-            this.label10.Text = "(Disabled pending redesign)";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label10.Size = new System.Drawing.Size(82, 13);
+            this.label10.TabIndex = 38;
+            this.label10.Text = "Server Location";
             // 
             // SetupForm
             // 
@@ -466,8 +470,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.BtnCancel;
-            this.ClientSize = new System.Drawing.Size(920, 577);
+            this.ClientSize = new System.Drawing.Size(920, 604);
             this.Controls.Add(this.label10);
+            this.Controls.Add(this.TxtRemoteServerLocation);
             this.Controls.Add(this.ChkIncludeDriverExceptionsInJsonResponses);
             this.Controls.Add(this.ChkLogClientIPAddress);
             this.Controls.Add(this.ChkRunDriversInSeparateThreadss);
@@ -549,5 +554,6 @@
         private System.Windows.Forms.CheckBox ChkLogClientIPAddress;
         private System.Windows.Forms.CheckBox ChkIncludeDriverExceptionsInJsonResponses;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox TxtRemoteServerLocation;
     }
 }

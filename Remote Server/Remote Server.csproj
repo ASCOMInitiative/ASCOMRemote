@@ -70,6 +70,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared Resources\AlpacaConfiguredDevice.cs">
+      <Link>AlpacaConfiguredDevice.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared Resources\AlpacaDeviceDescription.cs">
+      <Link>AlpacaDeviceDescription.cs</Link>
+    </Compile>
     <Compile Include="..\Shared Resources\ConfiguredDevice.cs">
       <Link>ConfiguredDevice.cs</Link>
     </Compile>
@@ -84,6 +90,12 @@
     </Compile>
     <Compile Include="..\Shared Resources\RequestData.cs">
       <Link>RequestData.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared Resources\Response Classes\AlpacaConfiguredDevicesResponse.cs">
+      <Link>Response Classes\AlpacaConfiguredDevicesResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared Resources\Response Classes\AlpacaDescriptionResponse.cs">
+      <Link>Response Classes\AlpacaDescriptionResponse.cs</Link>
     </Compile>
     <Compile Include="..\shared resources\response classes\AxisRatesResponse.cs">
       <Link>Response Classes\AxisRatesResponse.cs</Link>
@@ -210,13 +222,26 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ASCOM.ico" />
+    <Content Include="ASCOMAlpacaMidRes.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ascomicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.1</Version>
+      <Version>12.0.2</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SetupPageContent\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -101,6 +101,7 @@ namespace ASCOM.Remote
                 ChkRunDriversInSeparateThreadss.Checked = ServerForm.RunDriversOnSeparateThreads;
                 ChkLogClientIPAddress.Checked = ServerForm.LogClientIPAddress;
                 ChkIncludeDriverExceptionsInJsonResponses.Checked = ServerForm.IncludeDriverExceptionInJsonResponse;
+                TxtRemoteServerLocation.Text = ServerForm.RemoteServerLocation;
 
                 // Populate the device types list
                 foreach (string deviceType in profile.RegisteredDeviceTypes)
@@ -246,6 +247,7 @@ namespace ASCOM.Remote
                 ServerForm.RunDriversOnSeparateThreads = ChkRunDriversInSeparateThreadss.Checked;
                 ServerForm.LogClientIPAddress = ChkLogClientIPAddress.Checked;
                 ServerForm.IncludeDriverExceptionInJsonResponse = ChkIncludeDriverExceptionsInJsonResponses.Checked;
+                ServerForm.RemoteServerLocation = TxtRemoteServerLocation.Text;
 
                 foreach (ServedDevice item in this.Controls.OfType<ServedDevice>())
                 {
@@ -262,7 +264,7 @@ namespace ASCOM.Remote
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ServerForm.LogException(0, 0, 0, "OK Button", string.Format("Exception on closing form: {0}.", ex.ToString()));
             }
@@ -306,33 +308,39 @@ namespace ASCOM.Remote
             }
         }
 
-        public bool ValidIPAddress(string emailAddress, out string errorMessage)
+        public bool ValidIPAddress(string ipAddress, out string errorMessage)
         {
-            if (addressList.Text.ToLower() == SharedConstants.LOCALHOST_NAME)
+            if (string.IsNullOrEmpty(ipAddress.Trim()))
+            {
+                errorMessage = "The IP field has no content";
+                return false;
+            }
+
+            if (ipAddress.ToLower() == SharedConstants.LOCALHOST_NAME)
             {
                 errorMessage = "";
                 return true;
             }
 
-            if (addressList.Text.ToLower() == "*")
+            if (ipAddress.ToLower() == "*")
             {
                 errorMessage = "";
                 return true;
             }
 
-            if (addressList.Text.ToLower() == "+")
+            if (ipAddress.ToLower() == "+")
             {
                 errorMessage = "";
                 return true;
             }
 
-            if (Regex.Matches(addressList.Text, @"\.").Count != 3)
+            if (Regex.Matches(ipAddress, @"\.").Count != 3)
             {
                 errorMessage = "The IP address must have the form W.X.Y.Z";
                 return false;
             }
 
-            bool isValidIpAddress = IPAddress.TryParse(addressList.Text, out IPAddress testAddress);
+            bool isValidIpAddress = IPAddress.TryParse(ipAddress, out _); // Try and parse the Ip address discarding the output (out _)
             if (isValidIpAddress)
             {
                 errorMessage = "";

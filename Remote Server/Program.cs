@@ -26,7 +26,10 @@ namespace ASCOM.Remote
 #endif
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ServerForm());
+            ServerForm serverForm = new ServerForm();
+            Application.Run(serverForm);
+
+            if (serverForm.RestartApplication) Application.Restart(); // Restart the application if the network permissions have been changed
 
 #if DEBUG // When debugging, include a log to show the time of close down
             TraceLogger TL = new TraceLogger("ASCOMRemoteEnded")
@@ -39,6 +42,7 @@ namespace ASCOM.Remote
             TL = null;
 #endif
         }
+
         static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
             TraceLogger TL = new TraceLogger("RemoteAccessServerException")
@@ -50,7 +54,6 @@ namespace ASCOM.Remote
 
             TL.Enabled = false;
             TL.Dispose();
-            TL = null;
 
             //MessageBox.Show(e.Exception.Message, "Unhandled Thread Exception, see RemoteAccessServerException log for details.");
             Environment.Exit(0);
@@ -67,8 +70,6 @@ namespace ASCOM.Remote
             Process.Start(TL.LogFileName);
             TL.Enabled = false;
             TL.Dispose();
-            TL = null;
-            //MessageBox.Show(exception.Message, "Unhandled UI Exception, see RemoteAccessServerException log for details.");
             Environment.Exit(0);
         }
     }

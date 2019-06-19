@@ -28,11 +28,13 @@ namespace ASCOM.Remote
     {
         #region Constants
 
+        // NOTE - Setup page HTML is set in the ReturnHTMLPageOrImage  method
+
         private const string SERVER_TRACELOGGER_NAME = "RemoteAccessServer";
         private const string ACCESSLOG_TRACELOGGER_NAME = "ServerAccessLog";
 
-        //Relative path of the SetNetworkPermissions exe from C:\Program Files (or x86 flavour on a 64bit OS). This must match the location where the installer puts the exe!
-        private const string SET_NETWORK_PERMISSIONS_EXE_PATH = @"\ASCOM\Remote\ASCOM.SetNetworkPermissions.exe";
+        private const string SETUP_DEFAULT_INDEX_PAGE_NAME = "index.html";
+        private const string SETUP_DEVICE_DEFAULT_INDEX_PAGE_NAME = "indexdevice.html";
 
         private const int MAX_ERRORS_BEFORE_CLOSE = 10; // Maximum number of async listen errors before the application permanently shuts down
         private const int SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH = 500; // Maximum length of a message that can be logged to the screen - required to prevent huge messages from locking up the system while the text box attempts to processes them
@@ -67,6 +69,8 @@ namespace ASCOM.Remote
                             "<font color=\"blue\">command</font>" +
                             " fields must be in lower case."; // HTML error message when an unknown server command is received.
 
+        private const string UNRECOGNISED_URI_MESSAGE = "You have reached the <i><b>ASCOM Remote Server</b></i> API portal but your url did not start with /api, /management, /server or /setup (must be lower case) <p><b>Available devices:</b></p>";
+
         private const string GET_UNKNOWN_METHOD_MESSAGE = "GET - Unknown device method: ";
         private const string PUT_UNKNOWN_METHOD_MESSAGE = "PUT - Unknown device method: ";
         private const string MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE = "The management interface is not enabled, please enable it using the remote access server configuration dialogue";
@@ -98,6 +102,7 @@ namespace ASCOM.Remote
         internal const string RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME = "Run Drivers On Separate Threads"; public const bool RUN_DRIVERS_ON_SEPARATE_THREADS_DEFAULT = true;
         internal const string LOG_CLIENT_IPADDRESS_PROFILENAME = "Log Client IP Address"; public const bool LOG_CLIENT_IPADDRESS_DEFAULT = false;
         internal const string INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME = "Include Driver Exception In JSON Response"; public const bool INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_DEFAULT = false;
+        internal const string REMOTE_SERVER_LOCATION = "Remote Server Location"; public const string REMOTE_SERVER_LOCATION_DEFAULT = "Unknown";
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -145,6 +150,8 @@ namespace ASCOM.Remote
 
         // These are available anywhere in the Remote Device Server and have the same value in all threads
 
+        public bool RestartApplication = false;
+
         internal static HttpListener httpListener;
         internal static TraceLoggerPlus AccessLog;
         internal readonly object counterLock = new object();
@@ -179,6 +186,7 @@ namespace ASCOM.Remote
         internal static bool RunDriversOnSeparateThreads;
         internal static bool LogClientIPAddress;
         internal static bool IncludeDriverExceptionInJsonResponse;
+        internal static string RemoteServerLocation;
 
         #endregion
 
@@ -349,9 +357,12 @@ namespace ASCOM.Remote
 
                 // Create variables to hold the ASCOM device server operating URIs
                 string apiOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
-                string managementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.MANAGEMENT_URL_BASE);
+                string remoteServerManagementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
+                string alpacaDeviceManagementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE);
+                string alpacaDeviceSetupUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE);
+
                 LogMessage(0, 0, 0, "StartRESTServer", "Operating URI: " + apiOperatingUri);
-                LogMessage(0, 0, 0, "StartRESTServer", "Management URI: " + managementUri);
+                LogMessage(0, 0, 0, "StartRESTServer", "Management URI: " + remoteServerManagementUri);
 
                 // Create the listener on the required URIs
                 LogMessage(0, 0, 0, "StartRESTServer", "Stopping existing server");
@@ -360,7 +371,9 @@ namespace ASCOM.Remote
                 LogMessage(0, 0, 0, "StartRESTServer", "Creating listener");
                 httpListener = new HttpListener();
                 httpListener.Prefixes.Add(apiOperatingUri); // Set up the listener on the api URI
-                httpListener.Prefixes.Add(managementUri); // Set up the listener on the management URI
+                httpListener.Prefixes.Add(remoteServerManagementUri); // Set up the listener on the remote server bespoke management command URI
+                httpListener.Prefixes.Add(alpacaDeviceManagementUri); // Set up the listener on the management URI common to all Alpaca devices
+                httpListener.Prefixes.Add(alpacaDeviceSetupUri); // Set up the listener on the HTTP Setup URI common to all Alpaca devices
 
                 // Start the listener and ask permission if required
                 while (!httpListener.IsListening)
@@ -373,7 +386,7 @@ namespace ASCOM.Remote
                     }
                     catch (HttpListenerException ex) when (ex.ErrorCode == (int)WindowsErrorCodes.ERROR_ACCESS_DENIED) // User does not have an ACL permitting this address and port to be used so get permission
                     {
-                        DialogResult dlgResult = MessageBox.Show(string.Format("You need to give permission to listen on URL: {0}, do you wish to do this? \r\n(Requires administrator privilege)", apiOperatingUri), "Access Denied", MessageBoxButtons.YesNo);
+                        DialogResult dlgResult = MessageBox.Show("You need to give permission for the Remote Server to listen for incoming requests, do you wish to do this?\r\n\r\nThe server will restart after the new permissions are set.\r\n\r\n(Requires administrator privilege)", "HTTP listen permissions required", MessageBoxButtons.YesNo);
                         if (dlgResult == DialogResult.Yes) // Permission given so set the ACL using net-sh, which will ask for elevation if required
                         {
                             LogMessage(0, 0, 0, "StartRESTServer", "User gave permission to set port ACL");
@@ -382,22 +395,25 @@ namespace ASCOM.Remote
                             httpListener = null;
                             LogMessage(0, 0, 0, "StartRESTServer", "Enabling URIs");
 
-                            string apiNetshCommand = string.Format(@"http add urlacl url={0} user={1}\{2}""", apiOperatingUri, Environment.UserDomainName, Environment.UserName);
-                            LogMessage(0, 0, 0, "StartRESTServer", string.Format("API NetSh command: {0}", apiNetshCommand));
-
-                            string managementNetshCommand = string.Format(@"""http add urlacl url={0} user={1}\{2}""", managementUri, Environment.UserDomainName, Environment.UserName);
-                            LogMessage(0, 0, 0, "StartRESTServer", string.Format("Management NetSh command: {0}", managementNetshCommand));
+                            LogMessage(0, 0, 0, "StartRESTServer", $"API URI: {apiOperatingUri}");
+                            LogMessage(0, 0, 0, "StartRESTServer", $"Alpaca HTTP Setup URI: {alpacaDeviceSetupUri}");
+                            LogMessage(0, 0, 0, "StartRESTServer", $"Alpaca device management URI: {alpacaDeviceManagementUri}");
+                            LogMessage(0, 0, 0, "StartRESTServer", $"Remote server management URI: {remoteServerManagementUri}");
+                            LogMessage(0, 0, 0, "StartRESTServer", $"User: {Environment.UserDomainName}\\{Environment.UserName}");
 
                             try
                             {
-                                string setNetworkPermissionsPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + SET_NETWORK_PERMISSIONS_EXE_PATH;
+                                string setNetworkPermissionsPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + SharedConstants.SET_NETWORK_PERMISSIONS_EXE_PATH;
                                 LogMessage(0, 0, 0, "StartRESTServer", string.Format("SetNetworkPermissionspath: {0}", setNetworkPermissionsPath));
 
                                 // Check that the SetNetworkPermissions exe exists
                                 if (File.Exists(setNetworkPermissionsPath)) // SetNetworkPermissions exists
                                 {
-                                    string args = string.Format(@"--setapiuriacl {0} --setmanagementuriacl {1}", apiOperatingUri, managementUri);
-                                    LogMessage(0, 0, 0, "StartRESTServer", string.Format("SetNetworkPermissions arguments: {0}", args));
+                                    string args = $"--{SharedConstants.ENABLE_API_URI_COMMAND_NAME} {apiOperatingUri} " +
+                                        $"--{SharedConstants.ENABLE_REMOTE_SERVER_MANAGEMENT_URI_COMMAND_NAME} {remoteServerManagementUri} " +
+                                        $"--{SharedConstants.ENABLE_ALPACA_DEVICE_MANAGEMENT_URI_COMMAND_NAME} {alpacaDeviceManagementUri} " +
+                                        $"--{SharedConstants.ENABLE_ALPACA_SETUP_URI_COMMAND_NAME} {alpacaDeviceSetupUri}";
+                                    LogMessage(0, 0, 0, "StartRESTServer", $"SetNetworkPermissions arguments: {args}");
 
                                     ProcessStartInfo psi = new ProcessStartInfo(setNetworkPermissionsPath, args)
                                     {
@@ -409,6 +425,22 @@ namespace ASCOM.Remote
                                     LogMessage(0, 0, 0, "StartRESTServer", "Starting SetNetworkPermissions process");
                                     Process.Start(psi).WaitForExit();
                                     LogMessage(0, 0, 0, "StartRESTServer", "Completed SetNetworkPermissions process");
+
+                                    // Restart the server so that the revised permissions come into effect
+                                    try
+                                    {
+                                        DisconnectDevices();
+                                        this.RestartApplication = true;
+                                    }
+                                    catch (Exception ex2)
+                                    {
+                                        LogMessage(0, 0, 0, "RestartRESTServer", $"Exception while attempting to restart the server: {ex2.Message}");
+                                        LogException(0, 0, 0, "RestartRESTServer", ex2.ToString());
+                                    }
+                                    finally
+                                    {
+                                        this.Close(); // Close the form
+                                    }
                                 }
                                 else // SetNetworkPermissions does not exist
                                 {
@@ -428,7 +460,7 @@ namespace ASCOM.Remote
                             LogMessage(0, 0, 0, "StartRESTServer", "Creating listener");
                             httpListener = new HttpListener(); // Set up the listener so that Start can be attempted again at the top of the while loop
                             httpListener.Prefixes.Add(apiOperatingUri); // Set up the listener on the required URI
-                            httpListener.Prefixes.Add(managementUri); // Set up the listener on the management URI
+                            httpListener.Prefixes.Add(remoteServerManagementUri); // Set up the listener on the management URI
                         }
                         else
                         {
@@ -462,7 +494,7 @@ namespace ASCOM.Remote
             {
                 // Create variables to hold the ASCOM device server operating URIs
                 string apiOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
-                string managementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.MANAGEMENT_URL_BASE);
+                string managementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
                 LogMessage(0, 0, 0, "StopRESTServer", "Operating URI: " + apiOperatingUri);
                 LogMessage(0, 0, 0, "StopRESTServer", "Management URI: " + managementUri);
 
@@ -917,6 +949,7 @@ namespace ASCOM.Remote
                 LogClientIPAddress = driverProfile.GetValue<bool>(LOG_CLIENT_IPADDRESS_PROFILENAME, string.Empty, LOG_CLIENT_IPADDRESS_DEFAULT);
                 TL.IpAddressTraceState = LogClientIPAddress; // Persist the IP address trace state to the TraceLogger so that it can be used to format lines as required
                 IncludeDriverExceptionInJsonResponse = driverProfile.GetValue<bool>(INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME, string.Empty, INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_DEFAULT);
+                RemoteServerLocation = driverProfile.GetValue<string>(REMOTE_SERVER_LOCATION, string.Empty, REMOTE_SERVER_LOCATION_DEFAULT);
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
@@ -954,6 +987,7 @@ namespace ASCOM.Remote
                 driverProfile.SetValue<bool>(LOG_CLIENT_IPADDRESS_PROFILENAME, string.Empty, LogClientIPAddress);
                 TL.IpAddressTraceState = LogClientIPAddress; // Persist the IP address trace state to the TraceLogger so that it can be used to format lines as required
                 driverProfile.SetValue<bool>(INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME, string.Empty, IncludeDriverExceptionInJsonResponse);
+                driverProfile.SetValue<string>(REMOTE_SERVER_LOCATION, string.Empty, RemoteServerLocation);
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
@@ -1256,12 +1290,12 @@ namespace ASCOM.Remote
 
                 response.Headers.Add(HttpResponseHeader.Server, "ASCOM Rest API Server -");
 
-                // Create a collection of supplied parameters: query variables in the URL string for HTTP GET requests and form parametrers from the request body for HTTP PUT requests.
+                // Create a collection of supplied parameters: query variables in the URL string for HTTP GET requests and form parameters from the request body for HTTP PUT requests.
 
                 if (requestData.Request.HttpMethod.ToUpperInvariant() == "GET") // Process query parameters from an HTTP GET
                 {
                     suppliedParameters.Add(request.QueryString); // Add the query string parameters to the collection
-                    
+
                     // List query string parameters if in debug mode
                     if (DebugTraceState)
                     {
@@ -1436,7 +1470,7 @@ namespace ASCOM.Remote
 
                     LogBlankLine(clientID, clientTransactionID, serverTransactionID);
                 }
-                else if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.MANAGEMENT_URL_BASE)) // Process server requests
+                else if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE)) // Process server requests
                 {
                     // Split the supplied URI into its elements demarked by the / character and remove any leading / trailing space characters from each element
                     // Element [0] will be "server"
@@ -1447,7 +1481,7 @@ namespace ASCOM.Remote
                     // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid API request so check this here:
                     if (elements.Length != 3)
                     {
-                        Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_SERVER_FORMAT_STRING);
+                        Return400Error(requestData, "Remote management - incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_SERVER_FORMAT_STRING);
                         return;
                     }
                     else // We have received the required 3 elements in the URI
@@ -1474,23 +1508,14 @@ namespace ASCOM.Remote
                                     try // Confirm that the command requested is available on this server
                                     {
                                         string commandName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(elements[URL_ELEMENT_SERVER_COMMAND].ToLowerInvariant()); // Capitalise the first letter of the command
-                                                                                                                                                                         //RequestData requestData = new RequestData(clientIpAddress, clientID, clientTransactionID, serverTransactionID, suppliedParameters, request, response, elements, "");
 
                                         switch (request.HttpMethod.ToUpperInvariant())
                                         {
                                             case "GET": // Read methods
                                                 switch (elements[URL_ELEMENT_SERVER_COMMAND])
                                                 {
-                                                    // BOOL Get Values
-                                                    // MANGEMENT_API_ENABLED removed because it won't work if the management api is disabled
-                                                    /*case SharedConstants.MANGEMENT_API_ENABLED:
-                                                        BoolResponse responseClass = new BoolResponse(clientTransactionID, serverTransactionID, commandName, apiIsEnabled);
-                                                        string boolResponseJson = JsonConvert.SerializeObject(responseClass);
-                                                        SendResponseToClient(commandName, request, response, null, boolResponseJson, clientID, clientTransactionID, serverTransactionID);
-                                                        break; */
-
                                                     // INT Get Values
-                                                    case SharedConstants.MANGEMENT_CONCURRENT_CALLS:
+                                                    case SharedConstants.REMOTE_SERVER_MANGEMENT_GET_CONCURRENT_CALLS:
                                                         // Returns the number of concurrent device calls. 
                                                         // This call will have incremented the concurrent call counter in its own right so the value returned by this call is one less than the numberOfConcurrentTransactions counter value,
                                                         // which will be the number of concurrent device calls.
@@ -1504,7 +1529,7 @@ namespace ASCOM.Remote
                                                         break;
 
                                                     // STRING Get Values
-                                                    case SharedConstants.MANGEMENT_PROFILE:
+                                                    case SharedConstants.REMOTE_SERVER_MANGEMENT_GET_PROFILE:
                                                         List<ProfileDevice> profileDevices = new List<ProfileDevice>();
                                                         try
                                                         {
@@ -1534,7 +1559,7 @@ namespace ASCOM.Remote
                                                         }
                                                         break;
 
-                                                    case SharedConstants.MANGEMENT_CONFIGURATION:
+                                                    case SharedConstants.REMOTE_SERVER_MANGEMENT_GET_CONFIGURATION:
                                                         ConfigurationResponse configurationResponse = new ConfigurationResponse(clientTransactionID, serverTransactionID, ConfiguredDevices)
                                                         {
                                                             DriverException = null,
@@ -1570,7 +1595,7 @@ namespace ASCOM.Remote
                                                         break; */
 
                                                     // Restart the server by closing current drivers and reloading them
-                                                    case SharedConstants.MANGEMENT_RESTART:
+                                                    case SharedConstants.REMOTE_SERVER_MANGEMENT_RESTART_SERVER:
                                                         LogMessage1(requestData, "Management Restart", string.Format("Restarting server - getting management lock"));
                                                         lock (managementCommandLock) // Make sure that this command can only run one at a time!
                                                         {
@@ -1589,7 +1614,7 @@ namespace ASCOM.Remote
                                                         }
                                                         break;
 
-                                                    case SharedConstants.MANGEMENT_CONFIGURATION:
+                                                    case SharedConstants.REMOTE_SERVER_MANGEMENT_GET_CONFIGURATION:
                                                         lock (managementCommandLock) // Make sure that this command can only run one at a time!
                                                         {
                                                             Return400Error(requestData, "Command not implemented: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
@@ -1624,10 +1649,236 @@ namespace ASCOM.Remote
                         }
                     }
                 }
-                else // A URI that did not start with /api/ or /configuration/ was requested
+                else if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE)) // Process standard Alpaca management calls
+                {
+                    // Split the supplied URI into its elements demarked by the / character and remove any leading / trailing space characters from each element
+                    // Element [0] will be "server"
+                    // Element [1] will be the API version (whole number prefixed by V e.g. V1)
+                    // Element [2] will be the configuration command
+                    string[] elements = request.Url.AbsolutePath.Trim(FORWARD_SLASH).Split(FORWARD_SLASH);
+
+                    // Handle the api versions command here because it does not fall into the normal management command format
+                    if (elements[URL_ELEMENT_API_VERSION].Trim() == SharedConstants.ALPACA_DEVICE_MANAGEMENT_APIVERSIONS) // Handle the api versions command to return a list of supported api versions
+                    {
+                        // Return the array of supported version numbers
+                        IntArray1DResponse intArrayResponseClass = new IntArray1DResponse(clientTransactionID, serverTransactionID, SharedConstants.MANAGEMENT_SUPPORTED_INTERFACE_VERSIONS)
+                        {
+                            DriverException = null,
+                            SerializeDriverException = false
+                        };
+                        string intArrayResponseJson = JsonConvert.SerializeObject(intArrayResponseClass);
+
+                        if (elements.Length < 5) // Format the number of elements to 5 so that message logging will work correctly
+                        {
+                            // We have an array of less than 5 elements, now resize it to 5 elements so that we can add the command into the equivalent position that it occupies for a "device API" call.
+                            // This is necessary so that the logging commands will work for both device API and MANAGEMENT commands
+                            Array.Resize<string>(ref elements, 5);
+                            elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
+                            elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_API_VERSION]; // Copy the command name to the device method field
+                            requestData.Elements = elements;
+                        }
+
+                        SendResponseValueToClient(requestData, null, intArrayResponseJson);
+                    }
+                    else // The command should follow the expected three parameter format of an Alpaca management command
+                    {
+                        // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid API request so check this here:
+                        if (elements.Length != 3)
+                        {
+                            Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_SERVER_FORMAT_STRING);
+                            return;
+                        }
+                        else // We have received the required 3 elements in the URI
+                        {
+                            for (int i = 0; i < elements.Length; i++)
+                            {
+                                elements[i] = elements[i].Trim();// Remove leading and trailing space characters
+                                LogMessage1(requestData, "ManagmentCommand", string.Format("Received element {0} = {1}", i, elements[i]));
+                            }
+
+                            // We have an array of size 3, now resize it to 5 elements so that we can add the command into the equivalent position that it occupies for a "device API" call.
+                            // This is necessary so that the logging commands will work for both device API and MANAGEMENT commands
+                            Array.Resize<string>(ref elements, 5);
+                            elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
+                            elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND]; // Copy the command name to the device method field
+                            requestData.Elements = elements;
+
+                            // Only permit processing if access has been granted through the setup dialogue
+                            if (ManagementInterfaceEnabled)
+                            {
+                                switch (elements[URL_ELEMENT_API_VERSION])
+                                {
+                                    case SharedConstants.API_VERSION_V1: // OK so we have a V1 request
+                                        try // Confirm that the command requested is available on this server
+                                        {
+                                            string commandName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(elements[URL_ELEMENT_SERVER_COMMAND].ToLowerInvariant()); // Capitalise the first letter of the command
+
+                                            switch (request.HttpMethod.ToUpperInvariant())
+                                            {
+                                                case "GET": // Read methods
+                                                    switch (elements[URL_ELEMENT_SERVER_COMMAND])
+                                                    {
+                                                        // Alpaca device management interface standard responses
+
+                                                        case SharedConstants.ALPACA_DEVICE_MANAGEMENT_DESCRIPTION:
+                                                            // Create the remote server description and return it to the client in the proscribed format
+                                                            AlpacaDeviceDescription remoteServerDescription = new AlpacaDeviceDescription(RemoteServerLocation,
+                                                                                                                                          SharedConstants.ALPACA_DEVICE_MANAGEMENT_MANUFACTURER,
+                                                                                                                                          Assembly.GetEntryAssembly().GetName().Version.ToString(),
+                                                                                                                                          SharedConstants.ALPACA_DEVICE_MANAGEMENT_SERVERNAME);
+
+                                                            AlpacaDescriptionResponse descriptionResponse = new AlpacaDescriptionResponse(clientTransactionID, serverTransactionID, remoteServerDescription)
+                                                            {
+                                                                DriverException = null,
+                                                                SerializeDriverException = false
+                                                            };
+
+                                                            string descriptionResponseJson = JsonConvert.SerializeObject(descriptionResponse);
+                                                            SendResponseValueToClient(requestData, null, descriptionResponseJson);
+                                                            break;
+
+                                                        case SharedConstants.ALPACA_DEVICE_MANAGEMENT_CONFIGURED_DEVICES:
+                                                            List<AlpacaConfiguredDevice> alpacaConfiguredDevices = new List<AlpacaConfiguredDevice>(); // Create an empty list to hold the list of configured devices 
+
+                                                            // Populate the list with configured devices
+                                                            foreach (KeyValuePair<string, ConfiguredDevice> configuredDevice in ConfiguredDevices)
+                                                            {
+                                                                if (configuredDevice.Value.DeviceType != "None") // Only include configured devices, ignoring unconfigured device slots
+                                                                {
+                                                                    AlpacaConfiguredDevice alpacaConfiguredDevice = new AlpacaConfiguredDevice(configuredDevice.Value.Description,
+                                                                                                                                               configuredDevice.Value.DeviceType,
+                                                                                                                                               configuredDevice.Value.DeviceNumber,
+                                                                                                                                               configuredDevice.Value.ProgID);
+                                                                    alpacaConfiguredDevices.Add(alpacaConfiguredDevice);
+                                                                }
+                                                            }
+
+                                                            AlpacaConfiguredDevicesResponse alpacaConfigurationResponse = new AlpacaConfiguredDevicesResponse(clientTransactionID, serverTransactionID, alpacaConfiguredDevices)
+                                                            {
+                                                                DriverException = null,
+                                                                SerializeDriverException = IncludeDriverExceptionInJsonResponse
+                                                            };
+                                                            ;
+                                                            string alpacaConfigurationResponseJson = JsonConvert.SerializeObject(alpacaConfigurationResponse);
+                                                            SendResponseValueToClient(requestData, null, alpacaConfigurationResponseJson);
+                                                            break;
+
+                                                        default:
+                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                                            break;
+                                                    }
+                                                    break;
+                                                case "PUT": // Write or action methods
+                                                    switch (elements[URL_ELEMENT_SERVER_COMMAND])
+                                                    {
+                                                        // No commands yet so return a default command not supported to everything
+                                                        default:
+                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                                            break;
+                                                    }
+                                                    break;
+                                                default:
+                                                    Return400Error(requestData, "Unsupported http verb: " + request.HttpMethod);
+                                                    break;
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Return400Error(requestData, string.Format("Exception processing {0} command \r\n {1}", elements[URL_ELEMENT_SERVER_COMMAND], ex.ToString()));
+                                        }
+
+                                        break; // End of valid api version numbers
+                                    default:
+                                        Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                        break;
+                                }
+                            }
+                            else // The management interface is not enabled so return an error
+                            {
+                                LogMessage1(requestData, "Management", MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
+                                Return403Error(requestData, MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
+                            }
+                        }
+                    }
+                }
+                else if (request.Url.AbsolutePath.Trim().TrimEnd('/').StartsWith(SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE.TrimEnd('/'))) // Process HTTP Setup calls to "/setup" and "/setup/"
+                {
+                    LogMessage(0, 0, 0, "Received URL", request.Url.AbsolutePath);
+                    string[] elements = request.Url.AbsolutePath.Trim(FORWARD_SLASH).Split(FORWARD_SLASH);
+                    foreach (string element in elements)
+                    {
+                        LogMessage(0, 0, 0, "Setup Element", element);
+                    }
+                    switch (elements.Length)
+                    {
+                        case 1: // Just setup
+                            {
+                                Array.Resize<string>(ref elements, 5);
+                                elements[1] = SETUP_DEFAULT_INDEX_PAGE_NAME;
+                                elements[2] = "";
+                                elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
+                                elements[URL_ELEMENT_METHOD] = SETUP_DEFAULT_INDEX_PAGE_NAME; // Copy the command name to the device method field
+                                requestData.Elements = elements;
+                                ReturnHTMLPageOrImage(requestData, SETUP_DEFAULT_INDEX_PAGE_NAME);
+                                break;
+                            }
+                        case 2: // setup/filename
+                            {
+                                Array.Resize<string>(ref elements, 5);
+                                elements[2] = "";
+                                elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
+                                elements[URL_ELEMENT_METHOD] = elements[1]; // Copy the command name to the device method field
+                                requestData.Elements = elements;
+                                ReturnHTMLPageOrImage(requestData, elements[1]);
+                                break;
+                            }
+                        case 3: // setup/something/somethingelse - not a recognised command format
+                        case 4: // setup/something/somethingelse/anothersomething - not a recognised command format
+                            {
+                                LogMessage(0, 0, 0, "Setup", $"Could not find requested file {request.Url.AbsolutePath}");
+                                Return404Error(requestData, $"Could not find requested file {request.Url.AbsolutePath}");
+                                break;
+                            }
+                        case 5: // setup/vx/device/device-number/setup
+                            {
+                                if (elements[4] == "setup")
+                                {
+                                    requestData.Elements = elements;
+                                    ReturnHTMLPageOrImage(requestData, SETUP_DEVICE_DEFAULT_INDEX_PAGE_NAME);
+                                }
+                                else
+                                {
+                                    LogMessage(0, 0, 0, "Setup", $"Could not find requested file {request.Url.AbsolutePath}");
+                                    Return404Error(requestData, $"Could not find requested file {request.Url.AbsolutePath}");
+                                }
+                                break;
+                            }
+                        case 6: // setup/vx/device/device-number/setup/index.html
+                            {
+                                requestData.Elements = elements;
+                                if (elements[5] == SETUP_DEFAULT_INDEX_PAGE_NAME)
+                                {
+                                    ReturnHTMLPageOrImage(requestData, SETUP_DEVICE_DEFAULT_INDEX_PAGE_NAME);
+                                }
+                                else
+                                {
+                                    LogMessage(0, 0, 0, "Setup", $"Could not find requested file {request.Url.AbsolutePath}");
+                                    Return404Error(requestData, $"Could not find requested file {request.Url.AbsolutePath}");
+                                }
+                                break;
+                            }
+                        default: // 7 or more elements - just return a not found message
+                            {
+                                LogMessage(0, 0, 0, "Setup", $"Could not find requested file {request.Url.AbsolutePath}");
+                                Return404Error(requestData, $"Could not find requested file {request.Url.AbsolutePath}");
+                                break;
+                            }
+                    }
+                }
+                else // A URI that did not start with /api/, /management, /setup or /configuration/ was requested
                 {
                     LogMessage1(requestData, "Request", string.Format("Non API call - {0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, System.Threading.Thread.CurrentThread.ManagedThreadId.ToString()));
-                    string returnMessage = "You have reached the <i><b>ASCOM Remote Server</b></i> API portal but your url did not start with /api or /server (must be lower case) <p><b>Available devices:</b></p>";
+                    string returnMessage = UNRECOGNISED_URI_MESSAGE;
 
                     foreach (KeyValuePair<string, ConfiguredDevice> device in ConfiguredDevices)
                     {
@@ -1639,7 +1890,6 @@ namespace ASCOM.Remote
                     TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.OK, "200 OK", returnMessage);
                 }
             }
-
             catch (Exception ex) // Something serious has gone wrong with the ASCOM Rest server itself so report this to the user
             {
                 LogException(clientID, clientTransactionID, serverTransactionID, "Request", ex.ToString());
@@ -2328,12 +2578,227 @@ namespace ASCOM.Remote
 
         #region API response methods
 
+        // Return server /setup HTML responses to clients
+        private void ReturnHTMLPageOrImage(RequestData requestData, string htmlPageName)
+        {
+            byte[] bytesToSend; // Array to hold the encoded message
+            string indexPage;
+
+            try
+            {
+                LogMessage1(requestData, "Web - HTTP 200 Success", htmlPageName);
+                if (ScreenLogResponses) LogToScreen(string.Format("HTTP 200 Success - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, htmlPageName));
+
+                switch (htmlPageName) // Construct the relevant page or return the requested file
+                {
+                    case SETUP_DEFAULT_INDEX_PAGE_NAME: // Synthesise the main setup index page and turn it into bytes
+                        {
+                            if (DebugTraceState) LogMessage1(requestData, "Web - Encoding setup page", "Starting");
+
+                            indexPage =
+                                "<!DOCTYPE html>" +
+                                "<html>" +
+                                    "<head>" +
+                                        "<title> ASCOM Remote Server</title>" +
+                                        "<style>" +
+                                            "body {" +
+                                                "background-color: black;" +
+                                                "text-align: center;" +
+                                                "color: white;" +
+                                                "font-family: sans-serif;" +
+                                                "font-size: 12pt;" +
+                                            "}" +
+                                            "table.center {" +
+                                                "margin-left:auto; " +
+                                                "margin-right:auto;" +
+                                            "}" +
+
+                                            "table, th, td {" +
+                                                "border: 1px solid white;" +
+                                            "}" +
+                                            "th, td {" +
+                                                "padding: 8px;" +
+                                            "}" +
+                                            "td.boldyellow {" +
+                                              "font-weight: bold;" +
+                                              "color: yellow;" +
+                                            "}" +
+                                            "h2.lightgreen {" +
+                                              "color: lightgreen;" +
+                                            "}" +
+                                        "</style>" +
+                                        "<link rel=\"shortcut icon\" href=\"/setup/ascomicon.ico\" type=\"image/x-icon\" />" +
+                                   "</head>" +
+                                    "<body>" +
+                                        "<h1>ASCOM Remote Server</h1>" +
+                                        "<h2 class=\"lightgreen\">Located at " + RemoteServerLocation + "</h2>" +
+                                        "<br>" +
+                                        "<p><b>The following devices are configured on this Remote Server:</b></p>" +
+                                        "<table class=\"center\">" +
+                                            "<thead>" +
+                                                "<tr>" +
+                                                    "<td class=\"boldyellow\">Device Type</td>" +
+                                                    "<td class=\"boldyellow\">Device Number</td>" +
+                                                    "<td class=\"boldyellow\">Description</td>" +
+                                                    "<td class=\"boldyellow\">ProgID</td>" +
+                                                    "<td class=\"boldyellow\">Initialised OK</td>" +
+                                                "</tr>" +
+                                            "</thead>" +
+                                            "<tbody>";
+
+                            foreach (KeyValuePair<string, ConfiguredDevice> configuredDevice in ConfiguredDevices)
+                            {
+                                if (configuredDevice.Value.DeviceType != "None")
+                                {
+                                    indexPage +=
+                                                "<tr>" +
+                                                    "<td>" + configuredDevice.Value.DeviceType + "</td>" +
+                                                    "<td>" + configuredDevice.Value.DeviceNumber + "</td>" +
+                                                    "<td>" + configuredDevice.Value.Description + "</td>" +
+                                                    "<td>" + configuredDevice.Value.ProgID + "</td>" +
+                                                    "<td>" + ActiveObjects[configuredDevice.Value.DeviceKey].InitialisedOk + "</td>" +
+                                                "</tr>";
+                                }
+                            }
+
+                            indexPage +=
+                                            "</tbody>" +
+                                        "</table>" +
+                                        "<br>" +
+                                        "<h3>Please use the Remote Server's setup GUI to change the configuration</h3>" +
+                                        "<br>" +
+                                        "<img src = \"/setup/ASCOMAlpacaMidRes.jpg\"alt=\"AlpacaLogo\" style=\"width:200px\">" +
+                                        "<p>Version </h3>" + Assembly.GetEntryAssembly().GetName().Version.ToString() +
+                                    "</body>" +
+                                "</html>";
+
+                            bytesToSend = Encoding.UTF8.GetBytes(indexPage); // Convert the message to be returned into UTF8 bytes that can be sent over the wire
+                            if (DebugTraceState) LogMessage1(requestData, "Web - Encoding setup page", "Completed");
+                            break;
+                        }
+                    case SETUP_DEVICE_DEFAULT_INDEX_PAGE_NAME: // Synthesise the individual device setup index page and turn it into bytes
+                        {
+                            if (DebugTraceState) LogMessage1(requestData, "Web - Encoding individual device setup page", "Starting");
+
+                            indexPage =
+                                "<!DOCTYPE html>" +
+                                "<html>" +
+                                    "<head>" +
+                                        "<title> ASCOM Remote Server Device Setup</title>" +
+                                        "<style>" +
+                                            "body {" +
+                                                "background-color: black;" +
+                                                "text-align: center;" +
+                                                "color: white;" +
+                                                "font-family: sans-serif;" +
+                                                "font-size: 12pt;" +
+                                            "}" +
+                                            "h2.lightgreen {" +
+                                              "color: lightgreen;" +
+                                            "}" +
+                                            "h3.yellow {" +
+                                              "color: yellow;" +
+                                            "}" +
+                                            "h3.red {" +
+                                              "color: red;" +
+                                            "}" +
+                                        "</style>" +
+                                        "<link rel=\"shortcut icon\" href=\"/setup/ascomicon.ico\" type=\"image/x-icon\" />" +
+                                    "</head>" +
+                                    "<body>" +
+                                        "<h1>ASCOM Remote Server</h1>" +
+                                        "<h2 class=\"lightgreen\">Located at " + RemoteServerLocation + "</h2>" +
+                                        "<br>";
+
+                            string deviceKey = $"{requestData.Elements[URL_ELEMENT_DEVICE_TYPE]}/{requestData.Elements[URL_ELEMENT_DEVICE_NUMBER]}"; // Create the device key from the supplied device type and device number parameters
+                            if (ActiveObjects.ContainsKey(deviceKey)) // The specified device does exist so return a "can't configure this" response
+                            {
+                                indexPage +=
+                                        "<h3 class=\"yellow\">This device can't be configured through the Remote Server web interface</h3>" +
+                                        "<p>Please use the device's \"Properties\" button in the Remote Server Setup screen</p>";
+                            }
+                            else // The specified device does not exist so return a message to that effect
+                            {
+                                indexPage +=
+                                        $"<h3 class=\"red\">The specified device: \"{requestData.Elements[URL_ELEMENT_DEVICE_TYPE]} {requestData.Elements[URL_ELEMENT_DEVICE_NUMBER]}\" is not configured on this Remote Server</h3>";
+                            }
+
+                            indexPage +=
+                                        "<br>" +
+                                        "<br>" +
+                                        "<img src = \"/setup/ASCOMAlpacaMidRes.jpg\"alt=\"AlpacaLogo\" style=\"width:200px\">" +
+                                        "<p>Version </h3>" + Assembly.GetEntryAssembly().GetName().Version.ToString() +
+                                    "</body>" +
+                                "</html>";
+
+                            bytesToSend = Encoding.UTF8.GetBytes(indexPage); // Convert the message to be returned into UTF8 bytes that can be sent over the wire
+                            if (DebugTraceState) LogMessage1(requestData, "Web - Encoding setup page", "Completed");
+                            break;
+                        }
+                    default:// Read the file from disk
+                        {
+                            if (DebugTraceState) LogMessage1(requestData, "Web - Read file", "Starting");
+                            bytesToSend = File.ReadAllBytes(".\\" + htmlPageName);
+                            if (DebugTraceState) LogMessage1(requestData, "Web - Read file", "Completed");
+                            break;
+                        }
+                }
+                try
+                {
+                    if (htmlPageName.ToLowerInvariant().Contains(".html"))
+                    {
+                        requestData.Response.ContentType = "text/html; charset=utf-8";
+                    }
+                    else if ((htmlPageName.ToLowerInvariant().Contains(".jpeg")) || (htmlPageName.ToLowerInvariant().Contains(".jpg")))
+                    {
+                        requestData.Response.ContentType = "image/jpeg";
+                        requestData.Response.Headers.Add("Cache-Control", "public, max-age=86400");
+                    }
+                    else if (htmlPageName.ToLowerInvariant().Contains(".ico"))
+                    {
+                        requestData.Response.ContentType = "image/x-icon";
+                        requestData.Response.Headers.Add("Cache-Control", "public, max-age=86400");
+                    }
+                    else
+                    {
+                        throw new InvalidValueException($"Unknown content type in file {htmlPageName}");
+                    }
+                    requestData.Response.StatusCode = (int)HttpStatusCode.OK; // Set the response status and status code
+                    requestData.Response.StatusDescription = "200 - Success";
+
+                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Web - Before setting response bytes - Length: {0:n0}, Response is null: {1}", bytesToSend.Length, requestData.Response == null));
+                    requestData.Response.ContentLength64 = bytesToSend.Length;
+
+                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Web - Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
+                    requestData.Response.OutputStream.Write(bytesToSend, 0, bytesToSend.Length);
+
+                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "Web - After writing bytes to output stream");
+                    requestData.Response.OutputStream.Close();
+                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "Web - After closing output stream");
+                }
+                catch (HttpListenerException ex) // Deal with communications errors here but allow any other errors to go through and be picked up by the main error handler
+                {
+                    LogException1(requestData, "ListenerException", string.Format("Web - Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
+                }
+
+            }
+            catch (FileNotFoundException ex)
+            {
+                LogException(0, 0, 0, $"Could not find requested file {htmlPageName}", ex.ToString());
+                Return404Error(requestData, $"Could not find requested file {htmlPageName}: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                LogException(0, 0, 0, $"Exception while returning file {htmlPageName}", ex.ToString());
+                Return500Error(requestData, $"Remote Server internal error while returning requested file {htmlPageName}: {ex.Message}");
+            }
+        }
+
         // Return server error responses to clients
         private void Return400Error(RequestData requestData, string message)
         {
             try
             {
-                //LogMessage(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, "HTTP 400 Error", message);
                 LogMessage1(requestData, "HTTP 400 Error", message);
                 LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, message));
 
@@ -2344,11 +2809,11 @@ namespace ASCOM.Remote
                 LogException(0, 0, 0, "Exception while returning HTTP 400 Error", ex.ToString());
             }
         }
+
         private void Return403Error(RequestData requestData, string message)
         {
             try
             {
-                //LogMessage(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, "HTTP 403 Error", message);
                 LogMessage1(requestData, "HTTP 403 Error", message);
                 LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, message));
 
@@ -2359,11 +2824,26 @@ namespace ASCOM.Remote
                 LogException(0, 0, 0, "Exception while returning HTTP 403 Error", ex.ToString());
             }
         }
+
+        private void Return404Error(RequestData requestData, string message)
+        {
+            try
+            {
+                LogMessage1(requestData, "HTTP 404 Error", message);
+                LogToScreen($"ERROR - ClientId: {requestData.ClientID}, ClientTransactionID: {requestData.ClientTransactionID} - {message}");
+
+                TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.NotFound, "403 " + CleanMessage(message), "404 " + CleanMessage(message));
+            }
+            catch (Exception ex)
+            {
+                LogException(0, 0, 0, "Exception while returning HTTP 403 Error", ex.ToString());
+            }
+        }
+
         internal void Return500Error(RequestData requestData, string errorMessage)
         {
             try
             {
-                // LogMessage(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, "HTTP 500 Error", errorMessage);
                 LogMessage1(requestData, "HTTP 500 Error", errorMessage);
             }
             catch (Exception ex)
@@ -3486,7 +3966,7 @@ namespace ASCOM.Remote
         }
         private void WriteTrackingRate(RequestData requestData)
         {
-            DriveRates driveRateValue;;
+            DriveRates driveRateValue; ;
             Exception exReturn = null;
 
 

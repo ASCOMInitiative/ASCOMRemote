@@ -43,16 +43,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlpacaConfiguredDevice.cs" />
+    <Compile Include="AlpacaDeviceDescription.cs" />
     <Compile Include="ConfiguredDevice.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="ProfileDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\SharedVersionNumbers.cs" />
     <Compile Include="RequestData.cs" />
+    <Compile Include="Response Classes\AlpacaConfiguredDevicesResponse.cs" />
     <Compile Include="Response Classes\AxisRatesResponse.cs" />
     <Compile Include="Response Classes\BoolResponse.cs" />
     <Compile Include="Response Classes\ConfigurationResponse.cs" />
     <Compile Include="Response Classes\DateAndTimeResponse.cs" />
+    <Compile Include="Response Classes\AlpacaDescriptionResponse.cs" />
     <Compile Include="Response Classes\DoubleArray2DResponse.cs" />
     <Compile Include="Response Classes\DoubleArray3DResponse.cs" />
     <Compile Include="Response Classes\DoubleResponse.cs" />
@@ -78,7 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.1</Version>
+      <Version>12.0.2</Version>
     </PackageReference>
     <PackageReference Include="RestSharp">
       <Version>106.6.9</Version>
