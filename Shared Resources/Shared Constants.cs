@@ -58,7 +58,7 @@ namespace ASCOM.Remote
         public static readonly int[] MANAGEMENT_SUPPORTED_INTERFACE_VERSIONS = new int[1] { 1 }; // Array of supported interface versions that is returned through the management API
         public const string REMOTE_SERVER_MANAGEMENT_URL_BASE = "/server/"; // Management commands unique to the remote server. This constant must always be lower case to make the logic tests work properly 
         public const string ALPACA_DEVICE_MANAGEMENT_URL_BASE = "/management/"; // management commands common to all Alpaca devices. This constant must always be lower case to make the logic tests work properly
-        public const string ALPACA_DEVICE_SETUP_URL_BASE = "/setup/"; // management commands common to all Alpaca devices. This constant must always be lower case to make the logic tests work properly
+        public const string ALPACA_DEVICE_SETUP_URL_BASE = "/setup"; // management commands common to all Alpaca devices. This constant must always be lower case to make the logic tests work properly
 
         // Remote server management API interface constants
         public const string REMOTE_SERVER_MANGEMENT_GET_PROFILE = "profile";

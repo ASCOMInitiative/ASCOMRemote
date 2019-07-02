@@ -1381,7 +1381,7 @@ namespace ASCOM.Remote
                     {
                         LogMessage1(requestData, "RequestReceived", string.Format("Parameter {0} = {1}", key, suppliedParameters[key]));
                     }
-                }
+                } // Log supplied parameters and headers
 
                 if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.API_URL_BASE)) // Process requests whose URIs start with /api
                 {
@@ -1470,7 +1470,236 @@ namespace ASCOM.Remote
                     }
 
                     LogBlankLine(clientID, clientTransactionID, serverTransactionID);
-                }
+                } // Process standard Alpaca device API requests
+
+                else if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE)) // Process standard Alpaca management calls
+                {
+                    // Split the supplied URI into its elements demarked by the / character and remove any leading / trailing space characters from each element
+                    // Element [0] will be "server"
+                    // Element [1] will be the API version (whole number prefixed by V e.g. V1)
+                    // Element [2] will be the configuration command
+                    string[] elements = request.Url.AbsolutePath.Trim(FORWARD_SLASH).Split(FORWARD_SLASH);
+
+                    // Handle the api versions command here because it does not fall into the normal management command format
+                    if (elements[URL_ELEMENT_API_VERSION].Trim() == SharedConstants.ALPACA_DEVICE_MANAGEMENT_APIVERSIONS) // Handle the api versions command to return a list of supported api versions
+                    {
+                        // Return the array of supported version numbers
+                        IntArray1DResponse intArrayResponseClass = new IntArray1DResponse(clientTransactionID, serverTransactionID, SharedConstants.MANAGEMENT_SUPPORTED_INTERFACE_VERSIONS)
+                        {
+                            DriverException = null,
+                            SerializeDriverException = false
+                        };
+                        string intArrayResponseJson = JsonConvert.SerializeObject(intArrayResponseClass);
+
+                        if (elements.Length < 5) // Format the number of elements to 5 so that message logging will work correctly
+                        {
+                            // We have an array of less than 5 elements, now resize it to 5 elements so that we can add the command into the equivalent position that it occupies for a "device API" call.
+                            // This is necessary so that the logging commands will work for both device API and MANAGEMENT commands
+                            Array.Resize<string>(ref elements, 5);
+                            elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
+                            elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_API_VERSION]; // Copy the command name to the device method field
+                            requestData.Elements = elements;
+                        }
+
+                        SendResponseValueToClient(requestData, null, intArrayResponseJson);
+                    }
+                    else // The command should follow the expected three parameter format of an Alpaca management command
+                    {
+                        // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid API request so check this here:
+                        if (elements.Length != 3)
+                        {
+                            Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_SERVER_FORMAT_STRING);
+                            return;
+                        }
+                        else // We have received the required 3 elements in the URI
+                        {
+                            for (int i = 0; i < elements.Length; i++)
+                            {
+                                elements[i] = elements[i].Trim();// Remove leading and trailing space characters
+                                LogMessage1(requestData, "ManagmentCommand", string.Format("Received element {0} = {1}", i, elements[i]));
+                            }
+
+                            // We have an array of size 3, now resize it to 5 elements so that we can add the command into the equivalent position that it occupies for a "device API" call.
+                            // This is necessary so that the logging commands will work for both device API and MANAGEMENT commands
+                            Array.Resize<string>(ref elements, 5);
+                            elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
+                            elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND]; // Copy the command name to the device method field
+                            requestData.Elements = elements;
+
+                            // Only permit processing if access has been granted through the setup dialogue
+                            if (ManagementInterfaceEnabled)
+                            {
+                                switch (elements[URL_ELEMENT_API_VERSION])
+                                {
+                                    case SharedConstants.API_VERSION_V1: // OK so we have a V1 request
+                                        try // Confirm that the command requested is available on this server
+                                        {
+                                            string commandName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(elements[URL_ELEMENT_SERVER_COMMAND].ToLowerInvariant()); // Capitalise the first letter of the command
+
+                                            switch (request.HttpMethod.ToUpperInvariant())
+                                            {
+                                                case "GET": // Read methods
+                                                    switch (elements[URL_ELEMENT_SERVER_COMMAND])
+                                                    {
+                                                        // Alpaca device management interface standard responses
+
+                                                        case SharedConstants.ALPACA_DEVICE_MANAGEMENT_DESCRIPTION:
+                                                            // Create the remote server description and return it to the client in the proscribed format
+                                                            AlpacaDeviceDescription remoteServerDescription = new AlpacaDeviceDescription(RemoteServerLocation,
+                                                                                                                                          SharedConstants.ALPACA_DEVICE_MANAGEMENT_MANUFACTURER,
+                                                                                                                                          Assembly.GetEntryAssembly().GetName().Version.ToString(),
+                                                                                                                                          SharedConstants.ALPACA_DEVICE_MANAGEMENT_SERVERNAME);
+
+                                                            AlpacaDescriptionResponse descriptionResponse = new AlpacaDescriptionResponse(clientTransactionID, serverTransactionID, remoteServerDescription)
+                                                            {
+                                                                DriverException = null,
+                                                                SerializeDriverException = false
+                                                            };
+
+                                                            string descriptionResponseJson = JsonConvert.SerializeObject(descriptionResponse);
+                                                            SendResponseValueToClient(requestData, null, descriptionResponseJson);
+                                                            break;
+
+                                                        case SharedConstants.ALPACA_DEVICE_MANAGEMENT_CONFIGURED_DEVICES:
+                                                            List<AlpacaConfiguredDevice> alpacaConfiguredDevices = new List<AlpacaConfiguredDevice>(); // Create an empty list to hold the list of configured devices 
+
+                                                            // Populate the list with configured devices
+                                                            foreach (KeyValuePair<string, ConfiguredDevice> configuredDevice in ConfiguredDevices)
+                                                            {
+                                                                if (configuredDevice.Value.DeviceType != "None") // Only include configured devices, ignoring unconfigured device slots
+                                                                {
+                                                                    AlpacaConfiguredDevice alpacaConfiguredDevice = new AlpacaConfiguredDevice(configuredDevice.Value.Description,
+                                                                                                                                               configuredDevice.Value.DeviceType,
+                                                                                                                                               configuredDevice.Value.DeviceNumber,
+                                                                                                                                               configuredDevice.Value.ProgID);
+                                                                    alpacaConfiguredDevices.Add(alpacaConfiguredDevice);
+                                                                }
+                                                            }
+
+                                                            AlpacaConfiguredDevicesResponse alpacaConfigurationResponse = new AlpacaConfiguredDevicesResponse(clientTransactionID, serverTransactionID, alpacaConfiguredDevices)
+                                                            {
+                                                                DriverException = null,
+                                                                SerializeDriverException = IncludeDriverExceptionInJsonResponse
+                                                            };
+                                                            ;
+                                                            string alpacaConfigurationResponseJson = JsonConvert.SerializeObject(alpacaConfigurationResponse);
+                                                            SendResponseValueToClient(requestData, null, alpacaConfigurationResponseJson);
+                                                            break;
+
+                                                        default:
+                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                                            break;
+                                                    }
+                                                    break;
+                                                case "PUT": // Write or action methods
+                                                    switch (elements[URL_ELEMENT_SERVER_COMMAND])
+                                                    {
+                                                        // No commands yet so return a default command not supported to everything
+                                                        default:
+                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                                            break;
+                                                    }
+                                                    break;
+                                                default:
+                                                    Return400Error(requestData, "Unsupported http verb: " + request.HttpMethod);
+                                                    break;
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Return400Error(requestData, string.Format("Exception processing {0} command \r\n {1}", elements[URL_ELEMENT_SERVER_COMMAND], ex.ToString()));
+                                        }
+
+                                        break; // End of valid api version numbers
+                                    default:
+                                        Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                        break;
+                                }
+                            }
+                            else // The management interface is not enabled so return an error
+                            {
+                                LogMessage1(requestData, "Management", MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
+                                Return403Error(requestData, MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
+                            }
+                        }
+                    }
+                } // Process standard Alpaca device management API requests
+
+                else if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE)) // Process standard Alpaca HTML management calls to "/setup" and "/setup/"
+                {
+                    LogMessage(0, 0, 0, "Received URL", request.Url.AbsolutePath);
+                    string[] elements = request.Url.AbsolutePath.Trim(FORWARD_SLASH).Split(FORWARD_SLASH);
+                    foreach (string element in elements)
+                    {
+                        LogMessage(0, 0, 0, "Setup Element", element);
+                    }
+                    switch (elements.Length)
+                    {
+                        case 1: // Just setup
+                            {
+                                Array.Resize<string>(ref elements, 5);
+                                elements[1] = SETUP_DEFAULT_INDEX_PAGE_NAME;
+                                elements[2] = "";
+                                elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
+                                elements[URL_ELEMENT_METHOD] = SETUP_DEFAULT_INDEX_PAGE_NAME; // Copy the command name to the device method field
+                                requestData.Elements = elements;
+                                ReturnHTMLPageOrImage(requestData, SETUP_DEFAULT_INDEX_PAGE_NAME);
+                                break;
+                            }
+                        case 2: // setup/filename
+                            {
+                                Array.Resize<string>(ref elements, 5);
+                                elements[2] = "";
+                                elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
+                                elements[URL_ELEMENT_METHOD] = elements[1]; // Copy the command name to the device method field
+                                requestData.Elements = elements;
+                                ReturnHTMLPageOrImage(requestData, elements[1]);
+                                break;
+                            }
+                        case 3: // setup/something/somethingelse - not a recognised command format
+                        case 4: // setup/something/somethingelse/anothersomething - not a recognised command format
+                            {
+                                LogMessage(0, 0, 0, "Setup", $"Could not find requested file {request.Url.AbsolutePath}");
+                                Return404Error(requestData, $"Could not find requested file {request.Url.AbsolutePath}");
+                                break;
+                            }
+                        case 5: // setup/vx/device/device-number/setup
+                            {
+                                if (elements[4] == "setup")
+                                {
+                                    requestData.Elements = elements;
+                                    ReturnHTMLPageOrImage(requestData, SETUP_DEVICE_DEFAULT_INDEX_PAGE_NAME);
+                                }
+                                else
+                                {
+                                    LogMessage(0, 0, 0, "Setup", $"Could not find requested file {request.Url.AbsolutePath}");
+                                    Return404Error(requestData, $"Could not find requested file {request.Url.AbsolutePath}");
+                                }
+                                break;
+                            }
+                        case 6: // setup/vx/device/device-number/setup/index.html
+                            {
+                                requestData.Elements = elements;
+                                if (elements[5] == SETUP_DEFAULT_INDEX_PAGE_NAME)
+                                {
+                                    ReturnHTMLPageOrImage(requestData, SETUP_DEVICE_DEFAULT_INDEX_PAGE_NAME);
+                                }
+                                else
+                                {
+                                    LogMessage(0, 0, 0, "Setup", $"Could not find requested file {request.Url.AbsolutePath}");
+                                    Return404Error(requestData, $"Could not find requested file {request.Url.AbsolutePath}");
+                                }
+                                break;
+                            }
+                        default: // 7 or more elements - just return a not found message
+                            {
+                                LogMessage(0, 0, 0, "Setup", $"Could not find requested file {request.Url.AbsolutePath}");
+                                Return404Error(requestData, $"Could not find requested file {request.Url.AbsolutePath}");
+                                break;
+                            }
+                    }
+                } // Process standard Alpaca HTML management requests
+
                 else if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE)) // Process server requests
                 {
                     // Split the supplied URI into its elements demarked by the / character and remove any leading / trailing space characters from each element
@@ -1649,233 +1878,8 @@ namespace ASCOM.Remote
                             Return403Error(requestData, MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
                         }
                     }
-                }
-                else if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE)) // Process standard Alpaca management calls
-                {
-                    // Split the supplied URI into its elements demarked by the / character and remove any leading / trailing space characters from each element
-                    // Element [0] will be "server"
-                    // Element [1] will be the API version (whole number prefixed by V e.g. V1)
-                    // Element [2] will be the configuration command
-                    string[] elements = request.Url.AbsolutePath.Trim(FORWARD_SLASH).Split(FORWARD_SLASH);
+                } // Process Remote Server management extension requests
 
-                    // Handle the api versions command here because it does not fall into the normal management command format
-                    if (elements[URL_ELEMENT_API_VERSION].Trim() == SharedConstants.ALPACA_DEVICE_MANAGEMENT_APIVERSIONS) // Handle the api versions command to return a list of supported api versions
-                    {
-                        // Return the array of supported version numbers
-                        IntArray1DResponse intArrayResponseClass = new IntArray1DResponse(clientTransactionID, serverTransactionID, SharedConstants.MANAGEMENT_SUPPORTED_INTERFACE_VERSIONS)
-                        {
-                            DriverException = null,
-                            SerializeDriverException = false
-                        };
-                        string intArrayResponseJson = JsonConvert.SerializeObject(intArrayResponseClass);
-
-                        if (elements.Length < 5) // Format the number of elements to 5 so that message logging will work correctly
-                        {
-                            // We have an array of less than 5 elements, now resize it to 5 elements so that we can add the command into the equivalent position that it occupies for a "device API" call.
-                            // This is necessary so that the logging commands will work for both device API and MANAGEMENT commands
-                            Array.Resize<string>(ref elements, 5);
-                            elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
-                            elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_API_VERSION]; // Copy the command name to the device method field
-                            requestData.Elements = elements;
-                        }
-
-                        SendResponseValueToClient(requestData, null, intArrayResponseJson);
-                    }
-                    else // The command should follow the expected three parameter format of an Alpaca management command
-                    {
-                        // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid API request so check this here:
-                        if (elements.Length != 3)
-                        {
-                            Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_SERVER_FORMAT_STRING);
-                            return;
-                        }
-                        else // We have received the required 3 elements in the URI
-                        {
-                            for (int i = 0; i < elements.Length; i++)
-                            {
-                                elements[i] = elements[i].Trim();// Remove leading and trailing space characters
-                                LogMessage1(requestData, "ManagmentCommand", string.Format("Received element {0} = {1}", i, elements[i]));
-                            }
-
-                            // We have an array of size 3, now resize it to 5 elements so that we can add the command into the equivalent position that it occupies for a "device API" call.
-                            // This is necessary so that the logging commands will work for both device API and MANAGEMENT commands
-                            Array.Resize<string>(ref elements, 5);
-                            elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
-                            elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND]; // Copy the command name to the device method field
-                            requestData.Elements = elements;
-
-                            // Only permit processing if access has been granted through the setup dialogue
-                            if (ManagementInterfaceEnabled)
-                            {
-                                switch (elements[URL_ELEMENT_API_VERSION])
-                                {
-                                    case SharedConstants.API_VERSION_V1: // OK so we have a V1 request
-                                        try // Confirm that the command requested is available on this server
-                                        {
-                                            string commandName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(elements[URL_ELEMENT_SERVER_COMMAND].ToLowerInvariant()); // Capitalise the first letter of the command
-
-                                            switch (request.HttpMethod.ToUpperInvariant())
-                                            {
-                                                case "GET": // Read methods
-                                                    switch (elements[URL_ELEMENT_SERVER_COMMAND])
-                                                    {
-                                                        // Alpaca device management interface standard responses
-
-                                                        case SharedConstants.ALPACA_DEVICE_MANAGEMENT_DESCRIPTION:
-                                                            // Create the remote server description and return it to the client in the proscribed format
-                                                            AlpacaDeviceDescription remoteServerDescription = new AlpacaDeviceDescription(RemoteServerLocation,
-                                                                                                                                          SharedConstants.ALPACA_DEVICE_MANAGEMENT_MANUFACTURER,
-                                                                                                                                          Assembly.GetEntryAssembly().GetName().Version.ToString(),
-                                                                                                                                          SharedConstants.ALPACA_DEVICE_MANAGEMENT_SERVERNAME);
-
-                                                            AlpacaDescriptionResponse descriptionResponse = new AlpacaDescriptionResponse(clientTransactionID, serverTransactionID, remoteServerDescription)
-                                                            {
-                                                                DriverException = null,
-                                                                SerializeDriverException = false
-                                                            };
-
-                                                            string descriptionResponseJson = JsonConvert.SerializeObject(descriptionResponse);
-                                                            SendResponseValueToClient(requestData, null, descriptionResponseJson);
-                                                            break;
-
-                                                        case SharedConstants.ALPACA_DEVICE_MANAGEMENT_CONFIGURED_DEVICES:
-                                                            List<AlpacaConfiguredDevice> alpacaConfiguredDevices = new List<AlpacaConfiguredDevice>(); // Create an empty list to hold the list of configured devices 
-
-                                                            // Populate the list with configured devices
-                                                            foreach (KeyValuePair<string, ConfiguredDevice> configuredDevice in ConfiguredDevices)
-                                                            {
-                                                                if (configuredDevice.Value.DeviceType != "None") // Only include configured devices, ignoring unconfigured device slots
-                                                                {
-                                                                    AlpacaConfiguredDevice alpacaConfiguredDevice = new AlpacaConfiguredDevice(configuredDevice.Value.Description,
-                                                                                                                                               configuredDevice.Value.DeviceType,
-                                                                                                                                               configuredDevice.Value.DeviceNumber,
-                                                                                                                                               configuredDevice.Value.ProgID);
-                                                                    alpacaConfiguredDevices.Add(alpacaConfiguredDevice);
-                                                                }
-                                                            }
-
-                                                            AlpacaConfiguredDevicesResponse alpacaConfigurationResponse = new AlpacaConfiguredDevicesResponse(clientTransactionID, serverTransactionID, alpacaConfiguredDevices)
-                                                            {
-                                                                DriverException = null,
-                                                                SerializeDriverException = IncludeDriverExceptionInJsonResponse
-                                                            };
-                                                            ;
-                                                            string alpacaConfigurationResponseJson = JsonConvert.SerializeObject(alpacaConfigurationResponse);
-                                                            SendResponseValueToClient(requestData, null, alpacaConfigurationResponseJson);
-                                                            break;
-
-                                                        default:
-                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
-                                                            break;
-                                                    }
-                                                    break;
-                                                case "PUT": // Write or action methods
-                                                    switch (elements[URL_ELEMENT_SERVER_COMMAND])
-                                                    {
-                                                        // No commands yet so return a default command not supported to everything
-                                                        default:
-                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
-                                                            break;
-                                                    }
-                                                    break;
-                                                default:
-                                                    Return400Error(requestData, "Unsupported http verb: " + request.HttpMethod);
-                                                    break;
-                                            }
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            Return400Error(requestData, string.Format("Exception processing {0} command \r\n {1}", elements[URL_ELEMENT_SERVER_COMMAND], ex.ToString()));
-                                        }
-
-                                        break; // End of valid api version numbers
-                                    default:
-                                        Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + CORRECT_SERVER_FORMAT_STRING);
-                                        break;
-                                }
-                            }
-                            else // The management interface is not enabled so return an error
-                            {
-                                LogMessage1(requestData, "Management", MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
-                                Return403Error(requestData, MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
-                            }
-                        }
-                    }
-                }
-                else if (request.Url.AbsolutePath.Trim().TrimEnd('/').StartsWith(SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE.TrimEnd('/'))) // Process HTTP Setup calls to "/setup" and "/setup/"
-                {
-                    LogMessage(0, 0, 0, "Received URL", request.Url.AbsolutePath);
-                    string[] elements = request.Url.AbsolutePath.Trim(FORWARD_SLASH).Split(FORWARD_SLASH);
-                    foreach (string element in elements)
-                    {
-                        LogMessage(0, 0, 0, "Setup Element", element);
-                    }
-                    switch (elements.Length)
-                    {
-                        case 1: // Just setup
-                            {
-                                Array.Resize<string>(ref elements, 5);
-                                elements[1] = SETUP_DEFAULT_INDEX_PAGE_NAME;
-                                elements[2] = "";
-                                elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
-                                elements[URL_ELEMENT_METHOD] = SETUP_DEFAULT_INDEX_PAGE_NAME; // Copy the command name to the device method field
-                                requestData.Elements = elements;
-                                ReturnHTMLPageOrImage(requestData, SETUP_DEFAULT_INDEX_PAGE_NAME);
-                                break;
-                            }
-                        case 2: // setup/filename
-                            {
-                                Array.Resize<string>(ref elements, 5);
-                                elements[2] = "";
-                                elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
-                                elements[URL_ELEMENT_METHOD] = elements[1]; // Copy the command name to the device method field
-                                requestData.Elements = elements;
-                                ReturnHTMLPageOrImage(requestData, elements[1]);
-                                break;
-                            }
-                        case 3: // setup/something/somethingelse - not a recognised command format
-                        case 4: // setup/something/somethingelse/anothersomething - not a recognised command format
-                            {
-                                LogMessage(0, 0, 0, "Setup", $"Could not find requested file {request.Url.AbsolutePath}");
-                                Return404Error(requestData, $"Could not find requested file {request.Url.AbsolutePath}");
-                                break;
-                            }
-                        case 5: // setup/vx/device/device-number/setup
-                            {
-                                if (elements[4] == "setup")
-                                {
-                                    requestData.Elements = elements;
-                                    ReturnHTMLPageOrImage(requestData, SETUP_DEVICE_DEFAULT_INDEX_PAGE_NAME);
-                                }
-                                else
-                                {
-                                    LogMessage(0, 0, 0, "Setup", $"Could not find requested file {request.Url.AbsolutePath}");
-                                    Return404Error(requestData, $"Could not find requested file {request.Url.AbsolutePath}");
-                                }
-                                break;
-                            }
-                        case 6: // setup/vx/device/device-number/setup/index.html
-                            {
-                                requestData.Elements = elements;
-                                if (elements[5] == SETUP_DEFAULT_INDEX_PAGE_NAME)
-                                {
-                                    ReturnHTMLPageOrImage(requestData, SETUP_DEVICE_DEFAULT_INDEX_PAGE_NAME);
-                                }
-                                else
-                                {
-                                    LogMessage(0, 0, 0, "Setup", $"Could not find requested file {request.Url.AbsolutePath}");
-                                    Return404Error(requestData, $"Could not find requested file {request.Url.AbsolutePath}");
-                                }
-                                break;
-                            }
-                        default: // 7 or more elements - just return a not found message
-                            {
-                                LogMessage(0, 0, 0, "Setup", $"Could not find requested file {request.Url.AbsolutePath}");
-                                Return404Error(requestData, $"Could not find requested file {request.Url.AbsolutePath}");
-                                break;
-                            }
-                    }
-                }
                 else // A URI that did not start with /api/, /management, /setup or /configuration/ was requested
                 {
                     LogMessage1(requestData, "Request", string.Format("Non API call - {0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, System.Threading.Thread.CurrentThread.ManagedThreadId.ToString()));
@@ -1889,7 +1893,7 @@ namespace ASCOM.Remote
                         }
                     }
                     TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.OK, "200 OK", returnMessage);
-                }
+                } // Not a valid Remote Server request
             }
             catch (Exception ex) // Something serious has gone wrong with the ASCOM Rest server itself so report this to the user
             {
