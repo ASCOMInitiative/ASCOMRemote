@@ -172,6 +172,9 @@
     <Compile Include="..\Shared Resources\SharedResources.cs">
       <Link>SharedResources.cs</Link>
     </Compile>
+    <Compile Include="..\Shared Resources\StringValue.cs">
+      <Link>StringValue.cs</Link>
+    </Compile>
     <Compile Include="..\Shared Resources\TraceLoggerPlus.cs">
       <Link>TraceLoggerPlus.cs</Link>
     </Compile>
@@ -183,6 +186,7 @@
     <Compile Include="DriverHostForm.Designer.cs">
       <DependentUpon>DriverHostForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="HideTabControlBorders.cs" />
     <Compile Include="InvalidParameterException.cs" />
     <Compile Include="ServedDevice.cs">
       <SubType>UserControl</SubType>

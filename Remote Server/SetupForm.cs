@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Windows.Forms;
 using ASCOM.Utilities;
 using System.Text.RegularExpressions;
+using System.Drawing;
 
 namespace ASCOM.Remote
 {
@@ -23,6 +24,20 @@ namespace ASCOM.Remote
 
         private bool selectByMouse = false; // Variable to help select the whole contents of a numeric up-down box when tabbed into our selected by mouse
 
+        // CORS data grid view presentation variables
+        private BindingSource bindingSource = new BindingSource(); // Binding source to connect the List of permitted origins to the data grid view control
+
+        private ToolStripMenuItem insertRow = new ToolStripMenuItem(); // Tool strip menu items for the context menu entries
+        private ToolStripMenuItem insertTenRows = new ToolStripMenuItem();
+        private ToolStripMenuItem deleteSelectedRows = new ToolStripMenuItem();
+
+        private int currentRowIndex; // Variable to hold the current row index during row inserts
+
+        private DataGridViewSelectedRowCollection selectedRows; // Collections to hold selected rows and cells for use when deleting origins
+        private DataGridViewSelectedCellCollection selectedCells;
+
+        private List<StringValue> corsPermittedOriginsCopy = new List<StringValue>(); // Variable to hold a copy of the list of permitted origins so that it can be edited without affecting the master copy.
+
         #endregion
 
         #region Setup and form load
@@ -30,13 +45,89 @@ namespace ASCOM.Remote
         public SetupForm()
         {
             InitializeComponent();
+
+            HideTabControlBorders tabControl = new HideTabControlBorders(SetupTabControl); // Apply special drawing handler to the tab control in order to suppress white boarders that appear in the default control
+
             addressList.Validating += AddressList_Validating; // Add event handlers for IP address validation events
             chkTrace.CheckedChanged += ChkTrace_CheckedChanged;
 
-            // Create event handlers to select the whole contents of the numeric up down boxes when tabbed into or selected by mouse click
+            // Create event handlers to select the whole contents of the device numeric up down boxes when tabbed into or selected by mouse click
             numPort.Enter += NumericUpDown_Enter;
             numPort.MouseDown += NumericUpDown_MouseDown;
 
+            // CORS origins enable and edit event handlers
+            ChkEnableCors.CheckedChanged += ChkEnableCors_CheckedChanged;
+            DataGridCorsOrigins.CellContextMenuStripNeeded += DataGridView1_CellContextMenuStripNeeded;
+            DataGridCorsOrigins.EnabledChanged += DataGridCorsOrigins_EnabledChanged;
+
+            insertRow.Click += InsertRow_Click;
+            insertTenRows.Click += InsertTenRows_Click;
+            deleteSelectedRows.Click += DeleteSelectedOrigins_Click;
+
+            // Create the right click context menu entries
+            insertRow.Text = "Insert row here";
+            insertTenRows.Text = "Insert 10 rows here";
+            deleteSelectedRows.Text = "Delete selected origins";
+
+            // Associate the data grid view control with a clone of the List<string> permitted origins data source
+            corsPermittedOriginsCopy = ServerForm.CorsPermittedOrigins.ToListStringValue();
+            bindingSource.DataSource = corsPermittedOriginsCopy;
+            DataGridCorsOrigins.DataSource = bindingSource;
+        }
+
+        private void DataGridCorsOrigins_EnabledChanged(object sender, EventArgs e)
+        {
+            DataGridView dgv = sender as DataGridView;
+            if (!dgv.Enabled)
+            {
+                dgv.DefaultCellStyle.BackColor = SystemColors.Control;
+                dgv.DefaultCellStyle.ForeColor = SystemColors.GrayText;
+                dgv.ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Control;
+                dgv.ColumnHeadersDefaultCellStyle.ForeColor = SystemColors.GrayText;
+                dgv.CurrentCell = null;
+                dgv.ReadOnly = true;
+                dgv.EnableHeadersVisualStyles = false;
+                dgv.DefaultCellStyle.SelectionBackColor = SystemColors.Control;
+                dgv.DefaultCellStyle.SelectionForeColor = SystemColors.GrayText;
+            }
+            else
+            {
+                dgv.DefaultCellStyle.BackColor = SystemColors.Window;
+                dgv.DefaultCellStyle.ForeColor = SystemColors.ControlText;
+                dgv.ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Window;
+                dgv.ColumnHeadersDefaultCellStyle.ForeColor = SystemColors.Highlight; ;
+                dgv.DefaultCellStyle.SelectionBackColor = SystemColors.Highlight;
+                dgv.DefaultCellStyle.SelectionForeColor = SystemColors.HighlightText;
+                dgv.ReadOnly = false;
+                dgv.CurrentCell = dgv.Rows[0].Cells[0];
+            }
+        }
+
+        private void ChkEnableCors_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            if (checkBox.Checked)
+            {
+                DataGridCorsOrigins.Enabled = true;
+                NumCorsMaxAge.Enabled = true;
+                LabHelp1.ForeColor = SystemColors.Highlight;
+                LabHelp2.ForeColor = SystemColors.Highlight;
+                LabHelp1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+                LabHelp2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+                LabMaxAge.ForeColor = SystemColors.ControlText;
+                ChkCorsSupportCredentials.Enabled = true;
+            }
+            else
+            {
+                DataGridCorsOrigins.Enabled = false;
+                NumCorsMaxAge.Enabled = false;
+                LabHelp1.ForeColor = SystemColors.GrayText;
+                LabHelp2.ForeColor = SystemColors.GrayText;
+                LabHelp1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+                LabHelp2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+                LabMaxAge.ForeColor = SystemColors.GrayText;
+                ChkCorsSupportCredentials.Enabled = false;
+            }
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -102,6 +193,13 @@ namespace ASCOM.Remote
                 ChkLogClientIPAddress.Checked = ServerForm.LogClientIPAddress;
                 ChkIncludeDriverExceptionsInJsonResponses.Checked = ServerForm.IncludeDriverExceptionInJsonResponse;
                 TxtRemoteServerLocation.Text = ServerForm.RemoteServerLocation;
+                ChkEnableCors.Checked = ServerForm.CorsSupportIsEnabled; // Set the CORS enabled checkbox (this doesn't fire associated event handlers if support is disabled)
+                NumCorsMaxAge.Value = ServerForm.CorsMaxAge;
+                ChkCorsSupportCredentials.Checked = ServerForm.CorsCredentialsPermitted;
+
+                // CORS tab event handler
+                ChkEnableCors_CheckedChanged(ChkEnableCors, new EventArgs()); // Fire the event handlers to ensure that the controls reflect the CORS enabled / disabled state
+                DataGridCorsOrigins_EnabledChanged(DataGridCorsOrigins, new EventArgs());
 
                 // Populate the device types list
                 foreach (string deviceType in profile.RegisteredDeviceTypes)
@@ -117,7 +215,7 @@ namespace ASCOM.Remote
                 }
 
                 // Initialise each of the device GUI components
-                foreach (ServedDevice item in this.Controls.OfType<ServedDevice>())
+                foreach (ServedDevice item in DeviceConfigurationTab.Controls.OfType<ServedDevice>())
                 {
                     ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Starting Init for {0}.", item.Name));
                     item.InitUI(this);
@@ -248,7 +346,9 @@ namespace ASCOM.Remote
                 ServerForm.LogClientIPAddress = ChkLogClientIPAddress.Checked;
                 ServerForm.IncludeDriverExceptionInJsonResponse = ChkIncludeDriverExceptionsInJsonResponses.Checked;
                 ServerForm.RemoteServerLocation = TxtRemoteServerLocation.Text;
-
+                ServerForm.CorsSupportIsEnabled = ChkEnableCors.Checked;
+                ServerForm.CorsMaxAge = NumCorsMaxAge.Value;
+                ServerForm.CorsCredentialsPermitted = ChkCorsSupportCredentials.Checked;
                 foreach (ServedDevice item in this.Controls.OfType<ServedDevice>())
                 {
                     ServerForm.ConfiguredDevices[item.Name].DeviceType = item.DeviceType;
@@ -258,6 +358,8 @@ namespace ASCOM.Remote
                     ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetFalse = item.AllowConnectedSetFalse;
                     ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetTrue = item.AllowConnectedSetTrue;
                 }
+
+                ServerForm.CorsPermittedOrigins = corsPermittedOriginsCopy.ToListString(); // Copy the edited list back to the master copy
 
                 ServerForm.WriteProfile();
 
@@ -353,6 +455,91 @@ namespace ASCOM.Remote
             }
         }
 
+        #endregion
+
+        #region CORS SUpport
+        /// <summary>
+        /// Insert a single blank row into the CORS approved origins list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void InsertRow_Click(object sender, EventArgs e)
+        {
+            bindingSource.Insert(currentRowIndex, new StringValue("")); // Insert a single row containing an empty string
+        }
+
+        /// <summary>
+        /// Insert 10 blank rows into the CORS approved origins list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void InsertTenRows_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i <= 9; i++) // Insert 10 rows containing empty strings
+            {
+                bindingSource.Insert(currentRowIndex, new StringValue(""));
+            }
+        }
+
+        /// <summary>
+        /// Delete the selected rows from the list of approved origins
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteSelectedOrigins_Click(object sender, EventArgs e)
+        {
+            // Delete any selected rows
+            foreach (DataGridViewRow row in selectedRows)
+            {
+                try
+                {
+                    bindingSource.RemoveAt(row.Index);
+                }
+                catch { }
+            }
+
+            // Delete any remaining cells that were selected but were not parts of whole selected rows.
+            // Some of these may have been removed when deleting whole rows above, so ignore any exceptions here
+            foreach (DataGridViewCell cell in selectedCells)
+            {
+                try
+                {
+                    bindingSource.RemoveAt(cell.RowIndex);
+                }
+                catch { }
+            }
+
+            // Add a single default row if all rows have been deleted
+            if (bindingSource.Count == 0) bindingSource.Add(new StringValue(SharedConstants.CORS_DEFAULT_PERMISSION.ToString()));
+        }
+
+        /// <summary>
+        /// Create the CORS origins list right click menu 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DataGridView1_CellContextMenuStripNeeded(object sender, DataGridViewCellContextMenuStripNeededEventArgs e)
+        {
+            DataGridView dataGridViewControl = (DataGridView)sender;
+            if (e.RowIndex >= 0) // Only show the menu in the content part of the table and not the header or row selector parts
+            {
+                selectedRows = dataGridViewControl.SelectedRows; // Save the currently selected rows and cells for use by the delete selected origins method
+                selectedCells = dataGridViewControl.SelectedCells;
+
+                // Create the right click context menu contents
+                ContextMenuStrip strip = new ContextMenuStrip();
+                strip.Items.Add(insertRow);
+                strip.Items.Add(insertTenRows);
+
+                // Only include the "delete selected rows" option if there is more than 1 row and 1 or more selected cells
+                if ((dataGridViewControl.Rows.Count > 1) && ((selectedRows.Count > 0) || (selectedCells.Count > 0)))
+                {
+                    strip.Items.Add(deleteSelectedRows);
+                }
+                e.ContextMenuStrip = strip;
+                currentRowIndex = e.RowIndex;
+            }
+        }
         #endregion
 
     }

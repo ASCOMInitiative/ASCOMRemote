@@ -78,6 +78,7 @@
     <Compile Include="Response Classes\TrackingRatesResponse.cs" />
     <Compile Include="Shared Constants.cs" />
     <Compile Include="SharedResources.cs" />
+    <Compile Include="StringValue.cs" />
     <Compile Include="TraceLoggerPlus.cs" />
   </ItemGroup>
   <ItemGroup>

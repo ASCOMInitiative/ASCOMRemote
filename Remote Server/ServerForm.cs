@@ -78,6 +78,20 @@ namespace ASCOM.Remote
         private const char FORWARD_SLASH = '/'; // Forward slash character as a char value
         private const string X_FORWARDED_FOR = "X-Forwarded-For";
 
+        // CORS header constants
+        private const string CORS_ORIGIN_HEADER = "Origin";
+        private const string CORS_VARY_HEADER = "Vary";
+        private const string CORS_ALLOWED_METHODS_HEADER = "Access-Control-Allow-Methods";
+        private const string CORS_MAX_AGE_HEADER = "Access-Control-Max-Age";
+        private const string CORS_ALLOW_ORIGIN_HEADER = "Access-Control-Allow-Origin";
+        private const string CORS_ALLOW_CREDENTIALS_HEADER = "Access-Control-Allow-Credentials";
+
+        // CORS value constants
+        private const string CORS_ALLOWED_METHODS = "GET, PUT, OPTIONS";
+        private const string CORS_PERMISSION_ALL_ORIGINS = "*";
+        private const string CORS_PERMISSION_REFLECT_SUPPLIED_ORIGIN = "=";
+        private const string CORS_ALLOW_CREDENTIALS = "true";
+
         // Position of each element within the client's requested URI 
         internal const int URL_ELEMENT_API = 0; // For /api/ URIs
         internal const int URL_ELEMENT_API_VERSION = 1;
@@ -102,7 +116,11 @@ namespace ASCOM.Remote
         internal const string RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME = "Run Drivers On Separate Threads"; public const bool RUN_DRIVERS_ON_SEPARATE_THREADS_DEFAULT = true;
         internal const string LOG_CLIENT_IPADDRESS_PROFILENAME = "Log Client IP Address"; public const bool LOG_CLIENT_IPADDRESS_DEFAULT = false;
         internal const string INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME = "Include Driver Exception In JSON Response"; public const bool INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_DEFAULT = false;
-        internal const string REMOTE_SERVER_LOCATION = "Remote Server Location"; public const string REMOTE_SERVER_LOCATION_DEFAULT = "Unknown";
+        internal const string REMOTE_SERVER_LOCATION_PROFILENAME = "Remote Server Location"; public const string REMOTE_SERVER_LOCATION_DEFAULT = "Unknown";
+        internal const string CORS_PERMITTED_ORIGINS_PROFILENAME = "CORS Permitted Origins"; public const string CORS_PERMITTED_ORIGINS_DEFAULT = "*";
+        internal const string CORS_SUPPORT_ENABLED_PROFILENAME = "CORS Support Enabled"; public const bool CORS_SUPPORT_ENABLED_DEFAULT = false;
+        internal const string CORS_MAX_AGE_PROFILENAME = "CORS Max Age"; public const decimal CORS_MAX_AGE_DEFAULT = 3600; // 
+        internal const string CORS_CREDENTIALS_PERMITTED_PROFILENAME = "CORS Credentials Permitted"; public const bool CORS_CREDENTIALS_PERMITTED_DEFAULT = false; // 
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -187,6 +205,10 @@ namespace ASCOM.Remote
         internal static bool LogClientIPAddress;
         internal static bool IncludeDriverExceptionInJsonResponse;
         internal static string RemoteServerLocation;
+        internal static List<string> CorsPermittedOrigins = new List<string>(); // List of permitted origins
+        internal static bool CorsSupportIsEnabled;
+        internal static decimal CorsMaxAge;
+        internal static bool CorsCredentialsPermitted;
 
         #endregion
 
@@ -931,10 +953,8 @@ namespace ASCOM.Remote
         /// </summary>
         public static void ReadProfile()
         {
-
             using (Configuration driverProfile = new Configuration())
             {
-
                 // Initialise the logging trace state from the Profile
                 TraceState = driverProfile.GetValue<bool>(SERVER_TRACE_LEVEL_PROFILENAME, string.Empty, SERVER_TRACE_LEVEL_DEFAULT);
                 DebugTraceState = driverProfile.GetValue<bool>(SERVER_DEBUG_TRACE_PROFILENAME, string.Empty, SERVER_DEBUG_TRACE_DEFAULT);
@@ -950,7 +970,11 @@ namespace ASCOM.Remote
                 LogClientIPAddress = driverProfile.GetValue<bool>(LOG_CLIENT_IPADDRESS_PROFILENAME, string.Empty, LOG_CLIENT_IPADDRESS_DEFAULT);
                 TL.IpAddressTraceState = LogClientIPAddress; // Persist the IP address trace state to the TraceLogger so that it can be used to format lines as required
                 IncludeDriverExceptionInJsonResponse = driverProfile.GetValue<bool>(INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME, string.Empty, INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_DEFAULT);
-                RemoteServerLocation = driverProfile.GetValue<string>(REMOTE_SERVER_LOCATION, string.Empty, REMOTE_SERVER_LOCATION_DEFAULT);
+                RemoteServerLocation = driverProfile.GetValue<string>(REMOTE_SERVER_LOCATION_PROFILENAME, string.Empty, REMOTE_SERVER_LOCATION_DEFAULT);
+                CorsPermittedOrigins.FromConcatenatedString(driverProfile.GetValue<string>(CORS_PERMITTED_ORIGINS_PROFILENAME, string.Empty, CORS_PERMITTED_ORIGINS_DEFAULT), SharedConstants.CORS_SERIALISATION_SEPARATOR);
+                CorsSupportIsEnabled = driverProfile.GetValue<bool>(CORS_SUPPORT_ENABLED_PROFILENAME, string.Empty, CORS_SUPPORT_ENABLED_DEFAULT);
+                CorsMaxAge = driverProfile.GetValue<decimal>(CORS_MAX_AGE_PROFILENAME, string.Empty, CORS_MAX_AGE_DEFAULT);
+                CorsCredentialsPermitted = driverProfile.GetValue<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CORS_CREDENTIALS_PERMITTED_DEFAULT);
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
@@ -988,7 +1012,11 @@ namespace ASCOM.Remote
                 driverProfile.SetValue<bool>(LOG_CLIENT_IPADDRESS_PROFILENAME, string.Empty, LogClientIPAddress);
                 TL.IpAddressTraceState = LogClientIPAddress; // Persist the IP address trace state to the TraceLogger so that it can be used to format lines as required
                 driverProfile.SetValue<bool>(INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME, string.Empty, IncludeDriverExceptionInJsonResponse);
-                driverProfile.SetValue<string>(REMOTE_SERVER_LOCATION, string.Empty, RemoteServerLocation);
+                driverProfile.SetValue<string>(REMOTE_SERVER_LOCATION_PROFILENAME, string.Empty, RemoteServerLocation);
+                driverProfile.SetValue<string>(CORS_PERMITTED_ORIGINS_PROFILENAME, string.Empty, CorsPermittedOrigins.ToConcatenatedString(SharedConstants.CORS_SERIALISATION_SEPARATOR));
+                driverProfile.SetValue<bool>(CORS_SUPPORT_ENABLED_PROFILENAME, string.Empty, CorsSupportIsEnabled);
+                driverProfile.SetValue<decimal>(CORS_MAX_AGE_PROFILENAME, string.Empty, CorsMaxAge);
+                driverProfile.SetValue<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CorsCredentialsPermitted);
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
@@ -1383,6 +1411,79 @@ namespace ASCOM.Remote
                     }
                 } // Log supplied parameters and headers
 
+                // CORS Support
+
+                if (CorsSupportIsEnabled)
+                {
+                    if (TL.DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "CORS support is enabled");
+                    if (!string.IsNullOrEmpty(request.Headers.Get(CORS_ORIGIN_HEADER)))
+                    {
+                        // CHECK CORS PERMISSIONS
+                        if (CorsPermittedOrigins.Contains(CORS_PERMISSION_ALL_ORIGINS)) // If the CORS origin wild-card value is configured return the wild card "permit all origins" permission
+                        {
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Permitted origins contains {CORS_PERMISSION_ALL_ORIGINS}, setting {CORS_ALLOW_ORIGIN_HEADER} = {CORS_PERMISSION_ALL_ORIGINS}");
+                            response.Headers.Add(CORS_ALLOW_ORIGIN_HEADER, CORS_PERMISSION_ALL_ORIGINS);
+                        }
+                        else if (CorsPermittedOrigins.Contains(CORS_PERMISSION_REFLECT_SUPPLIED_ORIGIN)) // Return the origin presented by the client
+                        {
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Permitted origins contains {CORS_PERMISSION_REFLECT_SUPPLIED_ORIGIN}, setting {CORS_ALLOW_ORIGIN_HEADER} = {request.Headers.Get(CORS_ORIGIN_HEADER)}");
+                            response.Headers.Add(CORS_ALLOW_ORIGIN_HEADER, request.Headers.Get(CORS_ORIGIN_HEADER));
+                        }
+                        else if (
+                            CorsPermittedOrigins.Contains(request.Headers.Get(CORS_ORIGIN_HEADER)) &&
+                            ((request.Headers.Get(CORS_ORIGIN_HEADER) != CORS_PERMISSION_ALL_ORIGINS)) &&
+                            ((request.Headers.Get(CORS_ORIGIN_HEADER) != CORS_PERMISSION_REFLECT_SUPPLIED_ORIGIN))
+                            ) // Check whether the supplied origin is in the list of permitted origins, ignoring "*" and "=" for obvious reasons
+                        {
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Permitted origins contains {request.Headers.Get(CORS_ORIGIN_HEADER)}, setting {CORS_ALLOW_ORIGIN_HEADER} = {request.Headers.Get(CORS_ORIGIN_HEADER)}");
+                            response.Headers.Add(CORS_ALLOW_ORIGIN_HEADER, request.Headers.Get(CORS_ORIGIN_HEADER));
+                        }
+                        else // Reject the request if the origin is not permitted by the configured origins rules
+                        {
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Supplied origin \"{request.Headers.Get(CORS_ORIGIN_HEADER)}\" is not in the permitted list - setting {CORS_ALLOW_ORIGIN_HEADER} = {CorsPermittedOrigins[0]}");
+                            ReturnEmpty200Success(requestData);
+                            return; // Finish processing this request by returning and letting the thread end
+                        }
+
+                        // HANDLE CORS CREDENTIALS
+                        if (CorsCredentialsPermitted)
+                        {
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "CORS credential support is enabled");
+                            response.Headers.Add(CORS_ALLOW_CREDENTIALS_HEADER, CORS_ALLOW_CREDENTIALS);
+                            response.Headers.Set(CORS_ALLOW_ORIGIN_HEADER, request.Headers.Get(CORS_ORIGIN_HEADER));
+                        }
+
+                        // HANDLE CACHING RESPONSE
+                        if (response.Headers.Get(CORS_ALLOW_ORIGIN_HEADER) == CORS_PERMISSION_ALL_ORIGINS) // Add a Vary header to assist HTTP cache control if there could be different responses for different origins
+                        {
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "All host wild-card is not  in effect, including a Vary header set to Origin");
+                            response.Headers.Add(CORS_VARY_HEADER, CORS_ORIGIN_HEADER);
+                        }
+
+                        if (request.HttpMethod.ToUpperInvariant() == "OPTIONS") // This is a CORS pre-flight request so we need to set some specific headers
+                        {
+                            // Set the Access-Control-Allow-Methods and Access-Control-Max-Age headers
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS method found - This is a CORS PRE_FLIGHT request: {CORS_ALLOWED_METHODS_HEADER} = {CORS_ALLOWED_METHODS}, {CORS_MAX_AGE_HEADER} = { CorsMaxAge.ToString()}");
+                            response.Headers.Add(CORS_ALLOWED_METHODS_HEADER, CORS_ALLOWED_METHODS);
+                            response.Headers.Add(CORS_MAX_AGE_HEADER, CorsMaxAge.ToString());
+                            ReturnEmpty200Success(requestData);
+                            return; // Finish processing here so return and let the thread end
+                        }
+                        else // Log this as a CORS simple request and allow the request to move forward to be processed
+                        {
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "This is a CORS SIMPLE request");
+                        }
+                    }
+                    else // No or empty Origin header so log and process the request
+                    {
+                        if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "Origin header is absent or empty, the API request will be processed.");
+                    }
+                }
+                else // CORS support is disabled
+                {
+                    if (TL.DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "CORS support is disabled");
+
+                }
                 if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.API_URL_BASE)) // Process requests whose URIs start with /api
                 {
                     // Return a 403 error if the API is not enabled through the management console
@@ -1625,7 +1726,7 @@ namespace ASCOM.Remote
                     }
                 } // Process standard Alpaca device management API requests
 
-                else if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE)) // Process standard Alpaca HTML management calls to "/setup" and "/setup/"
+                else if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE.TrimEnd(FORWARD_SLASH))) // Process standard Alpaca HTML management calls to "/setup" and "/setup/"
                 {
                     LogMessage(0, 0, 0, "Received URL", request.Url.AbsolutePath);
                     string[] elements = request.Url.AbsolutePath.Trim(FORWARD_SLASH).Split(FORWARD_SLASH);
@@ -2796,6 +2897,20 @@ namespace ASCOM.Remote
             {
                 LogException(0, 0, 0, $"Exception while returning file {htmlPageName}", ex.ToString());
                 Return500Error(requestData, $"Remote Server internal error while returning requested file {htmlPageName}: {ex.Message}");
+            }
+        }
+
+        // Return an HTTP 200 success response with an empty body to clients
+        private void ReturnEmpty200Success(RequestData requestData)
+        {
+            try
+            {
+                LogMessage1(requestData, "HTTP 200 Success", "returned to client");
+                TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.OK, "400 - Success", "");
+            }
+            catch (Exception ex)
+            {
+                LogException(0, 0, 0, "Exception while returning empty HTTP 200 Success", ex.ToString());
             }
         }
 
