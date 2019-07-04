@@ -537,7 +537,7 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(96, 13);
             this.label8.TabIndex = 42;
-            this.label8.Text = "Rest server IP Port";
+            this.label8.Text = "Remote server IP Port";
             // 
             // label7
             // 
@@ -546,7 +546,7 @@
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(114, 13);
             this.label7.TabIndex = 41;
-            this.label7.Text = "Rest server IP address";
+            this.label7.Text = "Remote server IP address";
             // 
             // CorsConfigurationTab
             // 
@@ -684,7 +684,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SetupForm";
-            this.Text = "ASCOM REST Server Configuration";
+            this.Text = "ASCOM Remote Server Configuration";
             this.Load += new System.EventHandler(this.Form_Load);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.SetupTabControl.ResumeLayout(false);

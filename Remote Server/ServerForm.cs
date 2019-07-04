@@ -143,13 +143,13 @@ namespace ASCOM.Remote
         internal const int CONTROL_OVERALL_HEIGHT = 103; // Overall height of all control groups
         internal const int CONTROL_SPACING_MAXIMUM = 45; // Maximum separation between control groups
         internal const int CONTROL_SPACE_WIDTH = 240; // Size of the free space, to the right of the log messages text box, that must be left clear for server controls
-        internal const int CONTROL_LEFT_OFFSET = 202; // Offset from the width of the form to the start of a full sized control
-        internal const int CONTROL_CENTRE_OFFSET = 32; // Offset from the CONTROL_LEFT_OFFSET to the start of a centred control
+        internal const int CONTROL_LEFT_OFFSET = 206; // Offset from the width of the form to the start of a full sized control
+        internal const int CONTROL_CENTRE_OFFSET = 36; // Offset from the CONTROL_LEFT_OFFSET to the start of a centred control
 
         // The server form displays controls in several groups:
         // Control Group 1 - Concurrent transactions counter
         // Control Group 2 - Log requests and responses check boxes
-        // Control Group 3 - REST Server Status panel plus the Stop and Start buttons
+        // Control Group 3 - Remote Server Status panel plus the Stop and Start buttons
         // Control Group 4 - Device Status panel plus the Disconnect and Connect buttons
         // Control Group 5 - Setup button
         // Control Group 6 - Exit button
@@ -277,12 +277,6 @@ namespace ASCOM.Remote
                 this.Resize += ServerForm_Resize;
                 ServerForm_Resize(this, new EventArgs()); // Move controls to their correct positions
 
-                LogMessage(0, 0, 0, "New", "Assigning label parents to picture boxes");
-                LbDriverStatus.Parent = PboxDriverStatus;
-                LbDriverStatus.Location = new Point(0, 0);
-                LblRESTStatus.Parent = PboxRESTStatus;
-                LblRESTStatus.Location = new Point(0, 0);
-
                 // Write starting configuration to log
                 WriteConfigurationToLog();
 
@@ -297,7 +291,7 @@ namespace ASCOM.Remote
 
         private void ServerForm_Load(object sender, EventArgs e)
         {
-            this.Text = "ASCOM REST Server - v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            this.Text = "ASCOM Remote Server - v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             if (StartWithDevicesConnected)
             {
                 ConnectDevices();
@@ -312,9 +306,9 @@ namespace ASCOM.Remote
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Clear down the listener
-            LogMessage(0, 0, 0, "FormClosed", string.Format("Stopping REST server on thread {0}", Thread.CurrentThread.ManagedThreadId));
+            LogMessage(0, 0, 0, "FormClosed", string.Format("Stopping Remote server on thread {0}", Thread.CurrentThread.ManagedThreadId));
             StopRESTServer();
-            LogMessage(0, 0, 0, "FormClosed", string.Format("Stopped REST server on thread {0}", Thread.CurrentThread.ManagedThreadId));
+            LogMessage(0, 0, 0, "FormClosed", string.Format("Stopped Remote server on thread {0}", Thread.CurrentThread.ManagedThreadId));
 
             // Clear all of the current objects
             LogMessage(0, 0, 0, "FormClosed", string.Format("Disconnecting devices on thread {0}", Thread.CurrentThread.ManagedThreadId));
@@ -494,8 +488,8 @@ namespace ASCOM.Remote
                 }
 
                 apiIsEnabled = true;
-                PboxRESTStatus.BackColor = Color.Green;
-                LblRESTStatus.Text = "REST Server Up";
+                LblRESTStatus.BackColor = Color.Green;
+                LblRESTStatus.Text = "Remote Server Up";
 
                 LogMessage(0, 0, 0, "StartRESTServer", "Starting wait for incoming request");
                 IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(RestRequestReceivedHandler), httpListener);
@@ -525,15 +519,15 @@ namespace ASCOM.Remote
                 try { httpListener.Prefixes.Remove(apiOperatingUri); } catch { } // Set up the listener on the api URI
                 try { httpListener.Prefixes.Remove(managementUri); } catch { }// Set up the listener on the management URI
 
-                LogMessage(0, 0, 0, "StopRESTServer", "Stopping current REST server");
+                LogMessage(0, 0, 0, "StopRESTServer", "Stopping current Remote server");
                 try { httpListener.Stop(); } catch { }
                 try { httpListener.Close(); } catch { }
                 try { httpListener = null; } catch { }
             }
 
             apiIsEnabled = false;
-            PboxRESTStatus.BackColor = Color.Red;
-            LblRESTStatus.Text = "REST Server Down";
+            LblRESTStatus.BackColor = Color.Red;
+            LblRESTStatus.Text = "Remote Server Down";
         }
 
         private void ConnectDevices()
@@ -597,8 +591,8 @@ namespace ASCOM.Remote
 
                 devicesAreConnected = true;
 
-                PboxDriverStatus.BackColor = Color.Green; // Turn the "Connected / Disconnected" colour box green
-                LbDriverStatus.Text = "Drivers Connected";
+                LblDriverStatus.BackColor = Color.Green; // Turn the "Connected / Disconnected" colour box green
+                LblDriverStatus.Text = "Drivers Connected";
             }
             catch (Exception ex)
             {
@@ -687,8 +681,8 @@ namespace ASCOM.Remote
             LogMessage(0, 0, 0, "DisconnectDevices", "Clearing devices");
             int RemainingObjectCount;
 
-            PboxDriverStatus.BackColor = Color.Red; // Turn the "Connected / Disconnected" colour box red
-            LbDriverStatus.Text = "Drivers Unloaded";
+            LblDriverStatus.BackColor = Color.Red; // Turn the "Connected / Disconnected" colour box red
+            LblDriverStatus.Text = "Drivers Unloaded";
             devicesAreConnected = false;
 
             // Clear all of the current drivers
@@ -1043,7 +1037,7 @@ namespace ASCOM.Remote
             apiEnabled = apiIsEnabled; // Save current server state
             devicesConnected = devicesAreConnected;
 
-            LogMessage(0, 0, 0, "SetupButton", string.Format("Stopping REST Server"));
+            LogMessage(0, 0, 0, "SetupButton", string.Format("Stopping RemoteServer"));
             StopRESTServer(); // Shut down access while we use the Setup screen
             LogMessage(0, 0, 0, "SetupButton", string.Format("Disconnecting devices"));
             DisconnectDevices(); // Disconnect all devices so we can use their Setup screens if necessary
@@ -1069,12 +1063,12 @@ namespace ASCOM.Remote
 
             if (apiEnabled)
             {
-                LogMessage(0, 0, 0, "SetupButton", string.Format("Starting REST server"));
+                LogMessage(0, 0, 0, "SetupButton", string.Format("Starting Remote server"));
                 StartRESTServer();
             }
             else
             {
-                LogMessage(0, 0, 0, "SetupButton", string.Format("Not starting REST server because it wasn't running in the first place."));
+                LogMessage(0, 0, 0, "SetupButton", string.Format("Not starting Remote server because it wasn't running in the first place."));
             }
         }
 
@@ -1170,15 +1164,15 @@ namespace ASCOM.Remote
                 chkLogRequests.Location = new Point(controlCentrePosition + 4, txtConcurrency.Top + controlSpacing);
                 chkLogResponses.Location = new Point(controlCentrePosition + 4, chkLogRequests.Top + +20);
 
-                //Control Group 3 - REST Server Status, Stop and Start
-                PboxRESTStatus.Location = new Point(controlLeftPosition, chkLogResponses.Top + controlSpacing - 5);
-                BtnStopRESTServer.Location = new Point(controlLeftPosition - 1, PboxRESTStatus.Top + 30);
-                BtnStartRESTServer.Location = new Point(controlLeftPosition + 84, PboxRESTStatus.Top + 30);
+                //Control Group 3 - Remote Server Status, Stop and Start
+                LblRESTStatus.Location = new Point(controlLeftPosition, chkLogResponses.Top + controlSpacing - 5);
+                BtnStopRESTServer.Location = new Point(controlLeftPosition - 1, LblRESTStatus.Top + 30);
+                BtnStartRESTServer.Location = new Point(controlLeftPosition + 90, LblRESTStatus.Top + 30);
 
                 // Control Group 4 - Device Status, Disconnect and Connect
-                PboxDriverStatus.Location = new Point(controlLeftPosition, BtnStopRESTServer.Top + controlSpacing + 3);
-                BtnDisconnectDevices.Location = new Point(controlLeftPosition - 1, PboxDriverStatus.Top + 30);
-                BtnConnectDevices.Location = new Point(controlLeftPosition + 84, PboxDriverStatus.Top + 30);
+                LblDriverStatus.Location = new Point(controlLeftPosition, BtnStopRESTServer.Top + controlSpacing + 3);
+                BtnDisconnectDevices.Location = new Point(controlLeftPosition - 1, LblDriverStatus.Top + 30);
+                BtnConnectDevices.Location = new Point(controlLeftPosition + 90, LblDriverStatus.Top + 30);
 
                 // Control Group 5 - Setup button
                 BtnSetup.Location = new Point(controlCentrePosition, BtnDisconnectDevices.Top + controlSpacing + 2);
@@ -1219,7 +1213,7 @@ namespace ASCOM.Remote
                 if (DebugTraceState) LogMessage1(requestData, "WebRequestCallback", string.Format("Thread {0} - EndGetContext - httpListener is null so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
                 return;
             }
-            catch (ObjectDisposedException) // httpListener is disposed because the REST server has been stopped or because of some other error so just log the event
+            catch (ObjectDisposedException) // httpListener is disposed because the Remote server has been stopped or because of some other error so just log the event
             {
                 if (DebugTraceState) LogMessage1(requestData, "WebRequestCallback", string.Format("Thread {0} - EndGetContext - httpListener is disposed so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
                 return;
@@ -1996,7 +1990,7 @@ namespace ASCOM.Remote
                     TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.OK, "200 OK", returnMessage);
                 } // Not a valid Remote Server request
             }
-            catch (Exception ex) // Something serious has gone wrong with the ASCOM Rest server itself so report this to the user
+            catch (Exception ex) // Something serious has gone wrong with the ASCOM Remote server itself so report this to the user
             {
                 LogException(clientID, clientTransactionID, serverTransactionID, "Request", ex.ToString());
                 Return500Error(requestData, "Internal server error: " + ex.ToString());

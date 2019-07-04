@@ -52,7 +52,7 @@ namespace ASCOM.Remote
         public const string STRONG_WILDCARD_NAME = "+"; // Symbol for strong IP address wild card
         public const string WEAK_WILDCARD_NAME = "*"; // Symbol for weak IP address wild card
 
-        // Constants shared by Remote Client Drivers and the ASCOM REST Server
+        // Constants shared by Remote Client Drivers and the ASCOM Remote Server
         public const string API_URL_BASE = "/api/"; // This constant must always be lower case to make the logic tests work properly 
         public const string API_VERSION_V1 = "v1"; // This constant must always be lower case to make the logic tests work properly
         public static readonly int[] MANAGEMENT_SUPPORTED_INTERFACE_VERSIONS = new int[1] { 1 }; // Array of supported interface versions that is returned through the management API

@@ -77,7 +77,7 @@ namespace ASCOM.Remote
                 restServer.ProcessDriverCommand(requestData);
                 if (ServerForm.DebugTraceState) ServerForm.LogMessage1(requestData, requestData.Elements[ServerForm.URL_ELEMENT_METHOD], string.Format("DriverCommand has completed the command for {0} on thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
             }
-            catch (Exception ex) // Something serious has gone wrong with the ASCOM Rest server itself so report this to the user
+            catch (Exception ex) // Something serious has gone wrong with the ASCOM Remote server itself so report this to the user
             {
                 ServerForm.LogException1(requestData, "DriverCommand", ex.ToString());
                 restServer.Return500Error(requestData, "Internal server error (DriverOnSeparateThread): " + ex.ToString());

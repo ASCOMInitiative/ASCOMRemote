@@ -33,8 +33,7 @@
             this.BtnConnectDevices = new System.Windows.Forms.Button();
             this.BtnDisconnectDevices = new System.Windows.Forms.Button();
             this.BtnExit = new System.Windows.Forms.Button();
-            this.PboxDriverStatus = new System.Windows.Forms.PictureBox();
-            this.LbDriverStatus = new System.Windows.Forms.Label();
+            this.LblDriverStatus = new System.Windows.Forms.Label();
             this.txtLog = new System.Windows.Forms.TextBox();
             this.lblTitle = new System.Windows.Forms.Label();
             this.chkLogRequests = new System.Windows.Forms.CheckBox();
@@ -42,18 +41,15 @@
             this.txtConcurrency = new System.Windows.Forms.TextBox();
             this.lblConcurrentTransactions = new System.Windows.Forms.Label();
             this.LblRESTStatus = new System.Windows.Forms.Label();
-            this.PboxRESTStatus = new System.Windows.Forms.PictureBox();
             this.BtnStartRESTServer = new System.Windows.Forms.Button();
             this.BtnStopRESTServer = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.PboxDriverStatus)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PboxRESTStatus)).BeginInit();
             this.SuspendLayout();
             // 
             // BtnSetup
             // 
             this.BtnSetup.Location = new System.Drawing.Point(773, 416);
             this.BtnSetup.Name = "BtnSetup";
-            this.BtnSetup.Size = new System.Drawing.Size(100, 23);
+            this.BtnSetup.Size = new System.Drawing.Size(100, 24);
             this.BtnSetup.TabIndex = 0;
             this.BtnSetup.Text = "Setup";
             this.BtnSetup.UseVisualStyleBackColor = true;
@@ -61,9 +57,9 @@
             // 
             // BtnConnectDevices
             // 
-            this.BtnConnectDevices.Location = new System.Drawing.Point(821, 341);
+            this.BtnConnectDevices.Location = new System.Drawing.Point(824, 339);
             this.BtnConnectDevices.Name = "BtnConnectDevices";
-            this.BtnConnectDevices.Size = new System.Drawing.Size(77, 23);
+            this.BtnConnectDevices.Size = new System.Drawing.Size(79, 24);
             this.BtnConnectDevices.TabIndex = 2;
             this.BtnConnectDevices.Text = "Connect";
             this.BtnConnectDevices.UseVisualStyleBackColor = true;
@@ -71,9 +67,9 @@
             // 
             // BtnDisconnectDevices
             // 
-            this.BtnDisconnectDevices.Location = new System.Drawing.Point(738, 341);
+            this.BtnDisconnectDevices.Location = new System.Drawing.Point(733, 339);
             this.BtnDisconnectDevices.Name = "BtnDisconnectDevices";
-            this.BtnDisconnectDevices.Size = new System.Drawing.Size(77, 23);
+            this.BtnDisconnectDevices.Size = new System.Drawing.Size(79, 24);
             this.BtnDisconnectDevices.TabIndex = 3;
             this.BtnDisconnectDevices.Text = "Disconnect";
             this.BtnDisconnectDevices.UseVisualStyleBackColor = true;
@@ -83,31 +79,24 @@
             // 
             this.BtnExit.Location = new System.Drawing.Point(773, 476);
             this.BtnExit.Name = "BtnExit";
-            this.BtnExit.Size = new System.Drawing.Size(100, 23);
+            this.BtnExit.Size = new System.Drawing.Size(100, 24);
             this.BtnExit.TabIndex = 4;
             this.BtnExit.Text = "Exit";
             this.BtnExit.UseVisualStyleBackColor = true;
             this.BtnExit.Click += new System.EventHandler(this.BtnExit_Click);
             // 
-            // PboxDriverStatus
+            // LblDriverStatus
             // 
-            this.PboxDriverStatus.BackColor = System.Drawing.Color.Red;
-            this.PboxDriverStatus.Location = new System.Drawing.Point(738, 309);
-            this.PboxDriverStatus.Name = "PboxDriverStatus";
-            this.PboxDriverStatus.Size = new System.Drawing.Size(160, 25);
-            this.PboxDriverStatus.TabIndex = 5;
-            this.PboxDriverStatus.TabStop = false;
-            // 
-            // LbDriverStatus
-            // 
-            this.LbDriverStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LbDriverStatus.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.LbDriverStatus.Location = new System.Drawing.Point(738, 309);
-            this.LbDriverStatus.Name = "LbDriverStatus";
-            this.LbDriverStatus.Size = new System.Drawing.Size(160, 22);
-            this.LbDriverStatus.TabIndex = 6;
-            this.LbDriverStatus.Text = "Drivers Unloaded";
-            this.LbDriverStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LblDriverStatus.BackColor = System.Drawing.Color.Red;
+            this.LblDriverStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LblDriverStatus.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.LblDriverStatus.Location = new System.Drawing.Point(734, 309);
+            this.LblDriverStatus.Name = "LblDriverStatus";
+            this.LblDriverStatus.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.LblDriverStatus.Size = new System.Drawing.Size(168, 24);
+            this.LblDriverStatus.TabIndex = 6;
+            this.LblDriverStatus.Text = "Drivers Unloaded";
+            this.LblDriverStatus.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // txtLog
             // 
@@ -125,9 +114,9 @@
             this.lblTitle.ForeColor = System.Drawing.SystemColors.Highlight;
             this.lblTitle.Location = new System.Drawing.Point(185, 25);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(338, 26);
+            this.lblTitle.Size = new System.Drawing.Size(359, 26);
             this.lblTitle.TabIndex = 8;
-            this.lblTitle.Text = "ASCOM REST Server Console";
+            this.lblTitle.Text = "ASCOM Remote Server Console";
             // 
             // chkLogRequests
             // 
@@ -171,29 +160,22 @@
             // 
             // LblRESTStatus
             // 
+            this.LblRESTStatus.BackColor = System.Drawing.Color.Red;
             this.LblRESTStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LblRESTStatus.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.LblRESTStatus.Location = new System.Drawing.Point(738, 220);
+            this.LblRESTStatus.Location = new System.Drawing.Point(734, 220);
             this.LblRESTStatus.Name = "LblRESTStatus";
-            this.LblRESTStatus.Size = new System.Drawing.Size(160, 22);
+            this.LblRESTStatus.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.LblRESTStatus.Size = new System.Drawing.Size(168, 24);
             this.LblRESTStatus.TabIndex = 14;
-            this.LblRESTStatus.Text = "REST Server Down";
-            this.LblRESTStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // PboxRESTStatus
-            // 
-            this.PboxRESTStatus.BackColor = System.Drawing.Color.Red;
-            this.PboxRESTStatus.Location = new System.Drawing.Point(738, 220);
-            this.PboxRESTStatus.Name = "PboxRESTStatus";
-            this.PboxRESTStatus.Size = new System.Drawing.Size(160, 25);
-            this.PboxRESTStatus.TabIndex = 13;
-            this.PboxRESTStatus.TabStop = false;
+            this.LblRESTStatus.Text = "Remote Server Down";
+            this.LblRESTStatus.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // BtnStartRESTServer
             // 
-            this.BtnStartRESTServer.Location = new System.Drawing.Point(821, 251);
+            this.BtnStartRESTServer.Location = new System.Drawing.Point(824, 250);
             this.BtnStartRESTServer.Name = "BtnStartRESTServer";
-            this.BtnStartRESTServer.Size = new System.Drawing.Size(77, 23);
+            this.BtnStartRESTServer.Size = new System.Drawing.Size(79, 24);
             this.BtnStartRESTServer.TabIndex = 16;
             this.BtnStartRESTServer.Text = "Start";
             this.BtnStartRESTServer.UseVisualStyleBackColor = true;
@@ -201,9 +183,9 @@
             // 
             // BtnStopRESTServer
             // 
-            this.BtnStopRESTServer.Location = new System.Drawing.Point(738, 251);
+            this.BtnStopRESTServer.Location = new System.Drawing.Point(733, 250);
             this.BtnStopRESTServer.Name = "BtnStopRESTServer";
-            this.BtnStopRESTServer.Size = new System.Drawing.Size(77, 23);
+            this.BtnStopRESTServer.Size = new System.Drawing.Size(79, 24);
             this.BtnStopRESTServer.TabIndex = 15;
             this.BtnStopRESTServer.Text = "Stop";
             this.BtnStopRESTServer.UseVisualStyleBackColor = true;
@@ -216,15 +198,13 @@
             this.Controls.Add(this.BtnStartRESTServer);
             this.Controls.Add(this.BtnStopRESTServer);
             this.Controls.Add(this.LblRESTStatus);
-            this.Controls.Add(this.PboxRESTStatus);
             this.Controls.Add(this.lblConcurrentTransactions);
             this.Controls.Add(this.txtConcurrency);
             this.Controls.Add(this.chkLogResponses);
             this.Controls.Add(this.chkLogRequests);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.txtLog);
-            this.Controls.Add(this.LbDriverStatus);
-            this.Controls.Add(this.PboxDriverStatus);
+            this.Controls.Add(this.LblDriverStatus);
             this.Controls.Add(this.BtnExit);
             this.Controls.Add(this.BtnDisconnectDevices);
             this.Controls.Add(this.BtnConnectDevices);
@@ -232,10 +212,8 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ServerForm";
-            this.Text = "ASCOM REST Server";
+            this.Text = "ASCOM Remote Server";
             this.Load += new System.EventHandler(this.ServerForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.PboxDriverStatus)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PboxRESTStatus)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -247,8 +225,7 @@
         private System.Windows.Forms.Button BtnConnectDevices;
         private System.Windows.Forms.Button BtnDisconnectDevices;
         private System.Windows.Forms.Button BtnExit;
-        private System.Windows.Forms.PictureBox PboxDriverStatus;
-        private System.Windows.Forms.Label LbDriverStatus;
+        private System.Windows.Forms.Label LblDriverStatus;
         private System.Windows.Forms.TextBox txtLog;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.CheckBox chkLogRequests;
@@ -256,7 +233,6 @@
         private System.Windows.Forms.TextBox txtConcurrency;
         private System.Windows.Forms.Label lblConcurrentTransactions;
         private System.Windows.Forms.Label LblRESTStatus;
-        private System.Windows.Forms.PictureBox PboxRESTStatus;
         private System.Windows.Forms.Button BtnStartRESTServer;
         private System.Windows.Forms.Button BtnStopRESTServer;
     }
