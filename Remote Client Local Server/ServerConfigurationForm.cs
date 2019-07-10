@@ -58,7 +58,7 @@ namespace ASCOM.Remote
             {
                 TL.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Processing device type: " + deviceType);
                 SortedDictionary<string, ServedDeviceClient> servedDevices = new SortedDictionary<string, ServedDeviceClient>();
-                foreach (ServedDeviceClient c in this.Controls.OfType<ServedDeviceClient>().Where(asd => asd.DeviceType == deviceType))
+                foreach (ServedDeviceClient c in this.Controls.OfType<ServedDeviceClient>().Where(device => device.DeviceType == deviceType))
                 {
                     servedDevices.Add(c.Name, c);
                 }

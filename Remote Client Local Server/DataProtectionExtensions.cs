@@ -6,7 +6,7 @@ using ASCOM.Utilities;
 namespace ASCOM.Remote
 {
     /// <summary>
-    /// Extensions to the String datatype to allow the string to be encrypted and decrypted.
+    /// Extensions to the String data type to allow the string to be encrypted and decrypted.
     /// 
     /// </summary>
     public static class DataProtectionExtensions
@@ -23,7 +23,7 @@ namespace ASCOM.Remote
             try
             {
                 byte[] clearBytes = Encoding.UTF8.GetBytes(clearText);
-                byte[] entropyBytes = Encoding.UTF8.GetBytes(GenerateEntropy(TL));
+                byte[] entropyBytes = Encoding.UTF8.GetBytes(GenerateEntropy());
                 byte[] encryptedBytes = ProtectedData.Protect(clearBytes, entropyBytes, dataProtectionScope);
                 string encryptedText = Convert.ToBase64String(encryptedBytes);
                 TL.LogMessage("Encrypt", encryptedText);
@@ -42,7 +42,7 @@ namespace ASCOM.Remote
             {
                 if (encryptedText == null) return ""; // Deal with initial case where text has not yet been encrypted
                 byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
-                byte[] entropyBytes = Encoding.UTF8.GetBytes(GenerateEntropy(TL));
+                byte[] entropyBytes = Encoding.UTF8.GetBytes(GenerateEntropy());
                 byte[] clearBytes = ProtectedData.Unprotect(encryptedBytes, entropyBytes, dataProtectionScope);
                 string clearText = Encoding.UTF8.GetString(clearBytes);
                 TL.LogMessage("Unencrypt", encryptedText);
@@ -56,7 +56,7 @@ namespace ASCOM.Remote
         }
 
 
-        public static string GenerateEntropy(TraceLogger TL)
+        public static string GenerateEntropy()
         {
             //const string optionalEntropy = "ASCOM!*&";
 

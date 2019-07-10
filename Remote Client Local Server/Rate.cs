@@ -9,7 +9,7 @@ namespace ASCOM.Remote
     // for AxisRates. You do not need to change this class.
     //
     // The Guid attribute sets the CLSID for ASCOM.Remote.Rate
-    // The ClassInterface/None addribute prevents an empty interface called
+    // The ClassInterface/None attribute prevents an empty interface called
     // _Rate from being created and used as the [default] interface
     //
     [Guid("91A8AE97-2854-43F1-BCC4-024E88EA08D6")]

@@ -28,6 +28,7 @@ namespace ASCOM.Remote
         public bool TraceState { get; set; }
         public bool DebugTraceState { get; set; }
         public bool ManageConnectLocally { get; set; }
+        public SharedConstants.ImageArrayTransferType ImageArrayTransferType { get; set; }
 
         private bool selectByMouse = false; // Variable to help select the whole contents of a numeric up-down box when tabbed into our selected by mouse
 
@@ -46,6 +47,9 @@ namespace ASCOM.Remote
             cmbServiceType.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbServiceType.DrawItem += new DrawItemEventHandler(ComboBox_DrawItem);
             cmbServiceType.DrawMode = DrawMode.OwnerDrawFixed;
+            CmbImageArrayTransferType.DropDownStyle = ComboBoxStyle.DropDownList;
+            CmbImageArrayTransferType.DrawItem += new DrawItemEventHandler(ComboBox_DrawItem);
+            CmbImageArrayTransferType.DrawMode = DrawMode.OwnerDrawFixed;
 
             // Create event handlers to select the whole contents of the numeric up-down boxes when tabbed into or selected by mouse click
             numPort.Enter += NumericUpDown_Enter;
@@ -180,6 +184,12 @@ namespace ASCOM.Remote
                 radManageConnectRemotely.Checked = true;
             }
 
+            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.Uncompressed);
+            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.DeflateCompressed);
+            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.GZipCompressed);
+            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.BinarySerialised);
+            CmbImageArrayTransferType.SelectedItem = ImageArrayTransferType;
+
             this.BringToFront();
         }
 
@@ -201,6 +211,7 @@ namespace ASCOM.Remote
             UserName = txtUserName.Text.Encrypt(TL); // Encrypt the provided username and password
             Password = txtPassword.Text.Encrypt(TL);
             ManageConnectLocally = radManageConnectLocally.Checked;
+            ImageArrayTransferType = (SharedConstants.ImageArrayTransferType)CmbImageArrayTransferType.SelectedItem;
             this.DialogResult = DialogResult.OK;
             Close();
         }

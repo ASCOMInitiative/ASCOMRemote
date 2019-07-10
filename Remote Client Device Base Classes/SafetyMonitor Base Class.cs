@@ -23,7 +23,6 @@ namespace ASCOM.Remote
         private string DriverNumber; // This driver's number in the series 1, 2, 3...
         private string DriverDisplayName; // Driver description that displays in the ASCOM Chooser.
         private string DriverProgId; // Drivers ProgID
-        private string NotConnectedMessage; // Custom message to return if the driver is not connected to the server
         private SetupDialogForm setupForm; // Private variable to hold an instance of the Driver's setup form when invoked by the user
         private RestClient client; // Client to send and receive REST style messages to / from the remote server
         private uint clientNumber; // Unique number for this driver within the locaL server, i.e. across all drivers that the local server is serving
@@ -43,6 +42,7 @@ namespace ASCOM.Remote
         private string userName;
         private string password;
         private bool manageConnectLocally;
+        private SharedConstants.ImageArrayTransferType imageArrayTransferType;
 
         #endregion
 
@@ -60,11 +60,11 @@ namespace ASCOM.Remote
                 DriverNumber = RequiredDriverNumber;
                 DriverDisplayName = RequiredDriverDisplayName; // Driver description that displays in the ASCOM Chooser.
                 DriverProgId = RequiredProgId;
-                NotConnectedMessage = DriverDisplayName + " " + SharedConstants.NOT_CONNECTED_MESSAGE;
 
                 if (TL == null) TL = new TraceLoggerPlus("", string.Format(SharedConstants.TRACELOGGER_NAME_FORMAT_STRING, DriverNumber, DEVICE_TYPE));
                 RemoteClientDriver.ReadProfile(clientNumber, TL, DEVICE_TYPE, DriverProgId,
-                    ref traceState, ref debugTraceState, ref ipAddressString, ref portNumber, ref remoteDeviceNumber, ref serviceType, ref establishConnectionTimeout, ref standardServerResponseTimeout, ref longServerResponseTimeout, ref userName, ref password, ref manageConnectLocally);
+                    ref traceState, ref debugTraceState, ref ipAddressString, ref portNumber, ref remoteDeviceNumber, ref serviceType, ref establishConnectionTimeout, ref standardServerResponseTimeout,
+                    ref longServerResponseTimeout, ref userName, ref password, ref manageConnectLocally, ref imageArrayTransferType);
                 TL.LogMessage(clientNumber, DEVICE_TYPE, string.Format("Trace state: {0}, Debug Trace State: {1}, TraceLogger Debug State: {2}", traceState, debugTraceState, TL.DebugTraceState));
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
                 TL.LogMessage(clientNumber, DEVICE_TYPE, "Starting initialisation, Version: " + version.ToString());
@@ -224,6 +224,7 @@ namespace ASCOM.Remote
                     setupForm.UserName = userName;
                     setupForm.Password = password;
                     setupForm.ManageConnectLocally = manageConnectLocally;
+                    setupForm.ImageArrayTransferType = imageArrayTransferType;
 
                     TL.LogMessage(clientNumber, "SetupDialog", "Showing Dialogue");
                     var result = setupForm.ShowDialog();
@@ -245,11 +246,12 @@ namespace ASCOM.Remote
                         userName = setupForm.UserName;
                         password = setupForm.Password;
                         manageConnectLocally = setupForm.ManageConnectLocally;
+                        imageArrayTransferType = setupForm.ImageArrayTransferType;
 
                         // Write the changed values to the Profile
                         TL.LogMessage(clientNumber, "SetupDialog", "Writing new values to profile");
                         RemoteClientDriver.WriteProfile(clientNumber, TL, DEVICE_TYPE, DriverProgId,
-                             traceState, debugTraceState, ipAddressString, portNumber, remoteDeviceNumber, serviceType, establishConnectionTimeout, standardServerResponseTimeout, longServerResponseTimeout, userName, password, manageConnectLocally);
+                             traceState, debugTraceState, ipAddressString, portNumber, remoteDeviceNumber, serviceType, establishConnectionTimeout, standardServerResponseTimeout, longServerResponseTimeout, userName, password, manageConnectLocally, imageArrayTransferType);
 
                         // Establish new host and device parameters
                         TL.LogMessage(clientNumber, "SetupDialog", "Establishing new host and device parameters");

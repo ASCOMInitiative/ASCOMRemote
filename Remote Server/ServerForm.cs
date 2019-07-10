@@ -20,13 +20,16 @@ using System.Drawing;
 using Newtonsoft.Json;
 using System.Web;
 using System.Text.RegularExpressions;
+using System.IO.Compression;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Formatters;
 
 namespace ASCOM.Remote
 {
 
     public partial class ServerForm : Form
     {
-        #region Constants
+        #region Constants and Enums
 
         // NOTE - Setup page HTML is set in the ReturnHTMLPageOrImage  method
 
@@ -1751,8 +1754,8 @@ namespace ASCOM.Remote
                                 ReturnHTMLPageOrImage(requestData, elements[1]);
                                 break;
                             }
-                        case 3: // setup/something/somethingelse - not a recognised command format
-                        case 4: // setup/something/somethingelse/anothersomething - not a recognised command format
+                        case 3: // setup/something/something-else - not a recognised command format
+                        case 4: // setup/something/something-else/another-something - not a recognised command format
                             {
                                 LogMessage(0, 0, 0, "Setup", $"Could not find requested file {request.Url.AbsolutePath}");
                                 Return404Error(requestData, $"Could not find requested file {request.Url.AbsolutePath}");
@@ -2200,6 +2203,10 @@ namespace ASCOM.Remote
                                             case "imagearray":
                                             case "imagearrayvariant":
                                                 ReturnImageArray(requestData); break;
+                                            case "imagearraybinary":
+                                            case "imagearrayvariantbinary":
+                                                ReturnImageArrayBinary(requestData); break;
+
                                             //STRING LIST Get Values
                                             case "gains":
                                             case "readoutmodes":
@@ -2668,8 +2675,9 @@ namespace ASCOM.Remote
                         break;
                 }
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException ex)
             {
+                LogException1(requestData, "ProcessDriverCommand", ex.ToString());
                 Return400Error(requestData, string.Format("The requestData.Requested device \"{0} {1}\" does not exist on this server. Supplied URI: {2} {3}", requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData.Elements[URL_ELEMENT_DEVICE_NUMBER], requestData.Request.Url.AbsolutePath, CORRECT_API_FORMAT_STRING));
             }
         }
@@ -4192,32 +4200,121 @@ namespace ASCOM.Remote
             SendResponseValueToClient(requestData, exReturn, responseJson);
         }
 
+        /// <summary>
+        /// Return binary serialised image data to the client
+        /// </summary>
+        /// <param name="requestData"></param>
+        /// <remarks>
+        /// The last provided image data that was saved by the imagearray and imagearrayvariant method calls is binary serialised then compressed and finally returned to the client
+        /// </remarks>
+        private void ReturnImageArrayBinary(RequestData requestData)
+        {
+            object image = null;
+            Stopwatch sw = new Stopwatch();
+            long lastTime;
+            byte[] bytes;
+            byte[] compressedBytes;
+            long timeBinarySerialisation = 0;
+            long timeCreateCompressedStream;
+            long timeCreateCompressedByteArray;
+
+            sw.Start();
+
+            switch (requestData.Elements[URL_ELEMENT_METHOD])
+            {
+                case "imagearraybinary":
+                    image = ActiveObjects[requestData.DeviceKey].LastImageArray;
+                    break;
+                case "imagearrayvariantbinary":
+                    image = ActiveObjects[requestData.DeviceKey].LastImageArrayVariant;
+                    break;
+            }
+            long timeAssugnImage = sw.ElapsedMilliseconds; lastTime = sw.ElapsedMilliseconds; // Record the duration
+
+            using (var memoryStream = new MemoryStream())
+            {
+                BinaryFormatter binaryFormatter = new BinaryFormatter();
+                if (image != null)
+                {
+                    binaryFormatter.TypeFormat = SharedConstants.BINARY_SERIALISATION_FORMAT;
+                    binaryFormatter.Serialize(memoryStream, image);
+                    timeBinarySerialisation = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+                }
+                bytes = memoryStream.ToArray();
+            }
+            long timeBinaryBytes = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var compressedSTream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+                {
+                    compressedSTream.Write(bytes, 0, bytes.Length);
+                }
+                timeCreateCompressedStream = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+                compressedBytes = memoryStream.ToArray();
+                timeCreateCompressedByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+            }
+
+            requestData.Response.AddHeader("Content-Encoding", SharedConstants.GZIP_BINARY_SERIALISED); // Add a header indicating that the content is .NET binary serialised and then GZip compressed
+
+            requestData.Response.ContentLength64 = compressedBytes.Length;
+            requestData.Response.OutputStream.Write(compressedBytes, 0, compressedBytes.Length);
+            requestData.Response.OutputStream.Close();
+            long timeReturnDataToClient = sw.ElapsedMilliseconds - lastTime; // Record the duration
+
+            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Compressed binary response sent to client." +
+                $"Binary formatted driver image size: {bytes.Length:n0}bytes, compressed: {compressedBytes.Length:n0}. " +
+                $"Timings - Overall: {sw.ElapsedMilliseconds}, Time to assign image pointer: {timeAssugnImage},Binary  serialisation: {timeBinarySerialisation}, Convert to binary bytes: {timeBinaryBytes}, " +
+                $"Create compressed stream: {timeCreateCompressedStream} + Convert stream to array: {timeCreateCompressedByteArray}, Return data to client: {timeReturnDataToClient}");
+        }
+
+        /// <summary>
+        /// Return ImageArray and ImageArrayVariant data
+        /// </summary>
+        /// <param name="requestData"></param>
+        /// <remarks>
+        /// The default transfer mode is by encoding of the image data as a JSON number array. This is very slow for imagearrayvariant data because the array needs to be converted from object [,] or object [,,] to a short, int or double array type
+        /// in order for JSON serialisation to create a number array rather than an object containing number values. To achieve this every element must be read individually and converted, which is very time consuming on large arrays.
+        ///
+        /// Two optimisations are available if the client supports them:
+        /// 1) COMPRESSION
+        /// The JSON string can be compressed with either the GZip or Deflate algorithms. The client indicates support by setting the request "Accept-Encoding" header to "gzip" or "deflate". If both are set, GZip will be used.
+        /// 2) .NET BINARY FORMATTINF and COMPRESSION
+        /// The image array can be serialised using .NET binary serialisation. The client indicates support for this by setting the request "BinarySerialisation" header to "true". When set, the imagearray/imagearrayvariant call returns
+        /// with all elements set, apart from the image array data "Value" parameter. This makes the response very quick and, internally, the remote server retains a pointer to the image data returned by the driver. The client then makes an HTTP GET 
+        /// call to the remote server to the relevant reserved method imagearraybinary or imagearrayvariantbinary. These calls return the image data serialised with the .net System.Runtime.Serialization.Formatters.Binary.BinaryFormatter 
+        /// and then compressed with Gzip to reduce transmission size. The BinaryFormatter format is internal to .NET and is not published, but is compatible between different releases of .NET so this approach is only of value when 
+        /// the client is written in .NET
+        /// </remarks>
         private void ReturnImageArray(RequestData requestData)
         {
-
             Array deviceResponse;
-            //ImageArrayResponse 
             dynamic responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID); // Initialise here so that there is a class ready to convey back an error message
             Exception exReturn = null;
 
-            // Create small 3D test array to illustrate the order of elements in the serialised JSON array.
+            // These flags indicate whether the client supports optimised, faster transfer modes for camera image data
+            SharedConstants.ImageArrayTransferType compressionType = SharedConstants.ImageArrayTransferType.Uncompressed; // Flag to indicate what type of compression the client supports - initialised to indicate a default of no compression
+            bool binarySerialisationRequested = false; // Flag to indicate whether the client supports .NET binary serialisation
 
-            int[,,] testArray3DInt = new int[3, 3, 3];
-            int[,] testArray2DInt = new int[3, 3];
-            bool returnTestResponse = false; // Set to true to return the test requestData.Response, false to return the camera response
+            Stopwatch sw = new Stopwatch(); // Create a stopwatch to time the process
 
-            for (int k = 0; k <= testArray3DInt.GetUpperBound(2); k++)
+            // Determine whether the client supports compressed responses by testing the Accept-Encoding header, if present. GZip compression will be favoured over Deflate if the client accepts both methods
+            string[] acceptEncoding = requestData.Request.Headers.GetValues("Accept-Encoding"); // Get the Accept-Encoding header, if present
+            if (acceptEncoding != null) // There is an Accept-Encoding header so check whether it has the compression modes that we support
             {
-                for (int j = 0; j <= testArray3DInt.GetUpperBound(1); j++)
-                {
-                    for (int i = 0; i <= testArray3DInt.GetUpperBound(0); i++)
-                    {
-                        testArray2DInt[i, j] = i + (10 * j);
-                        testArray3DInt[i, j, k] = i + (10 * j) + (100 * k);
-                    } // End of i
-                } // End of j
-            } // End of k
+                if (acceptEncoding[0].ToLowerInvariant().Contains("deflate")) compressionType = SharedConstants.ImageArrayTransferType.DeflateCompressed; // Test
+                if (acceptEncoding[0].ToLowerInvariant().Contains("gzip")) compressionType = SharedConstants.ImageArrayTransferType.GZipCompressed;
+            }
+            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Response compression type: {compressionType}");
 
+            // Determine whether the client supports binary serialised transfer, if so, this will be used because it is the fastest method
+            if (requestData.Request.Headers[SharedConstants.BINARY_SERIALISATION_HEADER] == SharedConstants.BINARY_SERIALISATION_SUPPORTED) // Client supports the faster binary image array transfer protocol
+            {
+                binarySerialisationRequested = true;
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Binary image format supported - Header {SharedConstants.BINARY_SERIALISATION_HEADER} = {requestData.Request.Headers[SharedConstants.BINARY_SERIALISATION_HEADER]}");
+            }
+
+            sw.Start(); // Start the timing stopwatch
             try
             {
                 switch (requestData.Elements[URL_ELEMENT_METHOD])
@@ -4233,26 +4330,23 @@ namespace ASCOM.Remote
                             {
                                 case 2:
                                     responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
-
-                                    if (returnTestResponse) responseClass.Value = testArray2DInt;
-                                    else responseClass.Value = (int[,])deviceResponse;
+                                    responseClass.Value = (int[,])deviceResponse;
                                     break;
                                 case 3:
                                     responseClass = new IntArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
-
-                                    if (returnTestResponse) responseClass.Value = testArray3DInt;
-                                    else responseClass.Value = (int[,,])deviceResponse;
+                                    responseClass.Value = (int[,,])deviceResponse;
                                     break;
                                 default:
                                     throw new InvalidParameterException("ReturnImageArray received array of Rank " + deviceResponse.Rank + ", this is not currently supported.");
                             }
                         }
+                        ActiveObjects[requestData.DeviceKey].LastImageArray = deviceResponse;
                         break;
                     case "imagearrayvariant":
                         deviceResponse = device.ImageArrayVariant;
                         string arrayType = deviceResponse.GetType().Name;
                         string elementType = "";
-                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Received array of Rank {0} of Length {1:n0} with element type {2} {3}", deviceResponse.Rank, deviceResponse.Length, deviceResponse.GetType().Name, deviceResponse.GetType().UnderlyingSystemType.Name));
+                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Received array of Rank {0} of Length {1:n0} and type {2}", deviceResponse.Rank, deviceResponse.Length, deviceResponse.GetType().Name));
 
                         switch (arrayType) // Process 2D and 3D variant arrays, all other types are unsupported
                         {
@@ -4267,56 +4361,63 @@ namespace ASCOM.Remote
                         }
                         LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Array elements are of type: {0}", elementType));
 
-                        switch (deviceResponse.Rank)
+                        if (binarySerialisationRequested) // Binary serialisation is supported so just return the image array response base parameters without the imagearrayvariant value 
                         {
-                            case 2:
-                                switch (elementType)
-                                {
+                            responseClass = new ImageArrayResponseBase();
+                            responseClass.ClientTransactionID = requestData.ClientTransactionID;
+                            responseClass.ServerTransactionID = requestData.ServerTransactionID;
+                            responseClass.Rank = deviceResponse.Rank;
+                            responseClass.Type = (int)SharedConstants.ImageArrayElementTypes.Int;
+                        } // Binary serialisation is supported so just return the image array response base parameters without the imagearrayvariant value 
+                        else // Massage the returned data into the correct form for JSON serialisation
+                        {
+                            switch (deviceResponse.Rank)
+                            {
+                                case 2:
+                                    switch (elementType)
+                                    {
 
-                                    case "Int16":
-                                        responseClass = new ShortArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array2DToShort(deviceResponse));
-                                        break;
-                                    case "Int32":
-                                        responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
-
-                                        if (returnTestResponse) responseClass.Value = testArray2DInt;
-                                        else responseClass.Value = Library.Array2DToInt(deviceResponse);
-                                        break;
-                                    case "Double":
-                                        responseClass = new DoubleArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array2DToDouble(deviceResponse));
-                                        break;
-                                    default:
-                                        throw new InvalidValueException("ReturnImageArray: Received an unsupported return array type: " + arrayType + ", with elements of type: " + elementType);
-                                }
-                                break;
-                            case 3:
-                                switch (elementType)
-                                {
-                                    case "Int16":
-                                        responseClass = new ShortArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array3DToShort(deviceResponse));
-                                        break;
-                                    case "Int32":
-                                        responseClass = new IntArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
-
-                                        if (returnTestResponse) responseClass.Value = testArray3DInt;
-                                        else responseClass.Value = Library.Array3DToInt(deviceResponse);
-                                        break;
-                                    case "Double":
-                                        responseClass = new DoubleArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array3DToDouble(deviceResponse));
-                                        break;
-                                    default:
-                                        throw new InvalidValueException("ReturnImageArray: Received an unsupported return array type: " + arrayType + ", with elements of type: " + elementType);
-                                }
-                                break;
-                            default:
-                                throw new InvalidParameterException("Received array of Rank " + deviceResponse.Rank + ", this is not currently supported.");
-                        }
+                                        case "Int16":
+                                            responseClass = new ShortArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array2DToShort(deviceResponse));
+                                            break;
+                                        case "Int32":
+                                            responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
+                                            responseClass.Value = Library.Array2DToInt(deviceResponse);
+                                            break;
+                                        case "Double":
+                                            responseClass = new DoubleArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array2DToDouble(deviceResponse));
+                                            break;
+                                        default:
+                                            throw new InvalidValueException("ReturnImageArray: Received an unsupported return array type: " + arrayType + ", with elements of type: " + elementType);
+                                    }
+                                    break;
+                                case 3:
+                                    switch (elementType)
+                                    {
+                                        case "Int16":
+                                            responseClass = new ShortArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array3DToShort(deviceResponse));
+                                            break;
+                                        case "Int32":
+                                            responseClass = new IntArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
+                                            responseClass.Value = Library.Array3DToInt(deviceResponse);
+                                            break;
+                                        case "Double":
+                                            responseClass = new DoubleArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array3DToDouble(deviceResponse));
+                                            break;
+                                        default:
+                                            throw new InvalidValueException("ReturnImageArray: Received an unsupported return array type: " + arrayType + ", with elements of type: " + elementType);
+                                    }
+                                    break;
+                                default:
+                                    throw new InvalidParameterException("Received array of Rank " + deviceResponse.Rank + ", this is not currently supported.");
+                            }
+                        } // Massage the returned data into the correct form for JSON serialisation
+                        ActiveObjects[requestData.DeviceKey].LastImageArrayVariant = deviceResponse;
                         break;
                     default:
                         LogMessage1(requestData, "ReturnImageArray", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
                         throw new InvalidValueException("ReturnImageArray - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
                 }
-
             }
             catch (Exception ex)
             {
@@ -4327,45 +4428,123 @@ namespace ASCOM.Remote
             responseClass.DriverException = exReturn;
             responseClass.SerializeDriverException = IncludeDriverExceptionInJsonResponse;
 
-            // if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "Starting array serialisation");
-
-            // string responseJson = JsonConvert.SerializeObject(responseClass);
-            // if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Completed array serialisation, Length: {0:n0}", responseJson.Length));
-
-            // SendResponseValueToClient(requestData, exReturn, responseJson);
-
-            // Write the array back to the client using a stream to avoid running out of memory when serialising very large image arrays
+            long timeDriver = sw.ElapsedMilliseconds;
+            long lastTime = timeDriver;
             try
             {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-
                 requestData.Response.ContentType = "application/json; charset=utf-8";
                 requestData.Response.StatusCode = (int)HttpStatusCode.OK; // Set the response status and status code
                 requestData.Response.StatusDescription = "200 OK";
 
-                JsonSerializer serializer = new JsonSerializer();
-                StreamWriter streamWriter = new StreamWriter(requestData.Response.OutputStream);
+                string responseJson;
+                byte[] jsonBytes;
+                byte[] compressedBytes;
+                long timeCreateCompressedStream;
+                long timeCreateCompressedByteArray;
+                long timeReturnDataToClient;
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ReturnImageArray Before writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
-
-                using (JsonWriter writer = new JsonTextWriter(streamWriter))
+                if (binarySerialisationRequested) // Client supports the faster binary image array transfer protocol
                 {
-                    serializer.Serialize(writer, responseClass);
+                    requestData.Response.AddHeader(SharedConstants.BINARY_SERIALISATION_HEADER, SharedConstants.BINARY_SERIALISATION_SUPPORTED); // Add a header indicating to the client that a binary formatted image is available for faster processing
+
+                    ImageArrayResponseBase imageArrayBaseResponseClass = new ImageArrayResponseBase() // Create a populated base class that doesn't have a "Value" member
+                    {
+                        ClientTransactionID = responseClass.ClientTransactionID,
+                        DriverException = responseClass.DriverException,
+                        ErrorMessage = responseClass.ErrorMessage,
+                        ErrorNumber = responseClass.ErrorNumber,
+                        ServerTransactionID = responseClass.ServerTransactionID,
+                        Rank = responseClass.Rank,
+                        Type = responseClass.Type
+                    };
+
+                    // Write the response back to the client using a stream
+                    JsonSerializer serializer = new JsonSerializer();
+                    StreamWriter streamWriter = new StreamWriter(requestData.Response.OutputStream);
+
+                    using (JsonWriter writer = new JsonTextWriter(streamWriter))
+                    {
+                        serializer.Serialize(writer, imageArrayBaseResponseClass);
+                    }
+
+                    requestData.Response.OutputStream.Close();
+                    sw.Stop();
+
+                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Image array properties response sent to client - ImageArray Rank: {imageArrayBaseResponseClass.Rank} Type: {imageArrayBaseResponseClass.Type} - After closing output stream ({sw.ElapsedMilliseconds}ms.)");
                 }
+                else
+                {
+                    switch (compressionType)
+                    {
+                        case SharedConstants.ImageArrayTransferType.GZipCompressed:
+                        case SharedConstants.ImageArrayTransferType.DeflateCompressed:
+                            responseJson = JsonConvert.SerializeObject(responseClass);
+                            long timeJsonSerialisation = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ReturnImageArray After writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
-                requestData.Response.OutputStream.Close();
-                sw.Stop();
+                            jsonBytes = Encoding.UTF8.GetBytes(responseJson);
+                            long timeJsonBytes = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ReturnImageArray After closing output stream ({sw.ElapsedMilliseconds}ms.");
+                            using (var compressedDataStream = new MemoryStream()) // Create a memory stream
+                            {
+                                if (compressionType == SharedConstants.ImageArrayTransferType.GZipCompressed) // Compress using the GZip algorithm
+                                {
+                                    using (var gZipStream = new GZipStream(compressedDataStream, CompressionMode.Compress, true)) // Wrap the compressed data stream in a GZip stream
+                                    {
+                                        gZipStream.Write(jsonBytes, 0, jsonBytes.Length); // Write the JSON byte array to the GZip stream and hence to the compressed data stream
+                                    }
+                                    requestData.Response.AddHeader("Content-Encoding", "gzip");
+                                }
+                                else // Compress using the Deflate algorithm
+                                {
+                                    using (var deflateStream = new DeflateStream(compressedDataStream, CompressionMode.Compress, true)) // Wrap the compressed data stream in a Deflate stream
+                                    {
+                                        deflateStream.Write(jsonBytes, 0, jsonBytes.Length); // Write the JSON byte array to the Deflate stream and hence to the compressed data stream
+                                    }
+                                    requestData.Response.AddHeader("Content-Encoding", "deflate");
+                                }
+                                timeCreateCompressedStream = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+                                compressedBytes = compressedDataStream.ToArray(); // Get the compressed bytes from the stream into a byte array
+                                timeCreateCompressedByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+                            }
+
+                            // Write the compressed bytes to the response output stream and close the stream
+                            requestData.Response.ContentLength64 = compressedBytes.Length;
+                            requestData.Response.OutputStream.Write(compressedBytes, 0, compressedBytes.Length);
+                            requestData.Response.OutputStream.Close();
+                            timeReturnDataToClient = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+
+                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Response sent to client with compression type: {compressionType}. " +
+                                $"Driver image size: {responseJson.Length:n0}bytes, compressed: {compressedBytes.Length:n0}. " +
+                                $"Timings - Overall: {sw.ElapsedMilliseconds}, Driver: {timeDriver}, JSON serialisation: {timeJsonSerialisation}, Convert to JSON bytes: {timeJsonBytes}, " +
+                                $"Create compressed stream: {timeCreateCompressedStream} + Convert stream to array: {timeCreateCompressedByteArray}, Return data to client: {timeReturnDataToClient}");
+                            break;
+
+                        case SharedConstants.ImageArrayTransferType.Uncompressed:
+                            // Write the array back to the client using a stream to avoid running out of memory when serialising very large image arrays
+                            JsonSerializer serializer1 = new JsonSerializer();
+                            StreamWriter streamWriter1 = new StreamWriter(requestData.Response.OutputStream);
+
+                            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"No compression - ReturnImageArray Before writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
+
+                            using (JsonWriter writer = new JsonTextWriter(streamWriter1))
+                            {
+                                serializer1.Serialize(writer, responseClass);
+                            }
+
+                            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"No compression - ReturnImageArray After writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
+                            requestData.Response.OutputStream.Close();
+                            sw.Stop();
+
+                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"No compression - ReturnImageArray After closing output stream ({sw.ElapsedMilliseconds}ms.)");
+                            break;
+                    }
+                }
                 sw = null;
             }
             catch (HttpListenerException ex) // Deal with communications errors here but allow any other errors to go through and be picked up by the main error handler
             {
                 LogException1(requestData, "ListenerException", string.Format("ReturnImageArray Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
             }
-
         }
 
         private void ReturnCanMoveAxis(RequestData requestData)

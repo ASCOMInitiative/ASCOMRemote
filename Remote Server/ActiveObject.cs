@@ -58,5 +58,15 @@ namespace ASCOM.Remote
         /// Error message that will be returned if the user tries to call a method on a device that did not initialise correctly.
         /// </summary>
         public string InitialisationErrorMessage { get; set; }
+
+        /// <summary>
+        /// If the device is a Camera, points to the last image array value returned, otherwise null
+        /// </summary>
+        public object LastImageArray { get; set; }
+
+        /// <summary>
+        /// If the device is a Camera, points to the last image array variant value returned, otherwise null
+        /// </summary>
+        public object LastImageArrayVariant { get; set; }
     }
 }

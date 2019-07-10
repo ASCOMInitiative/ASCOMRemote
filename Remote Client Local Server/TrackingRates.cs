@@ -12,7 +12,7 @@ namespace ASCOM.Remote
     // this polymorphism. 
     //
     // The Guid attribute sets the CLSID for ASCOM.Telescope.TrackingRates
-    // The ClassInterface/None addribute prevents an empty interface called
+    // The ClassInterface/None attribute prevents an empty interface called
     // _TrackingRates from being created and used as the [default] interface
     //
     [Guid("B13D9AE8-0D9D-49FD-AF96-EAA27CA2EF39")]

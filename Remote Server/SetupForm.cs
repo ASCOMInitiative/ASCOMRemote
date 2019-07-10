@@ -349,7 +349,7 @@ namespace ASCOM.Remote
                 ServerForm.CorsSupportIsEnabled = ChkEnableCors.Checked;
                 ServerForm.CorsMaxAge = NumCorsMaxAge.Value;
                 ServerForm.CorsCredentialsPermitted = ChkCorsSupportCredentials.Checked;
-                foreach (ServedDevice item in this.Controls.OfType<ServedDevice>())
+                foreach (ServedDevice item in  DeviceConfigurationTab.Controls.OfType<ServedDevice>())
                 {
                     ServerForm.ConfiguredDevices[item.Name].DeviceType = item.DeviceType;
                     ServerForm.ConfiguredDevices[item.Name].ProgID = item.ProgID;
@@ -390,7 +390,7 @@ namespace ASCOM.Remote
             {
                 ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Processing device type: " + deviceType);
                 SortedDictionary<string, ServedDevice> servedDevices = new SortedDictionary<string, ServedDevice>();
-                foreach (ServedDevice c in this.Controls.OfType<ServedDevice>().Where(asd => asd.DeviceType == deviceType))
+                foreach (ServedDevice c in DeviceConfigurationTab.Controls.OfType<ServedDevice>().Where(device => device.DeviceType == deviceType))
                 {
                     servedDevices.Add(c.Name, c);
                 }

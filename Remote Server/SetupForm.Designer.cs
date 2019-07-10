@@ -71,6 +71,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.CorsConfigurationTab = new System.Windows.Forms.TabPage();
+            this.ChkCorsSupportCredentials = new System.Windows.Forms.CheckBox();
             this.LabMaxAge = new System.Windows.Forms.Label();
             this.NumCorsMaxAge = new System.Windows.Forms.NumericUpDown();
             this.ChkEnableCors = new System.Windows.Forms.CheckBox();
@@ -78,7 +79,6 @@
             this.LabHelp2 = new System.Windows.Forms.Label();
             this.LabHelp1 = new System.Windows.Forms.Label();
             this.DataGridCorsOrigins = new System.Windows.Forms.DataGridView();
-            this.ChkCorsSupportCredentials = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SetupTabControl.SuspendLayout();
             this.DeviceConfigurationTab.SuspendLayout();
@@ -535,7 +535,7 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(567, 80);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(96, 13);
+            this.label8.Size = new System.Drawing.Size(111, 13);
             this.label8.TabIndex = 42;
             this.label8.Text = "Remote server IP Port";
             // 
@@ -544,7 +544,7 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(349, 80);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(114, 13);
+            this.label7.Size = new System.Drawing.Size(129, 13);
             this.label7.TabIndex = 41;
             this.label7.Text = "Remote server IP address";
             // 
@@ -565,6 +565,16 @@
             this.CorsConfigurationTab.Size = new System.Drawing.Size(933, 370);
             this.CorsConfigurationTab.TabIndex = 2;
             this.CorsConfigurationTab.Text = "CORS Configuration";
+            // 
+            // ChkCorsSupportCredentials
+            // 
+            this.ChkCorsSupportCredentials.AutoSize = true;
+            this.ChkCorsSupportCredentials.Location = new System.Drawing.Point(781, 166);
+            this.ChkCorsSupportCredentials.Name = "ChkCorsSupportCredentials";
+            this.ChkCorsSupportCredentials.Size = new System.Drawing.Size(118, 17);
+            this.ChkCorsSupportCredentials.TabIndex = 10;
+            this.ChkCorsSupportCredentials.Text = "Support Credentials";
+            this.ChkCorsSupportCredentials.UseVisualStyleBackColor = true;
             // 
             // LabMaxAge
             // 
@@ -660,16 +670,6 @@
             this.DataGridCorsOrigins.Name = "DataGridCorsOrigins";
             this.DataGridCorsOrigins.Size = new System.Drawing.Size(586, 217);
             this.DataGridCorsOrigins.TabIndex = 0;
-            // 
-            // ChkCorsSupportCredentials
-            // 
-            this.ChkCorsSupportCredentials.AutoSize = true;
-            this.ChkCorsSupportCredentials.Location = new System.Drawing.Point(781, 166);
-            this.ChkCorsSupportCredentials.Name = "ChkCorsSupportCredentials";
-            this.ChkCorsSupportCredentials.Size = new System.Drawing.Size(118, 17);
-            this.ChkCorsSupportCredentials.TabIndex = 10;
-            this.ChkCorsSupportCredentials.Text = "Support Credentials";
-            this.ChkCorsSupportCredentials.UseVisualStyleBackColor = true;
             // 
             // SetupForm
             // 

@@ -7,7 +7,6 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -18,6 +17,10 @@ using RestSharp;
 using RestSharp.Authenticators;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
+using System.IO;
+using System.Net;
+using System.IO.Compression;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ASCOM.Remote
 {
@@ -27,8 +30,6 @@ namespace ASCOM.Remote
 
         //Private variables
         private static TraceLoggerPlus TLLocalServer;
-        private static bool traceState = true;
-        private static bool debugTraceState = true;
 
         private static uint uniqueTransactionNumber = 0; // Unique number that increments on each call to TransactionNumber
 
@@ -53,9 +54,7 @@ namespace ASCOM.Remote
                 {
                     Enabled = false
                 }; // Trace state is set in ReadProfile, immediately after being read from the Profile
-
-                Version version = Assembly.GetEntryAssembly().GetName().Version;
-                TLLocalServer.LogMessage("RemoteClient", "Initialising, Trace: " + traceState + ", Version: " + version.ToString());
+                TLLocalServer.LogMessage("RemoteClient", $"Initialising - Version: { Assembly.GetEntryAssembly().GetName().Version}");
 
                 connectStates = new ConcurrentDictionary<long, bool>();
 
@@ -111,7 +110,7 @@ namespace ASCOM.Remote
         /// <returns>Boolean true if the hub is already connected</returns>
         public static bool IsHardwareConnected(TraceLoggerPlus TL)
         {
-            if (debugTraceState) TL.LogMessage("IsHardwareConnected", "Number of connected devices: " + connectStates.Count + ", Returning: " + (connectStates.Count > 0).ToString());
+            if (TL.DebugTraceState) TL.LogMessage("IsHardwareConnected", "Number of connected devices: " + connectStates.Count + ", Returning: " + (connectStates.Count > 0).ToString());
             return connectStates.Count > 0;
         }
 
@@ -199,7 +198,8 @@ namespace ASCOM.Remote
                                        ref int longServerResponseTimeout,
                                        ref string userName,
                                        ref string password,
-                                       ref bool manageConnectLocally
+                                       ref bool manageConnectLocally,
+                                       ref SharedConstants.ImageArrayTransferType imageArrayTransferType
                                        )
         {
             using (Profile driverProfile = new Profile())
@@ -222,6 +222,7 @@ namespace ASCOM.Remote
                 userName = driverProfile.GetValue(driverProgID, SharedConstants.USERNAME_PROFILENAME, string.Empty, SharedConstants.USERNAME_DEFAULT);
                 password = driverProfile.GetValue(driverProgID, SharedConstants.PASSWORD_PROFILENAME, string.Empty, SharedConstants.PASSWORD_DEFAULT);
                 manageConnectLocally = Convert.ToBoolean(driverProfile.GetValue(driverProgID, SharedConstants.MANAGE_CONNECT_LOCALLY_PROFILENAME, string.Empty, SharedConstants.MANAGE_CONNECT_LOCALLY_DEFAULT));
+                imageArrayTransferType = (SharedConstants.ImageArrayTransferType)Convert.ToInt32(driverProfile.GetValue(driverProgID, SharedConstants.IMAGE_ARRAY_TRANSFER_TYPE_PROFILENAME, string.Empty, ((int)SharedConstants.IMAGE_ARRAY_TRANSFER_TYPE_DEFAULT).ToString()));
 
                 TL.DebugTraceState = debugTraceState; // Save the debug state for use when needed wherever the trace logger is used
 
@@ -244,7 +245,8 @@ namespace ASCOM.Remote
                                         int longServerResponseTimeout,
                                         string userName,
                                         string password,
-                                        bool manageConnectLocally
+                                        bool manageConnectLocally,
+                                        SharedConstants.ImageArrayTransferType imageArrayTransferType
                                         )
         {
             using (Profile driverProfile = new Profile())
@@ -264,6 +266,7 @@ namespace ASCOM.Remote
                 driverProfile.WriteValue(driverProgID, SharedConstants.USERNAME_PROFILENAME, userName.ToString(CultureInfo.InvariantCulture));
                 driverProfile.WriteValue(driverProgID, SharedConstants.PASSWORD_PROFILENAME, password.ToString(CultureInfo.InvariantCulture));
                 driverProfile.WriteValue(driverProgID, SharedConstants.MANAGE_CONNECT_LOCALLY_PROFILENAME, manageConnectLocally.ToString(CultureInfo.InvariantCulture));
+                driverProfile.WriteValue(driverProgID, SharedConstants.IMAGE_ARRAY_TRANSFER_TYPE_PROFILENAME, ((int)imageArrayTransferType).ToString());
 
                 TL.DebugTraceState = debugTraceState; // Save the new debug state for use when needed wherever the trace logger is used
 
@@ -281,10 +284,36 @@ namespace ASCOM.Remote
             SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, method, Parameters, Method.PUT);
         }
 
+        /// <summary>
+        /// Overload used by methods other than ImageArray and ImageArrayVariant
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="clientNumber"></param>
+        /// <param name="client"></param>
+        /// <param name="URIBase"></param>
+        /// <param name="TL"></param>
+        /// <param name="method"></param>
+        /// <returns></returns>
         public static T GetValue<T>(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method)
         {
+            return GetValue<T>(clientNumber, client, URIBase, TL, method, SharedConstants.IMAGE_ARRAY_TRANSFER_TYPE_DEFAULT); // Set an arbitrary value for ImageArrayTransferType
+        }
+
+        /// <summary>
+        /// Overload for use by the ImageArray and ImageArrayVariant methods
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="clientNumber"></param>
+        /// <param name="client"></param>
+        /// <param name="URIBase"></param>
+        /// <param name="TL"></param>
+        /// <param name="method"></param>
+        /// <param name="imageArrayTransferType"></param>
+        /// <returns></returns>
+        public static T GetValue<T>(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, SharedConstants.ImageArrayTransferType imageArrayTransferType)
+        {
             Dictionary<string, string> Parameters = new Dictionary<string, string>();
-            return SendToRemoteDriver<T>(clientNumber, client, URIBase, TL, method, Parameters, Method.GET);
+            return SendToRemoteDriver<T>(clientNumber, client, URIBase, TL, method, Parameters, Method.GET, imageArrayTransferType);
         }
 
         public static void SetBool(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, bool parmeterValue)
@@ -361,6 +390,7 @@ namespace ASCOM.Remote
             };
             return SendToRemoteDriver<string>(clientNumber, client, URIBase, TL, method, Parameters, Method.GET);
         }
+
         public static double GetStringIndexedDouble(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, string parameterValue)
         {
             Dictionary<string, string> Parameters = new Dictionary<string, string>
@@ -411,35 +441,76 @@ namespace ASCOM.Remote
         /// <returns></returns>
         public static T SendToRemoteDriver<T>(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, Dictionary<string, string> Parameters, Method HttpMethod)
         {
+            return SendToRemoteDriver<T>(clientNumber, client, URIBase, TL, method, Parameters, HttpMethod, SharedConstants.IMAGE_ARRAY_TRANSFER_TYPE_DEFAULT);
+        }
+
+        /// <summary>
+        /// Send a command to the remote server, retrying a given number of times if a socket exception is received, specifying an image array transfer type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="clientNumber"></param>
+        /// <param name="client"></param>
+        /// <param name="URIBase"></param>
+        /// <param name="TL"></param>
+        /// <param name="method"></param>
+        /// <param name="Parameters"></param>
+        /// <param name="HttpMethod"></param>
+        /// <param name="imageArrayTransferType"></param>
+        /// <returns></returns>
+        public static T SendToRemoteDriver<T>(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, string method, Dictionary<string, string> Parameters, Method HttpMethod, SharedConstants.ImageArrayTransferType imageArrayTransferType)
+        {
             int retryCounter = 0; // Initialise the socket error retry counter
             Stopwatch sw = new Stopwatch(); // Stopwatch to time activities
+            Array remoteArray = null;
 
             do // Socket communications error retry loop
             {
                 try
                 {
-                    const string LOG_FORMAT_STRING = "Client Txn ID: {0}, Server Txn ID: {1}, Value: {2}, Method: {2}";
+                    const string LOG_FORMAT_STRING = "Client Txn ID: {0}, Server Txn ID: {1}, Value: {2}";
 
                     RestResponseBase restResponseBase = null; // This has to be the base class of the data type classes in order for exception and error responses to be handled generically
-                    RestRequest request = new RestRequest((URIBase + method).ToLowerInvariant(), HttpMethod)
+                    RestRequest request = new RestRequest((URIBase + method).ToLowerInvariant(), HttpMethod);
                     {
-                        RequestFormat = DataFormat.Json
+                        request.RequestFormat = DataFormat.Json;
                     };
 
-                    request.AddParameter(SharedConstants.CLIENTID_PARAMETER_NAME, clientNumber.ToString());
+                    // Apply appropriate headers to control image array transfer
+                    switch (imageArrayTransferType)
+                    {
+                        case SharedConstants.ImageArrayTransferType.Uncompressed:
+                            client.ConfigureWebRequest(wr => wr.AutomaticDecompression = DecompressionMethods.None); // Prevent any decompression
+                            break;
+                        case SharedConstants.ImageArrayTransferType.DeflateCompressed:
+                            client.ConfigureWebRequest(wr => wr.AutomaticDecompression = DecompressionMethods.Deflate); // Allow only Deflate decompression
+                            break;
+                        case SharedConstants.ImageArrayTransferType.GZipCompressed:
+                            client.ConfigureWebRequest(wr => wr.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip); // Allow both Deflate and GZip decompression
+                            break;
+                        case SharedConstants.ImageArrayTransferType.BinarySerialised:
+                            client.ConfigureWebRequest(wr => wr.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip); // Allow both Deflate and GZip decompression and, in addition, permit binary serialised array transfer
+                            request.AddHeader(SharedConstants.BINARY_SERIALISATION_HEADER, SharedConstants.BINARY_SERIALISATION_SUPPORTED);
+                            break;
+                        default:
+                            throw new InvalidValueException($"Unknown ImageArrayTransferType: {imageArrayTransferType} - Can't proceed further!");
+                    }
+
+                    // Add the transaction number and client ID parameters
                     uint transaction = TransactionNumber();
                     request.AddParameter(SharedConstants.CLIENTTRANSACTION_PARAMETER_NAME, transaction.ToString());
+                    request.AddParameter(SharedConstants.CLIENTID_PARAMETER_NAME, clientNumber.ToString());
 
-                    foreach (KeyValuePair<string, string> parameter in Parameters) // Add any supplied parameters to the request
+                    // Add any supplied parameters to the request
+                    foreach (KeyValuePair<string, string> parameter in Parameters)
                     {
                         request.AddParameter(parameter.Key, parameter.Value);
                     }
 
-                    if (debugTraceState) TL.LogMessage(clientNumber, method, "Client Txn ID: " + transaction.ToString() + ", Sending command to remote server");
+                    if (TL.DebugTraceState) TL.LogMessage(clientNumber, method, "Client Txn ID: " + transaction.ToString() + ", Sending command to remote server");
                     IRestResponse response = client.Execute(request);
 
                     string responseContent;
-                    if (response.Content.Length > 100) responseContent = response.Content.Substring(0, 100);
+                    if (response.Content.Length > 200) responseContent = response.Content.Substring(0, 200);
                     else responseContent = response.Content;
                     TL.LogMessage(clientNumber, method, string.Format("Response Status: '{0}', Response: {1}", response.StatusDescription, responseContent));
 
@@ -615,109 +686,158 @@ namespace ASCOM.Remote
                         }
                         if (typeof(T) == typeof(Array)) // Used for Camera.ImageArray and Camera.ImageArrayVariant
                         {
-                            // Replaced the original mechanic for extracting array and rank because it required rank and type to be placed ahead of Value in the JSON response and this cannot be guaranteed from native Alpaca devices
-                            // This approach is slower but will handle the rank and type parameters wherever they are in the JSON response.
-
+                            // Extract the array type and rank from the JSON response before de-serialising the image data
                             sw.Restart(); // Clear and start the stopwatch
                             ImageArrayResponseBase responseBase = JsonConvert.DeserializeObject<ImageArrayResponseBase>(response.Content);
                             SharedConstants.ImageArrayElementTypes arrayType = (SharedConstants.ImageArrayElementTypes)responseBase.Type;
                             int arrayRank = responseBase.Rank;
-                            TL.LogMessage(clientNumber, method, string.Format($"Extracted array type and rank by JsonConvert.DeserializeObject in {sw.ElapsedMilliseconds}ms. Type: {arrayType}, Rank: {arrayRank}, Response values - Type: {responseBase.Type}, Rank: {responseBase.Rank}"));
 
-                            responseBase = null; // Remove the object to release memory
-                            GC.Collect();
-
-                            const string TYPE_STRING = "Type";
-                            const string RANK_STRING = "Rank";
-
-                            sw.Restart(); // Clear and start the stopwatch
-                            arrayType = (SharedConstants.ImageArrayElementTypes)GetIntParameter(TYPE_STRING, response.Content, TL);
-                            arrayRank = GetIntParameter(RANK_STRING, response.Content, TL);
-
-                            TL.LogMessage(clientNumber, method, $"*** Extracted array type and rank by GetIntParameter in {sw.ElapsedMilliseconds}ms. Type: {arrayType}, Rank: {arrayRank}");
-
-                            sw.Restart(); // Clear and start the stopwatch
-                            switch (arrayType) // Handle the different return types that may come from ImageArrayVariant
+                            // Include some debug logging
+                            if (TL.DebugTraceState)
                             {
-                                case SharedConstants.ImageArrayElementTypes.Int:
-                                    switch (arrayRank)
+                                TL.LogMessage(clientNumber, method, $"Extracted array type and rank by JsonConvert.DeserializeObject in {sw.ElapsedMilliseconds}ms. Type: {arrayType}, Rank: {arrayRank}, Response values - Type: {responseBase.Type}, Rank: {responseBase.Rank}");
+
+                                foreach (var header in response.Headers)
+                                {
+                                    TL.LogMessage(clientNumber, method, $"Response header {header.Name} = {header.Value}");
+                                }
+                                sw.Restart();
+                            }
+
+                            // Test whether the Remote Server supports binary serialised image transfer, if so, use it because it is the most efficient way to get the image data
+                            if (response.Headers.Any(t => t.Name.ToString() == SharedConstants.BINARY_SERIALISATION_HEADER)) // A binary format header is present so the server may support fast binary serialised transfer
+                            {
+                                if (TL.DebugTraceState) TL.LogMessage(clientNumber, method, $"Found binary image header");
+
+                                if (response.Headers.FirstOrDefault(t => t.Name.ToString() == SharedConstants.BINARY_SERIALISATION_HEADER).Value.ToString() == SharedConstants.BINARY_SERIALISATION_SUPPORTED) // The header has the correct "serialisation supported" value so download the compressed, serialised, image object
+                                {
+                                    TL.LogMessage(clientNumber, method, $"Downloading binary serialised image");
+                                    sw.Start();
+
+                                    // Construct an HTTP request to get the logo
+                                    string binaryUri = (client.BaseUrl + URIBase + method + SharedConstants.BINARY_SERIALISED_FILE_DOWNLOAD_URI_EXTENSION).ToLowerInvariant(); // Create the download URI from the REST client elements
+                                    if (TL.DebugTraceState) TL.LogMessage(clientNumber, method, $"Binary URI: {binaryUri}");
+
+                                    // Use web client to download image file
+                                    using (WebClient webClient = new WebClient())
                                     {
-                                        case 2:
-                                            IntArray2DResponse intArray2DResponse = JsonConvert.DeserializeObject<IntArray2DResponse>(response.Content);
-                                            TL.LogMessage(clientNumber, method, string.Format(LOG_FORMAT_STRING, intArray2DResponse.ClientTransactionID, intArray2DResponse.ServerTransactionID, intArray2DResponse.Rank.ToString())); //, intArray2DResponse.Method));
-                                            TL.LogMessage(clientNumber, method, string.Format("Returned array type is: {0} of Rank: {1}", ((SharedConstants.ImageArrayElementTypes)intArray2DResponse.Type).ToString(), intArray2DResponse.Rank));
-                                            if (CallWasSuccessful(TL, intArray2DResponse)) return (T)((object)intArray2DResponse.Value);
-                                            restResponseBase = (RestResponseBase)intArray2DResponse;
-                                            break;
+                                        webClient.Headers["User-Agent"] = $"ASCOMRemote/{Assembly.GetExecutingAssembly().GetName().Version}"; // Add a header identifying the Remote Client as the user agent
+                                        byte[] byteArray = webClient.DownloadData(binaryUri); // Download data.
+                                        TL.LogMessage(clientNumber, method, $"Downloaded binary array ({byteArray.Length} bytes) in {sw.ElapsedMilliseconds}ms"); sw.Restart();
 
-                                        case 3:
-                                            IntArray3DResponse intArray3DResponse = JsonConvert.DeserializeObject<IntArray3DResponse>(response.Content);
-                                            TL.LogMessage(clientNumber, method, string.Format(LOG_FORMAT_STRING, intArray3DResponse.ClientTransactionID, intArray3DResponse.ServerTransactionID, intArray3DResponse.Rank.ToString())); //, intArray3DResponse.Method));
-                                            TL.LogMessage(clientNumber, method, string.Format("Returned array type is: {0} of Rank: {1}", ((SharedConstants.ImageArrayElementTypes)intArray3DResponse.Type).ToString(), intArray3DResponse.Rank));
-                                            if (CallWasSuccessful(TL, intArray3DResponse)) return (T)((object)intArray3DResponse.Value);
-                                            restResponseBase = (RestResponseBase)intArray3DResponse;
-                                            break;
+                                        using (var downloadedByteStream = new MemoryStream(byteArray))
+                                        {
+                                            if (TL.DebugTraceState) TL.LogMessage(clientNumber, method, $"Created memory stream in {sw.ElapsedMilliseconds}ms"); sw.Restart();
+                                            using (var decompressedStream = new MemoryStream())
+                                            {
+                                                using (var compressedStream = new GZipStream(downloadedByteStream, CompressionMode.Decompress))
+                                                {
+                                                    if (TL.DebugTraceState) TL.LogMessage(clientNumber, method, $"Created compressed stream over downloaded byte array in {sw.ElapsedMilliseconds}ms"); sw.Restart();
+                                                    compressedStream.CopyTo(decompressedStream);
+                                                    if (TL.DebugTraceState) TL.LogMessage(clientNumber, method, $"Copied compressed stream to decompressed stream in {sw.ElapsedMilliseconds}ms"); sw.Restart();
+                                                    compressedStream.Flush();
+                                                    decompressedStream.Flush();
+                                                    decompressedStream.Position = 0;
+                                                    if (TL.DebugTraceState) TL.LogMessage(clientNumber, method, $"Flushed streams in {sw.ElapsedMilliseconds}ms"); sw.Restart();
 
-                                        default:
-                                            throw new InvalidOperationException("Arrays of Rank " + arrayRank + " are not supported.");
+                                                    // Recreate the original image array object
+                                                    BinaryFormatter binaryFormatter = new BinaryFormatter();
+                                                    if (byteArray.Length > 0)
+                                                    {
+                                                        binaryFormatter.TypeFormat = SharedConstants.BINARY_SERIALISATION_FORMAT;
+                                                        remoteArray = (Array)binaryFormatter.Deserialize(decompressedStream);
+                                                    }
+                                                    TL.LogMessage(clientNumber, method, $"Deserialised array in {sw.ElapsedMilliseconds}ms"); sw.Restart();
+
+                                                    return (T)(object)remoteArray;
+                                                }
+                                            }
+                                        }
                                     }
-                                    break;
+                                }
+                            }
+                            else
+                            {
+                                sw.Restart(); // Clear and start the stopwatch
+                                switch (arrayType) // Handle the different return types that may come from ImageArrayVariant
+                                {
+                                    case SharedConstants.ImageArrayElementTypes.Int:
+                                        switch (arrayRank)
+                                        {
+                                            case 2:
+                                                IntArray2DResponse intArray2DResponse = JsonConvert.DeserializeObject<IntArray2DResponse>(response.Content);
+                                                TL.LogMessage(clientNumber, method, string.Format(LOG_FORMAT_STRING, intArray2DResponse.ClientTransactionID, intArray2DResponse.ServerTransactionID, intArray2DResponse.Rank.ToString())); //, intArray2DResponse.Method));
+                                                TL.LogMessage(clientNumber, method, $"Array was deserialised in {sw.ElapsedMilliseconds} ms, Type: {((SharedConstants.ImageArrayElementTypes)intArray2DResponse.Type).ToString()}, Rank: {intArray2DResponse.Rank}");
+                                                if (CallWasSuccessful(TL, intArray2DResponse)) return (T)((object)intArray2DResponse.Value);
+                                                restResponseBase = (RestResponseBase)intArray2DResponse;
+                                                break;
 
-                                case SharedConstants.ImageArrayElementTypes.Short:
-                                    switch (arrayRank)
-                                    {
-                                        case 2:
-                                            ShortArray2DResponse shortArray2DResponse = JsonConvert.DeserializeObject<ShortArray2DResponse>(response.Content);
-                                            TL.LogMessage(clientNumber, method, string.Format(LOG_FORMAT_STRING, shortArray2DResponse.ClientTransactionID, shortArray2DResponse.ServerTransactionID, shortArray2DResponse.Rank.ToString())); //, shortArray2DResponse.Method));
-                                            TL.LogMessage(clientNumber, method, string.Format("Returned array type is: {0} of Rank: {1}", ((SharedConstants.ImageArrayElementTypes)shortArray2DResponse.Type).ToString(), shortArray2DResponse.Rank));
-                                            if (CallWasSuccessful(TL, shortArray2DResponse)) return (T)((object)shortArray2DResponse.Value);
-                                            restResponseBase = (RestResponseBase)shortArray2DResponse;
-                                            break;
+                                            case 3:
+                                                IntArray3DResponse intArray3DResponse = JsonConvert.DeserializeObject<IntArray3DResponse>(response.Content);
+                                                TL.LogMessage(clientNumber, method, string.Format(LOG_FORMAT_STRING, intArray3DResponse.ClientTransactionID, intArray3DResponse.ServerTransactionID, intArray3DResponse.Rank.ToString())); //, intArray3DResponse.Method));
+                                                TL.LogMessage(clientNumber, method, $"Array was deserialised in {sw.ElapsedMilliseconds} ms, Type: {((SharedConstants.ImageArrayElementTypes)intArray3DResponse.Type).ToString()}, Rank: {intArray3DResponse.Rank}");
+                                                if (CallWasSuccessful(TL, intArray3DResponse)) return (T)((object)intArray3DResponse.Value);
+                                                restResponseBase = (RestResponseBase)intArray3DResponse;
+                                                break;
 
-                                        case 3:
-                                            ShortArray3DResponse shortArray3DResponse = JsonConvert.DeserializeObject<ShortArray3DResponse>(response.Content);
-                                            TL.LogMessage(clientNumber, method, string.Format(LOG_FORMAT_STRING, shortArray3DResponse.ClientTransactionID, shortArray3DResponse.ServerTransactionID, shortArray3DResponse.Rank.ToString())); //, shortArray3DResponse.Method));
-                                            TL.LogMessage(clientNumber, method, string.Format("Returned array type is: {0} of Rank: {1}", ((SharedConstants.ImageArrayElementTypes)shortArray3DResponse.Type).ToString(), shortArray3DResponse.Rank));
-                                            if (CallWasSuccessful(TL, shortArray3DResponse)) return (T)((object)shortArray3DResponse.Value);
-                                            restResponseBase = (RestResponseBase)shortArray3DResponse;
-                                            break;
+                                            default:
+                                                throw new InvalidOperationException("Arrays of Rank " + arrayRank + " are not supported.");
+                                        }
+                                        break;
 
-                                        default:
-                                            throw new InvalidOperationException("Arrays of Rank " + arrayRank + " are not supported.");
-                                    }
-                                    break;
+                                    case SharedConstants.ImageArrayElementTypes.Short:
+                                        switch (arrayRank)
+                                        {
+                                            case 2:
+                                                ShortArray2DResponse shortArray2DResponse = JsonConvert.DeserializeObject<ShortArray2DResponse>(response.Content);
+                                                TL.LogMessage(clientNumber, method, string.Format(LOG_FORMAT_STRING, shortArray2DResponse.ClientTransactionID, shortArray2DResponse.ServerTransactionID, shortArray2DResponse.Rank.ToString())); //, shortArray2DResponse.Method));
+                                                TL.LogMessage(clientNumber, method, $"Array was deserialised in {sw.ElapsedMilliseconds} ms, Type: {((SharedConstants.ImageArrayElementTypes)shortArray2DResponse.Type).ToString()}, Rank: {shortArray2DResponse.Rank}");
+                                                if (CallWasSuccessful(TL, shortArray2DResponse)) return (T)((object)shortArray2DResponse.Value);
+                                                restResponseBase = (RestResponseBase)shortArray2DResponse;
+                                                break;
 
-                                case SharedConstants.ImageArrayElementTypes.Double:
-                                    switch (arrayRank)
-                                    {
-                                        case 2:
-                                            DoubleArray2DResponse doubleArray2DResponse = JsonConvert.DeserializeObject<DoubleArray2DResponse>(response.Content);
-                                            TL.LogMessage(clientNumber, method, string.Format(LOG_FORMAT_STRING, doubleArray2DResponse.ClientTransactionID, doubleArray2DResponse.ServerTransactionID, doubleArray2DResponse.Rank.ToString())); //, doubleArray2DResponse.Method));
-                                            TL.LogMessage(clientNumber, method, string.Format("Returned array type is: {0} of Rank: {1}", ((SharedConstants.ImageArrayElementTypes)doubleArray2DResponse.Type).ToString(), doubleArray2DResponse.Rank));
-                                            if (CallWasSuccessful(TL, doubleArray2DResponse)) return (T)((object)doubleArray2DResponse.Value);
-                                            restResponseBase = (RestResponseBase)doubleArray2DResponse;
-                                            break;
+                                            case 3:
+                                                ShortArray3DResponse shortArray3DResponse = JsonConvert.DeserializeObject<ShortArray3DResponse>(response.Content);
+                                                TL.LogMessage(clientNumber, method, string.Format(LOG_FORMAT_STRING, shortArray3DResponse.ClientTransactionID, shortArray3DResponse.ServerTransactionID, shortArray3DResponse.Rank.ToString())); //, shortArray3DResponse.Method));
+                                                TL.LogMessage(clientNumber, method, $"Array was deserialised in {sw.ElapsedMilliseconds} ms, Type: {((SharedConstants.ImageArrayElementTypes)shortArray3DResponse.Type).ToString()}, Rank: {shortArray3DResponse.Rank}");
+                                                if (CallWasSuccessful(TL, shortArray3DResponse)) return (T)((object)shortArray3DResponse.Value);
+                                                restResponseBase = (RestResponseBase)shortArray3DResponse;
+                                                break;
 
-                                        case 3:
-                                            DoubleArray3DResponse doubleArray3DResponse = JsonConvert.DeserializeObject<DoubleArray3DResponse>(response.Content);
-                                            TL.LogMessage(clientNumber, method, string.Format(LOG_FORMAT_STRING, doubleArray3DResponse.ClientTransactionID, doubleArray3DResponse.ServerTransactionID, doubleArray3DResponse.Rank.ToString())); //, doubleArray3DResponse.Method));
-                                            TL.LogMessage(clientNumber, method, string.Format("Returned array type is: {0} of Rank: {1}", ((SharedConstants.ImageArrayElementTypes)doubleArray3DResponse.Type).ToString(), doubleArray3DResponse.Rank));
-                                            if (CallWasSuccessful(TL, doubleArray3DResponse)) return (T)((object)doubleArray3DResponse.Value);
-                                            restResponseBase = (RestResponseBase)doubleArray3DResponse;
-                                            break;
+                                            default:
+                                                throw new InvalidOperationException("Arrays of Rank " + arrayRank + " are not supported.");
+                                        }
+                                        break;
 
-                                        default:
-                                            throw new InvalidOperationException("Arrays of Rank " + arrayRank + " are not supported.");
-                                    }
-                                    break;
+                                    case SharedConstants.ImageArrayElementTypes.Double:
+                                        switch (arrayRank)
+                                        {
+                                            case 2:
+                                                DoubleArray2DResponse doubleArray2DResponse = JsonConvert.DeserializeObject<DoubleArray2DResponse>(response.Content);
+                                                TL.LogMessage(clientNumber, method, string.Format(LOG_FORMAT_STRING, doubleArray2DResponse.ClientTransactionID, doubleArray2DResponse.ServerTransactionID, doubleArray2DResponse.Rank.ToString())); //, doubleArray2DResponse.Method));
+                                                TL.LogMessage(clientNumber, method, $"Array was deserialised in {sw.ElapsedMilliseconds} ms, Type: {((SharedConstants.ImageArrayElementTypes)doubleArray2DResponse.Type).ToString()}, Rank: {doubleArray2DResponse.Rank}");
+                                                if (CallWasSuccessful(TL, doubleArray2DResponse)) return (T)((object)doubleArray2DResponse.Value);
+                                                restResponseBase = (RestResponseBase)doubleArray2DResponse;
+                                                break;
 
-                                default:
-                                    throw new InvalidOperationException("Image array element type" + arrayType + " is not supported.");
+                                            case 3:
+                                                DoubleArray3DResponse doubleArray3DResponse = JsonConvert.DeserializeObject<DoubleArray3DResponse>(response.Content);
+                                                TL.LogMessage(clientNumber, method, string.Format(LOG_FORMAT_STRING, doubleArray3DResponse.ClientTransactionID, doubleArray3DResponse.ServerTransactionID, doubleArray3DResponse.Rank.ToString())); //, doubleArray3DResponse.Method));
+                                                TL.LogMessage(clientNumber, method, $"Array was deserialised in {sw.ElapsedMilliseconds} ms, Type: {((SharedConstants.ImageArrayElementTypes)doubleArray3DResponse.Type).ToString()}, Rank: {doubleArray3DResponse.Rank}");
+                                                if (CallWasSuccessful(TL, doubleArray3DResponse)) return (T)((object)doubleArray3DResponse.Value);
+                                                restResponseBase = (RestResponseBase)doubleArray3DResponse;
+                                                break;
 
+                                            default:
+                                                throw new InvalidOperationException("Arrays of Rank " + arrayRank + " are not supported.");
+                                        }
+                                        break;
+
+                                    default:
+                                        throw new InvalidOperationException("Image array element type" + arrayType + " is not supported.");
+                                }
                             }
                         }
-
-                        TL.LogMessage(clientNumber, method, $"*** Completed array de-serialisation in {sw.ElapsedMilliseconds}ms");
 
                         // HANDLE COM EXCEPTIONS THROWN BY WINDOWS BASED DRIVERS RUNNING IN THE REMOTE SERVER
                         if (restResponseBase.DriverException != null)
@@ -817,7 +937,6 @@ namespace ASCOM.Remote
                             throw new DriverException(string.Format("Error calling method: {0}, HTTP Completion Status: {1}, Error Message:\r\n{2}", method, response.ResponseStatus, response.Content));
                         }
                     }
-
                 }
                 catch (Exception ex) // Process unexpected exceptions
                 {
@@ -873,16 +992,18 @@ namespace ASCOM.Remote
         /// <returns>True if the call was successful otherwise returns false.</returns>
         private static bool CallWasSuccessful(TraceLogger TL, RestResponseBase response)
         {
-            TL.LogMessageCrLf("CallWasSuccessful", string.Format("DriverException == null: {0}, ErrorMessage: {1}, ErrorNumber: 0x{2}", response.DriverException == null, response.ErrorMessage, response.ErrorNumber.ToString("X8")));
-            if (response.DriverException != null) TL.LogMessageCrLf("CallWasSuccessfulEx", response.DriverException.ToString());
+            TL.LogMessage("CallWasSuccessful", string.Format("DriverException == null: {0}, ErrorMessage: {1}, ErrorNumber: 0x{2}", response.DriverException == null, response.ErrorMessage, response.ErrorNumber.ToString("X8")));
+            if (response.DriverException != null) TL.LogMessage("CallWasSuccessfulEx", response.DriverException.ToString());
             if ((response.DriverException == null) & (response.ErrorMessage == "") & (response.ErrorNumber == 0))
             {
-                TL.LogMessageCrLf("CallWasSuccessful", "Returning True");
+                TL.LogMessage("CallWasSuccessful", "Returning True");
+                TL.BlankLine();
                 return true; // All was OK so return true
             }
             else
             {
-                TL.LogMessageCrLf("CallWasSuccessful", "Returning False");
+                TL.LogMessage("CallWasSuccessful", "Returning False");
+                TL.BlankLine();
                 return false; // Some sort of issue so return false
             }
         }
@@ -943,7 +1064,7 @@ namespace ASCOM.Remote
 
         public static void Connect(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
         {
-            if (debugTraceState) TL.LogMessage(clientNumber, "Connect", "Acquiring connection lock");
+            if (TL.DebugTraceState) TL.LogMessage(clientNumber, "Connect", "Acquiring connection lock");
             lock (connectLockObject) // Ensure that only one connection attempt can happen at a time
             {
                 TL.LogMessage(clientNumber, "Connect", "Has connection lock");
@@ -1046,16 +1167,29 @@ namespace ASCOM.Remote
             return parameterValue;
         }
 
-        public static object ImageArrayVariant(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL)
+        public static object ImageArrayVariant(uint clientNumber, RestClient client, string URIBase, TraceLoggerPlus TL, SharedConstants.ImageArrayTransferType imageArrayTransferType)
         {
             Array returnArray;
             object[,] objectArray2D;
             object[,,] objectArray3D;
 
-            returnArray = GetValue<Array>(clientNumber, client, URIBase, TL, "ImageArrayVariant");
+            returnArray = GetValue<Array>(clientNumber, client, URIBase, TL, "ImageArrayVariant", imageArrayTransferType);
 
             string variantType = returnArray.GetType().Name;
-            TL.LogMessage(clientNumber, "ImageArrayVariant", $"Received {variantType} array of Rank {returnArray.Rank} with Length {returnArray.Length} and element type {returnArray.GetType().Name} {returnArray.GetType().UnderlyingSystemType.Name}");
+            string elementType;
+            switch (returnArray.Rank) // Process 2D and 3D variant arrays, all other types are unsupported
+            {
+                case 2: // 2D Array
+                    elementType = returnArray.GetValue(0, 0).GetType().Name;
+                    break;
+                case 3: // 3D array
+                    elementType = returnArray.GetValue(0, 0, 0).GetType().Name;
+                    break;
+                default:
+                    throw new InvalidValueException("ReturnImageArray: Received an unsupported return array rank: " + returnArray.Rank);
+            }
+
+            TL.LogMessage(clientNumber, "ImageArrayVariant", $"Received {variantType} array of Rank {returnArray.Rank} with Length {returnArray.Length} and element type {elementType}");
 
             // convert to variant
 
@@ -1095,6 +1229,11 @@ namespace ASCOM.Remote
                                 }
                             }
                             return objectArray2D;
+
+                        case "Object[,]":
+                            TL.LogMessage(clientNumber, "ImageArrayVariant", $"Returning Object[,] array to client");
+                            return returnArray;
+
                         default:
                             throw new InvalidValueException("Remote Driver Camera.ImageArrayVariant: Unsupported return array rank from RemoteClientDriver.GetValue<Array>: " + returnArray.Rank);
                     }
@@ -1138,6 +1277,11 @@ namespace ASCOM.Remote
                                 }
                             }
                             return objectArray3D;
+
+                        case "Object[,,]":
+                            TL.LogMessage(clientNumber, "ImageArrayVariant", $"Returning Object[,,] array to client");
+                            return returnArray;
+
                         default:
                             throw new InvalidValueException("Remote Driver Camera.ImageArrayVariant: Unsupported return array rank from RemoteClientDriver.GetValue<Array>: " + returnArray.Rank);
                     }
