@@ -1316,6 +1316,9 @@ namespace ASCOM.Remote
 
                 response.Headers.Add(HttpResponseHeader.Server, "ASCOM Rest API Server -");
 
+                // Log the request 
+                LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString()));
+
                 // Create a collection of supplied parameters: query variables in the URL string for HTTP GET requests and form parameters from the request body for HTTP PUT requests.
 
                 if (requestData.Request.HttpMethod.ToUpperInvariant() == "GET") // Process query parameters from an HTTP GET
@@ -1341,16 +1344,28 @@ namespace ASCOM.Remote
                         {
                             formParameters = reader.ReadToEnd();
                         }
+                        if (formParameters == null) formParameters = ""; // Handle the possibility that we get a null value instead of an empty string
 
-                        string[] rawParams = formParameters.Split('&'); // Parse the aggregated parameter string into an array of key / value pair strings
+                        string[] rawParameters = formParameters.Split('&'); // Parse the aggregated parameter string into an array of key / value pair strings
+                        if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Form parameters string: '{formParameters}'Form parameters string length: {formParameters.Length}, Raw parameters array size: {rawParameters.Length}");
 
-                        foreach (string param in rawParams) // Parse each key / value pair string into its key and value and add these to the parameters collection
+                        foreach (string parameter in rawParameters) // Parse each key / value pair string into its key and value and add these to the parameters collection
                         {
-                            string[] kvPair = param.Split('=');
-                            string key = kvPair[0];
-                            string value = HttpUtility.UrlDecode(kvPair[1]);
-                            suppliedParameters.Add(key, value);
-                            if (DebugTraceState) LogMessage1(requestData, "Body Parameter", string.Format("{0} = {1}", key, value));
+                            string[] keyValuePair = parameter.Split('=');
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Found form parameter string: '{parameter}' whose KeyValuePair array size is: {keyValuePair.Length}");
+
+                            string key = keyValuePair[0].Trim(); // Extract the key value
+                            string value = ""; // Initialise a variable to hold the value
+                            if (keyValuePair.Length > 1)
+                            {
+                                value = HttpUtility.UrlDecode(keyValuePair[1].Trim()); // Extract the value so long as one exists
+                            }
+                            else
+                            {
+                                if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Warning - No parameter value was found for parameter {parameter} an empty string will be assumed.");
+                            }
+                            suppliedParameters.Add(key, value); // Add the parameter key and value to the parameter list
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"  Processed parameter key and value: {key} = {value}");
                         }
                     }
                 }
@@ -1393,8 +1408,6 @@ namespace ASCOM.Remote
                 }
                 requestData.ClientTransactionID = clientTransactionID;
 
-                // Log the request 
-                LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString()));
 
                 if (DebugTraceState) // List headers and detailed parameter list if in debug mode
                 {
