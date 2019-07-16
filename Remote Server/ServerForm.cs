@@ -1362,7 +1362,10 @@ namespace ASCOM.Remote
                             }
                             else
                             {
-                                if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Warning - No parameter value was found for parameter {parameter} an empty string will be assumed.");
+                                LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Warning - No parameter value was found for parameter {parameter} - an empty string will be assumed. Raw parameter string: '{formParameters}'");
+                                LogToScreen($"WARNING - Request: {request.HttpMethod} {request.Url.PathAndQuery}");
+                                LogToScreen($"WARNING - No parameter value was found for parameter {parameter} - an empty string will be assumed.");
+                                LogToScreen($"WARNING - Raw parameter string: '{formParameters}'.");
                             }
                             suppliedParameters.Add(key, value); // Add the parameter key and value to the parameter list
                             if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"  Processed parameter key and value: {key} = {value}");
@@ -1377,7 +1380,12 @@ namespace ASCOM.Remote
                 if (request.Headers[X_FORWARDED_FOR] != null) clientIpAddress = request.Headers[X_FORWARDED_FOR]; // The request was fronted by an Apache web server
                 else clientIpAddress = request.UserHostAddress; // The request came straight to this application
                 AccessLog.LogMessage("    " + clientIpAddress, string.Format("{0} {1}", request.HttpMethod, request.Url.AbsolutePath));
-                if (ScreenLogRequests) LogToScreen(string.Format("{0} {1} {2}", clientIpAddress, request.HttpMethod, request.Url.AbsolutePath));
+
+                if (ScreenLogRequests) // Incoming requests are logged to the screen
+                {
+                    if (LogClientIPAddress) LogToScreen($"{clientIpAddress} { request.HttpMethod} {request.Url.AbsolutePath}"); // Include the client IP address if required
+                    else LogToScreen($"{request.HttpMethod} {request.Url.AbsolutePath}"); // Otherwise log the request without client IP address
+                }
                 requestData.ClientIpAddress = clientIpAddress;
 
                 // Extract the client ID number from the supplied URI / Form, if present
@@ -1408,7 +1416,6 @@ namespace ASCOM.Remote
                 }
                 requestData.ClientTransactionID = clientTransactionID;
 
-
                 if (DebugTraceState) // List headers and detailed parameter list if in debug mode
                 {
                     foreach (string key in request.Headers.AllKeys)
@@ -1422,7 +1429,6 @@ namespace ASCOM.Remote
                 } // Log supplied parameters and headers
 
                 // CORS Support
-
                 if (CorsSupportIsEnabled)
                 {
                     if (TL.DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "CORS support is enabled");
@@ -1488,12 +1494,13 @@ namespace ASCOM.Remote
                     {
                         if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "Origin header is absent or empty, the API request will be processed.");
                     }
-                }
+                } // Pre-process requests from CORS aware clients if CORS support is enabled
                 else // CORS support is disabled
                 {
                     if (TL.DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "CORS support is disabled");
 
                 }
+
                 if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.API_URL_BASE)) // Process requests whose URIs start with /api
                 {
                     // Return a 403 error if the API is not enabled through the management console
