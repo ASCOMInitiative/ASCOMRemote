@@ -53,6 +53,8 @@
     <Compile Include="RequestData.cs" />
     <Compile Include="Response Classes\AlpacaConfiguredDevicesResponse.cs" />
     <Compile Include="Response Classes\AxisRatesResponse.cs" />
+    <Compile Include="Response Classes\Base64ArrayHandOffResponse.cs" />
+    <Compile Include="Response Classes\Base64ArrayJsonResponse.cs" />
     <Compile Include="Response Classes\BoolResponse.cs" />
     <Compile Include="Response Classes\ConfigurationResponse.cs" />
     <Compile Include="Response Classes\DateAndTimeResponse.cs" />

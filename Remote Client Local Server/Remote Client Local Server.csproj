@@ -98,6 +98,12 @@
     <Compile Include="..\Shared Resources\Response Classes\AxisRatesResponse.cs">
       <Link>Response Classes\AxisRatesResponse.cs</Link>
     </Compile>
+    <Compile Include="..\Shared Resources\Response Classes\Base64ArrayHandOffResponse.cs">
+      <Link>Response Classes\Base64ArrayHandOffResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared Resources\Response Classes\Base64ArrayJsonResponse.cs">
+      <Link>Response Classes\Base64ArrayJsonResponse.cs</Link>
+    </Compile>
     <Compile Include="..\Shared Resources\Response Classes\BoolResponse.cs">
       <Link>Response Classes\BoolResponse.cs</Link>
     </Compile>
@@ -183,6 +189,7 @@
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
     <Compile Include="GarbageCollection.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="LocalServer.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="NoReturnValue.cs" />

@@ -100,6 +100,12 @@
     <Compile Include="..\shared resources\response classes\AxisRatesResponse.cs">
       <Link>Response Classes\AxisRatesResponse.cs</Link>
     </Compile>
+    <Compile Include="..\Shared Resources\Response Classes\Base64ArrayHandOffResponse.cs">
+      <Link>Response Classes\Base64ArrayHandOffResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared Resources\Response Classes\Base64ArrayJsonResponse.cs">
+      <Link>Response Classes\Base64ArrayJsonResponse.cs</Link>
+    </Compile>
     <Compile Include="..\shared resources\response classes\BoolResponse.cs">
       <Link>Response Classes\BoolResponse.cs</Link>
     </Compile>

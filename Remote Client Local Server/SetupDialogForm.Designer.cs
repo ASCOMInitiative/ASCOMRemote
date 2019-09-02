@@ -62,6 +62,8 @@
             this.SetupErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.CmbImageArrayTransferType = new System.Windows.Forms.ComboBox();
             this.label14 = new System.Windows.Forms.Label();
+            this.cmbImageArrayCompression = new System.Windows.Forms.ComboBox();
+            this.label15 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRemoteDeviceNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStandardTimeout)).BeginInit();
@@ -403,13 +405,13 @@
             // 
             this.SetupErrorProvider.ContainerControl = this;
             // 
-            // CmbImageArrayTransfertype
+            // CmbImageArrayTransferType
             // 
             this.CmbImageArrayTransferType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CmbImageArrayTransferType.FormattingEnabled = true;
             this.CmbImageArrayTransferType.Location = new System.Drawing.Point(513, 213);
-            this.CmbImageArrayTransferType.Name = "CmbImageArrayTransfertype";
-            this.CmbImageArrayTransferType.Size = new System.Drawing.Size(135, 21);
+            this.CmbImageArrayTransferType.Name = "CmbImageArrayTransferType";
+            this.CmbImageArrayTransferType.Size = new System.Drawing.Size(159, 21);
             this.CmbImageArrayTransferType.TabIndex = 30;
             // 
             // label14
@@ -421,6 +423,24 @@
             this.label14.TabIndex = 31;
             this.label14.Text = "Image array transfer method";
             // 
+            // cmbImageArrayCompression
+            // 
+            this.cmbImageArrayCompression.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbImageArrayCompression.FormattingEnabled = true;
+            this.cmbImageArrayCompression.Location = new System.Drawing.Point(513, 265);
+            this.cmbImageArrayCompression.Name = "cmbImageArrayCompression";
+            this.cmbImageArrayCompression.Size = new System.Drawing.Size(159, 21);
+            this.cmbImageArrayCompression.TabIndex = 32;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(510, 249);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(162, 13);
+            this.label15.TabIndex = 33;
+            this.label15.Text = "Image array transfer compression";
+            // 
             // SetupDialogForm
             // 
             this.AcceptButton = this.btnOK;
@@ -428,6 +448,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(697, 402);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.cmbImageArrayCompression);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.CmbImageArrayTransferType);
             this.Controls.Add(this.groupBoxConnectDisconnect);
@@ -509,5 +531,7 @@
         private System.Windows.Forms.ErrorProvider SetupErrorProvider;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.ComboBox CmbImageArrayTransferType;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.ComboBox cmbImageArrayCompression;
     }
 }
