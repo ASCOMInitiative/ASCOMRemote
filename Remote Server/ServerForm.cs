@@ -4226,7 +4226,7 @@ namespace ASCOM.Remote
         }
 
         // GetManagedSize() returns the size of a structure whose type
-        // is 'type', as stored in managed memory. For any referenec type
+        // is 'type', as stored in managed memory. For any reference type
         // this will simply return the size of a pointer (4 or 8).
         public static int GetManagedSize(Type type)
         {
@@ -4243,7 +4243,7 @@ namespace ASCOM.Remote
         }
 
         /// <summary>
-        /// Return binary serialised image data to the client
+        /// Return Base64 serialised image data to the client
         /// </summary>
         /// <param name="requestData"></param>
         /// <remarks>
@@ -4331,6 +4331,8 @@ namespace ASCOM.Remote
                 $"Convert to base64: {timeToConvertToBase64}ms, Convert base64string to byte array: {timeToConvertBase64StringToByteArray}ms. " +
                 $"Time to compress base64 string: {timeToCompressResponse}ms, " +
                 $"Return data to client: {timeReturnDataToClient}ms.");
+
+            GC.Collect();
         }
 
         /// <summary>
@@ -4353,12 +4355,15 @@ namespace ASCOM.Remote
         /// </remarks>
         private void ReturnImageArray(RequestData requestData)
         {
-            Array deviceResponse = null;
+            Array deviceResponse;
             dynamic responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID); // Initialise here so that there is a class ready to convey back an error message
             Exception exReturn = null;
             byte[] imageArrayBytes;
             long lastTime = 0;
 
+            // Release memory used by the previous image before acquiring the next
+            ActiveObjects[requestData.DeviceKey].LastImageArray = null;
+            GC.Collect();
 
             // These flags indicate whether the client supports optimised, faster transfer modes for camera image data
             SharedConstants.ImageArrayCompression compressionType = SharedConstants.ImageArrayCompression.None; // Flag to indicate what type of compression the client supports - initialised to indicate a default of no compression
@@ -4377,7 +4382,7 @@ namespace ASCOM.Remote
             }
             if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Response compression type: {compressionType}");
 
-            // Determine whether the client supports base64 handoff transfer, if so, this will be used
+            // Determine whether the client supports base64 hand-off transfer, if so, this will be used
             if (requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_HEADER] == SharedConstants.BASE64_HANDOFF_SUPPORTED) // Client supports base64 hand-off
             {
                 base64HandoffRequested = true;
@@ -4402,13 +4407,27 @@ namespace ASCOM.Remote
                         deviceResponse = device.ImageArray;
                         if (deviceResponse != null)
                         {
-                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("ImageArray Rank: {0}", deviceResponse.Rank));
                             LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("ImageArray Rank: {0}, Length: {1:n0}", deviceResponse.Rank, deviceResponse.Length));
 
                             switch (deviceResponse.Rank)
                             {
                                 case 2:
-                                    if (base64JsonRequested) // Bas64 encoded string response requested
+                                    if (base64HandoffRequested) // Handle base63 hand-off processing
+                                    {
+                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                        responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
+                                        {
+                                            ClientTransactionID = requestData.ClientTransactionID,
+                                            ServerTransactionID = requestData.ServerTransactionID,
+                                            Rank = deviceResponse.Rank,
+                                            Type = (int)SharedConstants.ImageArrayElementTypes.Int,
+                                            Dimension0Length= deviceResponse.GetLength(0)
+                                        };
+                                        if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
+                                        if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
+                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                    }
+                                    else if (base64JsonRequested) // Bas64 encoded string response requested
                                     {
                                         LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Preparing 2D base64 encoded string response"));
                                         responseClass = new Base64ArrayJsonResponse()
@@ -4430,18 +4449,18 @@ namespace ASCOM.Remote
                                         {
                                             imageArrayBytes = new byte[0];
                                         }
-                                        long timeBCreateByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+                                        long timeToCreateByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
                                         if (deviceResponse != null) Buffer.BlockCopy(deviceResponse, 0, imageArrayBytes, 0, imageArrayBytes.Length);
-                                        long timeBlockCopy = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+                                        long timeToBlockCopy = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
                                         string base64String = Convert.ToBase64String(imageArrayBytes, 0, imageArrayBytes.Length, Base64FormattingOptions.None);
                                         long timeToConvertToBase64 = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
                                         responseClass.Value = base64String;
 
                                         LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"### Base64 response: " +
-                                            $"Array bytes length: {imageArrayBytes.Length:n0}, Base64 string length: {base64String.Length:n0} " + 
-                                            $"Timings - Overall: {sw.ElapsedMilliseconds}, Create byte array: {timeBCreateByteArray}ms, Copy image to byte array: {timeBlockCopy}ms, " +
+                                            $"Array bytes length: {imageArrayBytes.Length:n0}, Base64 string length: {base64String.Length:n0} " +
+                                            $"Timings - Overall: {sw.ElapsedMilliseconds}, Create byte array: {timeToCreateByteArray}ms, Copy image to byte array: {timeToBlockCopy}ms, " +
                                             $"Convert to base64: {timeToConvertToBase64}ms"
                                             );
                                     }
@@ -4604,35 +4623,19 @@ namespace ASCOM.Remote
 
                 if (base64HandoffRequested)  // Client supports base64 encoding
                 {
-                    Base64ArrayHandOffResponse imageArrayBaseResponseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
-                    {
-                        ClientTransactionID = responseClass.ClientTransactionID,
-                        DriverException = responseClass.DriverException,
-                        ErrorMessage = responseClass.ErrorMessage,
-                        ErrorNumber = responseClass.ErrorNumber,
-                        ServerTransactionID = responseClass.ServerTransactionID,
-                        Rank = responseClass.Rank,
-                        Type = responseClass.Type,
-                    };
-                    if (deviceResponse != null)
-                    {
-                        imageArrayBaseResponseClass.Dimension0Length = deviceResponse.GetLength(0); // If the driver returns an there will always be at least one dimension
-                        if (responseClass.Rank > 1) imageArrayBaseResponseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
-                        if (responseClass.Rank > 2) imageArrayBaseResponseClass.Dimension2Length = deviceResponse.GetLength(2);
-                    }
                     // Write the response back to the client using a stream
                     JsonSerializer serializer = new JsonSerializer();
                     StreamWriter streamWriter = new StreamWriter(requestData.Response.OutputStream);
 
                     using (JsonWriter writer = new JsonTextWriter(streamWriter))
                     {
-                        serializer.Serialize(writer, imageArrayBaseResponseClass);
+                        serializer.Serialize(writer, responseClass);
                     }
 
                     requestData.Response.OutputStream.Close();
                     sw.Stop();
 
-                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Base64Encoded - Image array properties response sent to client - ImageArray Rank: {imageArrayBaseResponseClass.Rank} Type: {imageArrayBaseResponseClass.Type} - Driver response time: {timeDriver}ms, Overall response time: {sw.ElapsedMilliseconds}ms.");
+                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Base64Encoded - Image array properties response sent to client - ImageArray Rank: {responseClass.Rank} Type: {responseClass.Type} - Driver response time: {timeDriver}ms, Overall response time: {sw.ElapsedMilliseconds}ms.");
                 }
                 else
                 {
@@ -4708,6 +4711,8 @@ namespace ASCOM.Remote
             {
                 LogException1(requestData, "ListenerException", string.Format("ReturnImageArray Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
             }
+            deviceResponse = null;
+            GC.Collect();
         }
 
         private void ReturnCanMoveAxis(RequestData requestData)
