@@ -82,8 +82,9 @@ namespace ASCOM.Remote
         public const string ENABLE_ALPACA_SETUP_URI_COMMAND_NAME = "setalpacasetupurl";
         public const string ENABLE_API_URI_COMMAND_NAME = "setapiuriacl";
         public const string ENABLE_HTTP_DOT_SYS_PORT_COMMAND_NAME = "enablehttpdotsysport";
-        public const string SET_LOCAL_SERVER_PATH = "localserverpath";
-        public const string SET_REMOTE_SERVER_PATH = "remoteserverpath";
+        public const string SET_LOCAL_SERVER_PATH_COMMAND_NAME = "localserverpath";
+        public const string SET_REMOTE_SERVER_PATH_COMMAND_NAME = "remoteserverpath";
+        public const string USER_NAME_COMMAND_NAME = "username";
 
         // Client driver profile persistence constants
         public const string TRACE_LEVEL_PROFILENAME = "Trace Level"; public const string CLIENT_TRACE_LEVEL_DEFAULT = "True";

@@ -80,17 +80,24 @@ namespace ASCOM.Remote
             TL.LogMessage("ProcessOptions", $"Alpaca device management URI: {opts.SetAlpacaManagementUriAcl}");
             TL.LogMessage("ProcessOptions", $"Alpaca device HTML setup URI: {opts.SetAlpacaSetupUriAcl}");
             TL.LogMessage("ProcessOptions", $"HTTP.SYS port: {opts.HttpDotSysPort}");
+            TL.LogMessage("ProcessOptions", $"HTTP.SYS supplied user name: {opts.UserName}");
+
+            // Get the supplied user name but substitute the current user name if none was supplied
+            string userName = $"\"{opts.UserName}\"";
+            if (userName == NOT_PRESENT_FLAG) userName = $"{Environment.UserDomainName}\\{Environment.UserName}";
+            TL.LogMessage("ProcessOptions", $"HTTP.SYS user name that will be used: {userName}");
             TL.BlankLine();
 
             // Set firewall rules as needed
             if (opts.LocalServerPath != NOT_PRESENT_FLAG) SetLocalServerFireWallOutboundRule(opts.LocalServerPath);
             if (opts.HttpDotSysPort != NOT_PRESENT_FLAG) SetHttpSysFireWallInboundRule(opts.HttpDotSysPort);
 
+
             // Set http.sys ACLs as needed
-            if (opts.SetApiUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetApiUriAcl);
-            if (opts.SetRemoteServerManagementUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetRemoteServerManagementUriAcl);
-            if (opts.SetAlpacaManagementUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetAlpacaManagementUriAcl);
-            if (opts.SetAlpacaSetupUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetAlpacaSetupUriAcl);
+            if (opts.SetApiUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetApiUriAcl, userName);
+            if (opts.SetRemoteServerManagementUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetRemoteServerManagementUriAcl, userName);
+            if (opts.SetAlpacaManagementUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetAlpacaManagementUriAcl, userName);
+            if (opts.SetAlpacaSetupUriAcl != NOT_PRESENT_FLAG) SetAcl(opts.SetAlpacaSetupUriAcl, userName);
         }
 
         private static void HandleParseError(IEnumerable<Error> errs)
@@ -332,11 +339,11 @@ namespace ASCOM.Remote
 
         }
 
-        private static void SetAcl(string Uri)
+        private static void SetAcl(string Uri, string UserName)
         {
             try
             {
-                string command = string.Format(@"http add urlacl url={0} user={1}\{2}", Uri, Environment.UserDomainName, Environment.UserName);
+                string command = string.Format($"http add urlacl url={Uri} user={UserName}");
                 TL.LogMessage("SetAcl", "Enable arguments: " + command);
 
                 // Parse out the port number and resource value

@@ -414,11 +414,13 @@ namespace ASCOM.Remote
                             httpListener = null;
                             LogMessage(0, 0, 0, "StartRESTServer", "Enabling URIs");
 
+                            string userName = $"\"{Environment.UserDomainName}\\{Environment.UserName}\"";
+
                             LogMessage(0, 0, 0, "StartRESTServer", $"API URI: {apiOperatingUri}");
                             LogMessage(0, 0, 0, "StartRESTServer", $"Alpaca HTTP Setup URI: {alpacaDeviceSetupUri}");
                             LogMessage(0, 0, 0, "StartRESTServer", $"Alpaca device management URI: {alpacaDeviceManagementUri}");
                             LogMessage(0, 0, 0, "StartRESTServer", $"Remote server management URI: {remoteServerManagementUri}");
-                            LogMessage(0, 0, 0, "StartRESTServer", $"User: {Environment.UserDomainName}\\{Environment.UserName}");
+                            LogMessage(0, 0, 0, "StartRESTServer", $"User: {userName}");
 
                             try
                             {
@@ -432,7 +434,8 @@ namespace ASCOM.Remote
                                         $"--{SharedConstants.ENABLE_REMOTE_SERVER_MANAGEMENT_URI_COMMAND_NAME} {remoteServerManagementUri} " +
                                         $"--{SharedConstants.ENABLE_ALPACA_DEVICE_MANAGEMENT_URI_COMMAND_NAME} {alpacaDeviceManagementUri} " +
                                         $"--{SharedConstants.ENABLE_ALPACA_SETUP_URI_COMMAND_NAME} {alpacaDeviceSetupUri} " +
-                                        $"--{SharedConstants.ENABLE_HTTP_DOT_SYS_PORT_COMMAND_NAME} {ServerPortNumber}";
+                                        $"--{SharedConstants.ENABLE_HTTP_DOT_SYS_PORT_COMMAND_NAME} {ServerPortNumber} " +
+                                        $"--{SharedConstants.USER_NAME_COMMAND_NAME} {userName}";
                                     LogMessage(0, 0, 0, "StartRESTServer", $"SetNetworkPermissions arguments: {args}");
 
                                     ProcessStartInfo psi = new ProcessStartInfo(setNetworkPermissionsPath, args)
