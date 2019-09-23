@@ -68,56 +68,6 @@ namespace ASCOM.Remote
             addressList.Validating += AddressList_Validating;
         }
 
-        public bool IsIpAddress(string s)
-        {
-            foreach (char c in s)
-            {
-                if ((!Char.IsDigit(c)) && (c != '.')) return false; // Make sure that the strong only contains digits and the point character
-            }
-            return true;
-        }
-
-        private void AddressList_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            bool isValid = false;
-
-            if (IsIpAddress(addressList.Text)) // The host name is an IP address so test whether this is valid
-            {
-                MatchCollection matches = validIpAddressRegex.Matches(addressList.Text);
-                if (matches.Count == 0)
-                {
-                    SetupErrorProvider.SetError(addressList, "IP addresses can only contain digits and the point character in the form WWW.XXX.YYY.ZZZ.");
-                }
-                else
-                {
-                    isValid = true;
-                }
-            }
-            else // The host name is a string rather than an IP address so validate this
-            {
-                MatchCollection matches = validHostnameRegex.Matches(addressList.Text);
-                if (matches.Count == 0)
-                {
-                    SetupErrorProvider.SetError(addressList, "Not a valid host name.");
-                }
-                else
-                {
-                    isValid = true;
-                }
-            }
-
-            if (isValid)
-            {
-                SetupErrorProvider.Clear();
-                btnOK.Enabled = true;
-            }
-            else
-            {
-                btnOK.Enabled = false;
-            }
-
-        }
-
         public SetupDialogForm(TraceLoggerPlus TraceLogger) : this()
         {
             TL = TraceLogger;
@@ -196,6 +146,9 @@ namespace ASCOM.Remote
             cmbImageArrayCompression.Items.Add(SharedConstants.ImageArrayCompression.GZipOrDeflate);
             cmbImageArrayCompression.SelectedItem = ImageArrayCompression;
 
+            // Handle cases where the stored registry value is not one of the currently supported modes
+            if (CmbImageArrayTransferType.SelectedItem == null) CmbImageArrayTransferType.SelectedItem = SharedConstants.IMAGE_ARRAY_TRANSFER_TYPE_DEFAULT;
+            if (cmbImageArrayCompression.SelectedItem == null) cmbImageArrayCompression.SelectedItem = SharedConstants.IMAGE_ARRAY_COMPRESSION_DEFAULT;
 
             this.BringToFront();
         }
@@ -284,6 +237,59 @@ namespace ASCOM.Remote
                 curBox.Select(0, curBox.Text.Length);
                 selectByMouse = false;
             }
+        }
+
+        private void AddressList_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool isValid = false;
+
+            if (IsIpAddress(addressList.Text)) // The host name is an IP address so test whether this is valid
+            {
+                MatchCollection matches = validIpAddressRegex.Matches(addressList.Text);
+                if (matches.Count == 0)
+                {
+                    SetupErrorProvider.SetError(addressList, "IP addresses can only contain digits and the point character in the form WWW.XXX.YYY.ZZZ.");
+                }
+                else
+                {
+                    isValid = true;
+                }
+            }
+            else // The host name is a string rather than an IP address so validate this
+            {
+                MatchCollection matches = validHostnameRegex.Matches(addressList.Text);
+                if (matches.Count == 0)
+                {
+                    SetupErrorProvider.SetError(addressList, "Not a valid host name.");
+                }
+                else
+                {
+                    isValid = true;
+                }
+            }
+
+            if (isValid)
+            {
+                SetupErrorProvider.Clear();
+                btnOK.Enabled = true;
+            }
+            else
+            {
+                btnOK.Enabled = false;
+            }
+
+        }
+
+        #endregion
+
+        #region Support Code
+        public bool IsIpAddress(string s)
+        {
+            foreach (char c in s)
+            {
+                if ((!Char.IsDigit(c)) && (c != '.')) return false; // Make sure that the strong only contains digits and the point character
+            }
+            return true;
         }
 
         #endregion
