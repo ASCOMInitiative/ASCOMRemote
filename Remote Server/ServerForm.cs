@@ -116,6 +116,7 @@ namespace ASCOM.Remote
         internal const string SCREEN_LOG_RESPONSES_PROFILENAME = "Log Responses To Screen"; public const bool SCREEN_LOG_RESPONSES_DEFAULT = false;
         internal const string ALLOW_CONNECTED_SET_FALSE_PROFILENAME = "Allow Connected Set False"; public const bool ALLOW_CONNECTED_SET_FALSE_DEFAULT = true;
         internal const string ALLOW_CONNECTED_SET_TRUE_PROFILENAME = "Allow Connected Set True"; public const bool ALLOW_CONNECTED_SET_TRUE_DEFAULT = true;
+        internal const string ALLOW_CONCURRENT_ACCESS_PROFILENAME = "Allow Concurrent Access"; public const bool ALLOW_CONCURRENT_ACCESS_DEFAULT = false;
         internal const string MANAGEMENT_INTERFACE_ENABLED_PROFILENAME = "Management Interface Enabled"; public const bool MANGEMENT_INTERFACE_ENABLED_DEFAULT = false;
         internal const string START_WITH_API_ENABLED_PROFILENAME = "Start WIth API Enabled"; public const bool START_WITH_API_ENABLED_DEFAULT = true;
         internal const string RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME = "Run Drivers On Separate Threads"; public const bool RUN_DRIVERS_ON_SEPARATE_THREADS_DEFAULT = true;
@@ -227,6 +228,8 @@ namespace ASCOM.Remote
         internal static bool allowConnectedSetFalse; // Shortcut to a flag indicating whether Connected can be set False
         [ThreadStatic]
         internal static bool allowConnectedSetTrue; // Shortcut to a flag indicating whether Connected can be set True
+        [ThreadStatic]
+        internal static bool allowConcurrentAccess; // Shortcut to a flag indicating whether the driver can handle concurrent calls
 
         #endregion
 
@@ -556,7 +559,7 @@ namespace ASCOM.Remote
                         {
 
                             // Create an active object for this device
-                            ActiveObjects[configuredDevice.Value.DeviceKey] = new ActiveObject(configuredDevice.Value.AllowConnectedSetFalse, configuredDevice.Value.AllowConnectedSetTrue);
+                            ActiveObjects[configuredDevice.Value.DeviceKey] = new ActiveObject(configuredDevice.Value.AllowConnectedSetFalse, configuredDevice.Value.AllowConnectedSetTrue, configuredDevice.Value.AllowConcurrentAccess);
 
                             if (RunDriversOnSeparateThreads)
                             {
@@ -626,7 +629,6 @@ namespace ASCOM.Remote
             LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Environment for driver host {0} shut down on thread {1}", configuredDevice.Value.DeviceKey, Thread.CurrentThread.ManagedThreadId));
             driverHostForm.Dispose();
 
-            // Thread will finish at this point
         }
 
         internal void CreateInstance(KeyValuePair<string, ConfiguredDevice> configuredDevice)
@@ -870,12 +872,13 @@ namespace ASCOM.Remote
 
             foreach (string deviceName in ServerDeviceNames)
             {
-                LogMessage(0, 0, 0, deviceName, string.Format("Device Type               = {0}", ConfiguredDevices[deviceName].DeviceType.ToString()));
-                LogMessage(0, 0, 0, deviceName, string.Format("ProgID                    = {0}", ConfiguredDevices[deviceName].ProgID.ToString()));
-                LogMessage(0, 0, 0, deviceName, string.Format("Description               = {0}", ConfiguredDevices[deviceName].Description.ToString()));
-                LogMessage(0, 0, 0, deviceName, string.Format("Device Number             = {0}", ConfiguredDevices[deviceName].DeviceNumber.ToString()));
-                LogMessage(0, 0, 0, deviceName, string.Format("Allow Connected Set False = {0}", ConfiguredDevices[deviceName].AllowConnectedSetFalse.ToString()));
-                LogMessage(0, 0, 0, deviceName, string.Format("Allow Connected Set True  = {0}", ConfiguredDevices[deviceName].AllowConnectedSetTrue.ToString()));
+                LogMessage(0, 0, 0, deviceName, $"Device Type               = {ConfiguredDevices[deviceName].DeviceType.ToString()}");
+                LogMessage(0, 0, 0, deviceName, $"ProgID                    = {ConfiguredDevices[deviceName].ProgID.ToString()}");
+                LogMessage(0, 0, 0, deviceName, $"Description               = {ConfiguredDevices[deviceName].Description.ToString()}");
+                LogMessage(0, 0, 0, deviceName, $"Device Number             = {ConfiguredDevices[deviceName].DeviceNumber.ToString()}");
+                LogMessage(0, 0, 0, deviceName, $"Allow Connected Set False = {ConfiguredDevices[deviceName].AllowConnectedSetFalse.ToString()}");
+                LogMessage(0, 0, 0, deviceName, $"Allow Connected Set True  = {ConfiguredDevices[deviceName].AllowConnectedSetTrue.ToString()}");
+                LogMessage(0, 0, 0, deviceName, $"Allow Concurrent Access   = {ConfiguredDevices[deviceName].AllowConcurrentAccess.ToString()}");
                 LogBlankLine(0, 0, 0);
             }
         }
@@ -987,8 +990,9 @@ namespace ASCOM.Remote
                     int deviceNumber = Convert.ToInt32(driverProfile.GetValue<int>(DEVICENUMBER_PROFILENAME, deviceName, DEVICENUMBER_DEFAULT));
                     bool allowConnectedSetFalse = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_FALSE_PROFILENAME, deviceName, ALLOW_CONNECTED_SET_FALSE_DEFAULT));
                     bool allowConnectedSetTrue = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_TRUE_PROFILENAME, deviceName, ALLOW_CONNECTED_SET_TRUE_DEFAULT));
+                    bool allowConcurrentAccess = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONCURRENT_ACCESS_PROFILENAME, deviceName, ALLOW_CONCURRENT_ACCESS_DEFAULT));
 
-                    ConfiguredDevices[deviceName] = new ConfiguredDevice(deviceType, progID, description, deviceNumber, allowConnectedSetFalse, allowConnectedSetTrue);
+                    ConfiguredDevices[deviceName] = new ConfiguredDevice(deviceType, progID, description, deviceNumber, allowConnectedSetFalse, allowConnectedSetTrue, allowConcurrentAccess);
                 }
             }
         }
@@ -1029,6 +1033,7 @@ namespace ASCOM.Remote
                     driverProfile.SetValue<string>(DEVICENUMBER_PROFILENAME, deviceName, ConfiguredDevices[deviceName].DeviceNumber.ToString());
                     driverProfile.SetValue<bool>(ALLOW_CONNECTED_SET_FALSE_PROFILENAME, deviceName, ConfiguredDevices[deviceName].AllowConnectedSetFalse);
                     driverProfile.SetValue<bool>(ALLOW_CONNECTED_SET_TRUE_PROFILENAME, deviceName, ConfiguredDevices[deviceName].AllowConnectedSetTrue);
+                    driverProfile.SetValue<bool>(ALLOW_CONCURRENT_ACCESS_PROFILENAME, deviceName, ConfiguredDevices[deviceName].AllowConcurrentAccess);
                 }
             }
         }
@@ -1059,7 +1064,7 @@ namespace ASCOM.Remote
             // Log new configuration
             WriteConfigurationToLog();
 
-            frm.Dispose();
+            frm.Dispose(); // Dispose of the setup form
 
             // Start with new configuration
             if (devicesConnected)
@@ -1556,7 +1561,19 @@ namespace ASCOM.Remote
                                         if (ActiveObjects[deviceKey].InitialisedOk) // The device did initialise OK
                                         {
                                             // Ensure that we only process one command at a time for this driver
-                                            lock (ActiveObjects[deviceKey].CommandLock) // Proceed when we have a lock for this device
+                                            // Wait until we get a lock on the device's synchronisation lock object if the device cannot handle concurrent access, otherwise continue without waiting
+                                            if (!ActiveObjects[deviceKey].AllowConcurrentAccess)
+                                            {
+                                                Monitor.Enter(ActiveObjects[deviceKey].CommandLock);
+                                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock acquired for device {deviceKey} from thread {Thread.CurrentThread.ManagedThreadId}");
+                                            }
+                                            else
+                                            {
+                                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock required for {deviceKey} from thread {Thread.CurrentThread.ManagedThreadId}");
+                                            }
+
+                                            // Process the command within a try block so that "finally" can be used to release the Monitor synchronisation object if it was set because the device can only handle one command at a time
+                                            try
                                             {
                                                 // Process the request on this thread or pass to the Windows Form hosting the driver when drivers are configured to run on separate threads
                                                 if (RunDriversOnSeparateThreads)
@@ -1569,6 +1586,18 @@ namespace ASCOM.Remote
                                                 else // Driver is running on the UI thread so just process the command
                                                 {
                                                     ProcessDriverCommand(requestData);
+                                                }
+                                            }
+                                            finally
+                                            {
+                                                if (!ActiveObjects[deviceKey].AllowConcurrentAccess)
+                                                {
+                                                    Monitor.Exit(ActiveObjects[deviceKey].CommandLock); // Release the command lock object if a lock was used
+                                                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock released for device {deviceKey} from thread {Thread.CurrentThread.ManagedThreadId}");
+                                        }
+                                        else // Specified is configured but threw an error when created or when Connected was set True so return the error message
+                                        {
+                                                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock to release for {deviceKey} from thread {Thread.CurrentThread.ManagedThreadId}");
                                                 }
                                             }
                                         }
@@ -2040,6 +2069,7 @@ namespace ASCOM.Remote
                 device = ActiveObjects[requestData.DeviceKey].DeviceObject; // Try and access the device. If it does not exist in the active devices collection then a KeyNotFound exception is generated and handled below
                 allowConnectedSetFalse = ActiveObjects[requestData.DeviceKey].AllowConnectedSetFalse; // If we get here then the user has requestData.Requested a device that does exist
                 allowConnectedSetTrue = ActiveObjects[requestData.DeviceKey].AllowConnectedSetTrue;
+                allowConcurrentAccess = ActiveObjects[requestData.DeviceKey].AllowConcurrentAccess;
 
                 switch (requestData.Request.HttpMethod.ToUpperInvariant()) // Handle GET and PUT requestData.Requests
                 {
