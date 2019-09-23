@@ -210,6 +210,17 @@ namespace ASCOM.Remote
             }
         }
 
+        public bool AllowConcurrentAccess
+        {
+            get
+            {
+                return ChkAllowConcurrentAccess.Checked;
+            }
+            set
+            {
+                ChkAllowConcurrentAccess.Checked = value;
+            }
+        }
         #endregion
 
         #region Event handlers
