@@ -1594,9 +1594,9 @@ namespace ASCOM.Remote
                                                 {
                                                     Monitor.Exit(ActiveObjects[deviceKey].CommandLock); // Release the command lock object if a lock was used
                                                     if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock released for device {deviceKey} from thread {Thread.CurrentThread.ManagedThreadId}");
-                                        }
-                                        else // Specified is configured but threw an error when created or when Connected was set True so return the error message
-                                        {
+                                                }
+                                                else // Specified is configured but threw an error when created or when Connected was set True so return the error message
+                                                {
                                                     if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock to release for {deviceKey} from thread {Thread.CurrentThread.ManagedThreadId}");
                                                 }
                                             }
@@ -4309,7 +4309,7 @@ namespace ASCOM.Remote
                 case "imagearrayvariantbase64":
                     // Send the imagearray data, it will be the client's responsibility to turn it back into a variant object
                     //image = (Array)ActiveObjects[requestData.DeviceKey].LastImageArrayVariant;
-                    imageArray = (Array)ActiveObjects[requestData.DeviceKey].LastImageArray;
+                    imageArray = (Array)ActiveObjects[requestData.DeviceKey].LastImageArrayVariant;
                     break;
             }
             long timeAssignImage = sw.ElapsedMilliseconds; lastTime = sw.ElapsedMilliseconds; // Record the duration
@@ -4415,28 +4415,26 @@ namespace ASCOM.Remote
             }
             if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Response compression type: {compressionType}");
 
-            // Determine whether the client supports base64 hand-off transfer, if so, this will be used
-            if (requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_HEADER] == SharedConstants.BASE64_HANDOFF_SUPPORTED) // Client supports base64 hand-off
-            {
-                base64HandoffRequested = true;
-                requestData.Response.AddHeader(SharedConstants.BASE64_HANDOFF_HEADER, SharedConstants.BASE64_HANDOFF_SUPPORTED); // Add a header indicating to the client that a binary formatted image is available for faster processing
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Base64 encoding supported - Header {SharedConstants.BASE64_HANDOFF_SUPPORTED} = {requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_SUPPORTED]}");
-            }
-
-            // Determine whether the client supports base64 Json transfer, if so, this will be used
-            if (requestData.Request.Headers[SharedConstants.BASE64_JSON_HEADER] == SharedConstants.BASE64_JSON_SUPPORTED) // Client supports base64 JSON encoding
-            {
-                base64JsonRequested = true;
-                requestData.Response.AddHeader(SharedConstants.BASE64_JSON_HEADER, SharedConstants.BASE64_JSON_SUPPORTED); // Add a header indicating to the client that the array is returned as a base64 encoded string
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Base64 encoding supported - Header {SharedConstants.BASE64_HANDOFF_SUPPORTED} = {requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_SUPPORTED]}");
-            }
-
             sw.Start(); // Start the timing stopwatch
             try
             {
                 switch (requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     case "imagearray":
+                        // Determine whether the client supports base64 hand-off transfer, if so, this will be used
+                        if (requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_HEADER] == SharedConstants.BASE64_HANDOFF_SUPPORTED) // Client supports base64 hand-off
+                        {
+                            base64HandoffRequested = true;
+                            requestData.Response.AddHeader(SharedConstants.BASE64_HANDOFF_HEADER, SharedConstants.BASE64_HANDOFF_SUPPORTED); // Add a header indicating to the client that a binary formatted image is available for faster processing
+                            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Base64 encoding supported - Header {SharedConstants.BASE64_HANDOFF_SUPPORTED} = {requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_SUPPORTED]}");
+                        }
+                        // Determine whether the client supports base64 Json transfer, if so, this will be used
+                        if (requestData.Request.Headers[SharedConstants.BASE64_JSON_HEADER] == SharedConstants.BASE64_JSON_SUPPORTED) // Client supports base64 JSON encoding
+                        {
+                            base64JsonRequested = true;
+                            requestData.Response.AddHeader(SharedConstants.BASE64_JSON_HEADER, SharedConstants.BASE64_JSON_SUPPORTED); // Add a header indicating to the client that the array is returned as a base64 encoded string
+                            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Base64 encoding supported - Header {SharedConstants.BASE64_HANDOFF_SUPPORTED} = {requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_SUPPORTED]}");
+                        }
                         deviceResponse = device.ImageArray;
                         if (deviceResponse != null)
                         {
@@ -4454,7 +4452,7 @@ namespace ASCOM.Remote
                                             ServerTransactionID = requestData.ServerTransactionID,
                                             Rank = deviceResponse.Rank,
                                             Type = (int)SharedConstants.ImageArrayElementTypes.Int,
-                                            Dimension0Length= deviceResponse.GetLength(0)
+                                            Dimension0Length = deviceResponse.GetLength(0)
                                         };
                                         if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                         if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
@@ -4624,7 +4622,7 @@ namespace ASCOM.Remote
                                     throw new InvalidParameterException("Received array of Rank " + deviceResponse.Rank + ", this is not currently supported.");
                             }
                         } // Massage the returned data into the correct form for JSON serialisation
-                        ActiveObjects[requestData.DeviceKey].LastImageArrayVariant = deviceResponse;
+                        //ActiveObjects[requestData.DeviceKey].LastImageArrayVariant = deviceResponse;
                         break;
                     default:
                         LogMessage1(requestData, "ReturnImageArray", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
