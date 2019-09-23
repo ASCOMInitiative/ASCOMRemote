@@ -17,6 +17,8 @@ using ASCOM.Utilities;
 using ASCOM.DeviceInterface;
 using System.Drawing;
 
+using System.Reflection.Emit;
+
 using Newtonsoft.Json;
 using System.Web;
 using System.Text.RegularExpressions;
@@ -622,6 +624,7 @@ namespace ASCOM.Remote
             LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Starting driver host environment for {0} on thread {1}", configuredDevice.Value.DeviceKey, Thread.CurrentThread.ManagedThreadId));
             Application.Run();  // Start the message loop on this thread to bring the form to life
             LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Environment for driver host {0} shut down on thread {1}", configuredDevice.Value.DeviceKey, Thread.CurrentThread.ManagedThreadId));
+            driverHostForm.Dispose();
 
             // Thread will finish at this point
         }
@@ -784,7 +787,7 @@ namespace ASCOM.Remote
             lock (logLockObject) // Ensure that only one message is logged at once and that the midnight log change over is effected within just one log message call
             {
                 CheckWhetherNewLogRequired(clientID, clientTransactionID, serverTransactionID);
-                TL.LogMessage(clientID, clientTransactionID, serverTransactionID, Method, Message);
+                TL.LogMessageCrLf(clientID, clientTransactionID, serverTransactionID, Method, Message);
             }
         }
 
@@ -793,7 +796,7 @@ namespace ASCOM.Remote
             lock (logLockObject) // Ensure that only one message is logged at once and that the midnight log change over is effected within just one log message call
             {
                 CheckWhetherNewLogRequired(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID);
-                TL.LogMessage(requestData, Method, Message);
+                TL.LogMessageCrLf(requestData, Method, Message);
             }
         }
 
@@ -1055,6 +1058,8 @@ namespace ASCOM.Remote
 
             // Log new configuration
             WriteConfigurationToLog();
+
+            frm.Dispose();
 
             // Start with new configuration
             if (devicesConnected)
@@ -2226,9 +2231,9 @@ namespace ASCOM.Remote
                                             case "imagearray":
                                             case "imagearrayvariant":
                                                 ReturnImageArray(requestData); break;
-                                            case "imagearraybinary":
-                                            case "imagearrayvariantbinary":
-                                                ReturnImageArrayBinary(requestData); break;
+                                            case "imagearraybase64":
+                                            case "imagearrayvariantbase64":
+                                                ReturnImageArrayBase64(requestData); break;
 
                                             //STRING LIST Get Values
                                             case "gains":
@@ -4223,72 +4228,114 @@ namespace ASCOM.Remote
             SendResponseValueToClient(requestData, exReturn, responseJson);
         }
 
+        // GetManagedSize() returns the size of a structure whose type
+        // is 'type', as stored in managed memory. For any reference type
+        // this will simply return the size of a pointer (4 or 8).
+        public static int GetManagedSize(Type type)
+        {
+            // all this just to invoke one op code with no arguments!
+            var method = new DynamicMethod("GetManagedSizeImpl", typeof(uint), new Type[0]); //, typeof(TypeExtensions), false);
+
+            ILGenerator gen = method.GetILGenerator();
+
+            gen.Emit(OpCodes.Sizeof, type);
+            gen.Emit(OpCodes.Ret);
+
+            var func = (Func<uint>)method.CreateDelegate(typeof(Func<uint>));
+            return checked((int)func());
+        }
+
         /// <summary>
-        /// Return binary serialised image data to the client
+        /// Return Base64 serialised image data to the client
         /// </summary>
         /// <param name="requestData"></param>
         /// <remarks>
         /// The last provided image data that was saved by the imagearray and imagearrayvariant method calls is binary serialised then compressed and finally returned to the client
         /// </remarks>
-        private void ReturnImageArrayBinary(RequestData requestData)
+        private void ReturnImageArrayBase64(RequestData requestData)
         {
-            object image = null;
+            Array imageArray = null;
             Stopwatch sw = new Stopwatch();
             long lastTime;
-            byte[] bytes;
-            byte[] compressedBytes;
-            long timeBinarySerialisation = 0;
-            long timeCreateCompressedStream;
-            long timeCreateCompressedByteArray;
+            byte[] imageArrayBytes;
+            SharedConstants.ImageArrayCompression compressionType = SharedConstants.ImageArrayCompression.None; // Flag to indicate what type of compression the client supports - initialised to indicate a default of no compression
 
             sw.Start();
 
+            // Determine whether the client supports compressed responses by testing the Accept-Encoding header, if present. GZip compression will be favoured over Deflate if the client accepts both methods
+            string[] acceptEncoding = requestData.Request.Headers.GetValues("Accept-Encoding"); // Get the Accept-Encoding header, if present
+            if (acceptEncoding != null) // There is an Accept-Encoding header so check whether it has the compression modes that we support
+            {
+                if (acceptEncoding[0].ToLowerInvariant().Contains("deflate")) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
+                if (acceptEncoding[0].ToLowerInvariant().Contains("gzip")) compressionType = SharedConstants.ImageArrayCompression.GZip;
+            }
+            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Response compression type: {compressionType}");
+
             switch (requestData.Elements[URL_ELEMENT_METHOD])
             {
-                case "imagearraybinary":
-                    image = ActiveObjects[requestData.DeviceKey].LastImageArray;
+                case "imagearraybase64":
+                    imageArray = (Array)ActiveObjects[requestData.DeviceKey].LastImageArray;
                     break;
-                case "imagearrayvariantbinary":
-                    image = ActiveObjects[requestData.DeviceKey].LastImageArrayVariant;
+                case "imagearrayvariantbase64":
+                    // Send the imagearray data, it will be the client's responsibility to turn it back into a variant object
+                    //image = (Array)ActiveObjects[requestData.DeviceKey].LastImageArrayVariant;
+                    imageArray = (Array)ActiveObjects[requestData.DeviceKey].LastImageArray;
                     break;
             }
-            long timeAssugnImage = sw.ElapsedMilliseconds; lastTime = sw.ElapsedMilliseconds; // Record the duration
+            long timeAssignImage = sw.ElapsedMilliseconds; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
-            using (var memoryStream = new MemoryStream())
+            if (imageArray != null)
             {
-                BinaryFormatter binaryFormatter = new BinaryFormatter();
-                if (image != null)
-                {
-                    binaryFormatter.TypeFormat = SharedConstants.BINARY_SERIALISATION_FORMAT;
-                    binaryFormatter.Serialize(memoryStream, image);
-                    timeBinarySerialisation = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
-                }
-                bytes = memoryStream.ToArray();
+                int imageArrayElementSize = GetManagedSize(imageArray.GetType().GetElementType()); // Find the size of each array element from the array element type
+                imageArrayBytes = new byte[imageArray.Length * imageArrayElementSize]; // Size the byte array as the product of the element size and the number of elements
             }
-            long timeBinaryBytes = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
-
-            using (var memoryStream = new MemoryStream())
+            else
             {
-                using (var compressedSTream = new GZipStream(memoryStream, CompressionMode.Compress, true))
-                {
-                    compressedSTream.Write(bytes, 0, bytes.Length);
-                }
-                timeCreateCompressedStream = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
-                compressedBytes = memoryStream.ToArray();
-                timeCreateCompressedByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+                imageArrayBytes = new byte[0];
             }
+            long timeBCreateByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
-            requestData.Response.AddHeader("Content-Encoding", SharedConstants.GZIP_BINARY_SERIALISED); // Add a header indicating that the content is .NET binary serialised and then GZip compressed
+            if (imageArray != null) Buffer.BlockCopy(imageArray, 0, imageArrayBytes, 0, imageArrayBytes.Length);
+            long timeBlockCopy = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
-            requestData.Response.ContentLength64 = compressedBytes.Length;
-            requestData.Response.OutputStream.Write(compressedBytes, 0, compressedBytes.Length);
+            string base64String = Convert.ToBase64String(imageArrayBytes, 0, imageArrayBytes.Length, Base64FormattingOptions.None);
+            long timeToConvertToBase64 = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+
+            byte[] bytesToSend = Encoding.ASCII.GetBytes(base64String); // Convert the message to be returned into UTF8 bytes that can be sent over the wire
+            long timeToConvertBase64StringToByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+            int numberOfUncompressedBytes = bytesToSend.Length;
+
+            if ((compressionType == SharedConstants.ImageArrayCompression.GZip) || (compressionType == SharedConstants.ImageArrayCompression.GZipOrDeflate))
+            {
+                using (var compressedDataStream = new MemoryStream()) // Create a memory stream
+                {
+                    using (var gZipStream = new GZipStream(compressedDataStream, CompressionMode.Compress, true)) // Wrap the compressed data stream in a GZip stream
+                    {
+                        gZipStream.Write(bytesToSend, 0, bytesToSend.Length); // Write the JSON byte array to the GZip stream and hence to the compressed data stream
+                    }
+                    requestData.Response.AddHeader("Content-Encoding", "gzip");
+                    bytesToSend = compressedDataStream.ToArray(); // Get the compressed bytes from the stream into a byte array
+                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Number of uncompressed bytes: {numberOfUncompressedBytes}, Number of compressed bytes: {bytesToSend.Length:n0}bytes.");
+                }
+            }
+            long timeToCompressResponse = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+
+            requestData.Response.SendChunked = true;
+            requestData.Response.AddHeader(SharedConstants.BASE64_HANDOFF_HEADER, SharedConstants.BASE64_HANDOFF_SUPPORTED); // Add a header indicating that the content is base64 serialised 
+            requestData.Response.ContentType = "image/tiff"; // Must use image/tiff to ensure fast data transmission. All other content types are slower e.g. text/plain takes 8 seconds while image/tiff takes 1 second.
+            requestData.Response.ContentLength64 = bytesToSend.Length;
+            requestData.Response.OutputStream.Write(bytesToSend, 0, bytesToSend.Length);
             requestData.Response.OutputStream.Close();
             long timeReturnDataToClient = sw.ElapsedMilliseconds - lastTime; // Record the duration
 
-            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Compressed binary response sent to client." +
-                $"Binary formatted driver image size: {bytes.Length:n0}bytes, compressed: {compressedBytes.Length:n0}. " +
-                $"Timings - Overall: {sw.ElapsedMilliseconds}, Time to assign image pointer: {timeAssugnImage},Binary  serialisation: {timeBinarySerialisation}, Convert to binary bytes: {timeBinaryBytes}, " +
-                $"Create compressed stream: {timeCreateCompressedStream} + Convert stream to array: {timeCreateCompressedByteArray}, Return data to client: {timeReturnDataToClient}");
+            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"### Base64 response sent to client. " +
+                $"Base64 bytes to send: {bytesToSend.Length:n0}bytes, " +
+                $"Timings - Overall: {sw.ElapsedMilliseconds}, Time to assign image pointer: {timeAssignImage}ms, Create byte array: {timeBCreateByteArray}ms, Copy image to byte array: {timeBlockCopy}ms, " +
+                $"Convert to base64: {timeToConvertToBase64}ms, Convert base64string to byte array: {timeToConvertBase64StringToByteArray}ms. " +
+                $"Time to compress base64 string: {timeToCompressResponse}ms, " +
+                $"Return data to client: {timeReturnDataToClient}ms.");
+
+            GC.Collect();
         }
 
         /// <summary>
@@ -4314,10 +4361,18 @@ namespace ASCOM.Remote
             Array deviceResponse;
             dynamic responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID); // Initialise here so that there is a class ready to convey back an error message
             Exception exReturn = null;
+            byte[] imageArrayBytes;
+            long lastTime = 0;
+
+            // Release memory used by the previous image before acquiring the next
+            ActiveObjects[requestData.DeviceKey].LastImageArray = null;
+            GC.Collect();
 
             // These flags indicate whether the client supports optimised, faster transfer modes for camera image data
-            SharedConstants.ImageArrayTransferType compressionType = SharedConstants.ImageArrayTransferType.Uncompressed; // Flag to indicate what type of compression the client supports - initialised to indicate a default of no compression
+            SharedConstants.ImageArrayCompression compressionType = SharedConstants.ImageArrayCompression.None; // Flag to indicate what type of compression the client supports - initialised to indicate a default of no compression
             bool binarySerialisationRequested = false; // Flag to indicate whether the client supports .NET binary serialisation
+            bool base64HandoffRequested = false; // Flag to indicate whether the client supports base64 serialisation
+            bool base64JsonRequested = false; // Flag to indicate whether the client supports base64 serialisation
 
             Stopwatch sw = new Stopwatch(); // Create a stopwatch to time the process
 
@@ -4325,16 +4380,25 @@ namespace ASCOM.Remote
             string[] acceptEncoding = requestData.Request.Headers.GetValues("Accept-Encoding"); // Get the Accept-Encoding header, if present
             if (acceptEncoding != null) // There is an Accept-Encoding header so check whether it has the compression modes that we support
             {
-                if (acceptEncoding[0].ToLowerInvariant().Contains("deflate")) compressionType = SharedConstants.ImageArrayTransferType.DeflateCompressed; // Test
-                if (acceptEncoding[0].ToLowerInvariant().Contains("gzip")) compressionType = SharedConstants.ImageArrayTransferType.GZipCompressed;
+                if (acceptEncoding[0].ToLowerInvariant().Contains("deflate")) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
+                if (acceptEncoding[0].ToLowerInvariant().Contains("gzip")) compressionType = SharedConstants.ImageArrayCompression.GZip;
             }
             if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Response compression type: {compressionType}");
 
-            // Determine whether the client supports binary serialised transfer, if so, this will be used because it is the fastest method
-            if (requestData.Request.Headers[SharedConstants.BINARY_SERIALISATION_HEADER] == SharedConstants.BINARY_SERIALISATION_SUPPORTED) // Client supports the faster binary image array transfer protocol
+            // Determine whether the client supports base64 hand-off transfer, if so, this will be used
+            if (requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_HEADER] == SharedConstants.BASE64_HANDOFF_SUPPORTED) // Client supports base64 hand-off
             {
-                binarySerialisationRequested = true;
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Binary image format supported - Header {SharedConstants.BINARY_SERIALISATION_HEADER} = {requestData.Request.Headers[SharedConstants.BINARY_SERIALISATION_HEADER]}");
+                base64HandoffRequested = true;
+                requestData.Response.AddHeader(SharedConstants.BASE64_HANDOFF_HEADER, SharedConstants.BASE64_HANDOFF_SUPPORTED); // Add a header indicating to the client that a binary formatted image is available for faster processing
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Base64 encoding supported - Header {SharedConstants.BASE64_HANDOFF_SUPPORTED} = {requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_SUPPORTED]}");
+            }
+
+            // Determine whether the client supports base64 Json transfer, if so, this will be used
+            if (requestData.Request.Headers[SharedConstants.BASE64_JSON_HEADER] == SharedConstants.BASE64_JSON_SUPPORTED) // Client supports base64 JSON encoding
+            {
+                base64JsonRequested = true;
+                requestData.Response.AddHeader(SharedConstants.BASE64_JSON_HEADER, SharedConstants.BASE64_JSON_SUPPORTED); // Add a header indicating to the client that the array is returned as a base64 encoded string
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Base64 encoding supported - Header {SharedConstants.BASE64_HANDOFF_SUPPORTED} = {requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_SUPPORTED]}");
             }
 
             sw.Start(); // Start the timing stopwatch
@@ -4346,18 +4410,113 @@ namespace ASCOM.Remote
                         deviceResponse = device.ImageArray;
                         if (deviceResponse != null)
                         {
-                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("ImageArray Rank: {0}", deviceResponse.Rank));
                             LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("ImageArray Rank: {0}, Length: {1:n0}", deviceResponse.Rank, deviceResponse.Length));
 
                             switch (deviceResponse.Rank)
                             {
                                 case 2:
-                                    responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
-                                    responseClass.Value = (int[,])deviceResponse;
+                                    if (base64HandoffRequested) // Handle base63 hand-off processing
+                                    {
+                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                        responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
+                                        {
+                                            ClientTransactionID = requestData.ClientTransactionID,
+                                            ServerTransactionID = requestData.ServerTransactionID,
+                                            Rank = deviceResponse.Rank,
+                                            Type = (int)SharedConstants.ImageArrayElementTypes.Int,
+                                            Dimension0Length= deviceResponse.GetLength(0)
+                                        };
+                                        if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
+                                        if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
+                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                    }
+                                    else if (base64JsonRequested) // Bas64 encoded string response requested
+                                    {
+                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Preparing 2D base64 encoded string response"));
+                                        responseClass = new Base64ArrayJsonResponse()
+                                        {
+                                            ClientTransactionID = requestData.ClientTransactionID,
+                                            ServerTransactionID = requestData.ServerTransactionID,
+                                            Type = (int)SharedConstants.ImageArrayElementTypes.Int,
+                                            Rank = 2,
+                                            Dimension0Length = deviceResponse.GetLength(0),
+                                            Dimension1Length = deviceResponse.GetLength(1)
+                                        };
+
+                                        if (deviceResponse != null)
+                                        {
+                                            int imageArrayElementSize = GetManagedSize(deviceResponse.GetType().GetElementType()); // Find the size of each array element from the array element type
+                                            imageArrayBytes = new byte[deviceResponse.Length * imageArrayElementSize]; // Size the byte array as the product of the element size and the number of elements
+                                        }
+                                        else
+                                        {
+                                            imageArrayBytes = new byte[0];
+                                        }
+                                        long timeToCreateByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+
+                                        if (deviceResponse != null) Buffer.BlockCopy(deviceResponse, 0, imageArrayBytes, 0, imageArrayBytes.Length);
+                                        long timeToBlockCopy = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+
+                                        string base64String = Convert.ToBase64String(imageArrayBytes, 0, imageArrayBytes.Length, Base64FormattingOptions.None);
+                                        long timeToConvertToBase64 = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+                                        responseClass.Value = base64String;
+
+                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"### Base64 response: " +
+                                            $"Array bytes length: {imageArrayBytes.Length:n0}, Base64 string length: {base64String.Length:n0} " +
+                                            $"Timings - Overall: {sw.ElapsedMilliseconds}, Create byte array: {timeToCreateByteArray}ms, Copy image to byte array: {timeToBlockCopy}ms, " +
+                                            $"Convert to base64: {timeToConvertToBase64}ms"
+                                            );
+                                    }
+                                    else // Normal JSON encoding of the array elements
+                                    {
+                                        responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
+                                        responseClass.Value = (int[,])deviceResponse;
+                                    }
                                     break;
                                 case 3:
-                                    responseClass = new IntArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
-                                    responseClass.Value = (int[,,])deviceResponse;
+                                    if (base64JsonRequested) // Bas64 encoded string response requested
+                                    {
+                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Preparing 3D base64 encoded string response"));
+                                        responseClass = new Base64ArrayJsonResponse()
+                                        {
+                                            ClientTransactionID = requestData.ClientTransactionID,
+                                            ServerTransactionID = requestData.ServerTransactionID,
+                                            Type = (int)SharedConstants.ImageArrayElementTypes.Int,
+                                            Rank = 3,
+                                            Dimension0Length = deviceResponse.GetLength(0),
+                                            Dimension1Length = deviceResponse.GetLength(1),
+                                            Dimension2Length = deviceResponse.GetLength(2)
+                                        };
+
+                                        if (deviceResponse != null)
+                                        {
+                                            int imageArrayElementSize = GetManagedSize(deviceResponse.GetType().GetElementType()); // Find the size of each array element from the array element type
+                                            imageArrayBytes = new byte[deviceResponse.Length * imageArrayElementSize]; // Size the byte array as the product of the element size and the number of elements
+                                        }
+                                        else
+                                        {
+                                            imageArrayBytes = new byte[0];
+                                        }
+                                        long timeBCreateByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+
+                                        if (deviceResponse != null) Buffer.BlockCopy(deviceResponse, 0, imageArrayBytes, 0, imageArrayBytes.Length);
+                                        long timeBlockCopy = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+
+                                        string base64String = Convert.ToBase64String(imageArrayBytes, 0, imageArrayBytes.Length, Base64FormattingOptions.None);
+                                        long timeToConvertToBase64 = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+                                        responseClass.Value = base64String;
+
+                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"### Base64 response: " +
+                                            $"Array bytes length: {imageArrayBytes.Length:n0}, Base64 string length: {base64String.Length:n0} " +
+                                            $"Timings - Overall: {sw.ElapsedMilliseconds}, Create byte array: {timeBCreateByteArray}ms, Copy image to byte array: {timeBlockCopy}ms, " +
+                                            $"Convert to base64: {timeToConvertToBase64}ms"
+                                            );
+                                    }
+                                    else // Normal JSON encoding of the array elements
+                                    {
+                                        responseClass = new IntArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
+                                        responseClass.Value = (int[,,])deviceResponse;
+                                    }
                                     break;
                                 default:
                                     throw new InvalidParameterException("ReturnImageArray received array of Rank " + deviceResponse.Rank + ", this is not currently supported.");
@@ -4452,7 +4611,6 @@ namespace ASCOM.Remote
             responseClass.SerializeDriverException = IncludeDriverExceptionInJsonResponse;
 
             long timeDriver = sw.ElapsedMilliseconds;
-            long lastTime = timeDriver;
             try
             {
                 requestData.Response.ContentType = "application/json; charset=utf-8";
@@ -4466,41 +4624,28 @@ namespace ASCOM.Remote
                 long timeCreateCompressedByteArray;
                 long timeReturnDataToClient;
 
-                if (binarySerialisationRequested) // Client supports the faster binary image array transfer protocol
+                if (base64HandoffRequested)  // Client supports base64 encoding
                 {
-                    requestData.Response.AddHeader(SharedConstants.BINARY_SERIALISATION_HEADER, SharedConstants.BINARY_SERIALISATION_SUPPORTED); // Add a header indicating to the client that a binary formatted image is available for faster processing
-
-                    ImageArrayResponseBase imageArrayBaseResponseClass = new ImageArrayResponseBase() // Create a populated base class that doesn't have a "Value" member
-                    {
-                        ClientTransactionID = responseClass.ClientTransactionID,
-                        DriverException = responseClass.DriverException,
-                        ErrorMessage = responseClass.ErrorMessage,
-                        ErrorNumber = responseClass.ErrorNumber,
-                        ServerTransactionID = responseClass.ServerTransactionID,
-                        Rank = responseClass.Rank,
-                        Type = responseClass.Type
-                    };
-
                     // Write the response back to the client using a stream
                     JsonSerializer serializer = new JsonSerializer();
                     StreamWriter streamWriter = new StreamWriter(requestData.Response.OutputStream);
 
                     using (JsonWriter writer = new JsonTextWriter(streamWriter))
                     {
-                        serializer.Serialize(writer, imageArrayBaseResponseClass);
+                        serializer.Serialize(writer, responseClass);
                     }
 
                     requestData.Response.OutputStream.Close();
                     sw.Stop();
 
-                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Image array properties response sent to client - ImageArray Rank: {imageArrayBaseResponseClass.Rank} Type: {imageArrayBaseResponseClass.Type} - After closing output stream ({sw.ElapsedMilliseconds}ms.)");
+                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Base64Encoded - Image array properties response sent to client - ImageArray Rank: {responseClass.Rank} Type: {responseClass.Type} - Driver response time: {timeDriver}ms, Overall response time: {sw.ElapsedMilliseconds}ms.");
                 }
                 else
                 {
                     switch (compressionType)
                     {
-                        case SharedConstants.ImageArrayTransferType.GZipCompressed:
-                        case SharedConstants.ImageArrayTransferType.DeflateCompressed:
+                        case SharedConstants.ImageArrayCompression.GZip:
+                        case SharedConstants.ImageArrayCompression.Deflate:
                             responseJson = JsonConvert.SerializeObject(responseClass);
                             long timeJsonSerialisation = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
@@ -4509,9 +4654,10 @@ namespace ASCOM.Remote
 
                             using (var compressedDataStream = new MemoryStream()) // Create a memory stream
                             {
-                                if (compressionType == SharedConstants.ImageArrayTransferType.GZipCompressed) // Compress using the GZip algorithm
+                                if (compressionType == SharedConstants.ImageArrayCompression.GZip) // Compress using the GZip algorithm
                                 {
-                                    using (var gZipStream = new GZipStream(compressedDataStream, CompressionMode.Compress, true)) // Wrap the compressed data stream in a GZip stream
+                                    //using (var gZipStream = new GZipStream(compressedDataStream, CompressionMode.Compress, true)) // Wrap the compressed data stream in a GZip stream
+                                    using (var gZipStream = new GZipStream(compressedDataStream, CompressionLevel.Fastest, true)) // Wrap the compressed data stream in a GZip stream
                                     {
                                         gZipStream.Write(jsonBytes, 0, jsonBytes.Length); // Write the JSON byte array to the GZip stream and hence to the compressed data stream
                                     }
@@ -4542,7 +4688,7 @@ namespace ASCOM.Remote
                                 $"Create compressed stream: {timeCreateCompressedStream} + Convert stream to array: {timeCreateCompressedByteArray}, Return data to client: {timeReturnDataToClient}");
                             break;
 
-                        case SharedConstants.ImageArrayTransferType.Uncompressed:
+                        case SharedConstants.ImageArrayCompression.None:
                             // Write the array back to the client using a stream to avoid running out of memory when serialising very large image arrays
                             JsonSerializer serializer1 = new JsonSerializer();
                             StreamWriter streamWriter1 = new StreamWriter(requestData.Response.OutputStream);
@@ -4568,6 +4714,8 @@ namespace ASCOM.Remote
             {
                 LogException1(requestData, "ListenerException", string.Format("ReturnImageArray Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
             }
+            deviceResponse = null;
+            GC.Collect();
         }
 
         private void ReturnCanMoveAxis(RequestData requestData)

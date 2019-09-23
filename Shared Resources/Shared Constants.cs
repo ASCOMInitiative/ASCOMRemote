@@ -100,6 +100,7 @@ namespace ASCOM.Remote
         public const string PASSWORD_PROFILENAME = "Password"; public const string PASSWORD_DEFAULT = "";
         public const string MANAGE_CONNECT_LOCALLY_PROFILENAME = "Manage Connect Locally"; public const string MANAGE_CONNECT_LOCALLY_DEFAULT = "False";
         public const string IMAGE_ARRAY_TRANSFER_TYPE_PROFILENAME = "Image Array Transfer Type"; public const ImageArrayTransferType IMAGE_ARRAY_TRANSFER_TYPE_DEFAULT = DEFAULT_IMAGE_ARRAY_TRANSFER_TYPE;
+        public const string IMAGE_ARRAY_COMPRESSION_PROFILENAME = "Image Array Compression"; public const ImageArrayCompression IMAGE_ARRAY_COMPRESSION_DEFAULT = DEFAULT_IMAGE_ARRAY_COMPRESSION;
 
         // Driver naming constants
         public const string DRIVER_DISPLAY_NAME = "ASCOM Remote Client";
@@ -119,19 +120,33 @@ namespace ASCOM.Remote
         // Enum used by the remote client to indicate what type of image array transfer should be used
         public enum ImageArrayTransferType
         {
-            Uncompressed = 0,
-            DeflateCompressed = 1,
-            GZipCompressed = 2,
-            BinarySerialised = 3
+            JSON = 0,
+            Base64HandOff = 1,
+            Base64JSON = 2
         }
 
-        // Binary image array support constants
-        public const ImageArrayTransferType DEFAULT_IMAGE_ARRAY_TRANSFER_TYPE = ImageArrayTransferType.BinarySerialised;
-        public const string BINARY_SERIALISATION_HEADER = "BinarySerialisation"; // Name of HTTP header used to affirm binary serialisation support for image array data
-        public const string BINARY_SERIALISATION_SUPPORTED = "true"; // Value of HTTP header to indicate support for binary serialised image array data
-        public const string GZIP_BINARY_SERIALISED = "gzipbinaryserialised"; // Value of the HTTP "Content-Encoding" header that the remote server will set to indicate that the contents are binary serialised image array data that has been gzip compressed
-        public const FormatterTypeStyle BINARY_SERIALISATION_FORMAT = FormatterTypeStyle.TypesAlways; // Method used to binary serialise the image
-        public const string BINARY_SERIALISED_FILE_DOWNLOAD_URI_EXTENSION = "binary"; // Addition to the ImageAray and ImageArrayVariant method names from which binary serialised image files can be downloaded
+        // Enum used by the remote client to indicate what type of compression should be used in responses
+        public enum ImageArrayCompression
+        {
+            None = 0,
+            Deflate = 1,
+            GZip = 2,
+            GZipOrDeflate = 3
+        }
+
+        // Default image array transfer constants
+        public const ImageArrayCompression DEFAULT_IMAGE_ARRAY_COMPRESSION = ImageArrayCompression.None;
+        public const ImageArrayTransferType DEFAULT_IMAGE_ARRAY_TRANSFER_TYPE = ImageArrayTransferType.JSON;
+
+        // Image array base64 hand-off support constants
+        public const string BASE64_HANDOFF_HEADER = "base64handoff"; // Name of HTTP header used to affirm binary serialisation support for image array data
+        public const string BASE64_HANDOFF_SUPPORTED = "true"; // Value of HTTP header to indicate support for binary serialised image array data
+        public const string BASE64_HANDOFF_FILE_DOWNLOAD_URI_EXTENSION = "base64"; // Addition to the ImageArray and ImageArrayVariant method names from which base64 serialised image files can be downloaded
+
+        // Image array base64 JSON support constants
+        public const string BASE64_JSON_HEADER = "base64json"; // Name of HTTP header used to affirm binary serialisation support for image array data
+        public const string BASE64_JSON_SUPPORTED = "true"; // Value of HTTP header to indicate support for binary serialised image array data
+
 
         // Registry key where the Web Server configuration will be stored
         public const RegistryHive ASCOM_REMOTE_CONFIGURATION_HIVE = RegistryHive.CurrentUser;

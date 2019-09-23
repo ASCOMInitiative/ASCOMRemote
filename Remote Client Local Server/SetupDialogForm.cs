@@ -29,6 +29,7 @@ namespace ASCOM.Remote
         public bool DebugTraceState { get; set; }
         public bool ManageConnectLocally { get; set; }
         public SharedConstants.ImageArrayTransferType ImageArrayTransferType { get; set; }
+        public SharedConstants.ImageArrayCompression ImageArrayCompression { get; set; }
 
         private bool selectByMouse = false; // Variable to help select the whole contents of a numeric up-down box when tabbed into our selected by mouse
 
@@ -184,11 +185,17 @@ namespace ASCOM.Remote
                 radManageConnectRemotely.Checked = true;
             }
 
-            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.Uncompressed);
-            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.DeflateCompressed);
-            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.GZipCompressed);
-            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.BinarySerialised);
+            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.JSON);
+            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.Base64JSON);
+            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.Base64HandOff);
             CmbImageArrayTransferType.SelectedItem = ImageArrayTransferType;
+
+            cmbImageArrayCompression.Items.Add(SharedConstants.ImageArrayCompression.None);
+            cmbImageArrayCompression.Items.Add(SharedConstants.ImageArrayCompression.Deflate);
+            cmbImageArrayCompression.Items.Add(SharedConstants.ImageArrayCompression.GZip);
+            cmbImageArrayCompression.Items.Add(SharedConstants.ImageArrayCompression.GZipOrDeflate);
+            cmbImageArrayCompression.SelectedItem = ImageArrayCompression;
+
 
             this.BringToFront();
         }
@@ -212,6 +219,7 @@ namespace ASCOM.Remote
             Password = txtPassword.Text.Encrypt(TL);
             ManageConnectLocally = radManageConnectLocally.Checked;
             ImageArrayTransferType = (SharedConstants.ImageArrayTransferType)CmbImageArrayTransferType.SelectedItem;
+            ImageArrayCompression = (SharedConstants.ImageArrayCompression)cmbImageArrayCompression.SelectedItem;
             this.DialogResult = DialogResult.OK;
             Close();
         }
@@ -244,6 +252,7 @@ namespace ASCOM.Remote
         {
             ServerConfigurationForm configurationForm = new ServerConfigurationForm(TL, cmbServiceType.Text, addressList.Text, numPort.Value, txtUserName.Text, txtPassword.Text);
             configurationForm.ShowDialog();
+            configurationForm.Dispose();
         }
 
         /// <summary>
