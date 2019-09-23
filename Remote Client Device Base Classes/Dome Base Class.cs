@@ -227,6 +227,7 @@ namespace ASCOM.Remote
                     setupForm.Password = password;
                     setupForm.ManageConnectLocally = manageConnectLocally;
                     setupForm.ImageArrayTransferType = imageArrayTransferType;
+                    setupForm.DeviceType = DEVICE_TYPE;
 
                     TL.LogMessage(clientNumber, "SetupDialog", "Showing Dialogue");
                     var result = setupForm.ShowDialog();

@@ -30,6 +30,7 @@ namespace ASCOM.Remote
         public bool ManageConnectLocally { get; set; }
         public SharedConstants.ImageArrayTransferType ImageArrayTransferType { get; set; }
         public SharedConstants.ImageArrayCompression ImageArrayCompression { get; set; }
+        public string DeviceType { get; set; }
 
         private bool selectByMouse = false; // Variable to help select the whole contents of a numeric up-down box when tabbed into our selected by mouse
 
@@ -79,7 +80,7 @@ namespace ASCOM.Remote
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
 
-            this.Text = string.Format("{0} Configuration - Version {1}", DriverDisplayName, version.ToString());
+            this.Text = $"{DriverDisplayName} Configuration - Version {version} - {DeviceType}";
             addressList.Items.Add(SharedConstants.LOCALHOST_NAME);
 
             cmbServiceType.Text = ServiceType;
@@ -145,6 +146,22 @@ namespace ASCOM.Remote
             cmbImageArrayCompression.Items.Add(SharedConstants.ImageArrayCompression.GZip);
             cmbImageArrayCompression.Items.Add(SharedConstants.ImageArrayCompression.GZipOrDeflate);
             cmbImageArrayCompression.SelectedItem = ImageArrayCompression;
+
+            // Make the ImageArray transfer configuration drop-downs visible only when a camera driver is being accessed.
+            if (DeviceType == "Camera")
+            {
+                cmbImageArrayCompression.Visible = true;
+                CmbImageArrayTransferType.Visible = true;
+                LabImageArrayConfiguration1.Visible = true;
+                LabImageArrayConfiguration2.Visible = true;
+            }
+            else
+            {
+                cmbImageArrayCompression.Visible = false;
+                CmbImageArrayTransferType.Visible = false;
+                LabImageArrayConfiguration1.Visible = false;
+                LabImageArrayConfiguration2.Visible = false;
+            }
 
             // Handle cases where the stored registry value is not one of the currently supported modes
             if (CmbImageArrayTransferType.SelectedItem == null) CmbImageArrayTransferType.SelectedItem = SharedConstants.IMAGE_ARRAY_TRANSFER_TYPE_DEFAULT;
