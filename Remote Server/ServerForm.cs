@@ -4757,7 +4757,6 @@ namespace ASCOM.Remote
             {
                 LogException1(requestData, "ListenerException", string.Format("ReturnImageArray Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
             }
-            deviceResponse = null;
             GC.Collect();
         }
 
