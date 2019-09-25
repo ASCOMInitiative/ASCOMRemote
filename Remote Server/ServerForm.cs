@@ -243,7 +243,7 @@ namespace ASCOM.Remote
         private delegate void SetTextCallback(string text);
         private delegate void SetConcurrencyCallback();
         private delegate void DestroyDriverDelegate();
-        private delegate void DriverCommandDelegate(RequestData requestData);
+        private delegate Thread DriverCommandDelegate(RequestData requestData);
         private delegate void CreateInstanceDelegate(KeyValuePair<string, ConfiguredDevice> kvp);
 
         #endregion
@@ -1538,7 +1538,7 @@ namespace ASCOM.Remote
                     {
                         Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_API_FORMAT_STRING);
                         return;
-                    }
+                    } // We don't have 5 elements so return a 400 error
                     else // We have received the required 5 elements in the URI
                     {
                         for (int i = 0; i < elements.Length; i++) // Remove leading and trailing space characters from each element
@@ -1565,64 +1565,76 @@ namespace ASCOM.Remote
                                             if (!ActiveObjects[deviceKey].AllowConcurrentAccess)
                                             {
                                                 Monitor.Enter(ActiveObjects[deviceKey].CommandLock);
-                                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock acquired for device {deviceKey} from thread {Thread.CurrentThread.ManagedThreadId}");
+                                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock acquired for device {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
                                             }
                                             else
                                             {
-                                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock required for {deviceKey} from thread {Thread.CurrentThread.ManagedThreadId}");
+                                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock required for {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
                                             }
 
                                             // Process the command within a try block so that "finally" can be used to release the Monitor synchronisation object if it was set because the device can only handle one command at a time
                                             try
                                             {
                                                 // Process the request on this thread or pass to the Windows Form hosting the driver when drivers are configured to run on separate threads
-                                                if (RunDriversOnSeparateThreads)
+                                                // The driver is hosted on its own form to separate it from other drivers with the intention of improving the remote Server overall resilience in case a driver dies
+                                                // The driver form will create a thread to run the command and return it to this thread which will wait for the command to complete using Thread.Join
+                                                // This mechanic leaves the form message loop running so that concurrent commands to the driver can be processed even if an earlier slow running command has not completed.
+                                                if (RunDriversOnSeparateThreads) // Each driver is running in its own Form with its own message loop
                                                 {
-                                                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("ProcessRequestAsync is sending driver command to {0} from thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
-                                                    DriverCommandDelegate driverCommandDelegate = new DriverCommandDelegate(ActiveObjects[deviceKey].DriverHostForm.DriverCommand);
-                                                    ActiveObjects[deviceKey].DriverHostForm.Invoke(driverCommandDelegate, requestData);
-                                                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("ProcessRequestAsync has completed driver command to {0} from thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
+                                                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ProcessRequestAsync - Sending command to {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                    DriverCommandDelegate driverCommandDelegate = new DriverCommandDelegate(ActiveObjects[deviceKey].DriverHostForm.DriverCommand); // Create a delegate for this request
+                                                    Thread driverThread = (Thread)ActiveObjects[deviceKey].DriverHostForm.Invoke(driverCommandDelegate, requestData); // Send the command to the host form, which will return a thread where the command is running
+                                                    if (driverThread != null) // A thread was returned so wait for it to complete
+                                                    {
+                                                        int threadId = driverThread.ManagedThreadId; // Get the thread ID for reporting purposes
+                                                        driverThread.Join(); // Wait for the worker thread to complete. By using Thread.Join other COM requests can be processed
+                                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ProcessRequestAsync - Command completed for {deviceKey} using WORKER thread {threadId} on REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                    }
+                                                    else // No thread was returned because of a catastrophic failure in the host form
+                                                    {
+                                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ProcessRequestAsync - No thread returned from DriverCommand for {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                    }
                                                 }
                                                 else // Driver is running on the UI thread so just process the command
                                                 {
                                                     ProcessDriverCommand(requestData);
                                                 }
                                             }
-                                            finally
+                                            finally // Ensure that the command lock is released if set
                                             {
                                                 if (!ActiveObjects[deviceKey].AllowConcurrentAccess)
                                                 {
                                                     Monitor.Exit(ActiveObjects[deviceKey].CommandLock); // Release the command lock object if a lock was used
-                                                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock released for device {deviceKey} from thread {Thread.CurrentThread.ManagedThreadId}");
+                                                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock released for device {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
                                                 }
                                                 else // Specified is configured but threw an error when created or when Connected was set True so return the error message
                                                 {
-                                                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock to release for {deviceKey} from thread {Thread.CurrentThread.ManagedThreadId}");
+                                                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock to release for {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
                                                 }
                                             }
-                                        }
+                                        } // The device did initialise OK
                                         else // Specified is configured but threw an error when created or when Connected was set True so return the error message
                                         {
                                             Return400Error(requestData, string.Format("Device {0} did not start correctly and is unavailable: {1}", deviceKey, ActiveObjects[deviceKey].InitialisationErrorMessage));
-                                        }
-                                    }
+                                        } // Handle cases where the device did not initialise correctly
+                                    } // OK, we have a valid device
                                     else // Specified device is not configured so return an error message
                                     {
                                         Return400Error(requestData, string.Format("Device {0} is not configured on the Remote Server", deviceKey));
-                                    }
-                                }
+                                    } // Handle an invalid device
+                                } // We have a valid device number
                                 else
                                 {
                                     Return400Error(requestData, "Unsupported or invalid integer device number: " + elements[URL_ELEMENT_DEVICE_NUMBER] + " " + CORRECT_API_FORMAT_STRING);
-                                } // End of valid device numbers
+                                } // Handle invalid device numbers
 
                                 break; // End of valid api version numbers
                             default:
                                 Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + CORRECT_API_FORMAT_STRING);
                                 break;
-                        }
+                        } // Process the correct API version
 
-                    }
+                    } // We have 5 elements so process the command
 
                     LogBlankLine(clientID, clientTransactionID, serverTransactionID);
                 } // Process standard Alpaca device API requests
@@ -2070,6 +2082,9 @@ namespace ASCOM.Remote
                 allowConnectedSetFalse = ActiveObjects[requestData.DeviceKey].AllowConnectedSetFalse; // If we get here then the user has requestData.Requested a device that does exist
                 allowConnectedSetTrue = ActiveObjects[requestData.DeviceKey].AllowConnectedSetTrue;
                 allowConcurrentAccess = ActiveObjects[requestData.DeviceKey].AllowConcurrentAccess;
+
+                // Log a message showing the thread number on which we are running
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Processing driver command on WORKER thread {Thread.CurrentThread.ManagedThreadId}");
 
                 switch (requestData.Request.HttpMethod.ToUpperInvariant()) // Handle GET and PUT requestData.Requests
                 {
