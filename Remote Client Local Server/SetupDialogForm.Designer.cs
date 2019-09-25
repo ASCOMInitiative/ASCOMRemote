@@ -61,7 +61,9 @@
             this.radManageConnectLocally = new System.Windows.Forms.RadioButton();
             this.SetupErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
             this.CmbImageArrayTransferType = new System.Windows.Forms.ComboBox();
-            this.label14 = new System.Windows.Forms.Label();
+            this.LabImageArrayConfiguration1 = new System.Windows.Forms.Label();
+            this.cmbImageArrayCompression = new System.Windows.Forms.ComboBox();
+            this.LabImageArrayConfiguration2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRemoteDeviceNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStandardTimeout)).BeginInit();
@@ -403,23 +405,41 @@
             // 
             this.SetupErrorProvider.ContainerControl = this;
             // 
-            // CmbImageArrayTransfertype
+            // CmbImageArrayTransferType
             // 
             this.CmbImageArrayTransferType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CmbImageArrayTransferType.FormattingEnabled = true;
             this.CmbImageArrayTransferType.Location = new System.Drawing.Point(513, 213);
-            this.CmbImageArrayTransferType.Name = "CmbImageArrayTransfertype";
-            this.CmbImageArrayTransferType.Size = new System.Drawing.Size(135, 21);
+            this.CmbImageArrayTransferType.Name = "CmbImageArrayTransferType";
+            this.CmbImageArrayTransferType.Size = new System.Drawing.Size(159, 21);
             this.CmbImageArrayTransferType.TabIndex = 30;
             // 
-            // label14
+            // LabImageArrayConfiguration1
             // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(510, 195);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(138, 13);
-            this.label14.TabIndex = 31;
-            this.label14.Text = "Image array transfer method";
+            this.LabImageArrayConfiguration1.AutoSize = true;
+            this.LabImageArrayConfiguration1.Location = new System.Drawing.Point(510, 195);
+            this.LabImageArrayConfiguration1.Name = "LabImageArrayConfiguration1";
+            this.LabImageArrayConfiguration1.Size = new System.Drawing.Size(138, 13);
+            this.LabImageArrayConfiguration1.TabIndex = 31;
+            this.LabImageArrayConfiguration1.Text = "Image array transfer method";
+            // 
+            // cmbImageArrayCompression
+            // 
+            this.cmbImageArrayCompression.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbImageArrayCompression.FormattingEnabled = true;
+            this.cmbImageArrayCompression.Location = new System.Drawing.Point(513, 265);
+            this.cmbImageArrayCompression.Name = "cmbImageArrayCompression";
+            this.cmbImageArrayCompression.Size = new System.Drawing.Size(159, 21);
+            this.cmbImageArrayCompression.TabIndex = 32;
+            // 
+            // LabImageArrayConfiguration2
+            // 
+            this.LabImageArrayConfiguration2.AutoSize = true;
+            this.LabImageArrayConfiguration2.Location = new System.Drawing.Point(510, 249);
+            this.LabImageArrayConfiguration2.Name = "LabImageArrayConfiguration2";
+            this.LabImageArrayConfiguration2.Size = new System.Drawing.Size(162, 13);
+            this.LabImageArrayConfiguration2.TabIndex = 33;
+            this.LabImageArrayConfiguration2.Text = "Image array transfer compression";
             // 
             // SetupDialogForm
             // 
@@ -428,7 +448,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(697, 402);
-            this.Controls.Add(this.label14);
+            this.Controls.Add(this.LabImageArrayConfiguration2);
+            this.Controls.Add(this.cmbImageArrayCompression);
+            this.Controls.Add(this.LabImageArrayConfiguration1);
             this.Controls.Add(this.CmbImageArrayTransferType);
             this.Controls.Add(this.groupBoxConnectDisconnect);
             this.Controls.Add(this.chkDebugTrace);
@@ -507,7 +529,9 @@
         private System.Windows.Forms.RadioButton radManageConnectRemotely;
         private System.Windows.Forms.RadioButton radManageConnectLocally;
         private System.Windows.Forms.ErrorProvider SetupErrorProvider;
-        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label LabImageArrayConfiguration1;
         private System.Windows.Forms.ComboBox CmbImageArrayTransferType;
+        private System.Windows.Forms.Label LabImageArrayConfiguration2;
+        private System.Windows.Forms.ComboBox cmbImageArrayCompression;
     }
 }

@@ -29,6 +29,8 @@ namespace ASCOM.Remote
         public bool DebugTraceState { get; set; }
         public bool ManageConnectLocally { get; set; }
         public SharedConstants.ImageArrayTransferType ImageArrayTransferType { get; set; }
+        public SharedConstants.ImageArrayCompression ImageArrayCompression { get; set; }
+        public string DeviceType { get; set; }
 
         private bool selectByMouse = false; // Variable to help select the whole contents of a numeric up-down box when tabbed into our selected by mouse
 
@@ -67,56 +69,6 @@ namespace ASCOM.Remote
             addressList.Validating += AddressList_Validating;
         }
 
-        public bool IsIpAddress(string s)
-        {
-            foreach (char c in s)
-            {
-                if ((!Char.IsDigit(c)) && (c != '.')) return false; // Make sure that the strong only contains digits and the point character
-            }
-            return true;
-        }
-
-        private void AddressList_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            bool isValid = false;
-
-            if (IsIpAddress(addressList.Text)) // The host name is an IP address so test whether this is valid
-            {
-                MatchCollection matches = validIpAddressRegex.Matches(addressList.Text);
-                if (matches.Count == 0)
-                {
-                    SetupErrorProvider.SetError(addressList, "IP addresses can only contain digits and the point character in the form WWW.XXX.YYY.ZZZ.");
-                }
-                else
-                {
-                    isValid = true;
-                }
-            }
-            else // The host name is a string rather than an IP address so validate this
-            {
-                MatchCollection matches = validHostnameRegex.Matches(addressList.Text);
-                if (matches.Count == 0)
-                {
-                    SetupErrorProvider.SetError(addressList, "Not a valid host name.");
-                }
-                else
-                {
-                    isValid = true;
-                }
-            }
-
-            if (isValid)
-            {
-                SetupErrorProvider.Clear();
-                btnOK.Enabled = true;
-            }
-            else
-            {
-                btnOK.Enabled = false;
-            }
-
-        }
-
         public SetupDialogForm(TraceLoggerPlus TraceLogger) : this()
         {
             TL = TraceLogger;
@@ -128,7 +80,7 @@ namespace ASCOM.Remote
 
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
 
-            this.Text = string.Format("{0} Configuration - Version {1}", DriverDisplayName, version.ToString());
+            this.Text = $"{DriverDisplayName} Configuration - Version {version} - {DeviceType}";
             addressList.Items.Add(SharedConstants.LOCALHOST_NAME);
 
             cmbServiceType.Text = ServiceType;
@@ -184,11 +136,36 @@ namespace ASCOM.Remote
                 radManageConnectRemotely.Checked = true;
             }
 
-            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.Uncompressed);
-            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.DeflateCompressed);
-            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.GZipCompressed);
-            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.BinarySerialised);
+            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.JSON);
+            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.Base64JSON);
+            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.Base64HandOff);
             CmbImageArrayTransferType.SelectedItem = ImageArrayTransferType;
+
+            cmbImageArrayCompression.Items.Add(SharedConstants.ImageArrayCompression.None);
+            cmbImageArrayCompression.Items.Add(SharedConstants.ImageArrayCompression.Deflate);
+            cmbImageArrayCompression.Items.Add(SharedConstants.ImageArrayCompression.GZip);
+            cmbImageArrayCompression.Items.Add(SharedConstants.ImageArrayCompression.GZipOrDeflate);
+            cmbImageArrayCompression.SelectedItem = ImageArrayCompression;
+
+            // Make the ImageArray transfer configuration drop-downs visible only when a camera driver is being accessed.
+            if (DeviceType == "Camera")
+            {
+                cmbImageArrayCompression.Visible = true;
+                CmbImageArrayTransferType.Visible = true;
+                LabImageArrayConfiguration1.Visible = true;
+                LabImageArrayConfiguration2.Visible = true;
+            }
+            else
+            {
+                cmbImageArrayCompression.Visible = false;
+                CmbImageArrayTransferType.Visible = false;
+                LabImageArrayConfiguration1.Visible = false;
+                LabImageArrayConfiguration2.Visible = false;
+            }
+
+            // Handle cases where the stored registry value is not one of the currently supported modes
+            if (CmbImageArrayTransferType.SelectedItem == null) CmbImageArrayTransferType.SelectedItem = SharedConstants.IMAGE_ARRAY_TRANSFER_TYPE_DEFAULT;
+            if (cmbImageArrayCompression.SelectedItem == null) cmbImageArrayCompression.SelectedItem = SharedConstants.IMAGE_ARRAY_COMPRESSION_DEFAULT;
 
             this.BringToFront();
         }
@@ -212,6 +189,7 @@ namespace ASCOM.Remote
             Password = txtPassword.Text.Encrypt(TL);
             ManageConnectLocally = radManageConnectLocally.Checked;
             ImageArrayTransferType = (SharedConstants.ImageArrayTransferType)CmbImageArrayTransferType.SelectedItem;
+            ImageArrayCompression = (SharedConstants.ImageArrayCompression)cmbImageArrayCompression.SelectedItem;
             this.DialogResult = DialogResult.OK;
             Close();
         }
@@ -244,6 +222,7 @@ namespace ASCOM.Remote
         {
             ServerConfigurationForm configurationForm = new ServerConfigurationForm(TL, cmbServiceType.Text, addressList.Text, numPort.Value, txtUserName.Text, txtPassword.Text);
             configurationForm.ShowDialog();
+            configurationForm.Dispose();
         }
 
         /// <summary>
@@ -275,6 +254,59 @@ namespace ASCOM.Remote
                 curBox.Select(0, curBox.Text.Length);
                 selectByMouse = false;
             }
+        }
+
+        private void AddressList_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            bool isValid = false;
+
+            if (IsIpAddress(addressList.Text)) // The host name is an IP address so test whether this is valid
+            {
+                MatchCollection matches = validIpAddressRegex.Matches(addressList.Text);
+                if (matches.Count == 0)
+                {
+                    SetupErrorProvider.SetError(addressList, "IP addresses can only contain digits and the point character in the form WWW.XXX.YYY.ZZZ.");
+                }
+                else
+                {
+                    isValid = true;
+                }
+            }
+            else // The host name is a string rather than an IP address so validate this
+            {
+                MatchCollection matches = validHostnameRegex.Matches(addressList.Text);
+                if (matches.Count == 0)
+                {
+                    SetupErrorProvider.SetError(addressList, "Not a valid host name.");
+                }
+                else
+                {
+                    isValid = true;
+                }
+            }
+
+            if (isValid)
+            {
+                SetupErrorProvider.Clear();
+                btnOK.Enabled = true;
+            }
+            else
+            {
+                btnOK.Enabled = false;
+            }
+
+        }
+
+        #endregion
+
+        #region Support Code
+        public bool IsIpAddress(string s)
+        {
+            foreach (char c in s)
+            {
+                if ((!Char.IsDigit(c)) && (c != '.')) return false; // Make sure that the strong only contains digits and the point character
+            }
+            return true;
         }
 
         #endregion

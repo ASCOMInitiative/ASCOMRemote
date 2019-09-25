@@ -34,6 +34,7 @@
             this.chkAllowSetConnectedTrue = new System.Windows.Forms.CheckBox();
             this.chkAllowSetConnectedFalse = new System.Windows.Forms.CheckBox();
             this.btnSetup = new System.Windows.Forms.Button();
+            this.ChkAllowConcurrentAccess = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // cmbDeviceType
@@ -94,10 +95,20 @@
             this.btnSetup.UseVisualStyleBackColor = true;
             this.btnSetup.Click += new System.EventHandler(this.BtnSetup_Click);
             // 
+            // ChkAllowConcurrentAccess
+            // 
+            this.ChkAllowConcurrentAccess.AutoSize = true;
+            this.ChkAllowConcurrentAccess.Location = new System.Drawing.Point(928, 4);
+            this.ChkAllowConcurrentAccess.Name = "ChkAllowConcurrentAccess";
+            this.ChkAllowConcurrentAccess.Size = new System.Drawing.Size(15, 14);
+            this.ChkAllowConcurrentAccess.TabIndex = 7;
+            this.ChkAllowConcurrentAccess.UseVisualStyleBackColor = true;
+            // 
             // ServedDevice
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.ChkAllowConcurrentAccess);
             this.Controls.Add(this.btnSetup);
             this.Controls.Add(this.chkAllowSetConnectedTrue);
             this.Controls.Add(this.chkAllowSetConnectedFalse);
@@ -105,7 +116,7 @@
             this.Controls.Add(this.txtDeviceNumber);
             this.Controls.Add(this.cmbDeviceType);
             this.Name = "ServedDevice";
-            this.Size = new System.Drawing.Size(872, 22);
+            this.Size = new System.Drawing.Size(979, 22);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -119,5 +130,6 @@
         private System.Windows.Forms.CheckBox chkAllowSetConnectedTrue;
         private System.Windows.Forms.CheckBox chkAllowSetConnectedFalse;
         private System.Windows.Forms.Button btnSetup;
+        private System.Windows.Forms.CheckBox ChkAllowConcurrentAccess;
     }
 }

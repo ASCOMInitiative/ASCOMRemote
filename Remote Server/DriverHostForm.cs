@@ -47,7 +47,7 @@ namespace ASCOM.Remote
         {
             deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber);
 
-            ServerForm.LogMessage(0, 0, 0, "DriverHostForm", string.Format("Creating driver {0} ({1}) on thread {2}", deviceKey, configuredDevice.Key, Thread.CurrentThread.ManagedThreadId));
+            ServerForm.LogMessage(0, 0, 0, "DriverHostForm", $"Creating driver {deviceKey} ({configuredDevice.Key}) on thread {Thread.CurrentThread.ManagedThreadId} with apartment state {Thread.CurrentThread.GetApartmentState()}");
             restServer.CreateInstance(configuredDevice); // Create the driver on this thread
             ServerForm.LogMessage(0, 0, 0, "DriverHostForm", string.Format("Created driver {0} ({1}) on thread {2}", deviceKey, configuredDevice.Key, Thread.CurrentThread.ManagedThreadId));
 
@@ -68,20 +68,33 @@ namespace ASCOM.Remote
         /// Send a command to the driver
         /// </summary>
         /// <param name="requestData">Details of the command to send</param>
-        public void DriverCommand(RequestData requestData)
+        /// <returns>Background thread on which the command is executing</returns>
+        public Thread DriverCommand(RequestData requestData)
         {
             try // Process the command
             {
-                if (ServerForm.DebugTraceState) ServerForm.LogMessage1(requestData, requestData.Elements[ServerForm.URL_ELEMENT_METHOD], string.Format("DriverCommand has received a command for {0} on thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
                 Application.DoEvents();
-                restServer.ProcessDriverCommand(requestData);
-                if (ServerForm.DebugTraceState) ServerForm.LogMessage1(requestData, requestData.Elements[ServerForm.URL_ELEMENT_METHOD], string.Format("DriverCommand has completed the command for {0} on thread {1}", deviceKey, Thread.CurrentThread.ManagedThreadId));
+
+                // Process the command on a separate thread allowing other requests to be handled concurrently through this thread, which is running the Windows message loop
+                Thread driverThread = new Thread(new ParameterizedThreadStart(ProcessCommand)); // Create a new thread on which to make the call to the COM driver
+                if (ServerForm.DebugTraceState) ServerForm.LogMessage1(requestData, requestData.Elements[ServerForm.URL_ELEMENT_METHOD], $"DriverCommand has received a command for {deviceKey} on FORM thread {Thread.CurrentThread.ManagedThreadId} Apartment state: {Thread.CurrentThread.GetApartmentState()} Is background: {Thread.CurrentThread.IsBackground} Is thread pool thread: {Thread.CurrentThread.IsThreadPoolThread}");
+
+                driverThread.Start(requestData); // Start the thread supplying the request data to the method
+
+                if (ServerForm.DebugTraceState) ServerForm.LogMessage1(requestData, requestData.Elements[ServerForm.URL_ELEMENT_METHOD], $"DriverCommand has started the command for {deviceKey} on FORM thread { Thread.CurrentThread.ManagedThreadId}");
+                return driverThread; // Return the thread so that the calling method can wait for it to complete and so that this thread can start waiting for the next command
             }
             catch (Exception ex) // Something serious has gone wrong with the ASCOM Remote server itself so report this to the user
             {
                 ServerForm.LogException1(requestData, "DriverCommand", ex.ToString());
                 restServer.Return500Error(requestData, "Internal server error (DriverOnSeparateThread): " + ex.ToString());
             }
+            return null;
+        }
+
+        void ProcessCommand(object requestData)
+        {
+            restServer.ProcessDriverCommand((RequestData)requestData);
         }
 
         /// <summary>

@@ -225,6 +225,7 @@ namespace ASCOM.Remote
                     item.DeviceNumber = ServerForm.ConfiguredDevices[item.Name].DeviceNumber;
                     item.AllowConnectedSetFalse = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetFalse;
                     item.AllowConnectedSetTrue = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetTrue;
+                    item.AllowConcurrentAccess= ServerForm.ConfiguredDevices[item.Name].AllowConcurrentAccess;
                     item.DevicesAreConnected = ServerForm.devicesAreConnected;
 
                     ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}.", item.Name));
@@ -357,6 +358,7 @@ namespace ASCOM.Remote
                     ServerForm.ConfiguredDevices[item.Name].DeviceNumber = item.DeviceNumber;
                     ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetFalse = item.AllowConnectedSetFalse;
                     ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetTrue = item.AllowConnectedSetTrue;
+                    ServerForm.ConfiguredDevices[item.Name].AllowConcurrentAccess = item.AllowConcurrentAccess;
                 }
 
                 ServerForm.CorsPermittedOrigins = corsPermittedOriginsCopy.ToListString(); // Copy the edited list back to the master copy

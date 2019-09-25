@@ -15,13 +15,14 @@ namespace ASCOM.Remote
         /// <param name="DeviceObjectParm"></param>
         /// <param name="AllowConnectedSetFalseParm"></param>
         /// <param name="AllowSetConnectedTrueParm"></param>
-        public ActiveObject(bool AllowConnectedSetFalseParm, bool AllowSetConnectedTrueParm)
+        public ActiveObject(bool AllowConnectedSetFalseParm, bool AllowSetConnectedTrueParm, bool AllowConcurrentAccessParm)
         {
             CommandLock = new object(); // Create a lock object
             InitialisedOk = false; // Initialise flag and error message
             InitialisationErrorMessage = "ASCOM Remote ActiveObject error message - something went wrong during device initialisation but the error message was not recorded for an unknown reason.";
             AllowConnectedSetFalse = AllowConnectedSetFalseParm;
             AllowConnectedSetTrue = AllowSetConnectedTrueParm;
+            AllowConcurrentAccess = AllowConcurrentAccessParm;
         }
 
         /// <summary>
@@ -38,6 +39,11 @@ namespace ASCOM.Remote
         /// Flag indicating whether the user is allowed to set the device's Connected property to True
         /// </summary>
         public bool AllowConnectedSetTrue { get; set; }
+
+        /// <summary>
+        /// Flag indicating whether the driver can handle concurrent calls
+        /// </summary>
+        public bool AllowConcurrentAccess { get; set; }
 
         /// <summary>
         /// Lock object to ensure that only one command at a time is sent to the device
