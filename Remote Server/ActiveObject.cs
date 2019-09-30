@@ -69,10 +69,5 @@ namespace ASCOM.Remote
         /// If the device is a Camera, points to the last image array value returned, otherwise null
         /// </summary>
         public object LastImageArray { get; set; }
-
-        /// <summary>
-        /// If the device is a Camera, points to the last image array variant value returned, otherwise null
-        /// </summary>
-        public object LastImageArrayVariant { get; set; }
     }
 }

@@ -137,7 +137,6 @@ namespace ASCOM.Remote
             }
 
             CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.JSON);
-            CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.Base64JSON);
             CmbImageArrayTransferType.Items.Add(SharedConstants.ImageArrayTransferType.Base64HandOff);
             CmbImageArrayTransferType.SelectedItem = ImageArrayTransferType;
 

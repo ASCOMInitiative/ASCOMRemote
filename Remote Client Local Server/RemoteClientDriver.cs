@@ -19,10 +19,7 @@ using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.IO;
 using System.Net;
-using System.IO.Compression;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace ASCOM.Remote
 {
@@ -210,23 +207,23 @@ namespace ASCOM.Remote
                 driverProfile.DeviceType = deviceType;
 
                 // Initialise the logging trace state from the Profile
-                traceState = Convert.ToBoolean(driverProfile.GetValue(driverProgID, SharedConstants.TRACE_LEVEL_PROFILENAME, string.Empty, SharedConstants.CLIENT_TRACE_LEVEL_DEFAULT), CultureInfo.InvariantCulture);
+                traceState = GetBooleanValue(TL, driverProfile, driverProgID, SharedConstants.TRACE_LEVEL_PROFILENAME, string.Empty, SharedConstants.CLIENT_TRACE_LEVEL_DEFAULT);
                 TL.Enabled = traceState; // Set the logging state immediately after this has been retrieved from Profile
 
                 // Initialise other variables from the Profile
-                debugTraceState = Convert.ToBoolean(driverProfile.GetValue(driverProgID, SharedConstants.DEBUG_TRACE_PROFILENAME, string.Empty, SharedConstants.DEBUG_TRACE_DEFAULT), CultureInfo.InvariantCulture);
+                debugTraceState = GetBooleanValue(TL, driverProfile, driverProgID, SharedConstants.DEBUG_TRACE_PROFILENAME, string.Empty, SharedConstants.DEBUG_TRACE_DEFAULT);
                 ipAddressString = driverProfile.GetValue(driverProgID, SharedConstants.IPADDRESS_PROFILENAME, string.Empty, SharedConstants.IPADDRESS_DEFAULT);
-                portNumber = Convert.ToDecimal(driverProfile.GetValue(driverProgID, SharedConstants.PORTNUMBER_PROFILENAME, string.Empty, SharedConstants.PORTNUMBER_DEFAULT), CultureInfo.InvariantCulture);
-                remoteDeviceNumber = Convert.ToDecimal(driverProfile.GetValue(driverProgID, SharedConstants.REMOTE_DEVICE_NUMBER_PROFILENAME, string.Empty, SharedConstants.REMOTE_DEVICE_NUMBER_DEFAULT), CultureInfo.InvariantCulture);
+                portNumber = GetDecimalValue(TL, driverProfile, driverProgID, SharedConstants.PORTNUMBER_PROFILENAME, string.Empty, SharedConstants.PORTNUMBER_DEFAULT);
+                remoteDeviceNumber = GetDecimalValue(TL, driverProfile, driverProgID, SharedConstants.REMOTE_DEVICE_NUMBER_PROFILENAME, string.Empty, SharedConstants.REMOTE_DEVICE_NUMBER_DEFAULT);
                 serviceType = driverProfile.GetValue(driverProgID, SharedConstants.SERVICE_TYPE_PROFILENAME, string.Empty, SharedConstants.SERVICE_TYPE_DEFAULT);
-                establishConnectionTimeout = Convert.ToInt32(driverProfile.GetValue(driverProgID, SharedConstants.ESTABLISH_CONNECTION_TIMEOUT_PROFILENAME, string.Empty, SharedConstants.ESTABLISH_CONNECTION_TIMEOUT_DEFAULT), CultureInfo.InvariantCulture);
-                standardServerResponseTimeout = Convert.ToInt32(driverProfile.GetValue(driverProgID, SharedConstants.STANDARD_SERVER_RESPONSE_TIMEOUT_PROFILENAME, string.Empty, SharedConstants.STANDARD_SERVER_RESPONSE_TIMEOUT_DEFAULT), CultureInfo.InvariantCulture);
-                longServerResponseTimeout = Convert.ToInt32(driverProfile.GetValue(driverProgID, SharedConstants.LONG_SERVER_RESPONSE_TIMEOUT_PROFILENAME, string.Empty, SharedConstants.LONG_SERVER_RESPONSE_TIMEOUT_DEFAULT), CultureInfo.InvariantCulture);
+                establishConnectionTimeout = GetInt32Value(TL, driverProfile, driverProgID, SharedConstants.ESTABLISH_CONNECTION_TIMEOUT_PROFILENAME, string.Empty, SharedConstants.ESTABLISH_CONNECTION_TIMEOUT_DEFAULT);
+                standardServerResponseTimeout = GetInt32Value(TL, driverProfile, driverProgID, SharedConstants.STANDARD_SERVER_RESPONSE_TIMEOUT_PROFILENAME, string.Empty, SharedConstants.STANDARD_SERVER_RESPONSE_TIMEOUT_DEFAULT);
+                longServerResponseTimeout = GetInt32Value(TL, driverProfile, driverProgID, SharedConstants.LONG_SERVER_RESPONSE_TIMEOUT_PROFILENAME, string.Empty, SharedConstants.LONG_SERVER_RESPONSE_TIMEOUT_DEFAULT);
                 userName = driverProfile.GetValue(driverProgID, SharedConstants.USERNAME_PROFILENAME, string.Empty, SharedConstants.USERNAME_DEFAULT);
                 password = driverProfile.GetValue(driverProgID, SharedConstants.PASSWORD_PROFILENAME, string.Empty, SharedConstants.PASSWORD_DEFAULT);
-                manageConnectLocally = Convert.ToBoolean(driverProfile.GetValue(driverProgID, SharedConstants.MANAGE_CONNECT_LOCALLY_PROFILENAME, string.Empty, SharedConstants.MANAGE_CONNECT_LOCALLY_DEFAULT));
-                imageArrayTransferType = (SharedConstants.ImageArrayTransferType)Convert.ToInt32(driverProfile.GetValue(driverProgID, SharedConstants.IMAGE_ARRAY_TRANSFER_TYPE_PROFILENAME, string.Empty, ((int)SharedConstants.IMAGE_ARRAY_TRANSFER_TYPE_DEFAULT).ToString()));
-                imageArrayCompression = (SharedConstants.ImageArrayCompression)Convert.ToInt32(driverProfile.GetValue(driverProgID, SharedConstants.IMAGE_ARRAY_COMPRESSION_PROFILENAME, string.Empty, ((int)SharedConstants.IMAGE_ARRAY_COMPRESSION_DEFAULT).ToString()));
+                manageConnectLocally = GetBooleanValue(TL, driverProfile, driverProgID, SharedConstants.MANAGE_CONNECT_LOCALLY_PROFILENAME, string.Empty, SharedConstants.MANAGE_CONNECT_LOCALLY_DEFAULT);
+                imageArrayTransferType = (SharedConstants.ImageArrayTransferType)GetInt32Value(TL, driverProfile, driverProgID, SharedConstants.IMAGE_ARRAY_TRANSFER_TYPE_PROFILENAME, string.Empty, (int)SharedConstants.IMAGE_ARRAY_TRANSFER_TYPE_DEFAULT);
+                imageArrayCompression = (SharedConstants.ImageArrayCompression)GetInt32Value(TL, driverProfile, driverProgID, SharedConstants.IMAGE_ARRAY_COMPRESSION_PROFILENAME, string.Empty, (int)SharedConstants.IMAGE_ARRAY_TRANSFER_TYPE_DEFAULT);
 
                 TL.DebugTraceState = debugTraceState; // Save the debug state for use when needed wherever the trace logger is used
 
@@ -280,6 +277,77 @@ namespace ASCOM.Remote
             }
         }
 
+        /// <summary>
+        /// Read a profile value and return its value handling uninitialised and invalid values by returning a default value instead
+        /// </summary>
+        /// <param name="driverProfile">Profile object from which to read values</param>
+        /// <param name="driverProgId">Driver's ProgID</param>
+        /// <param name="valueName">Name of the value to retrieve</param>
+        /// <param name="subKeyName">Subkey in which the value is located</param>
+        /// <param name="defaultValue">Default value to return if the value doesn't exist or is invalid</param>
+        /// <returns></returns>
+        private static bool GetBooleanValue(TraceLoggerPlus TL, Profile driverProfile, string driverProgId, string valueName, string subKeyName, bool defaultValue)
+        {
+            string profileValue = driverProfile.GetValue(driverProgId, valueName, subKeyName, defaultValue.ToString()); // Return a profile value substituting a default value if not already set
+            TL.LogMessage("GetBooleanValue", $"{valueName} = '{profileValue}'");
+
+            bool convertedOk = Boolean.TryParse(profileValue, out bool returnValue); // Try to convert the profile value to a boolean
+            if (!convertedOk) // If unable to convert to a boolean, return the default value and write this back to the Profile
+            {
+                TL.LogMessage("GetBooleanValue", $"Correcting invalid value: '{profileValue}' to '{defaultValue}'");
+                returnValue = defaultValue;
+                driverProfile.WriteValue(driverProgId, valueName, defaultValue.ToString(CultureInfo.InvariantCulture), subKeyName);
+            }
+            return returnValue;
+        }
+
+        /// <summary>
+        /// Read a profile value and return its value handling uninitialised and invalid values by returning a default value instead
+        /// </summary>
+        /// <param name="driverProfile">Profile object from which to read values</param>
+        /// <param name="driverProgId">Driver's ProgID</param>
+        /// <param name="valueName">Name of the value to retrieve</param>
+        /// <param name="subKeyName">Subkey in which the value is located</param>
+        /// <param name="defaultValue">Default value to return if the value doesn't exist or is invalid</param>
+        /// <returns></returns>
+        private static int GetInt32Value(TraceLoggerPlus TL, Profile driverProfile, string driverProgId, string valueName, string subKeyName, int defaultValue)
+        {
+            string profileValue = driverProfile.GetValue(driverProgId, valueName, subKeyName, defaultValue.ToString()); // Return a profile value substituting a default value if not already set
+            TL.LogMessage("GetInt32Value", $"{valueName} = '{profileValue}'");
+
+            bool convertedOk = Int32.TryParse(profileValue, out int returnValue); // Try to convert the profile value to an int
+            if (!convertedOk) // If unable to convert to a int, return the default value and write this back to the Profile
+            {
+                TL.LogMessage("GetInt32Value", $"Correcting invalid value: '{profileValue}' to '{defaultValue}'");
+                returnValue = defaultValue;
+                driverProfile.WriteValue(driverProgId, valueName, defaultValue.ToString(CultureInfo.InvariantCulture), subKeyName);
+            }
+            return returnValue;
+
+        }
+        /// <summary>
+        /// Read a profile value and return its value handling uninitialised and invalid values by returning a default value instead
+        /// </summary>
+        /// <param name="driverProfile">Profile object from which to read values</param>
+        /// <param name="driverProgId">Driver's ProgID</param>
+        /// <param name="valueName">Name of the value to retrieve</param>
+        /// <param name="subKeyName">Subkey in which the value is located</param>
+        /// <param name="defaultValue">Default value to return if the value doesn't exist or is invalid</param>
+        /// <returns></returns>
+        private static decimal GetDecimalValue(TraceLoggerPlus TL, Profile driverProfile, string driverProgId, string valueName, string subKeyName, decimal defaultValue)
+        {
+            string profileValue = driverProfile.GetValue(driverProgId, valueName, subKeyName, defaultValue.ToString()); // Return a profile value substituting a default value if not already set
+            TL.LogMessage("GetDecimalValue", $"{valueName} = '{profileValue}'");
+
+            bool convertedOk = Decimal.TryParse(profileValue, out decimal returnValue); // Try to convert the profile value to a decimal
+            if (!convertedOk) // If unable to convert to a decimal, return the default value and write this back to the Profile
+            {
+                TL.LogMessage("GetDecimalValue", $"Correcting invalid value: '{profileValue}' to '{defaultValue}'");
+                returnValue = defaultValue;
+                driverProfile.WriteValue(driverProgId, valueName, defaultValue.ToString(CultureInfo.InvariantCulture), subKeyName);
+            }
+            return returnValue;
+        }
         #endregion
 
         #region Remote access methods
@@ -505,7 +573,7 @@ namespace ASCOM.Remote
                                 client.ConfigureWebRequest(wr => wr.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip); // Allow both Deflate and GZip decompression
                                 break;
                             default:
-                                throw new InvalidValueException($"Unknown ImageArrayCompression value: {imageArrayCompression} - Can't proceed further!");
+                                throw new InvalidValueException($"Invalid image array compression type: {imageArrayCompression} - Correct this in the Remote Client setup dialogue.");
                         }
 
                         switch (imageArrayTransferType)
@@ -516,11 +584,8 @@ namespace ASCOM.Remote
                             case SharedConstants.ImageArrayTransferType.Base64HandOff:
                                 request.AddHeader(SharedConstants.BASE64_HANDOFF_HEADER, SharedConstants.BASE64_HANDOFF_SUPPORTED);
                                 break;
-                            case SharedConstants.ImageArrayTransferType.Base64JSON:
-                                request.AddHeader(SharedConstants.BASE64_JSON_HEADER, SharedConstants.BASE64_JSON_SUPPORTED);
-                                break;
                             default:
-                                throw new InvalidValueException($"Unknown ImageArrayTransferType: {imageArrayTransferType} - Can't proceed further!");
+                                throw new InvalidValueException($"Invalid image array transfer type: {imageArrayTransferType} - Correct this in the Remote Client setup dialogue.");
                         }
                     }
 
@@ -767,15 +832,6 @@ namespace ASCOM.Remote
                                 using (HttpClient httpClient = new HttpClient(imageDownloadHandler))
                                 {
                                     string base64ArrayString = "";
-                                    /*                                    if ((imageArrayCompression == SharedConstants.ImageArrayCompression.GZip) || (imageArrayCompression == SharedConstants.ImageArrayCompression.GZipOrDeflate))
-                                                                        {
-                                                                            HttpRequestHeaders asd = httpClient.DefaultRequestHeaders;
-                                                                            asd.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-
-                                                                                //Accept.Add(new MediaTypeWithQualityHeaderValue("gzip"));
-                                                                            TL.LogMessage(clientNumber, method, $"Setting compression mode to GZip");
-                                                                        }
-                                                                        */
 
                                     // Get an async stream
                                     Stream base64ArrayStream = httpClient.GetStreamAsync(base64Uri).Result;
@@ -870,111 +926,6 @@ namespace ASCOM.Remote
 
                                     return (T)(object)remoteArray;
                                 }
-                            }
-
-                            // Handle base64 encoded string JSON response image transfer mechanic
-                            else if (deviceJsonResponse.Headers.Any(t => t.Name.ToString() == SharedConstants.BASE64_JSON_HEADER))
-                            {
-                                TL.LogMessage(clientNumber, method, $"Processing array as base64 encoded string value");
-                                lastTime = 0;
-                                Base64ArrayJsonResponse base64ArrayResponse = JsonConvert.DeserializeObject<Base64ArrayJsonResponse>(deviceJsonResponse.Content);
-                                long timeJsonResponse = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds;
-
-                                TL.LogMessage(clientNumber, method, $"Array type: {(SharedConstants.ImageArrayElementTypes)base64ArrayResponse.Type}, Array rank: {base64ArrayResponse.Rank}, Dimension 0: {base64ArrayResponse.Dimension0Length}, Dimension 1: {base64ArrayResponse.Dimension1Length}, Dimension 2: {base64ArrayResponse.Dimension2Length}");
-
-                                // Convert the array from base64 encoding to a byte array
-                                byte[] base64ArrayByteArray = Convert.FromBase64String(base64ArrayResponse.Value);
-                                long timeConvertToByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds;
-
-                                // List some of the returned bytes for information
-                                string byteLine = "";
-                                try
-                                {
-                                    for (int i = 0; i < 300; i++)
-                                    {
-                                        byteLine += base64ArrayByteArray[i].ToString() + " ";
-                                    }
-                                    TL.LogMessage(clientNumber, method, $"Converted base64 bytes: {byteLine}");
-                                }
-                                catch { }
-
-                                // Now create and populate an appropriate array to return to the client that mirrors the array type returned by the device
-                                long timeToCreateTargetArray = 0;
-                                long timeToCopyBytesToArray = 0;
-                                SharedConstants.ImageArrayElementTypes arrayType = (SharedConstants.ImageArrayElementTypes)base64ArrayResponse.Type; // Extract the array type from the JSON response
-                                switch (arrayType) // Handle the different array return types
-                                {
-                                    case SharedConstants.ImageArrayElementTypes.Int:
-                                        switch (base64ArrayResponse.Rank)
-                                        {
-                                            case 2:
-                                                remoteArray = new int[base64ArrayResponse.Dimension0Length, base64ArrayResponse.Dimension1Length];
-                                                break;
-
-                                            case 3:
-                                                remoteArray = new int[base64ArrayResponse.Dimension0Length, base64ArrayResponse.Dimension1Length, base64ArrayResponse.Dimension2Length];
-                                                break;
-
-                                            default:
-                                                throw new InvalidOperationException("Arrays of Rank " + base64ArrayResponse.Rank + " are not supported.");
-                                        }
-                                        timeToCreateTargetArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds;
-                                        Buffer.BlockCopy(base64ArrayByteArray, 0, remoteArray, 0, base64ArrayByteArray.Length); // Copy the array bytes to the response array that will return to the client
-                                        timeToCopyBytesToArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds;
-                                        break;
-
-                                    case SharedConstants.ImageArrayElementTypes.Short:
-                                        switch (base64ArrayResponse.Rank)
-                                        {
-                                            case 2:
-                                                remoteArray = new short[base64ArrayResponse.Dimension0Length, base64ArrayResponse.Dimension1Length];
-                                                break;
-
-                                            case 3:
-                                                remoteArray = new short[base64ArrayResponse.Dimension0Length, base64ArrayResponse.Dimension1Length, base64ArrayResponse.Dimension2Length];
-                                                break;
-
-                                            default:
-                                                throw new InvalidOperationException("Arrays of Rank " + base64ArrayResponse.Rank + " are not supported.");
-                                        }
-                                        Buffer.BlockCopy(base64ArrayByteArray, 0, remoteArray, 0, base64ArrayByteArray.Length); // Copy the array bytes to the response array that will return to the client
-                                        break;
-
-                                    case SharedConstants.ImageArrayElementTypes.Double:
-                                        switch (base64ArrayResponse.Rank)
-                                        {
-                                            case 2:
-                                                remoteArray = new double[base64ArrayResponse.Dimension0Length, base64ArrayResponse.Dimension1Length];
-                                                break;
-
-                                            case 3:
-                                                remoteArray = new double[base64ArrayResponse.Dimension0Length, base64ArrayResponse.Dimension1Length, base64ArrayResponse.Dimension2Length];
-                                                break;
-
-                                            default:
-                                                throw new InvalidOperationException("Arrays of Rank " + base64ArrayResponse.Rank + " are not supported.");
-                                        }
-                                        Buffer.BlockCopy(base64ArrayByteArray, 0, remoteArray, 0, base64ArrayByteArray.Length); // Copy the array bytes to the response array that will return to the client
-                                        break;
-
-                                    default:
-                                        throw new InvalidOperationException("Image array element type" + arrayType + " is not supported.");
-                                }
-                                long timeCreateArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds;
-
-                                if (TL.DebugTraceState)
-                                {
-                                    TL.LogMessage(clientNumber, method, 
-                                        $"Overall response time: {sw.ElapsedMilliseconds}. " +
-                                        $"Server responded in: {timeServerResponse}ms," + 
-                                        $"Base64 encoded string processed in {sw.ElapsedMilliseconds}ms - " +
-                                        $"Converted to byte array in:{timeConvertToByteArray}ms " +
-                                        $"Created target array in:{timeToCreateTargetArray}ms " +
-                                        $"Copied bytes to target array in:{timeToCopyBytesToArray}ms "
-                                        );
-                                }
-
-                                return (T)(object)remoteArray;
                             }
 
                             // Handle conventional JSON response with integer array elements individually serialised

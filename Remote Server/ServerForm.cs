@@ -1298,7 +1298,7 @@ namespace ASCOM.Remote
                 // Clear the devices
                 DisconnectDevices();
             }
-        }
+        }  // Event handler for new REST requests
 
         /// <summary>
         /// Processes the request received by the server
@@ -1544,7 +1544,7 @@ namespace ASCOM.Remote
                         for (int i = 0; i < elements.Length; i++) // Remove leading and trailing space characters from each element
                         {
                             elements[i] = elements[i].Trim();
-                        }
+                        } // Clean the supplied parameters
 
                         switch (elements[URL_ELEMENT_API_VERSION]) // Process each API version as necessary (at 8/8/17 only V1 is implemented)
                         {
@@ -1560,17 +1560,17 @@ namespace ASCOM.Remote
                                     {
                                         if (ActiveObjects[deviceKey].InitialisedOk) // The device did initialise OK
                                         {
-                                            // Ensure that we only process one command at a time for this driver
-                                            // Wait until we get a lock on the device's synchronisation lock object if the device cannot handle concurrent access, otherwise continue without waiting
-                                            if (!ActiveObjects[deviceKey].AllowConcurrentAccess)
+                                            // Test whether this device is configured for concurrent request processing
+                                            // If not permitted, wait until we get a lock on the device's synchronisation lock object, otherwise continue without waiting
+                                            if (!ActiveObjects[deviceKey].AllowConcurrentAccess) // Concurrent processing is not permitted so wait for the synchronisation lock
                                             {
                                                 Monitor.Enter(ActiveObjects[deviceKey].CommandLock);
                                                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock acquired for device {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
-                                            }
+                                            }  // Concurrent processing is not enabled 
                                             else
                                             {
                                                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock required for {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
-                                            }
+                                            } // Concurrent processing is enabled
 
                                             // Process the command within a try block so that "finally" can be used to release the Monitor synchronisation object if it was set because the device can only handle one command at a time
                                             try
@@ -1583,22 +1583,24 @@ namespace ASCOM.Remote
                                                 {
                                                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ProcessRequestAsync - Sending command to {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
                                                     DriverCommandDelegate driverCommandDelegate = new DriverCommandDelegate(ActiveObjects[deviceKey].DriverHostForm.DriverCommand); // Create a delegate for this request
+
                                                     Thread driverThread = (Thread)ActiveObjects[deviceKey].DriverHostForm.Invoke(driverCommandDelegate, requestData); // Send the command to the host form, which will return a thread where the command is running
+
                                                     if (driverThread != null) // A thread was returned so wait for it to complete
                                                     {
                                                         int threadId = driverThread.ManagedThreadId; // Get the thread ID for reporting purposes
                                                         driverThread.Join(); // Wait for the worker thread to complete. By using Thread.Join other COM requests can be processed
                                                         LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ProcessRequestAsync - Command completed for {deviceKey} using WORKER thread {threadId} on REST thread {Thread.CurrentThread.ManagedThreadId}");
-                                                    }
+                                                    } // A thread was returned by the driver host form
                                                     else // No thread was returned because of a catastrophic failure in the host form
                                                     {
                                                         LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ProcessRequestAsync - No thread returned from DriverCommand for {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
-                                                    }
-                                                }
+                                                    } // No thread was returned by the driver host for so log the error
+                                                } // Drivers are running on separate threads with independent forms and message queues
                                                 else // Driver is running on the UI thread so just process the command
                                                 {
-                                                    ProcessDriverCommand(requestData);
-                                                }
+                                                    ProcessDriverCommand(requestData); // Process the device command
+                                                } // Drivers are all running on the main UI thread
                                             }
                                             finally // Ensure that the command lock is released if set
                                             {
@@ -1606,11 +1608,11 @@ namespace ASCOM.Remote
                                                 {
                                                     Monitor.Exit(ActiveObjects[deviceKey].CommandLock); // Release the command lock object if a lock was used
                                                     if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock released for device {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
-                                                }
+                                                } // Concurrent access is not enabled so release the synchronisation lock obtained earlier
                                                 else // Specified is configured but threw an error when created or when Connected was set True so return the error message
                                                 {
                                                     if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock to release for {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
-                                                }
+                                                } // Concurrent operation is permitted so just log progress
                                             }
                                         } // The device did initialise OK
                                         else // Specified is configured but threw an error when created or when Connected was set True so return the error message
@@ -1626,13 +1628,13 @@ namespace ASCOM.Remote
                                 else
                                 {
                                     Return400Error(requestData, "Unsupported or invalid integer device number: " + elements[URL_ELEMENT_DEVICE_NUMBER] + " " + CORRECT_API_FORMAT_STRING);
-                                } // Handle invalid device numbers
+                                } // Invalid device number provided so return a 400 error
+                                break;
 
-                                break; // End of valid api version numbers
-                            default:
+                            default: // Handle invalid API version numbers
                                 Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + CORRECT_API_FORMAT_STRING);
                                 break;
-                        } // Process the correct API version
+                        } // Process using the correct API version
 
                     } // We have 5 elements so process the command
 
@@ -2071,7 +2073,7 @@ namespace ASCOM.Remote
             {
                 DecrementConcurrencyCounter(); // Decrement the concurrent transactions counter in a thread safe manner
             }
-        } // End of ProcessRequest method
+        } // Top level request handler for all request types
 
         internal void ProcessDriverCommand(RequestData requestData)
         {
@@ -2277,7 +2279,6 @@ namespace ASCOM.Remote
                                             case "imagearrayvariant":
                                                 ReturnImageArray(requestData); break;
                                             case "imagearraybase64":
-                                            case "imagearrayvariantbase64":
                                                 ReturnImageArrayBase64(requestData); break;
 
                                             //STRING LIST Get Values
@@ -2753,7 +2754,7 @@ namespace ASCOM.Remote
                 LogException1(requestData, "ProcessDriverCommand", ex.ToString());
                 Return400Error(requestData, string.Format("The requestData.Requested device \"{0} {1}\" does not exist on this server. Supplied URI: {2} {3}", requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData.Elements[URL_ELEMENT_DEVICE_NUMBER], requestData.Request.Url.AbsolutePath, CORRECT_API_FORMAT_STRING));
             }
-        }
+        } // Driver request handler
 
         #endregion
 
@@ -4321,11 +4322,6 @@ namespace ASCOM.Remote
                 case "imagearraybase64":
                     imageArray = (Array)ActiveObjects[requestData.DeviceKey].LastImageArray;
                     break;
-                case "imagearrayvariantbase64":
-                    // Send the imagearray data, it will be the client's responsibility to turn it back into a variant object
-                    //image = (Array)ActiveObjects[requestData.DeviceKey].LastImageArrayVariant;
-                    imageArray = (Array)ActiveObjects[requestData.DeviceKey].LastImageArrayVariant;
-                    break;
             }
             long timeAssignImage = sw.ElapsedMilliseconds; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
@@ -4406,7 +4402,6 @@ namespace ASCOM.Remote
             Array deviceResponse;
             dynamic responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID); // Initialise here so that there is a class ready to convey back an error message
             Exception exReturn = null;
-            byte[] imageArrayBytes;
             long lastTime = 0;
 
             // Release memory used by the previous image before acquiring the next
@@ -4415,9 +4410,7 @@ namespace ASCOM.Remote
 
             // These flags indicate whether the client supports optimised, faster transfer modes for camera image data
             SharedConstants.ImageArrayCompression compressionType = SharedConstants.ImageArrayCompression.None; // Flag to indicate what type of compression the client supports - initialised to indicate a default of no compression
-            bool binarySerialisationRequested = false; // Flag to indicate whether the client supports .NET binary serialisation
             bool base64HandoffRequested = false; // Flag to indicate whether the client supports base64 serialisation
-            bool base64JsonRequested = false; // Flag to indicate whether the client supports base64 serialisation
 
             Stopwatch sw = new Stopwatch(); // Create a stopwatch to time the process
 
@@ -4443,13 +4436,7 @@ namespace ASCOM.Remote
                             requestData.Response.AddHeader(SharedConstants.BASE64_HANDOFF_HEADER, SharedConstants.BASE64_HANDOFF_SUPPORTED); // Add a header indicating to the client that a binary formatted image is available for faster processing
                             if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Base64 encoding supported - Header {SharedConstants.BASE64_HANDOFF_SUPPORTED} = {requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_SUPPORTED]}");
                         }
-                        // Determine whether the client supports base64 Json transfer, if so, this will be used
-                        if (requestData.Request.Headers[SharedConstants.BASE64_JSON_HEADER] == SharedConstants.BASE64_JSON_SUPPORTED) // Client supports base64 JSON encoding
-                        {
-                            base64JsonRequested = true;
-                            requestData.Response.AddHeader(SharedConstants.BASE64_JSON_HEADER, SharedConstants.BASE64_JSON_SUPPORTED); // Add a header indicating to the client that the array is returned as a base64 encoded string
-                            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Base64 encoding supported - Header {SharedConstants.BASE64_HANDOFF_SUPPORTED} = {requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_SUPPORTED]}");
-                        }
+
                         deviceResponse = device.ImageArray;
                         if (deviceResponse != null)
                         {
@@ -4458,7 +4445,8 @@ namespace ASCOM.Remote
                             switch (deviceResponse.Rank)
                             {
                                 case 2:
-                                    if (base64HandoffRequested) // Handle base63 hand-off processing
+                                case 3:
+                                    if (base64HandoffRequested) // Handle base64 hand-off processing
                                     {
                                         LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
                                         responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
@@ -4473,94 +4461,13 @@ namespace ASCOM.Remote
                                         if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
                                         LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
                                     }
-                                    else if (base64JsonRequested) // Bas64 encoded string response requested
-                                    {
-                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Preparing 2D base64 encoded string response"));
-                                        responseClass = new Base64ArrayJsonResponse()
-                                        {
-                                            ClientTransactionID = requestData.ClientTransactionID,
-                                            ServerTransactionID = requestData.ServerTransactionID,
-                                            Type = (int)SharedConstants.ImageArrayElementTypes.Int,
-                                            Rank = 2,
-                                            Dimension0Length = deviceResponse.GetLength(0),
-                                            Dimension1Length = deviceResponse.GetLength(1)
-                                        };
-
-                                        if (deviceResponse != null)
-                                        {
-                                            int imageArrayElementSize = GetManagedSize(deviceResponse.GetType().GetElementType()); // Find the size of each array element from the array element type
-                                            imageArrayBytes = new byte[deviceResponse.Length * imageArrayElementSize]; // Size the byte array as the product of the element size and the number of elements
-                                        }
-                                        else
-                                        {
-                                            imageArrayBytes = new byte[0];
-                                        }
-                                        long timeToCreateByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
-
-                                        if (deviceResponse != null) Buffer.BlockCopy(deviceResponse, 0, imageArrayBytes, 0, imageArrayBytes.Length);
-                                        long timeToBlockCopy = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
-
-                                        string base64String = Convert.ToBase64String(imageArrayBytes, 0, imageArrayBytes.Length, Base64FormattingOptions.None);
-                                        long timeToConvertToBase64 = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
-                                        responseClass.Value = base64String;
-
-                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"### Base64 response: " +
-                                            $"Array bytes length: {imageArrayBytes.Length:n0}, Base64 string length: {base64String.Length:n0} " +
-                                            $"Timings - Overall: {sw.ElapsedMilliseconds}, Create byte array: {timeToCreateByteArray}ms, Copy image to byte array: {timeToBlockCopy}ms, " +
-                                            $"Convert to base64: {timeToConvertToBase64}ms"
-                                            );
-                                    }
                                     else // Normal JSON encoding of the array elements
                                     {
                                         responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
                                         responseClass.Value = (int[,])deviceResponse;
                                     }
                                     break;
-                                case 3:
-                                    if (base64JsonRequested) // Bas64 encoded string response requested
-                                    {
-                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Preparing 3D base64 encoded string response"));
-                                        responseClass = new Base64ArrayJsonResponse()
-                                        {
-                                            ClientTransactionID = requestData.ClientTransactionID,
-                                            ServerTransactionID = requestData.ServerTransactionID,
-                                            Type = (int)SharedConstants.ImageArrayElementTypes.Int,
-                                            Rank = 3,
-                                            Dimension0Length = deviceResponse.GetLength(0),
-                                            Dimension1Length = deviceResponse.GetLength(1),
-                                            Dimension2Length = deviceResponse.GetLength(2)
-                                        };
 
-                                        if (deviceResponse != null)
-                                        {
-                                            int imageArrayElementSize = GetManagedSize(deviceResponse.GetType().GetElementType()); // Find the size of each array element from the array element type
-                                            imageArrayBytes = new byte[deviceResponse.Length * imageArrayElementSize]; // Size the byte array as the product of the element size and the number of elements
-                                        }
-                                        else
-                                        {
-                                            imageArrayBytes = new byte[0];
-                                        }
-                                        long timeBCreateByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
-
-                                        if (deviceResponse != null) Buffer.BlockCopy(deviceResponse, 0, imageArrayBytes, 0, imageArrayBytes.Length);
-                                        long timeBlockCopy = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
-
-                                        string base64String = Convert.ToBase64String(imageArrayBytes, 0, imageArrayBytes.Length, Base64FormattingOptions.None);
-                                        long timeToConvertToBase64 = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
-                                        responseClass.Value = base64String;
-
-                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"### Base64 response: " +
-                                            $"Array bytes length: {imageArrayBytes.Length:n0}, Base64 string length: {base64String.Length:n0} " +
-                                            $"Timings - Overall: {sw.ElapsedMilliseconds}, Create byte array: {timeBCreateByteArray}ms, Copy image to byte array: {timeBlockCopy}ms, " +
-                                            $"Convert to base64: {timeToConvertToBase64}ms"
-                                            );
-                                    }
-                                    else // Normal JSON encoding of the array elements
-                                    {
-                                        responseClass = new IntArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
-                                        responseClass.Value = (int[,,])deviceResponse;
-                                    }
-                                    break;
                                 default:
                                     throw new InvalidParameterException("ReturnImageArray received array of Rank " + deviceResponse.Rank + ", this is not currently supported.");
                             }
@@ -4586,57 +4493,46 @@ namespace ASCOM.Remote
                         }
                         LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Array elements are of type: {0}", elementType));
 
-                        if (binarySerialisationRequested) // Binary serialisation is supported so just return the image array response base parameters without the imagearrayvariant value 
+                        switch (deviceResponse.Rank)
                         {
-                            responseClass = new ImageArrayResponseBase();
-                            responseClass.ClientTransactionID = requestData.ClientTransactionID;
-                            responseClass.ServerTransactionID = requestData.ServerTransactionID;
-                            responseClass.Rank = deviceResponse.Rank;
-                            responseClass.Type = (int)SharedConstants.ImageArrayElementTypes.Int;
-                        } // Binary serialisation is supported so just return the image array response base parameters without the imagearrayvariant value 
-                        else // Massage the returned data into the correct form for JSON serialisation
-                        {
-                            switch (deviceResponse.Rank)
-                            {
-                                case 2:
-                                    switch (elementType)
-                                    {
+                            case 2:
+                                switch (elementType)
+                                {
 
-                                        case "Int16":
-                                            responseClass = new ShortArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array2DToShort(deviceResponse));
-                                            break;
-                                        case "Int32":
-                                            responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
-                                            responseClass.Value = Library.Array2DToInt(deviceResponse);
-                                            break;
-                                        case "Double":
-                                            responseClass = new DoubleArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array2DToDouble(deviceResponse));
-                                            break;
-                                        default:
-                                            throw new InvalidValueException("ReturnImageArray: Received an unsupported return array type: " + arrayType + ", with elements of type: " + elementType);
-                                    }
-                                    break;
-                                case 3:
-                                    switch (elementType)
-                                    {
-                                        case "Int16":
-                                            responseClass = new ShortArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array3DToShort(deviceResponse));
-                                            break;
-                                        case "Int32":
-                                            responseClass = new IntArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
-                                            responseClass.Value = Library.Array3DToInt(deviceResponse);
-                                            break;
-                                        case "Double":
-                                            responseClass = new DoubleArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array3DToDouble(deviceResponse));
-                                            break;
-                                        default:
-                                            throw new InvalidValueException("ReturnImageArray: Received an unsupported return array type: " + arrayType + ", with elements of type: " + elementType);
-                                    }
-                                    break;
-                                default:
-                                    throw new InvalidParameterException("Received array of Rank " + deviceResponse.Rank + ", this is not currently supported.");
-                            }
-                        } // Massage the returned data into the correct form for JSON serialisation
+                                    case "Int16":
+                                        responseClass = new ShortArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array2DToShort(deviceResponse));
+                                        break;
+                                    case "Int32":
+                                        responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
+                                        responseClass.Value = Library.Array2DToInt(deviceResponse);
+                                        break;
+                                    case "Double":
+                                        responseClass = new DoubleArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array2DToDouble(deviceResponse));
+                                        break;
+                                    default:
+                                        throw new InvalidValueException("ReturnImageArray: Received an unsupported return array type: " + arrayType + ", with elements of type: " + elementType);
+                                }
+                                break;
+                            case 3:
+                                switch (elementType)
+                                {
+                                    case "Int16":
+                                        responseClass = new ShortArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array3DToShort(deviceResponse));
+                                        break;
+                                    case "Int32":
+                                        responseClass = new IntArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
+                                        responseClass.Value = Library.Array3DToInt(deviceResponse);
+                                        break;
+                                    case "Double":
+                                        responseClass = new DoubleArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, Library.Array3DToDouble(deviceResponse));
+                                        break;
+                                    default:
+                                        throw new InvalidValueException("ReturnImageArray: Received an unsupported return array type: " + arrayType + ", with elements of type: " + elementType);
+                                }
+                                break;
+                            default:
+                                throw new InvalidParameterException("Received array of Rank " + deviceResponse.Rank + ", this is not currently supported.");
+                        }
                         //ActiveObjects[requestData.DeviceKey].LastImageArrayVariant = deviceResponse;
                         break;
                     default:

@@ -87,18 +87,18 @@ namespace ASCOM.Remote
         public const string USER_NAME_COMMAND_NAME = "username";
 
         // Client driver profile persistence constants
-        public const string TRACE_LEVEL_PROFILENAME = "Trace Level"; public const string CLIENT_TRACE_LEVEL_DEFAULT = "True";
-        public const string DEBUG_TRACE_PROFILENAME = "Include Debug Trace"; public const string DEBUG_TRACE_DEFAULT = "False";
+        public const string TRACE_LEVEL_PROFILENAME = "Trace Level"; public const bool CLIENT_TRACE_LEVEL_DEFAULT = true;
+        public const string DEBUG_TRACE_PROFILENAME = "Include Debug Trace"; public const bool DEBUG_TRACE_DEFAULT = false;
         public const string IPADDRESS_PROFILENAME = "IP Address"; public const string IPADDRESS_DEFAULT = SharedConstants.LOCALHOST_ADDRESS;
-        public const string PORTNUMBER_PROFILENAME = "Port Number"; public const string PORTNUMBER_DEFAULT = "11111";
-        public const string REMOTE_DEVICE_NUMBER_PROFILENAME = "Remote Device Number"; public const string REMOTE_DEVICE_NUMBER_DEFAULT = "0";
+        public const string PORTNUMBER_PROFILENAME = "Port Number"; public const decimal PORTNUMBER_DEFAULT = 11111;
+        public const string REMOTE_DEVICE_NUMBER_PROFILENAME = "Remote Device Number"; public const decimal REMOTE_DEVICE_NUMBER_DEFAULT = 0;
         public const string SERVICE_TYPE_PROFILENAME = "Service Type"; public const string SERVICE_TYPE_DEFAULT = "http";
-        public const string ESTABLISH_CONNECTION_TIMEOUT_PROFILENAME = "Establish Connection Timeout"; public const string ESTABLISH_CONNECTION_TIMEOUT_DEFAULT = "10";
-        public const string STANDARD_SERVER_RESPONSE_TIMEOUT_PROFILENAME = "Standard Server Response Timeout"; public const string STANDARD_SERVER_RESPONSE_TIMEOUT_DEFAULT = "10";
-        public const string LONG_SERVER_RESPONSE_TIMEOUT_PROFILENAME = "Long Server Response Timeout"; public const string LONG_SERVER_RESPONSE_TIMEOUT_DEFAULT = "120";
+        public const string ESTABLISH_CONNECTION_TIMEOUT_PROFILENAME = "Establish Connection Timeout"; public const int  ESTABLISH_CONNECTION_TIMEOUT_DEFAULT = 10;
+        public const string STANDARD_SERVER_RESPONSE_TIMEOUT_PROFILENAME = "Standard Server Response Timeout"; public const int  STANDARD_SERVER_RESPONSE_TIMEOUT_DEFAULT = 10;
+        public const string LONG_SERVER_RESPONSE_TIMEOUT_PROFILENAME = "Long Server Response Timeout"; public const int LONG_SERVER_RESPONSE_TIMEOUT_DEFAULT = 120;
         public const string USERNAME_PROFILENAME = "User Name"; public const string USERNAME_DEFAULT = "";
         public const string PASSWORD_PROFILENAME = "Password"; public const string PASSWORD_DEFAULT = "";
-        public const string MANAGE_CONNECT_LOCALLY_PROFILENAME = "Manage Connect Locally"; public const string MANAGE_CONNECT_LOCALLY_DEFAULT = "False";
+        public const string MANAGE_CONNECT_LOCALLY_PROFILENAME = "Manage Connect Locally"; public const bool MANAGE_CONNECT_LOCALLY_DEFAULT = false;
         public const string IMAGE_ARRAY_TRANSFER_TYPE_PROFILENAME = "Image Array Transfer Type"; public const ImageArrayTransferType IMAGE_ARRAY_TRANSFER_TYPE_DEFAULT = DEFAULT_IMAGE_ARRAY_TRANSFER_TYPE;
         public const string IMAGE_ARRAY_COMPRESSION_PROFILENAME = "Image Array Compression"; public const ImageArrayCompression IMAGE_ARRAY_COMPRESSION_DEFAULT = DEFAULT_IMAGE_ARRAY_COMPRESSION;
 
@@ -122,7 +122,6 @@ namespace ASCOM.Remote
         {
             JSON = 0,
             Base64HandOff = 1,
-            Base64JSON = 2
         }
 
         // Enum used by the remote client to indicate what type of compression should be used in responses
@@ -142,11 +141,6 @@ namespace ASCOM.Remote
         public const string BASE64_HANDOFF_HEADER = "base64handoff"; // Name of HTTP header used to affirm binary serialisation support for image array data
         public const string BASE64_HANDOFF_SUPPORTED = "true"; // Value of HTTP header to indicate support for binary serialised image array data
         public const string BASE64_HANDOFF_FILE_DOWNLOAD_URI_EXTENSION = "base64"; // Addition to the ImageArray and ImageArrayVariant method names from which base64 serialised image files can be downloaded
-
-        // Image array base64 JSON support constants
-        public const string BASE64_JSON_HEADER = "base64json"; // Name of HTTP header used to affirm binary serialisation support for image array data
-        public const string BASE64_JSON_SUPPORTED = "true"; // Value of HTTP header to indicate support for binary serialised image array data
-
 
         // Registry key where the Web Server configuration will be stored
         public const RegistryHive ASCOM_REMOTE_CONFIGURATION_HIVE = RegistryHive.CurrentUser;
