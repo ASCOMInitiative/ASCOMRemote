@@ -806,7 +806,7 @@ namespace ASCOM.Remote
                                 TL.LogMessage(clientNumber, method, $"Base64 - Downloading base64 serialised image");
 
                                 // Construct an HTTP request to get the logo
-                                string base64Uri = (client.BaseUrl + URIBase.TrimStart('/') + method + SharedConstants.BASE64_HANDOFF_FILE_DOWNLOAD_URI_EXTENSION).ToLowerInvariant(); // Create the download URI from the REST client elements
+                                string base64Uri = (client.BaseUrl + URIBase.TrimStart('/') + method.ToLowerInvariant() + SharedConstants.BASE64_HANDOFF_FILE_DOWNLOAD_URI_EXTENSION).ToLowerInvariant(); // Create the download URI from the REST client elements
                                 if (TL.DebugTraceState) TL.LogMessage(clientNumber, method, $"Base64 URI: {base64Uri}");
 
                                 // Create a handler that indicates the compression levels supported by this client
