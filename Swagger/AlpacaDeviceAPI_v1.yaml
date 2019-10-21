@@ -1,8 +1,11 @@
 openapi: 3.0.0
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/ASCOMInitiative/api/v1
 
 info:
   title: ASCOM Alpaca Device API
-  version: "1.0.0-oas3"
+  version: "v1"
   description: >
     The Alpaca API uses RESTful techniques and TCP/IP to enable ASCOM applications and devices to communicate across modern network environments.
 
@@ -8220,10 +8223,6 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
       requestBody:
         $ref: '#/components/requestBodies/putStandardClientParameters'
-servers:
-# Added by API Auto Mocking Plugin
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/ASCOMInitiative/ASCOMAlpacaAPI/1.0.0-oas3
 components:
   parameters:
     device_type:
