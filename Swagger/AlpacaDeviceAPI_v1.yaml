@@ -1,6 +1,6 @@
-openapi: 3.0.0
+openapi: 3.0.2
 servers:
-  - description: SwaggerHub API Auto Mocking
+  - description: Within the "Try it out" URLs, the device URL root is the trailing slash in "/ASCOMInitiative/".
     url: https://virtserver.swaggerhub.com/ASCOMInitiative/api/v1
 
 info:
@@ -19,9 +19,19 @@ info:
     
     ## Alpaca URLs, Case Sensitivity, Parameters and Returned values
 
-    Alpaca Device API URLs are of the form **http(s)://api/v1/path** where path is one of the method URLs listed below.
+    **Alpaca Device API URLs** are of the form **http(s)://host:port/path** where path comprises **"/api/v1/"** followed by one of the method names below.
+    e.g. for an Alpaca interface running on port 7843 of a device with IP address 192.168.1.89:
+    
+    * A telescope "Interface Version" method URL would be **http://192.168.1.89:7843/api/v1/telescope/0/interfaceversion**
+        
+    * A first focuser "Position" method URL would be  **http://192.168.1.89:7843/api/v1/focuser/0/position**
+        
+    * A second focuser "StepSize" method URL would be  **http://192.168.1.89:7843/api/v1/focuser/1/stepsize**
 
-
+    * A rotator "Halt" method URL would be  **http://192.168.1.89:7843/api/v1/rotator/halt**
+    
+    
+    
     URLs are case sensitive and all elements must be in lower case. This means that both the device type and command name must always be in lower case. Parameter names are not case sensitive, so clients and drivers should be prepared for parameter names to be supplied and returned with any casing. Parameter values can be in mixed case as required.
     
     
