@@ -127,6 +127,7 @@ namespace ASCOM.Remote
         internal const string CORS_SUPPORT_ENABLED_PROFILENAME = "CORS Support Enabled"; public const bool CORS_SUPPORT_ENABLED_DEFAULT = false;
         internal const string CORS_MAX_AGE_PROFILENAME = "CORS Max Age"; public const decimal CORS_MAX_AGE_DEFAULT = 3600; // 
         internal const string CORS_CREDENTIALS_PERMITTED_PROFILENAME = "CORS Credentials Permitted"; public const bool CORS_CREDENTIALS_PERMITTED_DEFAULT = false; // 
+        internal const string ALPACA_DISCOVERY_ENABLED_PROFILENAME = "Alpaca Discovery Enabled"; public const bool ALPACA_DISCOVERY_ENABLED_DEFAULT = true; // 
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -215,6 +216,7 @@ namespace ASCOM.Remote
         internal static bool CorsSupportIsEnabled;
         internal static decimal CorsMaxAge;
         internal static bool CorsCredentialsPermitted;
+        internal static bool AlpacaDiscoveryEnabled;
 
         #endregion
 
@@ -981,6 +983,7 @@ namespace ASCOM.Remote
                 CorsSupportIsEnabled = driverProfile.GetValue<bool>(CORS_SUPPORT_ENABLED_PROFILENAME, string.Empty, CORS_SUPPORT_ENABLED_DEFAULT);
                 CorsMaxAge = driverProfile.GetValue<decimal>(CORS_MAX_AGE_PROFILENAME, string.Empty, CORS_MAX_AGE_DEFAULT);
                 CorsCredentialsPermitted = driverProfile.GetValue<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CORS_CREDENTIALS_PERMITTED_DEFAULT);
+                AlpacaDiscoveryEnabled = driverProfile.GetValue<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, ALPACA_DISCOVERY_ENABLED_DEFAULT);
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
@@ -1024,6 +1027,7 @@ namespace ASCOM.Remote
                 driverProfile.SetValue<bool>(CORS_SUPPORT_ENABLED_PROFILENAME, string.Empty, CorsSupportIsEnabled);
                 driverProfile.SetValue<decimal>(CORS_MAX_AGE_PROFILENAME, string.Empty, CorsMaxAge);
                 driverProfile.SetValue<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CorsCredentialsPermitted);
+                driverProfile.SetValue<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, AlpacaDiscoveryEnabled);
 
                 foreach (string deviceName in ServerDeviceNames)
                 {

@@ -20,7 +20,6 @@ namespace ASCOM.Remote
         private List<string> registeredDeviceTypes = new List<string>();
         // Create a dictionary to hold the current device instance numbers of every device type
         private Dictionary<string, int> deviceNumberIndexes;
-        private Profile profile;
 
         private bool selectByMouse = false; // Variable to help select the whole contents of a numeric up-down box when tabbed into our selected by mouse
 
@@ -37,6 +36,8 @@ namespace ASCOM.Remote
         private DataGridViewSelectedCellCollection selectedCells;
 
         private List<StringValue> corsPermittedOriginsCopy = new List<StringValue>(); // Variable to hold a copy of the list of permitted origins so that it can be edited without affecting the master copy.
+
+        private bool alreadyDisposed = false;
 
         #endregion
 
@@ -75,61 +76,6 @@ namespace ASCOM.Remote
             DataGridCorsOrigins.DataSource = bindingSource;
         }
 
-        private void DataGridCorsOrigins_EnabledChanged(object sender, EventArgs e)
-        {
-            DataGridView dgv = sender as DataGridView;
-            if (!dgv.Enabled)
-            {
-                dgv.DefaultCellStyle.BackColor = SystemColors.Control;
-                dgv.DefaultCellStyle.ForeColor = SystemColors.GrayText;
-                dgv.ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Control;
-                dgv.ColumnHeadersDefaultCellStyle.ForeColor = SystemColors.GrayText;
-                dgv.CurrentCell = null;
-                dgv.ReadOnly = true;
-                dgv.EnableHeadersVisualStyles = false;
-                dgv.DefaultCellStyle.SelectionBackColor = SystemColors.Control;
-                dgv.DefaultCellStyle.SelectionForeColor = SystemColors.GrayText;
-            }
-            else
-            {
-                dgv.DefaultCellStyle.BackColor = SystemColors.Window;
-                dgv.DefaultCellStyle.ForeColor = SystemColors.ControlText;
-                dgv.ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Window;
-                dgv.ColumnHeadersDefaultCellStyle.ForeColor = SystemColors.Highlight; ;
-                dgv.DefaultCellStyle.SelectionBackColor = SystemColors.Highlight;
-                dgv.DefaultCellStyle.SelectionForeColor = SystemColors.HighlightText;
-                dgv.ReadOnly = false;
-                dgv.CurrentCell = dgv.Rows[0].Cells[0];
-            }
-        }
-
-        private void ChkEnableCors_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckBox checkBox = (CheckBox)sender;
-            if (checkBox.Checked)
-            {
-                DataGridCorsOrigins.Enabled = true;
-                NumCorsMaxAge.Enabled = true;
-                LabHelp1.ForeColor = SystemColors.Highlight;
-                LabHelp2.ForeColor = SystemColors.Highlight;
-                LabHelp1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                LabHelp2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                LabMaxAge.ForeColor = SystemColors.ControlText;
-                ChkCorsSupportCredentials.Enabled = true;
-            }
-            else
-            {
-                DataGridCorsOrigins.Enabled = false;
-                NumCorsMaxAge.Enabled = false;
-                LabHelp1.ForeColor = SystemColors.GrayText;
-                LabHelp2.ForeColor = SystemColors.GrayText;
-                LabHelp1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                LabHelp2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                LabMaxAge.ForeColor = SystemColors.GrayText;
-                ChkCorsSupportCredentials.Enabled = false;
-            }
-        }
-
         private void Form_Load(object sender, EventArgs e)
         {
             // Declare local variables
@@ -142,7 +88,6 @@ namespace ASCOM.Remote
             {
                 ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Start");
 
-                profile = new Profile();
                 host = Dns.GetHostEntry(Dns.GetHostName()); // Get an IPHostEntry so that we can get the list of IP addresses on this PC
                 deviceNumberIndexes = new Dictionary<string, int>(); // Create a dictionary to hold the current device instance numbers of every device type
 
@@ -196,18 +141,21 @@ namespace ASCOM.Remote
                 ChkEnableCors.Checked = ServerForm.CorsSupportIsEnabled; // Set the CORS enabled checkbox (this doesn't fire associated event handlers if support is disabled)
                 NumCorsMaxAge.Value = ServerForm.CorsMaxAge;
                 ChkCorsSupportCredentials.Checked = ServerForm.CorsCredentialsPermitted;
+                ChkEnableDiscovery.Checked = ServerForm.AlpacaDiscoveryEnabled;
 
                 // CORS tab event handler
                 ChkEnableCors_CheckedChanged(ChkEnableCors, new EventArgs()); // Fire the event handlers to ensure that the controls reflect the CORS enabled / disabled state
                 DataGridCorsOrigins_EnabledChanged(DataGridCorsOrigins, new EventArgs());
 
-                // Populate the device types list
-                foreach (string deviceType in profile.RegisteredDeviceTypes)
+                using (Profile profile = new Profile())
                 {
-                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Adding device type: " + deviceType);
-                    registeredDeviceTypes.Add(deviceType); // Remember the device types on this system
+                    // Populate the device types list
+                    foreach (string deviceType in profile.RegisteredDeviceTypes)
+                    {
+                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Adding device type: " + deviceType);
+                        registeredDeviceTypes.Add(deviceType); // Remember the device types on this system
+                    }
                 }
-
                 ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Number of configured devices: {0}.", ServerForm.ConfiguredDevices.Count));
                 foreach (string deviceName in ServerForm.ConfiguredDevices.Keys)
                 {
@@ -225,7 +173,7 @@ namespace ASCOM.Remote
                     item.DeviceNumber = ServerForm.ConfiguredDevices[item.Name].DeviceNumber;
                     item.AllowConnectedSetFalse = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetFalse;
                     item.AllowConnectedSetTrue = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetTrue;
-                    item.AllowConcurrentAccess= ServerForm.ConfiguredDevices[item.Name].AllowConcurrentAccess;
+                    item.AllowConcurrentAccess = ServerForm.ConfiguredDevices[item.Name].AllowConcurrentAccess;
                     item.DevicesAreConnected = ServerForm.devicesAreConnected;
 
                     ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}.", item.Name));
@@ -240,9 +188,97 @@ namespace ASCOM.Remote
             }
         }
 
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+
+            if (disposing && (!alreadyDisposed))
+            {
+                alreadyDisposed = true;
+                bindingSource.Dispose();
+                insertRow.Dispose();
+                insertTenRows.Dispose();
+                deleteSelectedRows.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
         #endregion
 
         #region Event handlers
+
+        /// <summary>
+        /// Handler for colouring the CORS data grid control
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DataGridCorsOrigins_EnabledChanged(object sender, EventArgs e)
+        {
+            DataGridView dgv = sender as DataGridView;
+            if (!dgv.Enabled)
+            {
+                dgv.DefaultCellStyle.BackColor = SystemColors.Control;
+                dgv.DefaultCellStyle.ForeColor = SystemColors.GrayText;
+                dgv.ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Control;
+                dgv.ColumnHeadersDefaultCellStyle.ForeColor = SystemColors.GrayText;
+                dgv.CurrentCell = null;
+                dgv.ReadOnly = true;
+                dgv.EnableHeadersVisualStyles = false;
+                dgv.DefaultCellStyle.SelectionBackColor = SystemColors.Control;
+                dgv.DefaultCellStyle.SelectionForeColor = SystemColors.GrayText;
+            }
+            else
+            {
+                dgv.DefaultCellStyle.BackColor = SystemColors.Window;
+                dgv.DefaultCellStyle.ForeColor = SystemColors.ControlText;
+                dgv.ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Window;
+                dgv.ColumnHeadersDefaultCellStyle.ForeColor = SystemColors.Highlight; ;
+                dgv.DefaultCellStyle.SelectionBackColor = SystemColors.Highlight;
+                dgv.DefaultCellStyle.SelectionForeColor = SystemColors.HighlightText;
+                dgv.ReadOnly = false;
+                dgv.CurrentCell = dgv.Rows[0].Cells[0];
+            }
+        }
+
+        /// <summary>
+        /// Handler for changes to the CORS enable state
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChkEnableCors_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            if (checkBox.Checked)
+            {
+                DataGridCorsOrigins.Enabled = true;
+                NumCorsMaxAge.Enabled = true;
+                LabHelp1.ForeColor = SystemColors.Highlight;
+                LabHelp2.ForeColor = SystemColors.Highlight;
+                LabHelp1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+                LabHelp2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+                LabMaxAge.ForeColor = SystemColors.ControlText;
+                ChkCorsSupportCredentials.Enabled = true;
+            }
+            else
+            {
+                DataGridCorsOrigins.Enabled = false;
+                NumCorsMaxAge.Enabled = false;
+                LabHelp1.ForeColor = SystemColors.GrayText;
+                LabHelp2.ForeColor = SystemColors.GrayText;
+                LabHelp1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+                LabHelp2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+                LabMaxAge.ForeColor = SystemColors.GrayText;
+                ChkCorsSupportCredentials.Enabled = false;
+            }
+        }
 
         /// <summary>
         /// Event handler fired when entering a numeric up/down control
@@ -350,7 +386,9 @@ namespace ASCOM.Remote
                 ServerForm.CorsSupportIsEnabled = ChkEnableCors.Checked;
                 ServerForm.CorsMaxAge = NumCorsMaxAge.Value;
                 ServerForm.CorsCredentialsPermitted = ChkCorsSupportCredentials.Checked;
-                foreach (ServedDevice item in  DeviceConfigurationTab.Controls.OfType<ServedDevice>())
+                ServerForm.AlpacaDiscoveryEnabled = ChkEnableDiscovery.Checked;
+
+                foreach (ServedDevice item in DeviceConfigurationTab.Controls.OfType<ServedDevice>())
                 {
                     ServerForm.ConfiguredDevices[item.Name].DeviceType = item.DeviceType;
                     ServerForm.ConfiguredDevices[item.Name].ProgID = item.ProgID;
