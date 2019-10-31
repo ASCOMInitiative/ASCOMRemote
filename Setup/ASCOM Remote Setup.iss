@@ -13,6 +13,7 @@
 #define public SetNetworkPermissionsName "ASCOM.SetNetworkPermissions" ; Firewall configuration application name
 #define public DynamicRemoteClientsName "ASCOM.DynamicRemoteClients" ; Remote client management application name
 #define public RemoteClientBaseClassesName "ASCOM.RemoteClientBaseClasses" ; Remote client support DLL name
+#define public ASCOMRemoteDocumentationFileName "ASCOM Remote Installation and Configuration.pdf"; ASCOM Remote documentation file
 
 ; Specifiy debug or release build; #define public BuildType "Debug" ; Type of build - Release or Debug
 #define public BuildType "Release" ; Type of build - Release or Debug
@@ -99,7 +100,7 @@ Source: "..\SetNetworkPermissions\bin\{#BuildType}\CommandLine.dll"; DestDir: "{
 Source: "..\SetNetworkPermissions\bin\{#BuildType}\netstandard.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ClientComponents ServerComponents; Check: not IsDotNet4Point7Installed
 
 ; DOCUMENTATION
-Source: "..\Documentation\ASCOM Remote Installation and Configuration.pdf"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
+Source: "..\Documentation\{#ASCOMRemoteDocumentationFileName}"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
 
 ; INSTALLER SUPPORT FILES
 Source: "ASCOM.ico"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
@@ -118,7 +119,7 @@ Filename: "{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"; Paramet
 [Registry]
 
 [Icons]
-Name: "{group}\ASCOM Remote Documentation"; Filename: "{#RemoteServerDirectory}\ASCOM Remote Concept.pdf";
+Name: "{group}\ASCOM Remote Documentation"; Filename: "{#RemoteServerDirectory}\{#ASCOMRemoteDocumentationFileName}";
 Name: "{group}\Remote Server"; Filename: "{#RemoteServerDirectory}\{#RemoteServerName}.exe"; Components: ServerComponents
 Name: "{group}\Remote Client Configuration"; Filename: "{#RemoteClientDirectory}\{#DynamicRemoteClientsName}.exe"; Components: ClientComponents
 
