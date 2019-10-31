@@ -179,6 +179,7 @@ namespace ASCOM.Remote
 
         internal static HttpListener httpListener;
         internal static TraceLoggerPlus AccessLog;
+
         internal readonly object counterLock = new object();
         internal readonly object managementCommandLock = new object();
 
@@ -328,7 +329,8 @@ namespace ASCOM.Remote
             LogMessage(0, 0, 0, "FormClosed", string.Format("Calling Application.Exit on thread {0}", Thread.CurrentThread.ManagedThreadId));
 
             //Environment.Exit(0);
-            Application.Exit();
+            //Application.Exit();
+
             LogMessage(0, 0, 0, "FormClosed", string.Format("After Application.Exit on thread {0}", Thread.CurrentThread.ManagedThreadId));
             //Thread.Sleep(100);
             WaitFor(200);
@@ -389,6 +391,7 @@ namespace ASCOM.Remote
 
                 LogMessage(0, 0, 0, "StartRESTServer", "Operating URI: " + apiOperatingUri);
                 LogMessage(0, 0, 0, "StartRESTServer", "Management URI: " + remoteServerManagementUri);
+                LogToScreen($"ASCOM Remote Alpaca device listening URI: {apiOperatingUri}");
 
                 // Create the listener on the required URIs
                 LogMessage(0, 0, 0, "StartRESTServer", "Stopping existing server");
@@ -507,6 +510,10 @@ namespace ASCOM.Remote
                 LogMessage(0, 0, 0, "StartRESTServer", "Starting wait for incoming request");
                 IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(RestRequestReceivedHandler), httpListener);
 
+                // Start the Alpaca discovery broadcast listener
+                //discoveryServer = new DiscoveryServer((int)ServerPortNumber);
+                DiscoveryServer(SharedConstants.ALPACA_DISCOVERY_PORT);
+
                 //LogToScreen("Server started successfully.");
                 LogMessage(0, 0, 0, "StartRESTServer", "Server started successfully.");
 
@@ -613,6 +620,64 @@ namespace ASCOM.Remote
                 LogException(0, 0, 0, "ConnectDevices", ex.ToString());
             }
         }
+
+        private void DiscoveryServer(int AlpacaDiscoveryPort)
+        {
+            //IPAddress broadcastListenAddress = IPAddress.Any;
+            IPAddress broadcastListenAddress;
+
+            // Listen on the server's active address. If the + or * "all interfaces" address are in use, IPAddress.Parse will fail. In this case listen on all interfaces.
+            try
+            {
+                broadcastListenAddress = IPAddress.Parse(ServerForm.ServerIPAddressString);
+            }
+            catch
+            {
+                broadcastListenAddress = IPAddress.Any;
+            }
+
+            LogMessage(0, 0, 0, "DiscoveryServer", $"Starting Alpaca discovery listener on {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}");
+
+            UdpClient udpClient = new UdpClient();
+            LogMessage(0, 0, 0, "DiscoveryServer", $"Created UDP client, configuring options");
+
+            udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            udpClient.EnableBroadcast = true;
+            udpClient.MulticastLoopback = false;
+            udpClient.ExclusiveAddressUse = false;
+            udpClient.Client.Bind(new IPEndPoint(broadcastListenAddress, AlpacaDiscoveryPort));
+
+            LogMessage(0, 0, 0, "DiscoveryServer", $"Listening for discovery broadcasts on {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}.");
+            LogToScreen($"Listening for discovery broadcasts on {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}.");
+
+            // This uses begin receive rather then async so it works on net 3.5
+            udpClient.BeginReceive(ReceiveCallback, udpClient);
+            LogMessage(0, 0, 0, "DiscoveryServer", $"Discovery listener now running on {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}");
+        }
+
+        private void ReceiveCallback(IAsyncResult ar)
+        {
+            UdpClient udpClient = (UdpClient)ar.AsyncState;
+
+            IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, SharedConstants.ALPACA_DISCOVERY_PORT);
+
+            // Obtain the UDP message body and convert it to a string, with remote IP address attached as well
+            string ReceiveString = Encoding.ASCII.GetString(udpClient.EndReceive(ar, ref endpoint));
+
+            if (ReceiveString.Contains(SharedConstants.ALPACA_DISCOVERY_BROADCAST_ID))//Contains rather then equals because of invisible padding garbage
+            {
+                //For testing only
+                ServerForm.LogMessage(0, 0, 0, "DiscoveryServer", $"Received a discovery packet from the client IP address {endpoint.Address}. Returning Alpaca port number: {ServerPortNumber}");
+
+                byte[] response = Encoding.ASCII.GetBytes($"{{\"alpacaport\": {ServerPortNumber}}}");
+
+                udpClient.Send(response, response.Length, endpoint);
+            }
+
+            // Configure the UdpClient class to accept more messages, if they arrive
+            udpClient.BeginReceive(ReceiveCallback, udpClient);
+        }
+
 
         private void DriverOnSeparateThread(object arg)
         {
@@ -890,7 +955,7 @@ namespace ASCOM.Remote
         /// </summary>
         /// <param name="screenMessage">Message to be displayed</param>
         /// <remarks>The log will be limited to a total length of SCREEN_LOG_MAXIMUM_LENGTH and the new message must be less than or equal to SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH characters in length</remarks>
-        private void LogToScreen(string screenMessage)
+        internal void LogToScreen(string screenMessage)
         {
             // Invoke the code on the UI thread if required
             if (txtLog.InvokeRequired)
@@ -1678,12 +1743,12 @@ namespace ASCOM.Remote
                     }
                     else // The command should follow the expected three parameter format of an Alpaca management command
                     {
-                        // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid API request so check this here:
+                        // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid management API request so check this here:
                         if (elements.Length != 3)
                         {
                             Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_SERVER_FORMAT_STRING);
                             return;
-                        }
+                        } // Invalid management command so return an error
                         else // We have received the required 3 elements in the URI
                         {
                             for (int i = 0; i < elements.Length; i++)
@@ -1718,10 +1783,10 @@ namespace ASCOM.Remote
 
                                                         case SharedConstants.ALPACA_DEVICE_MANAGEMENT_DESCRIPTION:
                                                             // Create the remote server description and return it to the client in the proscribed format
-                                                            AlpacaDeviceDescription remoteServerDescription = new AlpacaDeviceDescription(RemoteServerLocation,
+                                                            AlpacaDeviceDescription remoteServerDescription = new AlpacaDeviceDescription(SharedConstants.ALPACA_DEVICE_MANAGEMENT_SERVERNAME,
                                                                                                                                           SharedConstants.ALPACA_DEVICE_MANAGEMENT_MANUFACTURER,
                                                                                                                                           Assembly.GetEntryAssembly().GetName().Version.ToString(),
-                                                                                                                                          SharedConstants.ALPACA_DEVICE_MANAGEMENT_SERVERNAME);
+                                                                                                                                          RemoteServerLocation);
 
                                                             AlpacaDescriptionResponse descriptionResponse = new AlpacaDescriptionResponse(clientTransactionID, serverTransactionID, remoteServerDescription)
                                                             {
@@ -1794,8 +1859,8 @@ namespace ASCOM.Remote
                                 LogMessage1(requestData, "Management", MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
                                 Return403Error(requestData, MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
                             }
-                        }
-                    }
+                        } // Valid management command
+                    } // Handle all other management requests
                 } // Process standard Alpaca device management API requests
 
                 else if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE.TrimEnd(FORWARD_SLASH))) // Process standard Alpaca HTML management calls to "/setup" and "/setup/"

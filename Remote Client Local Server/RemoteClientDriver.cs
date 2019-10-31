@@ -607,7 +607,7 @@ namespace ASCOM.Remote
                     long timeServerResponse = sw.ElapsedMilliseconds - lastTime;
 
                     string responseContent;
-                    if (deviceJsonResponse.Content.Length > 200) responseContent = deviceJsonResponse.Content.Substring(0, 200);
+                    if (deviceJsonResponse.Content.Length > 1000) responseContent = deviceJsonResponse.Content.Substring(0, 1000);
                     else responseContent = deviceJsonResponse.Content;
                     TL.LogMessage(clientNumber, method, string.Format("Response Status: '{0}', Response: {1}", deviceJsonResponse.StatusDescription, responseContent));
 
