@@ -203,7 +203,7 @@ paths:
         - Management Interface (JSON)
       responses:
         '200':
-          description: Cross cutting information that applies to all devices served through this URL:Port.
+          description: Summary information about each available ASCOM device.
           content:
             application/json:
               schema:
