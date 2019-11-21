@@ -152,5 +152,10 @@ namespace ASCOM.Remote
 
         public const string CORS_DEFAULT_PERMISSION = "*"; // Default permission for CORS origins (The * value means "permit all origins")
         public const string CORS_SERIALISATION_SEPARATOR = "|";
+
+        // Alpaca discovery constants
+        public const string ALPACA_DISCOVERY_BROADCAST_ID = "alpaca discovery";
+        public const int ALPACA_DISCOVERY_PORT = 32227;
+        public const string ALPACA_DISCOVERY_RESPONSE_STRING= "alpacaport";
     }
 }

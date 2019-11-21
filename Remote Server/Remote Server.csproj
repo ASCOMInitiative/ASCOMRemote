@@ -97,6 +97,9 @@
     <Compile Include="..\Shared Resources\Response Classes\AlpacaDescriptionResponse.cs">
       <Link>Response Classes\AlpacaDescriptionResponse.cs</Link>
     </Compile>
+    <Compile Include="..\Shared Resources\Response Classes\AlpacaDiscoveryResponse.cs">
+      <Link>Response Classes\AlpacaDiscoveryResponse.cs</Link>
+    </Compile>
     <Compile Include="..\shared resources\response classes\AxisRatesResponse.cs">
       <Link>Response Classes\AxisRatesResponse.cs</Link>
     </Compile>

@@ -125,8 +125,10 @@ namespace ASCOM.Remote
         internal const string REMOTE_SERVER_LOCATION_PROFILENAME = "Remote Server Location"; public const string REMOTE_SERVER_LOCATION_DEFAULT = "Unknown";
         internal const string CORS_PERMITTED_ORIGINS_PROFILENAME = "CORS Permitted Origins"; public const string CORS_PERMITTED_ORIGINS_DEFAULT = "*";
         internal const string CORS_SUPPORT_ENABLED_PROFILENAME = "CORS Support Enabled"; public const bool CORS_SUPPORT_ENABLED_DEFAULT = false;
-        internal const string CORS_MAX_AGE_PROFILENAME = "CORS Max Age"; public const decimal CORS_MAX_AGE_DEFAULT = 3600; // 
-        internal const string CORS_CREDENTIALS_PERMITTED_PROFILENAME = "CORS Credentials Permitted"; public const bool CORS_CREDENTIALS_PERMITTED_DEFAULT = false; // 
+        internal const string CORS_MAX_AGE_PROFILENAME = "CORS Max Age"; public const decimal CORS_MAX_AGE_DEFAULT = 3600;
+        internal const string CORS_CREDENTIALS_PERMITTED_PROFILENAME = "CORS Credentials Permitted"; public const bool CORS_CREDENTIALS_PERMITTED_DEFAULT = false;
+        internal const string ALPACA_DISCOVERY_ENABLED_PROFILENAME = "Alpaca Discovery Enabled"; public const bool ALPACA_DISCOVERY_ENABLED_DEFAULT = true;
+        internal const string ALPACA_UNIQUE_ID_PROFILENAME = "Alpaca Unique ID"; public static string ALPACA_UNIQUE_ID_DEFAULT = Guid.Empty.ToString();
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -178,6 +180,7 @@ namespace ASCOM.Remote
 
         internal static HttpListener httpListener;
         internal static TraceLoggerPlus AccessLog;
+
         internal readonly object counterLock = new object();
         internal readonly object managementCommandLock = new object();
 
@@ -215,6 +218,8 @@ namespace ASCOM.Remote
         internal static bool CorsSupportIsEnabled;
         internal static decimal CorsMaxAge;
         internal static bool CorsCredentialsPermitted;
+        internal static bool AlpacaDiscoveryEnabled;
+        internal static string AlpacaUniqueId; // Unique UUID / GUID for this particular Alpaca device (common to all served devices)
 
         #endregion
 
@@ -255,13 +260,12 @@ namespace ASCOM.Remote
             try
             {
                 InitializeComponent();
-                TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME);
+                TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME); // Trace state is enabled or disabled in the ReadProfile method
+
                 ConfiguredDevices = new ConcurrentDictionary<string, ConfiguredDevice>();
                 ActiveObjects = new ConcurrentDictionary<string, ActiveObject>();
 
                 ReadProfile();
-
-                TL.Enabled = TraceState; // Initialise with the trace state enabled or disabled as configured
 
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
                 LogMessage(0, 0, 0, "New", string.Format("Remote Server Version {0}, Started on {1}", version.ToString(), DateTime.Now.ToString("dddd d MMMM yyyy HH:mm:ss")));
@@ -326,7 +330,8 @@ namespace ASCOM.Remote
             LogMessage(0, 0, 0, "FormClosed", string.Format("Calling Application.Exit on thread {0}", Thread.CurrentThread.ManagedThreadId));
 
             //Environment.Exit(0);
-            Application.Exit();
+            //Application.Exit();
+
             LogMessage(0, 0, 0, "FormClosed", string.Format("After Application.Exit on thread {0}", Thread.CurrentThread.ManagedThreadId));
             //Thread.Sleep(100);
             WaitFor(200);
@@ -387,6 +392,7 @@ namespace ASCOM.Remote
 
                 LogMessage(0, 0, 0, "StartRESTServer", "Operating URI: " + apiOperatingUri);
                 LogMessage(0, 0, 0, "StartRESTServer", "Management URI: " + remoteServerManagementUri);
+                LogToScreen($"ASCOM Remote Alpaca device listening URI: {apiOperatingUri}");
 
                 // Create the listener on the required URIs
                 LogMessage(0, 0, 0, "StartRESTServer", "Stopping existing server");
@@ -505,6 +511,10 @@ namespace ASCOM.Remote
                 LogMessage(0, 0, 0, "StartRESTServer", "Starting wait for incoming request");
                 IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(RestRequestReceivedHandler), httpListener);
 
+                // Start the Alpaca discovery broadcast listener
+                //discoveryServer = new DiscoveryServer((int)ServerPortNumber);
+                DiscoveryServer(SharedConstants.ALPACA_DISCOVERY_PORT);
+
                 //LogToScreen("Server started successfully.");
                 LogMessage(0, 0, 0, "StartRESTServer", "Server started successfully.");
 
@@ -610,6 +620,67 @@ namespace ASCOM.Remote
                 LogToScreen("Exception while attempting to create devices: " + ex.Message);
                 LogException(0, 0, 0, "ConnectDevices", ex.ToString());
             }
+        }
+
+        private void DiscoveryServer(int AlpacaDiscoveryPort)
+        {
+            //IPAddress broadcastListenAddress = IPAddress.Any;
+            IPAddress broadcastListenAddress;
+
+            // Listen on the server's active address. If the + or * "all interfaces" address are in use, IPAddress.Parse will fail. In this case listen on all interfaces.
+            try
+            {
+                broadcastListenAddress = IPAddress.Parse(ServerForm.ServerIPAddressString);
+            }
+            catch
+            {
+                broadcastListenAddress = IPAddress.Any;
+            }
+
+            LogMessage(0, 0, 0, "DiscoveryServer", $"Starting Alpaca discovery listener on {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}");
+
+            UdpClient udpClient = new UdpClient();
+            LogMessage(0, 0, 0, "DiscoveryServer", $"Created UDP client, configuring options");
+
+            udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            udpClient.EnableBroadcast = true;
+            udpClient.MulticastLoopback = false;
+            udpClient.ExclusiveAddressUse = false;
+            udpClient.Client.Bind(new IPEndPoint(broadcastListenAddress, AlpacaDiscoveryPort));
+
+            LogMessage(0, 0, 0, "DiscoveryServer", $"Listening for discovery broadcasts on {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}.");
+            LogToScreen($"Listening for discovery broadcasts on {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}.");
+
+            // This uses begin receive rather then async so it works on net 3.5
+            udpClient.BeginReceive(DiscoveryCallback, udpClient);
+            LogMessage(0, 0, 0, "DiscoveryServer", $"Discovery listener now running on {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}");
+        }
+
+        private void DiscoveryCallback(IAsyncResult ar)
+        {
+            UdpClient udpClient = (UdpClient)ar.AsyncState;
+
+            IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, SharedConstants.ALPACA_DISCOVERY_PORT);
+
+            // Obtain the UDP message body and convert it to a string, with remote IP address attached as well
+            string ReceiveString = Encoding.ASCII.GetString(udpClient.EndReceive(ar, ref endpoint));
+
+            // Validate and process the discovery packet 
+            if (ReceiveString.Contains(SharedConstants.ALPACA_DISCOVERY_BROADCAST_ID)) // This is an Alpaca discovery packet
+            {
+                ServerForm.LogMessage(0, 0, 0, "DiscoveryServer", $"Received a discovery packet from the client IP address {endpoint.Address}. Returning Alpaca port number: {ServerPortNumber}");
+
+                // Create a discovery response, convert it to JSON and return this to the caller
+                AlpacaDiscoveryResponse alpacaDiscoveryResponse = new AlpacaDiscoveryResponse((int)ServerPortNumber, AlpacaUniqueId); // Create the response object
+                ServerForm.LogMessage(0, 0, 0, "DiscoveryServer", $"JSON Discovery response: {alpacaDiscoveryResponse}");
+
+                string jsonResponse = JsonConvert.SerializeObject(alpacaDiscoveryResponse); // Convert the response object to a JSON string
+                byte[] response = Encoding.ASCII.GetBytes(jsonResponse); // Convert the JSON string to a byte array and send this back to the caller
+                udpClient.Send(response, response.Length, endpoint);
+            }
+
+            // Continue to listen for discovery packets
+            udpClient.BeginReceive(DiscoveryCallback, udpClient);
         }
 
         private void DriverOnSeparateThread(object arg)
@@ -888,7 +959,7 @@ namespace ASCOM.Remote
         /// </summary>
         /// <param name="screenMessage">Message to be displayed</param>
         /// <remarks>The log will be limited to a total length of SCREEN_LOG_MAXIMUM_LENGTH and the new message must be less than or equal to SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH characters in length</remarks>
-        private void LogToScreen(string screenMessage)
+        internal void LogToScreen(string screenMessage)
         {
             // Invoke the code on the UI thread if required
             if (txtLog.InvokeRequired)
@@ -963,6 +1034,8 @@ namespace ASCOM.Remote
             {
                 // Initialise the logging trace state from the Profile
                 TraceState = driverProfile.GetValue<bool>(SERVER_TRACE_LEVEL_PROFILENAME, string.Empty, SERVER_TRACE_LEVEL_DEFAULT);
+                TL.Enabled = TraceState; // Set the trace state here so that it can be used below
+
                 DebugTraceState = driverProfile.GetValue<bool>(SERVER_DEBUG_TRACE_PROFILENAME, string.Empty, SERVER_DEBUG_TRACE_DEFAULT);
                 ServerIPAddressString = driverProfile.GetValue<string>(SERVER_IPADDRESS_PROFILENAME, string.Empty, SERVER_IPADDRESS_DEFAULT);
                 ServerPortNumber = driverProfile.GetValue<decimal>(SERVER_PORTNUMBER_PROFILENAME, string.Empty, SERVER_PORTNUMBER_DEFAULT);
@@ -981,6 +1054,22 @@ namespace ASCOM.Remote
                 CorsSupportIsEnabled = driverProfile.GetValue<bool>(CORS_SUPPORT_ENABLED_PROFILENAME, string.Empty, CORS_SUPPORT_ENABLED_DEFAULT);
                 CorsMaxAge = driverProfile.GetValue<decimal>(CORS_MAX_AGE_PROFILENAME, string.Empty, CORS_MAX_AGE_DEFAULT);
                 CorsCredentialsPermitted = driverProfile.GetValue<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CORS_CREDENTIALS_PERMITTED_DEFAULT);
+                AlpacaDiscoveryEnabled = driverProfile.GetValue<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, ALPACA_DISCOVERY_ENABLED_DEFAULT);
+                AlpacaUniqueId = driverProfile.GetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, ALPACA_UNIQUE_ID_DEFAULT);
+
+                // Check whether this device already has an Alpaca unique ID, if not, create one
+                if (AlpacaUniqueId == Guid.Empty.ToString())
+                {
+                    // Create a new UUID and persist it
+                    string guidString = Guid.NewGuid().ToString(); // Create a new GUID
+                    AlpacaUniqueId = guidString; // Save the new GUID to the working variable
+                    driverProfile.SetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, guidString); // Persist the new value
+                    LogMessage(0, 0, 0, "AlpacaUniqueID", $"Created new Alpaca unique device ID: {AlpacaUniqueId}");
+                }
+                else
+                {
+                    LogMessage(0, 0, 0, "AlpacaUniqueID", $"Using existing Alpaca unique device ID: {AlpacaUniqueId}");
+                }
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
@@ -1024,6 +1113,8 @@ namespace ASCOM.Remote
                 driverProfile.SetValue<bool>(CORS_SUPPORT_ENABLED_PROFILENAME, string.Empty, CorsSupportIsEnabled);
                 driverProfile.SetValue<decimal>(CORS_MAX_AGE_PROFILENAME, string.Empty, CorsMaxAge);
                 driverProfile.SetValue<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CorsCredentialsPermitted);
+                driverProfile.SetValue<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, AlpacaDiscoveryEnabled);
+                driverProfile.SetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, AlpacaUniqueId);
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
@@ -1674,12 +1765,12 @@ namespace ASCOM.Remote
                     }
                     else // The command should follow the expected three parameter format of an Alpaca management command
                     {
-                        // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid API request so check this here:
+                        // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid management API request so check this here:
                         if (elements.Length != 3)
                         {
                             Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_SERVER_FORMAT_STRING);
                             return;
-                        }
+                        } // Invalid management command so return an error
                         else // We have received the required 3 elements in the URI
                         {
                             for (int i = 0; i < elements.Length; i++)
@@ -1714,10 +1805,11 @@ namespace ASCOM.Remote
 
                                                         case SharedConstants.ALPACA_DEVICE_MANAGEMENT_DESCRIPTION:
                                                             // Create the remote server description and return it to the client in the proscribed format
-                                                            AlpacaDeviceDescription remoteServerDescription = new AlpacaDeviceDescription(RemoteServerLocation,
+                                                            AlpacaDeviceDescription remoteServerDescription = new AlpacaDeviceDescription(SharedConstants.ALPACA_DEVICE_MANAGEMENT_SERVERNAME,
                                                                                                                                           SharedConstants.ALPACA_DEVICE_MANAGEMENT_MANUFACTURER,
                                                                                                                                           Assembly.GetEntryAssembly().GetName().Version.ToString(),
-                                                                                                                                          SharedConstants.ALPACA_DEVICE_MANAGEMENT_SERVERNAME);
+                                                                                                                                          RemoteServerLocation,
+                                                                                                                                          AlpacaUniqueId);
 
                                                             AlpacaDescriptionResponse descriptionResponse = new AlpacaDescriptionResponse(clientTransactionID, serverTransactionID, remoteServerDescription)
                                                             {
@@ -1790,8 +1882,8 @@ namespace ASCOM.Remote
                                 LogMessage1(requestData, "Management", MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
                                 Return403Error(requestData, MANAGEMENT_INTERFACE_NOT_ENABLED_MESSAGE);
                             }
-                        }
-                    }
+                        } // Valid management command
+                    } // Handle all other management requests
                 } // Process standard Alpaca device management API requests
 
                 else if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE.TrimEnd(FORWARD_SLASH))) // Process standard Alpaca HTML management calls to "/setup" and "/setup/"
