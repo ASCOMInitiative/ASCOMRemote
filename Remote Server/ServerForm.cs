@@ -327,15 +327,9 @@ namespace ASCOM.Remote
             DisconnectDevices();
             LogMessage(0, 0, 0, "FormClosed", string.Format("Disconnected devices on thread {0}", Thread.CurrentThread.ManagedThreadId));
 
-            LogMessage(0, 0, 0, "FormClosed", string.Format("Calling Application.Exit on thread {0}", Thread.CurrentThread.ManagedThreadId));
-
-            //Environment.Exit(0);
-            //Application.Exit();
-
-            LogMessage(0, 0, 0, "FormClosed", string.Format("After Application.Exit on thread {0}", Thread.CurrentThread.ManagedThreadId));
-            //Thread.Sleep(100);
             WaitFor(200);
-            LogMessage(0, 0, 0, "FormClosed", string.Format("After Sleep on thread {0}", Thread.CurrentThread.ManagedThreadId));
+            LogMessage(0, 0, 0, "FormClosed", "");
+            LogMessage(0, 0, 0, "FormClosed", string.Format("Remote Server SHUT DOWN on thread {0}", Thread.CurrentThread.ManagedThreadId));
         }
 
         #endregion
@@ -463,7 +457,13 @@ namespace ASCOM.Remote
                                     // Restart the server so that the revised permissions come into effect
                                     try
                                     {
+                                        LogMessage(0, 0, 0, "RestartRESTServer", $"");
+                                        LogMessage(0, 0, 0, "RestartRESTServer", $"RESTARTING SERVER TO ENABLE NEW PERMISSIONS TO BE USED");
+                                        LogMessage(0, 0, 0, "RestartRESTServer", $"");
+
+                                        LogMessage(0, 0, 0, "RestartRESTServer", $"About to disconnect devices...");
                                         DisconnectDevices();
+                                        LogMessage(0, 0, 0, "RestartRESTServer", $"Devices disconnected");
                                         this.RestartApplication = true;
                                     }
                                     catch (Exception ex2)
@@ -473,21 +473,23 @@ namespace ASCOM.Remote
                                     }
                                     finally
                                     {
+                                        LogMessage(0, 0, 0, "RestartRESTServer", $"About to close form ...");
                                         this.Close(); // Close the form
                                     }
+                                    return; // Leave the routine and wait for the form to close
                                 }
                                 else // SetNetworkPermissions does not exist
                                 {
                                     string errorMessage = string.Format("Cannot find SetNetworkPermissions program: {0} ", setNetworkPermissionsPath);
-                                    LogToScreen(errorMessage);
                                     LogMessage(0, 0, 0, "StartRESTServer", errorMessage);
+                                    LogToScreen(errorMessage);
                                     return;
                                 }
                             }
                             catch (Exception ex1)
                             {
-                                LogToScreen("Exception while enabling the API and Management URIs: " + ex1.Message);
                                 LogException(0, 0, 0, "StartRESTServer", ex1.ToString());
+                                LogToScreen("Exception while enabling the API and Management URIs: " + ex1.Message);
                             }
 
                             // Create a new listener instance and loop round to attempt to start it again
@@ -512,7 +514,6 @@ namespace ASCOM.Remote
                 IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(RestRequestReceivedHandler), httpListener);
 
                 // Start the Alpaca discovery broadcast listener
-                //discoveryServer = new DiscoveryServer((int)ServerPortNumber);
                 DiscoveryServer(SharedConstants.ALPACA_DISCOVERY_PORT);
 
                 //LogToScreen("Server started successfully.");
@@ -521,8 +522,8 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                LogToScreen("Exception while attempting to start the listener: " + ex.Message);
                 LogException(0, 0, 0, "StartRESTServer", ex.ToString());
+                LogToScreen("Exception while attempting to start the listener: " + ex.Message);
             }
         }
 
@@ -961,22 +962,26 @@ namespace ASCOM.Remote
         /// <remarks>The log will be limited to a total length of SCREEN_LOG_MAXIMUM_LENGTH and the new message must be less than or equal to SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH characters in length</remarks>
         internal void LogToScreen(string screenMessage)
         {
-            // Invoke the code on the UI thread if required
-            if (txtLog.InvokeRequired)
+            // Protect against attempting to log a message while the application is being closed or disposed.
+            if (txtLog != null)
             {
-                SetTextCallback logToScreenDelegate = new SetTextCallback(LogToScreen);
-                this.Invoke(logToScreenDelegate, screenMessage);
-            }
-            else
-            {
-                // Limit the maximum number of characters in the screen log to maintain performance
-                if (txtLog.TextLength > SCREEN_LOG_MAXIMUM_LENGTH) txtLog.Text = txtLog.Text.Substring(SCREEN_LOG_MAXIMUM_LENGTH / 3);
+                // Invoke the code on the UI thread if required
+                if (txtLog.InvokeRequired)
+                {
+                    SetTextCallback logToScreenDelegate = new SetTextCallback(LogToScreen);
+                    this.Invoke(logToScreenDelegate, screenMessage);
+                }
+                else
+                {
+                    // Limit the maximum number of characters in the screen log to maintain performance
+                    if (txtLog.TextLength > SCREEN_LOG_MAXIMUM_LENGTH) txtLog.Text = txtLog.Text.Substring(SCREEN_LOG_MAXIMUM_LENGTH / 3);
 
-                // Limit the number of characters that can be added in one message to maintain performance
-                if (screenMessage.Length > SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH) screenMessage = string.Format("{0} - Screen display truncated to {1} characters in order to maintain performance", screenMessage.Substring(0, SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH), SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH);
+                    // Limit the number of characters that can be added in one message to maintain performance
+                    if (screenMessage.Length > SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH) screenMessage = string.Format("{0} - Screen display truncated to {1} characters in order to maintain performance", screenMessage.Substring(0, SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH), SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH);
 
-                txtLog.AppendText(screenMessage + "\r\n"); // Add the text to the screen log
-                txtLog.SelectionStart = txtLog.Text.Length; // Move the text box focus to the newly added text
+                    txtLog.AppendText(screenMessage + "\r\n"); // Add the text to the screen log
+                    txtLog.SelectionStart = txtLog.Text.Length; // Move the text box focus to the newly added text
+                }
             }
         }
 
