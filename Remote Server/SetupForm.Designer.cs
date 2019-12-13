@@ -41,18 +41,9 @@
             this.SetupTabControl = new System.Windows.Forms.TabControl();
             this.DeviceConfigurationTab = new System.Windows.Forms.TabPage();
             this.label12 = new System.Windows.Forms.Label();
-            this.ServedDevice0 = new ASCOM.Remote.ServedDevice();
             this.label11 = new System.Windows.Forms.Label();
-            this.ServedDevice1 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice2 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice3 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice4 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice5 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice6 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice7 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice8 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice9 = new ASCOM.Remote.ServedDevice();
             this.ServerConfigurationTab = new System.Windows.Forms.TabPage();
+            this.ChkEnableDiscovery = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
             this.addressList = new System.Windows.Forms.ComboBox();
             this.TxtRemoteServerLocation = new System.Windows.Forms.TextBox();
@@ -68,7 +59,18 @@
             this.LabHelp2 = new System.Windows.Forms.Label();
             this.LabHelp1 = new System.Windows.Forms.Label();
             this.DataGridCorsOrigins = new System.Windows.Forms.DataGridView();
-            this.ChkEnableDiscovery = new System.Windows.Forms.CheckBox();
+            this.NumDiscoveryPort = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
+            this.ServedDevice0 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice1 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice2 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice3 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice4 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice5 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice6 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice7 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice8 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice9 = new ASCOM.Remote.ServedDevice();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SetupTabControl.SuspendLayout();
             this.DeviceConfigurationTab.SuspendLayout();
@@ -77,6 +79,7 @@
             this.CorsConfigurationTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumCorsMaxAge)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridCorsOrigins)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumDiscoveryPort)).BeginInit();
             this.SuspendLayout();
             // 
             // BtnCancel
@@ -129,7 +132,7 @@
             // chkAutoConnect
             // 
             this.chkAutoConnect.AutoSize = true;
-            this.chkAutoConnect.Location = new System.Drawing.Point(293, 167);
+            this.chkAutoConnect.Location = new System.Drawing.Point(249, 192);
             this.chkAutoConnect.Name = "chkAutoConnect";
             this.chkAutoConnect.Size = new System.Drawing.Size(133, 17);
             this.chkAutoConnect.TabIndex = 2;
@@ -139,7 +142,7 @@
             // chkTrace
             // 
             this.chkTrace.AutoSize = true;
-            this.chkTrace.Location = new System.Drawing.Point(293, 264);
+            this.chkTrace.Location = new System.Drawing.Point(249, 259);
             this.chkTrace.Name = "chkTrace";
             this.chkTrace.Size = new System.Drawing.Size(96, 17);
             this.chkTrace.TabIndex = 6;
@@ -149,7 +152,7 @@
             // chkDebugTrace
             // 
             this.chkDebugTrace.AutoSize = true;
-            this.chkDebugTrace.Location = new System.Drawing.Point(293, 287);
+            this.chkDebugTrace.Location = new System.Drawing.Point(249, 282);
             this.chkDebugTrace.Name = "chkDebugTrace";
             this.chkDebugTrace.Size = new System.Drawing.Size(135, 17);
             this.chkDebugTrace.TabIndex = 7;
@@ -160,11 +163,11 @@
             // chkAccessLog
             // 
             this.chkAccessLog.AutoSize = true;
-            this.chkAccessLog.Location = new System.Drawing.Point(293, 190);
+            this.chkAccessLog.Location = new System.Drawing.Point(249, 305);
             this.chkAccessLog.Name = "chkAccessLog";
-            this.chkAccessLog.Size = new System.Drawing.Size(124, 17);
+            this.chkAccessLog.Size = new System.Drawing.Size(118, 17);
             this.chkAccessLog.TabIndex = 4;
-            this.chkAccessLog.Text = "Access Log Enabled";
+            this.chkAccessLog.Text = "Enable Access Log";
             this.chkAccessLog.UseVisualStyleBackColor = true;
             // 
             // label4
@@ -197,7 +200,7 @@
             // chkManagementInterfaceEnabled
             // 
             this.chkManagementInterfaceEnabled.AutoSize = true;
-            this.chkManagementInterfaceEnabled.Location = new System.Drawing.Point(506, 167);
+            this.chkManagementInterfaceEnabled.Location = new System.Drawing.Point(462, 192);
             this.chkManagementInterfaceEnabled.Name = "chkManagementInterfaceEnabled";
             this.chkManagementInterfaceEnabled.Size = new System.Drawing.Size(169, 17);
             this.chkManagementInterfaceEnabled.TabIndex = 3;
@@ -211,7 +214,7 @@
             // ChkStartWithApiEnabled
             // 
             this.ChkStartWithApiEnabled.AutoSize = true;
-            this.ChkStartWithApiEnabled.Location = new System.Drawing.Point(506, 190);
+            this.ChkStartWithApiEnabled.Location = new System.Drawing.Point(249, 215);
             this.ChkStartWithApiEnabled.Name = "ChkStartWithApiEnabled";
             this.ChkStartWithApiEnabled.Size = new System.Drawing.Size(131, 17);
             this.ChkStartWithApiEnabled.TabIndex = 5;
@@ -242,7 +245,7 @@
             // ChkRunDriversInSeparateThreadss
             // 
             this.ChkRunDriversInSeparateThreadss.AutoSize = true;
-            this.ChkRunDriversInSeparateThreadss.Location = new System.Drawing.Point(506, 264);
+            this.ChkRunDriversInSeparateThreadss.Location = new System.Drawing.Point(462, 259);
             this.ChkRunDriversInSeparateThreadss.Name = "ChkRunDriversInSeparateThreadss";
             this.ChkRunDriversInSeparateThreadss.Size = new System.Drawing.Size(181, 17);
             this.ChkRunDriversInSeparateThreadss.TabIndex = 34;
@@ -252,7 +255,7 @@
             // ChkLogClientIPAddress
             // 
             this.ChkLogClientIPAddress.AutoSize = true;
-            this.ChkLogClientIPAddress.Location = new System.Drawing.Point(506, 287);
+            this.ChkLogClientIPAddress.Location = new System.Drawing.Point(462, 282);
             this.ChkLogClientIPAddress.Name = "ChkLogClientIPAddress";
             this.ChkLogClientIPAddress.Size = new System.Drawing.Size(134, 17);
             this.ChkLogClientIPAddress.TabIndex = 35;
@@ -262,7 +265,7 @@
             // ChkIncludeDriverExceptionsInJsonResponses
             // 
             this.ChkIncludeDriverExceptionsInJsonResponses.AutoSize = true;
-            this.ChkIncludeDriverExceptionsInJsonResponses.Location = new System.Drawing.Point(293, 310);
+            this.ChkIncludeDriverExceptionsInJsonResponses.Location = new System.Drawing.Point(462, 305);
             this.ChkIncludeDriverExceptionsInJsonResponses.Name = "ChkIncludeDriverExceptionsInJsonResponses";
             this.ChkIncludeDriverExceptionsInJsonResponses.Size = new System.Drawing.Size(364, 17);
             this.ChkIncludeDriverExceptionsInJsonResponses.TabIndex = 36;
@@ -319,6 +322,272 @@
             this.label12.TabIndex = 40;
             this.label12.Text = "Enable";
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(914, 32);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(97, 13);
+            this.label11.TabIndex = 34;
+            this.label11.Text = "Concurrent Access";
+            // 
+            // ServerConfigurationTab
+            // 
+            this.ServerConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
+            this.ServerConfigurationTab.Controls.Add(this.label13);
+            this.ServerConfigurationTab.Controls.Add(this.NumDiscoveryPort);
+            this.ServerConfigurationTab.Controls.Add(this.ChkEnableDiscovery);
+            this.ServerConfigurationTab.Controls.Add(this.label10);
+            this.ServerConfigurationTab.Controls.Add(this.addressList);
+            this.ServerConfigurationTab.Controls.Add(this.TxtRemoteServerLocation);
+            this.ServerConfigurationTab.Controls.Add(this.numPort);
+            this.ServerConfigurationTab.Controls.Add(this.label8);
+            this.ServerConfigurationTab.Controls.Add(this.label7);
+            this.ServerConfigurationTab.Controls.Add(this.chkManagementInterfaceEnabled);
+            this.ServerConfigurationTab.Controls.Add(this.ChkIncludeDriverExceptionsInJsonResponses);
+            this.ServerConfigurationTab.Controls.Add(this.chkAutoConnect);
+            this.ServerConfigurationTab.Controls.Add(this.ChkLogClientIPAddress);
+            this.ServerConfigurationTab.Controls.Add(this.chkTrace);
+            this.ServerConfigurationTab.Controls.Add(this.ChkRunDriversInSeparateThreadss);
+            this.ServerConfigurationTab.Controls.Add(this.chkDebugTrace);
+            this.ServerConfigurationTab.Controls.Add(this.ChkStartWithApiEnabled);
+            this.ServerConfigurationTab.Controls.Add(this.chkAccessLog);
+            this.ServerConfigurationTab.Location = new System.Drawing.Point(4, 22);
+            this.ServerConfigurationTab.Margin = new System.Windows.Forms.Padding(0);
+            this.ServerConfigurationTab.Name = "ServerConfigurationTab";
+            this.ServerConfigurationTab.Padding = new System.Windows.Forms.Padding(3);
+            this.ServerConfigurationTab.Size = new System.Drawing.Size(1027, 370);
+            this.ServerConfigurationTab.TabIndex = 1;
+            this.ServerConfigurationTab.Text = "Server Configuration";
+            // 
+            // ChkEnableDiscovery
+            // 
+            this.ChkEnableDiscovery.AutoSize = true;
+            this.ChkEnableDiscovery.Location = new System.Drawing.Point(462, 215);
+            this.ChkEnableDiscovery.Name = "ChkEnableDiscovery";
+            this.ChkEnableDiscovery.Size = new System.Drawing.Size(109, 17);
+            this.ChkEnableDiscovery.TabIndex = 45;
+            this.ChkEnableDiscovery.Text = "Enable Discovery";
+            this.ChkEnableDiscovery.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(583, 39);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(82, 13);
+            this.label10.TabIndex = 44;
+            this.label10.Text = "Server Location";
+            // 
+            // addressList
+            // 
+            this.addressList.FormattingEnabled = true;
+            this.addressList.Location = new System.Drawing.Point(249, 86);
+            this.addressList.Name = "addressList";
+            this.addressList.Size = new System.Drawing.Size(328, 21);
+            this.addressList.TabIndex = 39;
+            // 
+            // TxtRemoteServerLocation
+            // 
+            this.TxtRemoteServerLocation.Location = new System.Drawing.Point(249, 36);
+            this.TxtRemoteServerLocation.Name = "TxtRemoteServerLocation";
+            this.TxtRemoteServerLocation.Size = new System.Drawing.Size(328, 20);
+            this.TxtRemoteServerLocation.TabIndex = 43;
+            // 
+            // numPort
+            // 
+            this.numPort.Location = new System.Drawing.Point(490, 113);
+            this.numPort.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numPort.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numPort.Name = "numPort";
+            this.numPort.Size = new System.Drawing.Size(87, 20);
+            this.numPort.TabIndex = 40;
+            this.numPort.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(583, 115);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(73, 13);
+            this.label8.TabIndex = 42;
+            this.label8.Text = "Server IP Port";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(583, 89);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(91, 13);
+            this.label7.TabIndex = 41;
+            this.label7.Text = "Server IP address";
+            // 
+            // CorsConfigurationTab
+            // 
+            this.CorsConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
+            this.CorsConfigurationTab.Controls.Add(this.ChkCorsSupportCredentials);
+            this.CorsConfigurationTab.Controls.Add(this.LabMaxAge);
+            this.CorsConfigurationTab.Controls.Add(this.NumCorsMaxAge);
+            this.CorsConfigurationTab.Controls.Add(this.ChkEnableCors);
+            this.CorsConfigurationTab.Controls.Add(this.label14);
+            this.CorsConfigurationTab.Controls.Add(this.LabHelp2);
+            this.CorsConfigurationTab.Controls.Add(this.LabHelp1);
+            this.CorsConfigurationTab.Controls.Add(this.DataGridCorsOrigins);
+            this.CorsConfigurationTab.Location = new System.Drawing.Point(4, 22);
+            this.CorsConfigurationTab.Name = "CorsConfigurationTab";
+            this.CorsConfigurationTab.Padding = new System.Windows.Forms.Padding(3);
+            this.CorsConfigurationTab.Size = new System.Drawing.Size(1027, 370);
+            this.CorsConfigurationTab.TabIndex = 2;
+            this.CorsConfigurationTab.Text = "CORS Configuration";
+            // 
+            // ChkCorsSupportCredentials
+            // 
+            this.ChkCorsSupportCredentials.AutoSize = true;
+            this.ChkCorsSupportCredentials.Location = new System.Drawing.Point(827, 166);
+            this.ChkCorsSupportCredentials.Name = "ChkCorsSupportCredentials";
+            this.ChkCorsSupportCredentials.Size = new System.Drawing.Size(118, 17);
+            this.ChkCorsSupportCredentials.TabIndex = 10;
+            this.ChkCorsSupportCredentials.Text = "Support Credentials";
+            this.ChkCorsSupportCredentials.UseVisualStyleBackColor = true;
+            // 
+            // LabMaxAge
+            // 
+            this.LabMaxAge.AutoSize = true;
+            this.LabMaxAge.Location = new System.Drawing.Point(495, 286);
+            this.LabMaxAge.Name = "LabMaxAge";
+            this.LabMaxAge.Size = new System.Drawing.Size(169, 13);
+            this.LabMaxAge.TabIndex = 9;
+            this.LabMaxAge.Text = "CORS Max Age Header (seconds)";
+            // 
+            // NumCorsMaxAge
+            // 
+            this.NumCorsMaxAge.Increment = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.NumCorsMaxAge.Location = new System.Drawing.Point(369, 284);
+            this.NumCorsMaxAge.Maximum = new decimal(new int[] {
+            100000000,
+            0,
+            0,
+            0});
+            this.NumCorsMaxAge.Name = "NumCorsMaxAge";
+            this.NumCorsMaxAge.Size = new System.Drawing.Size(120, 20);
+            this.NumCorsMaxAge.TabIndex = 8;
+            this.NumCorsMaxAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.NumCorsMaxAge.Value = new decimal(new int[] {
+            3600,
+            0,
+            0,
+            0});
+            // 
+            // ChkEnableCors
+            // 
+            this.ChkEnableCors.AutoSize = true;
+            this.ChkEnableCors.Location = new System.Drawing.Point(827, 142);
+            this.ChkEnableCors.Name = "ChkEnableCors";
+            this.ChkEnableCors.Size = new System.Drawing.Size(132, 17);
+            this.ChkEnableCors.TabIndex = 7;
+            this.ChkEnableCors.Text = "Enable CORS Support";
+            this.ChkEnableCors.UseVisualStyleBackColor = true;
+            // 
+            // label14
+            // 
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(52, 18);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(921, 23);
+            this.label14.TabIndex = 6;
+            this.label14.Text = "CORS support is not required by most users. It only needs to be enabled when ASCO" +
+    "M Remote is used within a cross site scripting environment.";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // LabHelp2
+            // 
+            this.LabHelp2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabHelp2.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.LabHelp2.Location = new System.Drawing.Point(55, 340);
+            this.LabHelp2.Name = "LabHelp2";
+            this.LabHelp2.Size = new System.Drawing.Size(918, 20);
+            this.LabHelp2.TabIndex = 5;
+            this.LabHelp2.Text = " If a CORS request comes from an origin that is not in this list, the returned Ac" +
+    "cess-Control-Allow-Origin header will contain the first entry in this table.";
+            this.LabHelp2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // LabHelp1
+            // 
+            this.LabHelp1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabHelp1.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.LabHelp1.Location = new System.Drawing.Point(49, 320);
+            this.LabHelp1.Name = "LabHelp1";
+            this.LabHelp1.Size = new System.Drawing.Size(924, 20);
+            this.LabHelp1.TabIndex = 2;
+            this.LabHelp1.Text = "The default origin * indicates that all hosts are permitted to access the Remote " +
+    "Server";
+            this.LabHelp1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // DataGridCorsOrigins
+            // 
+            this.DataGridCorsOrigins.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DataGridCorsOrigins.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.DataGridCorsOrigins.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DataGridCorsOrigins.EnableHeadersVisualStyles = false;
+            this.DataGridCorsOrigins.Location = new System.Drawing.Point(219, 50);
+            this.DataGridCorsOrigins.Name = "DataGridCorsOrigins";
+            this.DataGridCorsOrigins.Size = new System.Drawing.Size(586, 217);
+            this.DataGridCorsOrigins.TabIndex = 0;
+            // 
+            // NumDiscoveryPort
+            // 
+            this.NumDiscoveryPort.Location = new System.Drawing.Point(490, 139);
+            this.NumDiscoveryPort.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.NumDiscoveryPort.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.NumDiscoveryPort.Name = "NumDiscoveryPort";
+            this.NumDiscoveryPort.Size = new System.Drawing.Size(87, 20);
+            this.NumDiscoveryPort.TabIndex = 46;
+            this.NumDiscoveryPort.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(583, 141);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(192, 13);
+            this.label13.TabIndex = 47;
+            this.label13.Text = "Discovery Listener Port (Default 32227)";
+            // 
             // ServedDevice0
             // 
             this.ServedDevice0.AllowConcurrentAccess = false;
@@ -333,15 +602,6 @@
             this.ServedDevice0.ProgID = "";
             this.ServedDevice0.Size = new System.Drawing.Size(960, 22);
             this.ServedDevice0.TabIndex = 8;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(914, 32);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(97, 13);
-            this.label11.TabIndex = 34;
-            this.label11.Text = "Concurrent Access";
             // 
             // ServedDevice1
             // 
@@ -478,230 +738,6 @@
             this.ServedDevice9.Size = new System.Drawing.Size(960, 22);
             this.ServedDevice9.TabIndex = 17;
             // 
-            // ServerConfigurationTab
-            // 
-            this.ServerConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
-            this.ServerConfigurationTab.Controls.Add(this.ChkEnableDiscovery);
-            this.ServerConfigurationTab.Controls.Add(this.label10);
-            this.ServerConfigurationTab.Controls.Add(this.addressList);
-            this.ServerConfigurationTab.Controls.Add(this.TxtRemoteServerLocation);
-            this.ServerConfigurationTab.Controls.Add(this.numPort);
-            this.ServerConfigurationTab.Controls.Add(this.label8);
-            this.ServerConfigurationTab.Controls.Add(this.label7);
-            this.ServerConfigurationTab.Controls.Add(this.chkManagementInterfaceEnabled);
-            this.ServerConfigurationTab.Controls.Add(this.ChkIncludeDriverExceptionsInJsonResponses);
-            this.ServerConfigurationTab.Controls.Add(this.chkAutoConnect);
-            this.ServerConfigurationTab.Controls.Add(this.ChkLogClientIPAddress);
-            this.ServerConfigurationTab.Controls.Add(this.chkTrace);
-            this.ServerConfigurationTab.Controls.Add(this.ChkRunDriversInSeparateThreadss);
-            this.ServerConfigurationTab.Controls.Add(this.chkDebugTrace);
-            this.ServerConfigurationTab.Controls.Add(this.ChkStartWithApiEnabled);
-            this.ServerConfigurationTab.Controls.Add(this.chkAccessLog);
-            this.ServerConfigurationTab.Location = new System.Drawing.Point(4, 22);
-            this.ServerConfigurationTab.Margin = new System.Windows.Forms.Padding(0);
-            this.ServerConfigurationTab.Name = "ServerConfigurationTab";
-            this.ServerConfigurationTab.Padding = new System.Windows.Forms.Padding(3);
-            this.ServerConfigurationTab.Size = new System.Drawing.Size(1027, 370);
-            this.ServerConfigurationTab.TabIndex = 1;
-            this.ServerConfigurationTab.Text = "Server Configuration";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(408, 20);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(82, 13);
-            this.label10.TabIndex = 44;
-            this.label10.Text = "Server Location";
-            // 
-            // addressList
-            // 
-            this.addressList.FormattingEnabled = true;
-            this.addressList.Location = new System.Drawing.Point(293, 96);
-            this.addressList.Name = "addressList";
-            this.addressList.Size = new System.Drawing.Size(328, 21);
-            this.addressList.TabIndex = 39;
-            // 
-            // TxtRemoteServerLocation
-            // 
-            this.TxtRemoteServerLocation.Location = new System.Drawing.Point(293, 36);
-            this.TxtRemoteServerLocation.Name = "TxtRemoteServerLocation";
-            this.TxtRemoteServerLocation.Size = new System.Drawing.Size(328, 20);
-            this.TxtRemoteServerLocation.TabIndex = 43;
-            // 
-            // numPort
-            // 
-            this.numPort.Location = new System.Drawing.Point(627, 97);
-            this.numPort.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-            this.numPort.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numPort.Name = "numPort";
-            this.numPort.Size = new System.Drawing.Size(87, 20);
-            this.numPort.TabIndex = 40;
-            this.numPort.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(625, 80);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(111, 13);
-            this.label8.TabIndex = 42;
-            this.label8.Text = "Remote server IP Port";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(407, 80);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(129, 13);
-            this.label7.TabIndex = 41;
-            this.label7.Text = "Remote server IP address";
-            // 
-            // CorsConfigurationTab
-            // 
-            this.CorsConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
-            this.CorsConfigurationTab.Controls.Add(this.ChkCorsSupportCredentials);
-            this.CorsConfigurationTab.Controls.Add(this.LabMaxAge);
-            this.CorsConfigurationTab.Controls.Add(this.NumCorsMaxAge);
-            this.CorsConfigurationTab.Controls.Add(this.ChkEnableCors);
-            this.CorsConfigurationTab.Controls.Add(this.label14);
-            this.CorsConfigurationTab.Controls.Add(this.LabHelp2);
-            this.CorsConfigurationTab.Controls.Add(this.LabHelp1);
-            this.CorsConfigurationTab.Controls.Add(this.DataGridCorsOrigins);
-            this.CorsConfigurationTab.Location = new System.Drawing.Point(4, 22);
-            this.CorsConfigurationTab.Name = "CorsConfigurationTab";
-            this.CorsConfigurationTab.Padding = new System.Windows.Forms.Padding(3);
-            this.CorsConfigurationTab.Size = new System.Drawing.Size(1027, 370);
-            this.CorsConfigurationTab.TabIndex = 2;
-            this.CorsConfigurationTab.Text = "CORS Configuration";
-            // 
-            // ChkCorsSupportCredentials
-            // 
-            this.ChkCorsSupportCredentials.AutoSize = true;
-            this.ChkCorsSupportCredentials.Location = new System.Drawing.Point(827, 166);
-            this.ChkCorsSupportCredentials.Name = "ChkCorsSupportCredentials";
-            this.ChkCorsSupportCredentials.Size = new System.Drawing.Size(118, 17);
-            this.ChkCorsSupportCredentials.TabIndex = 10;
-            this.ChkCorsSupportCredentials.Text = "Support Credentials";
-            this.ChkCorsSupportCredentials.UseVisualStyleBackColor = true;
-            // 
-            // LabMaxAge
-            // 
-            this.LabMaxAge.AutoSize = true;
-            this.LabMaxAge.Location = new System.Drawing.Point(495, 286);
-            this.LabMaxAge.Name = "LabMaxAge";
-            this.LabMaxAge.Size = new System.Drawing.Size(169, 13);
-            this.LabMaxAge.TabIndex = 9;
-            this.LabMaxAge.Text = "CORS Max Age Header (seconds)";
-            // 
-            // NumCorsMaxAge
-            // 
-            this.NumCorsMaxAge.Increment = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.NumCorsMaxAge.Location = new System.Drawing.Point(369, 284);
-            this.NumCorsMaxAge.Maximum = new decimal(new int[] {
-            100000000,
-            0,
-            0,
-            0});
-            this.NumCorsMaxAge.Name = "NumCorsMaxAge";
-            this.NumCorsMaxAge.Size = new System.Drawing.Size(120, 20);
-            this.NumCorsMaxAge.TabIndex = 8;
-            this.NumCorsMaxAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.NumCorsMaxAge.Value = new decimal(new int[] {
-            3600,
-            0,
-            0,
-            0});
-            // 
-            // ChkEnableCors
-            // 
-            this.ChkEnableCors.AutoSize = true;
-            this.ChkEnableCors.Location = new System.Drawing.Point(827, 142);
-            this.ChkEnableCors.Name = "ChkEnableCors";
-            this.ChkEnableCors.Size = new System.Drawing.Size(132, 17);
-            this.ChkEnableCors.TabIndex = 7;
-            this.ChkEnableCors.Text = "Enable CORS Support";
-            this.ChkEnableCors.UseVisualStyleBackColor = true;
-            // 
-            // label14
-            // 
-            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(52, 18);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(921, 23);
-            this.label14.TabIndex = 6;
-            this.label14.Text = "CORS support is not required by most users. It only needs to be enabled when ASCO" +
-    "M Remote is used within a cross site scripting environment.";
-            this.label14.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // LabHelp2
-            // 
-            this.LabHelp2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabHelp2.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.LabHelp2.Location = new System.Drawing.Point(55, 340);
-            this.LabHelp2.Name = "LabHelp2";
-            this.LabHelp2.Size = new System.Drawing.Size(918, 20);
-            this.LabHelp2.TabIndex = 5;
-            this.LabHelp2.Text = " If a CORS request comes from an origin that is not in this list, the returned Ac" +
-    "cess-Control-Allow-Origin header will contain the first entry in this table.";
-            this.LabHelp2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // LabHelp1
-            // 
-            this.LabHelp1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabHelp1.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.LabHelp1.Location = new System.Drawing.Point(49, 320);
-            this.LabHelp1.Name = "LabHelp1";
-            this.LabHelp1.Size = new System.Drawing.Size(924, 20);
-            this.LabHelp1.TabIndex = 2;
-            this.LabHelp1.Text = "The default origin * indicates that all hosts are permitted to access the Remote " +
-    "Server";
-            this.LabHelp1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // DataGridCorsOrigins
-            // 
-            this.DataGridCorsOrigins.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DataGridCorsOrigins.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.DataGridCorsOrigins.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.DataGridCorsOrigins.EnableHeadersVisualStyles = false;
-            this.DataGridCorsOrigins.Location = new System.Drawing.Point(219, 50);
-            this.DataGridCorsOrigins.Name = "DataGridCorsOrigins";
-            this.DataGridCorsOrigins.Size = new System.Drawing.Size(586, 217);
-            this.DataGridCorsOrigins.TabIndex = 0;
-            // 
-            // ChkEnableDiscovery
-            // 
-            this.ChkEnableDiscovery.AutoSize = true;
-            this.ChkEnableDiscovery.Location = new System.Drawing.Point(293, 213);
-            this.ChkEnableDiscovery.Name = "ChkEnableDiscovery";
-            this.ChkEnableDiscovery.Size = new System.Drawing.Size(109, 17);
-            this.ChkEnableDiscovery.TabIndex = 45;
-            this.ChkEnableDiscovery.Text = "Enable Discovery";
-            this.ChkEnableDiscovery.UseVisualStyleBackColor = true;
-            // 
             // SetupForm
             // 
             this.AcceptButton = this.BtnCancel;
@@ -728,6 +764,7 @@
             this.CorsConfigurationTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumCorsMaxAge)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridCorsOrigins)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumDiscoveryPort)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -784,5 +821,7 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox ChkEnableDiscovery;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.NumericUpDown NumDiscoveryPort;
     }
 }

@@ -96,7 +96,7 @@ namespace ASCOM.Remote
                 foreach (IPAddress ip in host.AddressList) // Add the other addresses on this PC
                 {
                     //if ((ip.AddressFamily == AddressFamily.InterNetwork) & !foundAnIPAddress) // Only process IPv4 addresses and ignore the rest including IPv6
-                    if (ip.AddressFamily == AddressFamily.InterNetwork ) // Only process IPv4 addresses and ignore the rest including IPv6
+                    if (ip.AddressFamily == AddressFamily.InterNetwork) // Only process IPv4 addresses and ignore the rest including IPv6
                     {
                         ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Found {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
                         foundAnIPAddress = true;
@@ -143,6 +143,7 @@ namespace ASCOM.Remote
                 NumCorsMaxAge.Value = ServerForm.CorsMaxAge;
                 ChkCorsSupportCredentials.Checked = ServerForm.CorsCredentialsPermitted;
                 ChkEnableDiscovery.Checked = ServerForm.AlpacaDiscoveryEnabled;
+                NumDiscoveryPort.Value = ServerForm.AlpacaDiscoveryPort;
 
                 // CORS tab event handler
                 ChkEnableCors_CheckedChanged(ChkEnableCors, new EventArgs()); // Fire the event handlers to ensure that the controls reflect the CORS enabled / disabled state
@@ -388,6 +389,7 @@ namespace ASCOM.Remote
                 ServerForm.CorsMaxAge = NumCorsMaxAge.Value;
                 ServerForm.CorsCredentialsPermitted = ChkCorsSupportCredentials.Checked;
                 ServerForm.AlpacaDiscoveryEnabled = ChkEnableDiscovery.Checked;
+                ServerForm.AlpacaDiscoveryPort = NumDiscoveryPort.Value;
 
                 foreach (ServedDevice item in DeviceConfigurationTab.Controls.OfType<ServedDevice>())
                 {

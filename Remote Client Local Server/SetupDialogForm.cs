@@ -45,13 +45,15 @@ namespace ASCOM.Remote
         {
             InitializeComponent();
 
-            // Event handlers to paint the service type drop down white rather than the default grey.
+            // Event handlers to paint drop down lists white rather than the default grey.
             cmbServiceType.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbServiceType.DrawItem += new DrawItemEventHandler(ComboBox_DrawItem);
             cmbServiceType.DrawMode = DrawMode.OwnerDrawFixed;
             CmbImageArrayTransferType.DropDownStyle = ComboBoxStyle.DropDownList;
             CmbImageArrayTransferType.DrawItem += new DrawItemEventHandler(ComboBox_DrawItem);
             CmbImageArrayTransferType.DrawMode = DrawMode.OwnerDrawFixed;
+            cmbImageArrayCompression.DrawItem += new DrawItemEventHandler(ComboBox_DrawItem);
+            cmbImageArrayCompression.DrawMode = DrawMode.OwnerDrawFixed;
 
             // Create event handlers to select the whole contents of the numeric up-down boxes when tabbed into or selected by mouse click
             numPort.Enter += NumericUpDown_Enter;
@@ -67,6 +69,21 @@ namespace ASCOM.Remote
 
             // Add event handler to validate the supplied host name
             addressList.Validating += AddressList_Validating;
+
+            // Add event handler to enable / disable the compression combo box depending on whether JSON or Base64HandOff is selected
+            CmbImageArrayTransferType.SelectedValueChanged += CmbImageArrayTransferType_SelectedValueChanged;
+        }
+
+        private void CmbImageArrayTransferType_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if ((SharedConstants.ImageArrayTransferType)CmbImageArrayTransferType.SelectedItem == SharedConstants.ImageArrayTransferType.Base64HandOff)
+            {
+                cmbImageArrayCompression.Enabled = false;
+            }
+            else
+            {
+                cmbImageArrayCompression.Enabled = true;
+            }
         }
 
         public SetupDialogForm(TraceLoggerPlus TraceLogger) : this()
@@ -200,9 +217,12 @@ namespace ASCOM.Remote
         /// <param name="e">Draw event arguments object</param>
         void ComboBox_DrawItem(object sender, DrawItemEventArgs e)
         {
-            if (e.Index < 0) return;
+            if (e.Index < 0) return; // Do not paint if no item is selected
 
             ComboBox combo = sender as ComboBox;
+
+            if (!combo.Enabled) return; // Do not paint if the combo box is disabled
+
             if ((e.State & DrawItemState.Selected) == DrawItemState.Selected) // Draw the selected item in menu highlight colour
             {
                 e.Graphics.FillRectangle(new SolidBrush(SystemColors.MenuHighlight), e.Bounds);

@@ -129,6 +129,7 @@ namespace ASCOM.Remote
         internal const string CORS_CREDENTIALS_PERMITTED_PROFILENAME = "CORS Credentials Permitted"; public const bool CORS_CREDENTIALS_PERMITTED_DEFAULT = false;
         internal const string ALPACA_DISCOVERY_ENABLED_PROFILENAME = "Alpaca Discovery Enabled"; public const bool ALPACA_DISCOVERY_ENABLED_DEFAULT = true;
         internal const string ALPACA_UNIQUE_ID_PROFILENAME = "Alpaca Unique ID"; public static string ALPACA_UNIQUE_ID_DEFAULT = Guid.Empty.ToString();
+        internal const string ALPACA_DISCOVERY_PORT_PROFILENAME = "Alpaca Discovery Port"; public static int ALPACA_DISCOVERY_PORT_DEFAULT = SharedConstants.ALPACA_DISCOVERY_PORT;
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -179,6 +180,7 @@ namespace ASCOM.Remote
         public bool RestartApplication = false;
 
         internal static HttpListener httpListener;
+        internal static UdpClient udpClient;
         internal static TraceLoggerPlus AccessLog;
 
         internal readonly object counterLock = new object();
@@ -220,6 +222,7 @@ namespace ASCOM.Remote
         internal static bool CorsCredentialsPermitted;
         internal static bool AlpacaDiscoveryEnabled;
         internal static string AlpacaUniqueId; // Unique UUID / GUID for this particular Alpaca device (common to all served devices)
+        internal static decimal AlpacaDiscoveryPort; // Port on which the Alpaca discovery listener will listen
 
         #endregion
 
@@ -288,6 +291,16 @@ namespace ASCOM.Remote
                 this.FormClosed += Form1_FormClosed;
                 this.Resize += ServerForm_Resize;
                 ServerForm_Resize(this, new EventArgs()); // Move controls to their correct positions
+
+                // Check whether this device already has an Alpaca unique ID, if not, create one
+                if (AlpacaUniqueId == Guid.Empty.ToString()) // Guid.Empty is the default value created when the configuration is retrieved if there is no pre-existing value
+                {
+                    // We don't have a unique ALpaca ID so create a new UUID and persist it
+                    string guidString = Guid.NewGuid().ToString(); // Create a new GUID
+                    AlpacaUniqueId = guidString; // Save the new GUID to the working variable
+                    WriteProfile();
+                    LogMessage(0, 0, 0, "AlpacaUniqueID", $"Created new Alpaca unique device ID: {AlpacaUniqueId}");
+                }
 
                 // Write starting configuration to log
                 WriteConfigurationToLog();
@@ -513,17 +526,50 @@ namespace ASCOM.Remote
                 LogMessage(0, 0, 0, "StartRESTServer", "Starting wait for incoming request");
                 IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(RestRequestReceivedHandler), httpListener);
 
-                // Start the Alpaca discovery broadcast listener
-                DiscoveryServer(SharedConstants.ALPACA_DISCOVERY_PORT);
+                // Start the Alpaca discovery broadcast listener if configured to do so
+                if (AlpacaDiscoveryEnabled) // Discovery is enabled
+                {
+                    IPAddress broadcastListenAddress;
 
-                //LogToScreen("Server started successfully.");
+                    // Listen on the server's active address. If the + or * "all interfaces" address are in use, IPAddress.Parse will fail. In this case listen on all interfaces.
+                    try
+                    {
+                        broadcastListenAddress = IPAddress.Parse(ServerForm.ServerIPAddressString);
+                    }
+                    catch
+                    {
+                        broadcastListenAddress = IPAddress.Any;
+                    }
+
+                    LogMessage(0, 0, 0, "StartRESTServer", $"Alpaca discovery listener address: {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}");
+
+                    udpClient?.Dispose(); // Call the dispose method if there already is a UDPClient instance
+                    udpClient = new UdpClient();
+                    LogMessage(0, 0, 0, "StartRESTServer", $"Created UDP client, configuring options");
+
+                    udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                    udpClient.EnableBroadcast = true;
+                    udpClient.MulticastLoopback = false;
+                    udpClient.ExclusiveAddressUse = false;
+                    udpClient.Client.Bind(new IPEndPoint(broadcastListenAddress, (int)AlpacaDiscoveryPort));
+
+                    // Start a wait for an incoming discovery broadcast
+                    udpClient.BeginReceive(DiscoveryCallback, udpClient);
+                    LogMessage(0, 0, 0, "StartRESTServer", $"Listening for discovery broadcasts on {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}.");
+                    LogToScreen($"Listening for discovery broadcasts on {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}.");
+                }
+                else // Discovery is not enabled
+                {
+                    LogMessage(0, 0, 0, "StartRESTServer", $"Listening for discovery broadcasts has been DISABLED by configuration.");
+                    LogToScreen($"NOT Listening for discovery broadcasts");
+                }
                 LogMessage(0, 0, 0, "StartRESTServer", "Server started successfully.");
 
             }
             catch (Exception ex)
             {
                 LogException(0, 0, 0, "StartRESTServer", ex.ToString());
-                LogToScreen("Exception while attempting to start the listener: " + ex.Message);
+                LogToScreen("Exception while attempting to start the API or discovery listeners: " + ex.Message);
             }
         }
 
@@ -531,6 +577,10 @@ namespace ASCOM.Remote
         {
             if (httpListener != null) // Close and dispose of the current listener, if there is one.
             {
+                //Stop the ALpaca discovery UDP listener if one is currently running
+                try { udpClient.Close(); } catch { }
+                try { udpClient.Dispose(); } catch { }
+
                 // Create variables to hold the ASCOM device server operating URIs
                 string apiOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
                 string managementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
@@ -623,65 +673,42 @@ namespace ASCOM.Remote
             }
         }
 
-        private void DiscoveryServer(int AlpacaDiscoveryPort)
-        {
-            //IPAddress broadcastListenAddress = IPAddress.Any;
-            IPAddress broadcastListenAddress;
-
-            // Listen on the server's active address. If the + or * "all interfaces" address are in use, IPAddress.Parse will fail. In this case listen on all interfaces.
-            try
-            {
-                broadcastListenAddress = IPAddress.Parse(ServerForm.ServerIPAddressString);
-            }
-            catch
-            {
-                broadcastListenAddress = IPAddress.Any;
-            }
-
-            LogMessage(0, 0, 0, "DiscoveryServer", $"Starting Alpaca discovery listener on {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}");
-
-            UdpClient udpClient = new UdpClient();
-            LogMessage(0, 0, 0, "DiscoveryServer", $"Created UDP client, configuring options");
-
-            udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            udpClient.EnableBroadcast = true;
-            udpClient.MulticastLoopback = false;
-            udpClient.ExclusiveAddressUse = false;
-            udpClient.Client.Bind(new IPEndPoint(broadcastListenAddress, AlpacaDiscoveryPort));
-
-            LogMessage(0, 0, 0, "DiscoveryServer", $"Listening for discovery broadcasts on {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}.");
-            LogToScreen($"Listening for discovery broadcasts on {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}.");
-
-            // This uses begin receive rather then async so it works on net 3.5
-            udpClient.BeginReceive(DiscoveryCallback, udpClient);
-            LogMessage(0, 0, 0, "DiscoveryServer", $"Discovery listener now running on {broadcastListenAddress.ToString()}:{AlpacaDiscoveryPort}");
-        }
-
         private void DiscoveryCallback(IAsyncResult ar)
         {
-            UdpClient udpClient = (UdpClient)ar.AsyncState;
-
-            IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, SharedConstants.ALPACA_DISCOVERY_PORT);
-
-            // Obtain the UDP message body and convert it to a string, with remote IP address attached as well
-            string ReceiveString = Encoding.ASCII.GetString(udpClient.EndReceive(ar, ref endpoint));
-
-            // Validate and process the discovery packet 
-            if (ReceiveString.Contains(SharedConstants.ALPACA_DISCOVERY_BROADCAST_ID)) // This is an Alpaca discovery packet
+            try
             {
-                ServerForm.LogMessage(0, 0, 0, "DiscoveryServer", $"Received a discovery packet from the client IP address {endpoint.Address}. Returning Alpaca port number: {ServerPortNumber}");
+                UdpClient udpClient = (UdpClient)ar.AsyncState;
 
-                // Create a discovery response, convert it to JSON and return this to the caller
-                AlpacaDiscoveryResponse alpacaDiscoveryResponse = new AlpacaDiscoveryResponse((int)ServerPortNumber, AlpacaUniqueId); // Create the response object
-                ServerForm.LogMessage(0, 0, 0, "DiscoveryServer", $"JSON Discovery response: {alpacaDiscoveryResponse}");
+                IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, SharedConstants.ALPACA_DISCOVERY_PORT);
 
-                string jsonResponse = JsonConvert.SerializeObject(alpacaDiscoveryResponse); // Convert the response object to a JSON string
-                byte[] response = Encoding.ASCII.GetBytes(jsonResponse); // Convert the JSON string to a byte array and send this back to the caller
-                udpClient.Send(response, response.Length, endpoint);
+                // Obtain the UDP message body and convert it to a string, with remote IP address attached as well
+                string ReceiveString = Encoding.ASCII.GetString(udpClient.EndReceive(ar, ref endpoint));
+
+                // Validate and process the discovery packet if it is a valid discovery broadcast
+                if (ReceiveString.Contains(SharedConstants.ALPACA_DISCOVERY_BROADCAST_ID)) // This is an Alpaca discovery packet
+                {
+                    ServerForm.LogMessage(0, 0, 0, "DiscoveryServer", $"Received a discovery packet from the client IP address {endpoint.Address}. Returning Alpaca port number: {ServerPortNumber}");
+
+                    // Create a discovery response, convert it to JSON and return this to the caller
+                    AlpacaDiscoveryResponse alpacaDiscoveryResponse = new AlpacaDiscoveryResponse((int)ServerPortNumber, AlpacaUniqueId); // Create the response object
+                    ServerForm.LogMessage(0, 0, 0, "DiscoveryServer", $"JSON Discovery response: {alpacaDiscoveryResponse}");
+
+                    string jsonResponse = JsonConvert.SerializeObject(alpacaDiscoveryResponse); // Convert the response object to a JSON string
+                    byte[] response = Encoding.ASCII.GetBytes(jsonResponse); // Convert the JSON string to a byte array and send this back to the caller
+                    udpClient.Send(response, response.Length, endpoint);
+                }
+
+                // Continue to listen for discovery packets
+                udpClient.BeginReceive(DiscoveryCallback, udpClient);
             }
-
-            // Continue to listen for discovery packets
-            udpClient.BeginReceive(DiscoveryCallback, udpClient);
+            catch (ObjectDisposedException)
+            {
+                LogMessage(0, 0, 0, "DiscoveryCallback", "Alpaca listener has closed down, ignoring this call.");
+            }
+            catch (Exception ex)
+            {
+                LogException(0, 0, 0, "DiscoveryCallback", $"Unexpected exception: {ex.ToString()}");
+            }
         }
 
         private void DriverOnSeparateThread(object arg)
@@ -940,6 +967,21 @@ namespace ASCOM.Remote
             LogMessage(0, 0, 0, "Use Separate Threads", RunDriversOnSeparateThreads.ToString());
             LogMessage(0, 0, 0, "Log Client IP Address", LogClientIPAddress.ToString());
             LogMessage(0, 0, 0, "Include Exceptions", IncludeDriverExceptionInJsonResponse.ToString());
+            LogMessage(0, 0, 0, "Location", RemoteServerLocation);
+            LogMessage(0, 0, 0, "Alpaca Discovery", AlpacaDiscoveryEnabled.ToString());
+            LogMessage(0, 0, 0, "Alpaca Unique ID", AlpacaUniqueId);
+            LogMessage(0, 0, 0, "Alpaca Discovery Port", AlpacaDiscoveryPort.ToString());
+
+            LogBlankLine(0, 0, 0);
+
+            LogMessage(0, 0, 0, "CORS Support Enabled", CorsSupportIsEnabled.ToString());
+            LogMessage(0, 0, 0, "CORS Max Age", CorsMaxAge.ToString());
+            LogMessage(0, 0, 0, "CORS Credentials", CorsCredentialsPermitted.ToString());
+            foreach (string origin in CorsPermittedOrigins)
+            {
+                LogMessage(0, 0, 0, "CORS Origin", origin);
+            }
+
             LogBlankLine(0, 0, 0);
 
             foreach (string deviceName in ServerDeviceNames)
@@ -1061,20 +1103,7 @@ namespace ASCOM.Remote
                 CorsCredentialsPermitted = driverProfile.GetValue<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CORS_CREDENTIALS_PERMITTED_DEFAULT);
                 AlpacaDiscoveryEnabled = driverProfile.GetValue<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, ALPACA_DISCOVERY_ENABLED_DEFAULT);
                 AlpacaUniqueId = driverProfile.GetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, ALPACA_UNIQUE_ID_DEFAULT);
-
-                // Check whether this device already has an Alpaca unique ID, if not, create one
-                if (AlpacaUniqueId == Guid.Empty.ToString())
-                {
-                    // Create a new UUID and persist it
-                    string guidString = Guid.NewGuid().ToString(); // Create a new GUID
-                    AlpacaUniqueId = guidString; // Save the new GUID to the working variable
-                    driverProfile.SetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, guidString); // Persist the new value
-                    LogMessage(0, 0, 0, "AlpacaUniqueID", $"Created new Alpaca unique device ID: {AlpacaUniqueId}");
-                }
-                else
-                {
-                    LogMessage(0, 0, 0, "AlpacaUniqueID", $"Using existing Alpaca unique device ID: {AlpacaUniqueId}");
-                }
+                AlpacaDiscoveryPort = driverProfile.GetValue<decimal>(ALPACA_DISCOVERY_PORT_PROFILENAME, string.Empty, ALPACA_DISCOVERY_PORT_DEFAULT);
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
@@ -1120,6 +1149,7 @@ namespace ASCOM.Remote
                 driverProfile.SetValue<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CorsCredentialsPermitted);
                 driverProfile.SetValue<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, AlpacaDiscoveryEnabled);
                 driverProfile.SetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, AlpacaUniqueId);
+                driverProfile.SetValue<decimal>(ALPACA_DISCOVERY_PORT_PROFILENAME, string.Empty, AlpacaDiscoveryPort);
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
