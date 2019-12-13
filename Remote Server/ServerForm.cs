@@ -679,15 +679,24 @@ namespace ASCOM.Remote
             {
                 UdpClient udpClient = (UdpClient)ar.AsyncState;
 
-                IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, SharedConstants.ALPACA_DISCOVERY_PORT);
+                IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, SharedConstants.ALPACA_DISCOVERY_PORT); // Create a dummy value into which the actual endpoint can be placed by the UdpClient.EndReceive method
 
                 // Obtain the UDP message body and convert it to a string, with remote IP address attached as well
                 string ReceiveString = Encoding.ASCII.GetString(udpClient.EndReceive(ar, ref endpoint));
 
-                // Validate and process the discovery packet if it is a valid discovery broadcast
-                if (ReceiveString.Contains(SharedConstants.ALPACA_DISCOVERY_BROADCAST_ID)) // This is an Alpaca discovery packet
+                if (ServerForm.DebugTraceState) ServerForm.LogMessage(0, 0, 0, "DiscoveryServer", $"Received UDP broadcast {ReceiveString}"); // Log received broadcasts if we are debug tracing
+
+                // Validate and process the received datagram if it is a valid Alpaca discovery broadcast
+                if (ReceiveString.StartsWith(SharedConstants.ALPACA_DISCOVERY_BROADCAST_ID)) // The first 15 characters are "alpacadiscovery" so this is an Alpaca discovery packet
                 {
-                    ServerForm.LogMessage(0, 0, 0, "DiscoveryServer", $"Received a discovery packet from the client IP address {endpoint.Address}. Returning Alpaca port number: {ServerPortNumber}");
+                    // Extract the discovery packet version number so it can be recorded
+                    int discoveryBroadcastVersionNumber = 65535; // Initialise to the default "missing" version number
+                    if (ReceiveString.Length > SharedConstants.ALPACA_DISCOVERY_BROADCAST_ID.Length) // There is at least one character more, which should be the broadcast version number so extract this as well
+                    {
+                        discoveryBroadcastVersionNumber = ReceiveString.ToCharArray(SharedConstants.ALPACA_DISCOVERY_BROADCAST_ID.Length, 1)[0];
+                    }
+
+                    ServerForm.LogMessage(0, 0, 0, "DiscoveryServer", $"Received a version 0x{discoveryBroadcastVersionNumber.ToString("X")} discovery packet from the client IP address {endpoint.Address}. Returning Alpaca port number: {ServerPortNumber}");
 
                     // Create a discovery response, convert it to JSON and return this to the caller
                     AlpacaDiscoveryResponse alpacaDiscoveryResponse = new AlpacaDiscoveryResponse((int)ServerPortNumber, AlpacaUniqueId); // Create the response object
