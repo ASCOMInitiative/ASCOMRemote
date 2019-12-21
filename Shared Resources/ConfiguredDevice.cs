@@ -8,7 +8,7 @@ namespace ASCOM.Remote
     /// </summary>
     public class ConfiguredDevice
     {
-        public ConfiguredDevice(string deviceType, string progID, string description, int deviceNumber, bool allowConnectedSetFalse, bool allowConnectedSetTrue, bool allowConcurrentAccess)
+        public ConfiguredDevice(string deviceType, string progID, string description, int deviceNumber, bool allowConnectedSetFalse, bool allowConnectedSetTrue, bool allowConcurrentAccess, string uniqueId)
         {
             DeviceType = deviceType;
             ProgID = progID;
@@ -17,6 +17,7 @@ namespace ASCOM.Remote
             AllowConnectedSetFalse = allowConnectedSetFalse;
             AllowConnectedSetTrue = allowConnectedSetTrue;
             AllowConcurrentAccess = allowConcurrentAccess;
+            UniqueID = uniqueId;
         }
 
         public string DeviceType { get; set; }
@@ -26,6 +27,7 @@ namespace ASCOM.Remote
         public bool AllowConnectedSetFalse { get; set; }
         public bool AllowConnectedSetTrue { get; set; }
         public bool AllowConcurrentAccess { get; set; }
+        public string UniqueID { get; set; }
 
         /// <summary>
         /// Return a unique key for this device based on its device type and device number

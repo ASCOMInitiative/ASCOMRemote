@@ -137,6 +137,7 @@ namespace ASCOM.Remote
         internal const string PROGID_PROFILENAME = "ProgID"; public const string PROGID_DEFAULT = SharedConstants.DEVICE_NOT_CONFIGURED;
         internal const string DESCRIPTION_PROFILENAME = "Description"; public const string DESCRIPTION_DEFAULT = "";
         internal const string DEVICENUMBER_PROFILENAME = "Device Number"; public const int DEVICENUMBER_DEFAULT = 0;
+        internal const string DEVICE_UNIQUE_ID_PROFILENAME = "Device Unique ID"; public const string DEVICE_UNIQUE_ID_DEFAULT = "Uninitialised";
 
         // !!!!! This list must match the names of the ServedDevice instances on the SetupForm !!!!!
         // The list is in reverse order because ForEach enumerates items starting with the last added and working towards the first. ServedDevice0 must be last in the order so that it is printed first in the log...
@@ -296,7 +297,7 @@ namespace ASCOM.Remote
                 if (AlpacaUniqueId == Guid.Empty.ToString()) // Guid.Empty is the default value created when the configuration is retrieved if there is no pre-existing value
                 {
                     // We don't have a unique ALpaca ID so create a new UUID and persist it
-                    string guidString = Guid.NewGuid().ToString(); // Create a new GUID
+                    string guidString = Guid.NewGuid().ToString().ToUpperInvariant(); // Create a new GUID
                     AlpacaUniqueId = guidString; // Save the new GUID to the working variable
                     WriteProfile();
                     LogMessage(0, 0, 0, "AlpacaUniqueID", $"Created new Alpaca unique device ID: {AlpacaUniqueId}");
@@ -1123,8 +1124,16 @@ namespace ASCOM.Remote
                     bool allowConnectedSetFalse = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_FALSE_PROFILENAME, deviceName, ALLOW_CONNECTED_SET_FALSE_DEFAULT));
                     bool allowConnectedSetTrue = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_TRUE_PROFILENAME, deviceName, ALLOW_CONNECTED_SET_TRUE_DEFAULT));
                     bool allowConcurrentAccess = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONCURRENT_ACCESS_PROFILENAME, deviceName, ALLOW_CONCURRENT_ACCESS_DEFAULT));
+                    string uniqueID = driverProfile.GetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, deviceName, SharedConstants.DEVICE_NOT_CONFIGURED);
 
-                    ConfiguredDevices[deviceName] = new ConfiguredDevice(deviceType, progID, description, deviceNumber, allowConnectedSetFalse, allowConnectedSetTrue, allowConcurrentAccess);
+                    // Upgrade earlier data stores that did not have the UniqueID field by assigning a global ID if this device is configured but has no global ID
+                    if ((deviceType != SharedConstants.DEVICE_NOT_CONFIGURED) & (uniqueID == SharedConstants.DEVICE_NOT_CONFIGURED))
+                    {
+                        uniqueID = Guid.NewGuid().ToString().ToUpperInvariant(); // Assign a new unique ID
+                        driverProfile.SetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, deviceName, uniqueID);
+                    }
+
+                    ConfiguredDevices[deviceName] = new ConfiguredDevice(deviceType, progID, description, deviceNumber, allowConnectedSetFalse, allowConnectedSetTrue, allowConcurrentAccess, uniqueID);
                 }
             }
         }
@@ -1169,6 +1178,20 @@ namespace ASCOM.Remote
                     driverProfile.SetValue<bool>(ALLOW_CONNECTED_SET_FALSE_PROFILENAME, deviceName, ConfiguredDevices[deviceName].AllowConnectedSetFalse);
                     driverProfile.SetValue<bool>(ALLOW_CONNECTED_SET_TRUE_PROFILENAME, deviceName, ConfiguredDevices[deviceName].AllowConnectedSetTrue);
                     driverProfile.SetValue<bool>(ALLOW_CONCURRENT_ACCESS_PROFILENAME, deviceName, ConfiguredDevices[deviceName].AllowConcurrentAccess);
+
+                    // Update unique ID if necessary
+                    if (ConfiguredDevices[deviceName].DeviceType == SharedConstants.DEVICE_NOT_CONFIGURED)// Invalidate global IDs when devices are set to "none"
+                    {
+                        ServerForm.ConfiguredDevices[deviceName].UniqueID = SharedConstants.DEVICE_NOT_CONFIGURED;
+                    }
+                    else // Create a global ID if none currently exists
+                    {
+                        if (ServerForm.ConfiguredDevices[deviceName].UniqueID == SharedConstants.DEVICE_NOT_CONFIGURED) // Global ID does not exist so generate one
+                        {
+                            ServerForm.ConfiguredDevices[deviceName].UniqueID = Guid.NewGuid().ToString().ToUpperInvariant();
+                        }
+                    }
+                    driverProfile.SetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, deviceName, ConfiguredDevices[deviceName].UniqueID.ToString());
                 }
             }
         }
@@ -1871,12 +1894,12 @@ namespace ASCOM.Remote
                                                             // Populate the list with configured devices
                                                             foreach (KeyValuePair<string, ConfiguredDevice> configuredDevice in ConfiguredDevices)
                                                             {
-                                                                if (configuredDevice.Value.DeviceType != "None") // Only include configured devices, ignoring unconfigured device slots
+                                                                if (configuredDevice.Value.DeviceType != SharedConstants.DEVICE_NOT_CONFIGURED) // Only include configured devices, ignoring unconfigured device slots
                                                                 {
                                                                     AlpacaConfiguredDevice alpacaConfiguredDevice = new AlpacaConfiguredDevice(configuredDevice.Value.Description,
                                                                                                                                                configuredDevice.Value.DeviceType,
                                                                                                                                                configuredDevice.Value.DeviceNumber,
-                                                                                                                                               configuredDevice.Value.ProgID);
+                                                                                                                                               configuredDevice.Value.UniqueID);
                                                                     alpacaConfiguredDevices.Add(alpacaConfiguredDevice);
                                                                 }
                                                             }

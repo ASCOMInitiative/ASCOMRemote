@@ -148,7 +148,7 @@ namespace ASCOM.Remote
 
         public const string REQUEST_RECEIVED_STRING = "RequestReceived";
 
-        public const string DEVICE_NOT_CONFIGURED = "None"; // ProgID value indicating no device configured
+        public const string DEVICE_NOT_CONFIGURED = "None"; // ProgID / UniqueID / device type value indicating no device configured
 
         public const string CORS_DEFAULT_PERMISSION = "*"; // Default permission for CORS origins (The * value means "permit all origins")
         public const string CORS_SERIALISATION_SEPARATOR = "|";

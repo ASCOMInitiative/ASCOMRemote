@@ -394,12 +394,27 @@ namespace ASCOM.Remote
                 foreach (ServedDevice item in DeviceConfigurationTab.Controls.OfType<ServedDevice>())
                 {
                     ServerForm.ConfiguredDevices[item.Name].DeviceType = item.DeviceType;
+
+                    // Update the unique ID if the ProgID has changed
+                    if (ServerForm.ConfiguredDevices[item.Name].ProgID != item.ProgID)
+                    {
+                        if (item.ProgID==SharedConstants.DEVICE_NOT_CONFIGURED) // Device has been de-configured
+                        {
+                            ServerForm.ConfiguredDevices[item.Name].UniqueID = SharedConstants.DEVICE_NOT_CONFIGURED;
+                        }
+                        else // Device has been changed so create a new unique ID
+                        {
+                            ServerForm.ConfiguredDevices[item.Name].UniqueID = Guid.NewGuid().ToString().ToUpperInvariant();
+                        }
+                    }
+
                     ServerForm.ConfiguredDevices[item.Name].ProgID = item.ProgID;
                     ServerForm.ConfiguredDevices[item.Name].Description = item.Description;
                     ServerForm.ConfiguredDevices[item.Name].DeviceNumber = item.DeviceNumber;
                     ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetFalse = item.AllowConnectedSetFalse;
                     ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetTrue = item.AllowConnectedSetTrue;
                     ServerForm.ConfiguredDevices[item.Name].AllowConcurrentAccess = item.AllowConcurrentAccess;
+                    ServerForm.ConfiguredDevices[item.Name].UniqueID = item.ProgID;
                 }
 
                 ServerForm.CorsPermittedOrigins = corsPermittedOriginsCopy.ToListString(); // Copy the edited list back to the master copy

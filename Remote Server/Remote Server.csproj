@@ -71,19 +71,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Shared Resources\AlpacaConfiguredDevice.cs">
-      <Link>AlpacaConfiguredDevice.cs</Link>
+      <Link>Entity Classes\AlpacaConfiguredDevice.cs</Link>
     </Compile>
     <Compile Include="..\Shared Resources\AlpacaDeviceDescription.cs">
-      <Link>AlpacaDeviceDescription.cs</Link>
+      <Link>Entity Classes\AlpacaDeviceDescription.cs</Link>
     </Compile>
     <Compile Include="..\Shared Resources\ConfiguredDevice.cs">
-      <Link>ConfiguredDevice.cs</Link>
+      <Link>Entity Classes\ConfiguredDevice.cs</Link>
     </Compile>
     <Compile Include="..\Shared Resources\ExtensionMethods.cs">
       <Link>ExtensionMethods.cs</Link>
     </Compile>
     <Compile Include="..\Shared Resources\ProfileDevice.cs">
-      <Link>ProfileDevice.cs</Link>
+      <Link>Entity Classes\ProfileDevice.cs</Link>
     </Compile>
     <Compile Include="..\Shared Resources\Properties\SharedVersionNumbers.cs">
       <Link>Properties\SharedVersionNumbers.cs</Link>
@@ -187,7 +187,7 @@
     <Compile Include="..\Shared Resources\TraceLoggerPlus.cs">
       <Link>TraceLoggerPlus.cs</Link>
     </Compile>
-    <Compile Include="ActiveObject.cs" />
+    <Compile Include="Entity Classes\ActiveObject.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="DriverHostForm.cs">
       <SubType>Form</SubType>
