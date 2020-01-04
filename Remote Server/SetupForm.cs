@@ -414,7 +414,6 @@ namespace ASCOM.Remote
                     ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetFalse = item.AllowConnectedSetFalse;
                     ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetTrue = item.AllowConnectedSetTrue;
                     ServerForm.ConfiguredDevices[item.Name].AllowConcurrentAccess = item.AllowConcurrentAccess;
-                    ServerForm.ConfiguredDevices[item.Name].UniqueID = item.ProgID;
                 }
 
                 ServerForm.CorsPermittedOrigins = corsPermittedOriginsCopy.ToListString(); // Copy the edited list back to the master copy

@@ -1182,13 +1182,13 @@ namespace ASCOM.Remote
                     // Update unique ID if necessary
                     if (ConfiguredDevices[deviceName].DeviceType == SharedConstants.DEVICE_NOT_CONFIGURED)// Invalidate global IDs when devices are set to "none"
                     {
-                        ServerForm.ConfiguredDevices[deviceName].UniqueID = SharedConstants.DEVICE_NOT_CONFIGURED;
+                        ConfiguredDevices[deviceName].UniqueID = SharedConstants.DEVICE_NOT_CONFIGURED;
                     }
                     else // Create a global ID if none currently exists
                     {
-                        if (ServerForm.ConfiguredDevices[deviceName].UniqueID == SharedConstants.DEVICE_NOT_CONFIGURED) // Global ID does not exist so generate one
+                        if (ConfiguredDevices[deviceName].UniqueID == SharedConstants.DEVICE_NOT_CONFIGURED) // Global ID does not exist so generate one
                         {
-                            ServerForm.ConfiguredDevices[deviceName].UniqueID = Guid.NewGuid().ToString().ToUpperInvariant();
+                            ConfiguredDevices[deviceName].UniqueID = Guid.NewGuid().ToString().ToUpperInvariant();
                         }
                     }
                     driverProfile.SetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, deviceName, ConfiguredDevices[deviceName].UniqueID.ToString());
