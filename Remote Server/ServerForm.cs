@@ -2520,6 +2520,7 @@ namespace ASCOM.Remote
                                             case "ismoving":
                                             case "tempcompavailable":
                                             case "tempcomp":
+                                            case "link":
                                                 ReturnBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
                                             // INT Get Values
@@ -2822,6 +2823,7 @@ namespace ASCOM.Remote
                                             #region Focuser Properties
                                             //BOOL Set values
                                             case "tempcomp":
+                                            case "link":
                                                 WriteBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             #endregion
 
@@ -3344,6 +3346,8 @@ namespace ASCOM.Remote
                         deviceResponse = device.TempCompAvailable; break;
                     case "focuser.tempcomp":
                         deviceResponse = device.TempComp; break;
+                    case "focuser.link":
+                        deviceResponse = device.Link; break;
 
                     #endregion
 
@@ -3478,6 +3482,8 @@ namespace ASCOM.Remote
                     //FOCUSER 
                     case "focuser.tempcomp":
                         device.TempComp = boolValue; break;
+                    case "focuser.link":
+                        device.Link = boolValue; break;
 
                     //ROTATOR
                     case "rotator.reverse":
