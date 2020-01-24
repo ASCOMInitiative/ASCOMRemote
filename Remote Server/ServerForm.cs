@@ -327,6 +327,12 @@ namespace ASCOM.Remote
             {
                 StartRESTServer();
             }
+
+            // Bring this form to the front of the screen
+            this.WindowState = FormWindowState.Minimized;
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -2470,6 +2476,31 @@ namespace ASCOM.Remote
                                         }
                                         break;
                                     #endregion
+                                    case "covercalibrator":
+                                        #region CoverCalibrator
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        {
+                                            #region CoverCalibrator Properties
+                                            // INT Get Values
+                                            case "brightness":
+                                            case "maxbrightness":
+                                                ReturnInt(requestData); break;
+
+                                            //ENUM TYPES Get values
+                                            case "calibratorstate":
+                                                ReturnCalibratorState(requestData); break;
+
+                                            case "coverstate":
+                                                ReturnCoverState(requestData); break;
+                                            #endregion
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                break;
+                                        }
+                                        break;
+                                    #endregion
                                     case "dome":
                                         #region Dome
                                         switch (requestData.Elements[URL_ELEMENT_METHOD])
@@ -2789,6 +2820,28 @@ namespace ASCOM.Remote
                                                 break;
                                         }
                                         break; // End of valid device types
+                                    #endregion
+                                    case "covercalibrator":
+                                        #region CoverCalibrator
+                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        {
+                                            #region CoverCalibrator Methods
+                                            // METHODS
+                                            case "calibratoroff":
+                                            case "calibratoron":
+                                            case "closecover":
+                                            case "haltcover":
+                                            case "opencover":
+                                                CallMethod(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData);
+                                                break;
+                                            #endregion
+
+                                            //UNKNOWN METHOD CALL
+                                            default:
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                break;
+                                        }
+                                        break;
                                     #endregion
                                     case "dome":
                                         #region Dome
@@ -4066,11 +4119,15 @@ namespace ASCOM.Remote
             int deviceResponse = 0;
             Exception exReturn = null;
 
-
             try
             {
                 switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
+                    // COVERCALIBRATOR
+                    case "covercalibrator.brightness":
+                        deviceResponse = device.Brightness; break;
+                    case "covercalibrator.maxbrightness":
+                        deviceResponse = device.MaxBrightness; break;
                     // FOCUSER
                     case "focuser.maxincrement":
                         deviceResponse = device.MaxIncrement; break;
@@ -4452,6 +4509,54 @@ namespace ASCOM.Remote
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
+        }
+
+        private void ReturnCalibratorState(RequestData requestData)
+        {
+            CalibratorStatus deviceResponse = CalibratorStatus.Unknown;
+            Exception exReturn = null;
+
+            try
+            {
+                deviceResponse = (CalibratorStatus)device.CalibratorState;
+            }
+            catch (Exception ex)
+            {
+                exReturn = ex;
+            }
+
+            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
+            {
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
+            };
+            string responseJson = JsonConvert.SerializeObject(responseClass);
+            SendResponseValueToClient(requestData, exReturn, responseJson);
+
+        }
+
+        private void ReturnCoverState(RequestData requestData)
+        {
+            CoverStatus deviceResponse = CoverStatus.Unknown;
+            Exception exReturn = null;
+
+            try
+            {
+                deviceResponse = (CoverStatus)device.CoverState;
+            }
+            catch (Exception ex)
+            {
+                exReturn = ex;
+            }
+
+            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
+            {
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
+            };
+            string responseJson = JsonConvert.SerializeObject(responseClass);
+            SendResponseValueToClient(requestData, exReturn, responseJson);
+
         }
 
         // GetManagedSize() returns the size of a structure whose type
@@ -4927,7 +5032,7 @@ namespace ASCOM.Remote
             string switchName;
             PierSide pierSideValue;
             short switchIndex;
-            int positionInt, guideDuration;
+            int positionInt, guideDuration, brightness;
             float positionFloat;
             GuideDirections guideDirection;
             TelescopeAxes axis;
@@ -4944,6 +5049,20 @@ namespace ASCOM.Remote
                         raw = GetParameter<bool>(requestData, SharedConstants.RAW_PARAMETER_NAME);
                         device.CommandBlind(command, raw);
                         break;
+
+                    //COVERCALIBRATOR
+                    case "covercalibrator.calibratoroff":
+                        device.CalibratorOff(); break;
+                    case "covercalibrator.calibratoron":
+                        brightness = GetParameter<int>(requestData, SharedConstants.BRIGHTNESS_PARAMETER_NAME);
+                        device.CalibratorOn(brightness);
+                        break;
+                    case "covercalibrator.closecover":
+                        device.CloseCover(); break;
+                    case "covercalibrator.haltcover":
+                        device.HaltCover(); break;
+                    case "covercalibrator.opencover":
+                        device.OpenCover(); break;
 
                     //TELESCOPE
                     case "telescope.sideofpier":
@@ -5078,7 +5197,7 @@ namespace ASCOM.Remote
                         device.SetSwitchValue(switchIndex, switchValue);
                         break;
 
-                    // FOCUSER
+                    // ROTATOR
                     case "rotator.halt":
                         device.Halt(); break;
                     case "rotator.move":
