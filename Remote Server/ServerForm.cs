@@ -771,17 +771,10 @@ namespace ASCOM.Remote
                             {
                                 ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject.Connected = true;
                             }
-                            catch (Exception ex2)
+                            catch (Exception ex2) when (configuredDevice.Value.DeviceType.ToLowerInvariant() == "focuser")
                             {
-                                if (configuredDevice.Value.DeviceType.ToLowerInvariant() == "focuser")
-                                {
                                     LogException(0, 0, 0, "CreateInstance", $"Error setting Connected to true for focuser device {configuredDevice.Value.ProgID} now trying Link for IFocuserV1 devices: \r\n{ex2.ToString()}");
                                     ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject.Link = true;
-                                }
-                                else
-                                {
-                                    throw; // Re-throw the exception because this is not a focuser and the command should not have failed
-                                }
                             }
                             ActiveObjects[configuredDevice.Value.DeviceKey].InitialisedOk = true; // Set flag indicating that this device initialised and connected OK
                             LogMessage(0, 0, 0, "CreateInstance", string.Format("Device {0} connected OK", configuredDevice.Value.ProgID));

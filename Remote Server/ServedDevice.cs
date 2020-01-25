@@ -340,13 +340,14 @@ namespace ASCOM.Remote
 
                 try
                 {
-                    if (oDrv.Connected) // Driver is connected and the Setup dialogue must be run with the device disconnected so ask whether we can disconnect it
+                    if (GetConnectdState(oDrv)) // Driver is connected and the Setup dialogue must be run with the device disconnected so ask whether we can disconnect it
                     {
                         DialogResult dialogResult = MessageBox.Show("Device is connected, OK to disconnect and run Setup?", "Disconnect Device?", MessageBoxButtons.OKCancel);
                         if (dialogResult == DialogResult.OK) // OK to disconnect and run setup dialogue
                         {
                             ServerForm.LogMessage(0, 0, 0, "Setup", "User gave permission to disconnect device - setting Connected to false");
-                            oDrv.Connected = false;
+                            try { oDrv.Connected = false; } catch { }; // Set Connected to false ignoring errors
+                            try { oDrv.Link = false; } catch { }; // Set Link to false (for IFocuserV1 devices) ignoring errors
 
                             int RemainingObjectCount = Marshal.FinalReleaseComObject(oDrv);
                             oDrv = null;
@@ -357,7 +358,18 @@ namespace ASCOM.Remote
                             ServerForm.LogMessage(0, 0, 0, "Setup", "Device is now disconnected, calling SetupDialog method");
                             oDrv.SetupDialog();
                             ServerForm.LogMessage(0, 0, 0, "Setup", "Completed SetupDialog method, setting Connected to true");
-                            oDrv.Connected = true;
+
+                            try
+                            {
+                                oDrv.Connected = true; // Try setting Connected to true
+                            }
+                            catch (Exception ex2) when (DeviceType.ToLowerInvariant() == "focuser")
+                            {
+                                // Connected failed so try Link in case this is an IFocuserV1 device
+                                ServerForm.LogException(0, 0, 0, "Setup", $"Error setting Connected to true for focuser device {ProgID}, now trying Link for IFocuserV1 devices: \r\n{ex2.ToString()}");
+                                oDrv.Link = true;
+                            }
+
                             ServerForm.LogMessage(0, 0, 0, "Setup", "Driver is now Connected");
                         }
                         else // Not OK to disconnect so just do nothing and exit
@@ -413,6 +425,24 @@ namespace ASCOM.Remote
             }
         }
 
+        #endregion
+
+        #region Support code
+        private bool GetConnectdState(dynamic driverObject)
+        {
+            bool connectedState = false;
+
+            try
+            {
+                connectedState = driverObject.Connected;
+            }
+            catch
+            {
+                connectedState = driverObject.Link;
+            }
+
+            return connectedState;
+        }
         #endregion
     }
 }
