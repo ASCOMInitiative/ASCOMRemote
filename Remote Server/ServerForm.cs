@@ -1868,7 +1868,7 @@ namespace ASCOM.Remote
                             requestData.Elements = elements;
 
                             // Only permit processing if access has been granted through the setup dialogue
-                            if (ManagementInterfaceEnabled)
+                            if (ManagementInterfaceEnabled| AlpacaDiscoveryEnabled)
                             {
                                 switch (elements[URL_ELEMENT_API_VERSION])
                                 {
@@ -2071,8 +2071,8 @@ namespace ASCOM.Remote
                         elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND]; // Copy the command name to the device method field
                         requestData.Elements = elements;
 
-                        // Only permit processing if access has been granted through the setup dialogue
-                        if (ManagementInterfaceEnabled)
+                        // Only permit processing if access has been granted through the setup dialogue either to the management interface alone or if discovery is enabled
+                        if (ManagementInterfaceEnabled | AlpacaDiscoveryEnabled)
                         {
                             switch (elements[URL_ELEMENT_API_VERSION])
                             {
