@@ -22,19 +22,19 @@
 AppID={{0ee690ae-7927-4ee7-b851-f5877c077ff5}
 #define MyAppVer GetFileVersion("..\Remote Server\bin\Release\ASCOM.RemoteServer.exe") ; define variable
 
-AppName=ASCOM Remote Driver Server
-AppCopyright=Copyright © 2018 ASCOM Initiative
+AppName=ASCOM Remote
+AppCopyright=Copyright © 2020 ASCOM Initiative
 AppPublisher=ASCOM Initiative
 AppPublisherURL=mailto:peter@peterandjill.co.uk
 AppSupportURL=http://tech.groups.yahoo.com/group/ASCOM-Talk/
 AppUpdatesURL=http://ascom-standards.org/
-#emit "AppVerName=ASCOM Remote Driver Server " + MyAppVer + " ("+ BuildType + ")"
+#emit "AppVerName=ASCOM Remote " + MyAppVer + " ("+ BuildType + ")"
 #emit "AppVersion=" + MyAppVer
 Compression=lzma
 DefaultDirName="{cf}\ASCOM"
 DefaultGroupName="ASCOM Remote"
 DisableDirPage=yes
-DisableProgramGroupPage=yes
+DisableProgramGroupPage=no
 ; Must be at least Windows 7 SP1 or later to run
 MinVersion=6.1.7601 
 OutputDir="Build"
@@ -121,26 +121,38 @@ Filename: "{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"; Paramet
 [Icons]
 Name: "{group}\ASCOM Remote Documentation"; Filename: "{#RemoteServerDirectory}\{#ASCOMRemoteDocumentationFileName}";
 Name: "{group}\Remote Server"; Filename: "{#RemoteServerDirectory}\{#RemoteServerName}.exe"; Components: ServerComponents
-Name: "{group}\Remote Client Configuration"; Filename: "{#RemoteClientDirectory}\{#DynamicRemoteClientsName}.exe"; Components: ClientComponents
+Name: "{group}\Remote Client Configuration"; Filename: "{#RemoteClientDirectory}\{#DynamicRemoteClientsName}.exe"; Components: not ServerComponents
 
 [Components]
-Name: "ClientComponents"; Description: "Client components"; Types: ClientOnly Full;
-Name: "ServerComponents"; Description: "Server components"; Types: Full ServerOnly;
-;Name: "WebContent"; Description: "Web server content files"; Types: Full ServerOnly;
+Name: "ServerComponents"; Description: "Remote Server"; Flags: disablenouninstallwarning
+Name: "ClientComponents"; Description: "Remote Clients"; Flags: disablenouninstallwarning
 
 [Types]
-Name: "Full"; Description: "Client and server components"
-Name: "ClientOnly"; Description: "Client components only"
-Name: "ServerOnly"; Description: "Server components only"
 Name: "Custom"; Description: "Custom"; Flags: iscustom
 
 [PreCompile]
-Name: "..\BuildRemote.cmd"; Flags: CmdPrompt
+Name: "..\BuildRemote.cmd"; Flags: cmdprompt
 
 [Code]
 const
    REQUIRED_PLATFORM_VERSION = 6.2;    // Set this to the minimum required ASCOM Platform version for this application
-   REQUIRED_DOTNET_VERSION = 'v4.6.2';  // Set this to the minimum required Microsoft .NET Framework version for this application
+   REQUIRED_DOTNET_VERSION = 'v4.7.2';  // Set this to the minimum required Microsoft .NET Framework version for this application
+
+var
+  LightMsgPage: TOutputMsgWizardPage;
+  
+procedure InitializeWizard;
+begin
+  { Create the pages }
+
+  LightMsgPage := CreateOutputMsgPage(wpWelcome,
+    'ASCOM Remote Clients - Please Note', 'Remote clients have been superseded in Platform 6.5',
+    'In Platform 6.5, Alpaca devices that support discovery will appear automatically in the Chooser device list.'#13#13 +
+    'When a new Alpaca device is selected, the Chooser will create a driver from information provided by the device and this can be used in ASCOM client programs in the normal way.'#13#13 +
+    'If required, drivers can be configured manually through the Chooser in a similar fashion to the original Remote Client drivers.'#13#13 +
+    'We recommend that you migrate from Remote Clients to Chooser''s Dynamic Clients because these are more capable e.g. they will re-discover known Alpaca devices if their IP addresses change.'#13#13 + 
+    'The original Remote Clients will not be developed further and do not contain support for CoverCalibrator devices.');
+end;
 
 //
 // Function to return the ASCOM Platform's version number as a double.
@@ -279,6 +291,15 @@ begin
           sleep(100);    //Give enough time for the install screen to be repainted before continuing
         end
    end;
+end;
+
+procedure CurPageChanged(CurPageID: Integer);
+begin
+  if CurPageID = wpSelectComponents then
+    begin
+      //WizardForm.ComponentsList.Checked[2] := False;
+      //WizardForm.ComponentsList.ItemEnabled[2] := False;
+    end;
 end;
 
 // Function to determine whether .NET 4.7 is installed
