@@ -507,6 +507,8 @@ namespace ASCOM.Remote
 
                 ServerForm.WriteProfile();
 
+                if (maxDevicesHasChanged) MessageBox.Show("The maximum number of devices has changed, please close and restart the Remote Server before adding further devices.", "Maximum Number of Devices", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
@@ -724,7 +726,6 @@ namespace ASCOM.Remote
         private void NumMaxDevices_ValueChanged(object sender, EventArgs e)
         {
             maxDevicesHasChanged = true;
-            if (maxDevicesHasChanged) MessageBox.Show("The maximum number of devices has changed, please press OK, close and restart the remote Server for this change to take effect.", "Maximum Number of Devices", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             ServerForm.MaximumNumberOfDevices = (int)NumMaxDevices.Value;
             ServerForm.ReadProfile();
