@@ -25,6 +25,7 @@ using System.Text.RegularExpressions;
 using System.IO.Compression;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters;
+using System.Linq;
 
 namespace ASCOM.Remote
 {
@@ -35,7 +36,7 @@ namespace ASCOM.Remote
 
         // NOTE - Setup page HTML is set in the ReturnHTMLPageOrImage  method
 
-        private const string SERVER_TRACELOGGER_NAME = "RemoteAccessServer";
+        private const string SERVER_TRACELOGGER_NAME = "RemoteServer";
         private const string ACCESSLOG_TRACELOGGER_NAME = "ServerAccessLog";
 
         private const string SETUP_DEFAULT_INDEX_PAGE_NAME = "index.html";
@@ -140,9 +141,8 @@ namespace ASCOM.Remote
         internal const string DEVICE_UNIQUE_ID_PROFILENAME = "Device Unique ID"; public const string DEVICE_UNIQUE_ID_DEFAULT = "Uninitialised";
 
         // !!!!! This list must match the names of the ServedDevice instances on the SetupForm !!!!!
-        // The list is in reverse order because ForEach enumerates items starting with the last added and working towards the first. ServedDevice0 must be last in the order so that it is printed first in the log...
-        internal static ConcurrentBag<string> ServerDeviceNames = new ConcurrentBag<string>() { "ServedDevice9", "ServedDevice8", "ServedDevice7", "ServedDevice6", "ServedDevice5", "ServedDevice4", "ServedDevice3", "ServedDevice2", "ServedDevice1", "ServedDevice0" };
-        internal static List<string> ServerDeviceNumbers = new List<string>() { "9", "8", "7", "6", "5", "4", "3", "2", "1", "0" };
+        internal static SortedSet<string> ServerDeviceNames; // = new SortedSet<string>() { "ServedDevice9", "ServedDevice8", "ServedDevice7", "ServedDevice6", "ServedDevice5", "ServedDevice4", "ServedDevice3", "ServedDevice2", "ServedDevice1", "ServedDevice0" };
+        internal static SortedSet<string> ServerDeviceNumbers; // = new SortedSet<string>() { "9", "8", "7", "6", "5", "4", "3", "2", "1", "0" };
 
         // Form size and resize constants
         internal const int FORM_MINIMUM_WIDTH = 400; // Server form minimum width
@@ -266,8 +266,30 @@ namespace ASCOM.Remote
                 InitializeComponent();
                 TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME); // Trace state is enabled or disabled in the ReadProfile method
 
+                // Initialise lists
                 ConfiguredDevices = new ConcurrentDictionary<string, ConfiguredDevice>();
                 ActiveObjects = new ConcurrentDictionary<string, ActiveObject>();
+                ServerDeviceNames = new SortedSet<string>();
+                ServerDeviceNumbers = new SortedSet<string>();
+
+                // Populate the server device names and numbers lists based on the controls that are present on the setup form
+                using (Form s = new SetupForm())
+                {
+                    // Get the ServedDevice control collection
+                    var controls = s.Controls["SetupTabControl"].Controls["DeviceConfigurationTab"].Controls.OfType<ServedDevice>();
+
+                    // Populate the list of valid device numbers
+                    for (int deviceNumber = 0; deviceNumber < controls.Count(); deviceNumber++)
+                    {
+                        ServerDeviceNumbers.Add(deviceNumber.ToString());
+                    }
+
+                    // Populate the list of configured ServedDevice controls
+                    foreach (Control control in controls)
+                    {
+                        ServerDeviceNames.Add(control.Name);
+                    }
+                }
 
                 ReadProfile();
 
@@ -773,8 +795,8 @@ namespace ASCOM.Remote
                             }
                             catch (Exception ex2) when (configuredDevice.Value.DeviceType.ToLowerInvariant() == "focuser")
                             {
-                                    LogException(0, 0, 0, "CreateInstance", $"Error setting Connected to true for focuser device {configuredDevice.Value.ProgID} now trying Link for IFocuserV1 devices: \r\n{ex2.ToString()}");
-                                    ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject.Link = true;
+                                LogException(0, 0, 0, "CreateInstance", $"Error setting Connected to true for focuser device {configuredDevice.Value.ProgID} now trying Link for IFocuserV1 devices: \r\n{ex2.ToString()}");
+                                ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject.Link = true;
                             }
                             ActiveObjects[configuredDevice.Value.DeviceKey].InitialisedOk = true; // Set flag indicating that this device initialised and connected OK
                             LogMessage(0, 0, 0, "CreateInstance", string.Format("Device {0} connected OK", configuredDevice.Value.ProgID));
@@ -1868,7 +1890,7 @@ namespace ASCOM.Remote
                             requestData.Elements = elements;
 
                             // Only permit processing if access has been granted through the setup dialogue
-                            if (ManagementInterfaceEnabled| AlpacaDiscoveryEnabled)
+                            if (ManagementInterfaceEnabled | AlpacaDiscoveryEnabled)
                             {
                                 switch (elements[URL_ELEMENT_API_VERSION])
                                 {
