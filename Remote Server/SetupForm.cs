@@ -21,6 +21,8 @@ namespace ASCOM.Remote
         // Create a dictionary to hold the current device instance numbers of every device type
         private Dictionary<string, int> deviceNumberIndexes;
 
+        private List<ServedDevice> deviceList; //List of served device controls
+
         private bool selectByMouse = false; // Variable to help select the whole contents of a numeric up-down box when tabbed into our selected by mouse
 
         // CORS data grid view presentation variables
@@ -38,6 +40,7 @@ namespace ASCOM.Remote
         private List<StringValue> corsPermittedOriginsCopy = new List<StringValue>(); // Variable to hold a copy of the list of permitted origins so that it can be edited without affecting the master copy.
 
         private bool alreadyDisposed = false;
+        private bool maxDevicesHasChanged;
 
         #endregion
 
@@ -144,6 +147,7 @@ namespace ASCOM.Remote
                 ChkCorsSupportCredentials.Checked = ServerForm.CorsCredentialsPermitted;
                 ChkEnableDiscovery.Checked = ServerForm.AlpacaDiscoveryEnabled;
                 NumDiscoveryPort.Value = ServerForm.AlpacaDiscoveryPort;
+                NumMaxDevices.Value = ServerForm.MaximumNumberOfDevices;
 
                 // CORS tab event handler
                 ChkEnableCors_CheckedChanged(ChkEnableCors, new EventArgs()); // Fire the event handlers to ensure that the controls reflect the CORS enabled / disabled state
@@ -159,29 +163,111 @@ namespace ASCOM.Remote
                     }
                 }
                 ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Number of configured devices: {0}.", ServerForm.ConfiguredDevices.Count));
+
                 foreach (string deviceName in ServerForm.ConfiguredDevices.Keys)
                 {
                     ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("ConfiguredDevices contains key {0}.", deviceName));
                 }
 
-                // Initialise each of the device GUI components
-                foreach (ServedDevice item in DeviceConfigurationTab.Controls.OfType<ServedDevice>())
-                {
-                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Starting Init for {0}.", item.Name));
-                    item.InitUI(this);
-                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}, now setting its parameters.", item.Name));
-                    item.DeviceType = ServerForm.ConfiguredDevices[item.Name].DeviceType;
-                    item.ProgID = ServerForm.ConfiguredDevices[item.Name].ProgID;
-                    item.DeviceNumber = ServerForm.ConfiguredDevices[item.Name].DeviceNumber;
-                    item.AllowConnectedSetFalse = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetFalse;
-                    item.AllowConnectedSetTrue = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetTrue;
-                    item.AllowConcurrentAccess = ServerForm.ConfiguredDevices[item.Name].AllowConcurrentAccess;
-                    item.DevicesAreConnected = ServerForm.devicesAreConnected;
+                // Populate the device list with all configured controls
+                deviceList = WalkControls(this, new List<ServedDevice>());
 
-                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}.", item.Name));
+                // Initialise each of the device GUI components
+                foreach (ServedDevice item in deviceList)
+                {
+                    string devicenumberString = item.Name.Substring("ServedDevice".Length);
+                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", $"Init - Found device {item.Name} - {devicenumberString}");
+                    if (int.Parse(item.Name.Substring("ServedDevice".Length)) < ServerForm.MaximumNumberOfDevices)   //string.Compare(item.Name, $"ServedDevice{ServerForm.MaximumNumberOfDevices - 1}") <= 0)         //item.Name <= $"servedDevice{ServerForm.MaximumNumberOfDevices-1}")
+                    {
+                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Starting Init for {0}.", item.Name));
+                        item.InitUI(this);
+                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}, now setting its parameters.", item.Name));
+                        item.DeviceType = ServerForm.ConfiguredDevices[item.Name].DeviceType;
+                        item.ProgID = ServerForm.ConfiguredDevices[item.Name].ProgID;
+                        item.DeviceNumber = ServerForm.ConfiguredDevices[item.Name].DeviceNumber;
+                        item.AllowConnectedSetFalse = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetFalse;
+                        item.AllowConnectedSetTrue = ServerForm.ConfiguredDevices[item.Name].AllowConnectedSetTrue;
+                        item.AllowConcurrentAccess = ServerForm.ConfiguredDevices[item.Name].AllowConcurrentAccess;
+                        item.DevicesAreConnected = ServerForm.devicesAreConnected;
+
+                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}.", item.Name));
+                    }
+                }
+
+                switch (ServerForm.MaximumNumberOfDevices)
+                {
+                    case 10:
+                        DeviceTabs.TabPages.Remove(DeviceTab1);
+                        DeviceTabs.TabPages.Remove(DeviceTab2);
+                        DeviceTabs.TabPages.Remove(DeviceTab3);
+                        DeviceTabs.TabPages.Remove(DeviceTab4);
+                        DeviceTabs.TabPages.Remove(DeviceTab5);
+                        DeviceTabs.TabPages.Remove(DeviceTab6);
+                        DeviceTabs.TabPages.Remove(DeviceTab7);
+                        DeviceTabs.TabPages.Remove(DeviceTab8);
+                        DeviceTabs.TabPages.Remove(DeviceTab9);
+                        break;
+                    case 20:
+                        DeviceTabs.TabPages.Remove(DeviceTab2);
+                        DeviceTabs.TabPages.Remove(DeviceTab3);
+                        DeviceTabs.TabPages.Remove(DeviceTab4);
+                        DeviceTabs.TabPages.Remove(DeviceTab5);
+                        DeviceTabs.TabPages.Remove(DeviceTab6);
+                        DeviceTabs.TabPages.Remove(DeviceTab7);
+                        DeviceTabs.TabPages.Remove(DeviceTab8);
+                        DeviceTabs.TabPages.Remove(DeviceTab9);
+                        break;
+                    case 30:
+                        DeviceTabs.TabPages.Remove(DeviceTab3);
+                        DeviceTabs.TabPages.Remove(DeviceTab4);
+                        DeviceTabs.TabPages.Remove(DeviceTab5);
+                        DeviceTabs.TabPages.Remove(DeviceTab6);
+                        DeviceTabs.TabPages.Remove(DeviceTab7);
+                        DeviceTabs.TabPages.Remove(DeviceTab8);
+                        DeviceTabs.TabPages.Remove(DeviceTab9);
+                        break;
+                    case 40:
+                        DeviceTabs.TabPages.Remove(DeviceTab4);
+                        DeviceTabs.TabPages.Remove(DeviceTab5);
+                        DeviceTabs.TabPages.Remove(DeviceTab6);
+                        DeviceTabs.TabPages.Remove(DeviceTab7);
+                        DeviceTabs.TabPages.Remove(DeviceTab8);
+                        DeviceTabs.TabPages.Remove(DeviceTab9);
+                        break;
+                    case 50:
+                        DeviceTabs.TabPages.Remove(DeviceTab5);
+                        DeviceTabs.TabPages.Remove(DeviceTab6);
+                        DeviceTabs.TabPages.Remove(DeviceTab7);
+                        DeviceTabs.TabPages.Remove(DeviceTab8);
+                        DeviceTabs.TabPages.Remove(DeviceTab9);
+                        break;
+                    case 60:
+                        DeviceTabs.TabPages.Remove(DeviceTab6);
+                        DeviceTabs.TabPages.Remove(DeviceTab7);
+                        DeviceTabs.TabPages.Remove(DeviceTab8);
+                        DeviceTabs.TabPages.Remove(DeviceTab9);
+                        break;
+                    case 70:
+                        DeviceTabs.TabPages.Remove(DeviceTab7);
+                        DeviceTabs.TabPages.Remove(DeviceTab8);
+                        DeviceTabs.TabPages.Remove(DeviceTab9);
+                        break;
+                    case 80:
+                        DeviceTabs.TabPages.Remove(DeviceTab8);
+                        DeviceTabs.TabPages.Remove(DeviceTab9);
+                        break;
+                    case 90:
+                        DeviceTabs.TabPages.Remove(DeviceTab9);
+                        break;
+                    case 100:
+                        break;
                 }
 
                 RecalculateDeviceNumbers();
+
+                // Add this event handler after the initial value has been set so that this doesn't trigger an even
+                this.NumMaxDevices.ValueChanged += new System.EventHandler(this.NumMaxDevices_ValueChanged);
+
             }
             catch (Exception ex)
             {
@@ -390,15 +476,16 @@ namespace ASCOM.Remote
                 ServerForm.CorsCredentialsPermitted = ChkCorsSupportCredentials.Checked;
                 ServerForm.AlpacaDiscoveryEnabled = ChkEnableDiscovery.Checked;
                 ServerForm.AlpacaDiscoveryPort = NumDiscoveryPort.Value;
+                ServerForm.MaximumNumberOfDevices = (int)NumMaxDevices.Value;
 
-                foreach (ServedDevice item in DeviceConfigurationTab.Controls.OfType<ServedDevice>())
+                foreach (ServedDevice item in deviceList)
                 {
                     ServerForm.ConfiguredDevices[item.Name].DeviceType = item.DeviceType;
 
                     // Update the unique ID if the ProgID has changed
                     if (ServerForm.ConfiguredDevices[item.Name].ProgID != item.ProgID)
                     {
-                        if (item.ProgID==SharedConstants.DEVICE_NOT_CONFIGURED) // Device has been de-configured
+                        if (item.ProgID == SharedConstants.DEVICE_NOT_CONFIGURED) // Device has been de-configured
                         {
                             ServerForm.ConfiguredDevices[item.Name].UniqueID = SharedConstants.DEVICE_NOT_CONFIGURED;
                         }
@@ -433,6 +520,37 @@ namespace ASCOM.Remote
 
         #region Utility methods
 
+        public static List<ServedDevice> WalkControls(Control TopControl, List<ServedDevice> deviceList)
+        {
+            //ServerForm.LogMessage(0, 0, 0, "WalkControls", $"Top control: {TopControl.Name}");
+
+            foreach (Control control in TopControl.Controls)
+            {
+                if (control.HasChildren)
+                {
+                    if (control is ServedDevice)
+                    {
+                        if (int.Parse(control.Name.Substring("ServedDevice".Length)) < ServerForm.MaximumNumberOfDevices)
+                        {
+                            deviceList.Add(control as ServedDevice);
+                            ServerForm.LogMessage(0, 0, 0, "WalkControls", $"Found served device: {control.Name}");
+                        }
+                        else
+                        {
+                            ServerForm.LogMessage(0, 0, 0, "WalkControls", $"Ignoring served device: {control.Name}");
+                        }
+                    }
+                    else
+                    {
+                        //ServerForm.LogMessage(0, 0, 0, "WalkControls", $"Found control with children: {x.Name}. Recursing down...");
+                        WalkControls(control, deviceList);
+                    }
+                }
+            }
+
+            return deviceList;
+        }
+
         public void RecalculateDeviceNumbers()
         {
             // Add a zero entry for each device type on this system
@@ -447,9 +565,13 @@ namespace ASCOM.Remote
             {
                 ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Processing device type: " + deviceType);
                 SortedDictionary<string, ServedDevice> servedDevices = new SortedDictionary<string, ServedDevice>();
-                foreach (ServedDevice c in DeviceConfigurationTab.Controls.OfType<ServedDevice>().Where(device => device.DeviceType == deviceType))
+                foreach (ServedDevice c in deviceList) //.Where(device => device.DeviceType == deviceType))
                 {
-                    servedDevices.Add(c.Name, c);
+                    if (c.DeviceType == deviceType)
+                    {
+                        servedDevices.Add(c.Name, c);
+                        ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", $"Added {c.Name}");
+                    }
                 }
                 ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Added served devices");
                 Dictionary<string, string> x = new Dictionary<string, string>();
@@ -599,5 +721,13 @@ namespace ASCOM.Remote
         }
         #endregion
 
+        private void NumMaxDevices_ValueChanged(object sender, EventArgs e)
+        {
+            maxDevicesHasChanged = true;
+            if (maxDevicesHasChanged) MessageBox.Show("The maximum number of devices has changed, please press OK, close and restart the remote Server for this change to take effect.", "Maximum Number of Devices", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            ServerForm.MaximumNumberOfDevices = (int)NumMaxDevices.Value;
+            ServerForm.ReadProfile();
+        }
     }
 }

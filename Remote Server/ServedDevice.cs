@@ -47,25 +47,25 @@ namespace ASCOM.Remote
         public void InitUI(SetupForm parent)
         {
             setupForm = parent;
-            ServerForm.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Start");
+            //ServerForm.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Start");
             profile = new Profile();
-            ServerForm.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Created Profile");
+            //ServerForm.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Created Profile");
 
             cmbDeviceType.Items.Add(SharedConstants.DEVICE_NOT_CONFIGURED);
-            ServerForm.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Added Device not configured");
+            //ServerForm.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Added Device not configured");
 
 
             foreach (string deviceType in profile.RegisteredDeviceTypes)
             {
-                ServerForm.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Adding item: " + deviceType);
+                //ServerForm.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Adding item: " + deviceType);
                 cmbDeviceType.Items.Add(deviceType);
                 deviceTypes.Add(deviceType); // Remember the device types on this system
             }
-            ServerForm.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Setting selected index to 0");
+            //ServerForm.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Setting selected index to 0");
 
             cmbDeviceType.SelectedIndex = 0;
 
-            ServerForm.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Finished");
+            //ServerForm.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Finished");
 
         }
         #endregion
@@ -148,18 +148,18 @@ namespace ASCOM.Remote
                 {
                     try
                     {
-                        ServerForm.LogMessage(0, 0, 0, "ServedDevice.ProgID", "Set ProgID to: " + progID);
+                        //ServerForm.LogMessage(0, 0, 0, "ServedDevice.ProgID", "Set ProgID to: " + progID);
                         switch (progID)
                         {
                             case "":
                                 cmbDevice.SelectedIndex = -1;
                                 break;
                             case SharedConstants.DEVICE_NOT_CONFIGURED:
-                                ServerForm.LogMessage(0, 0, 0, "ServedDevice.ProgID", "Description: " + SharedConstants.DEVICE_NOT_CONFIGURED);
+                                //ServerForm.LogMessage(0, 0, 0, "ServedDevice.ProgID", "Description: " + SharedConstants.DEVICE_NOT_CONFIGURED);
                                 cmbDevice.SelectedItem = 0;
                                 break;
                             default:
-                                ServerForm.LogMessage(0, 0, 0, "ServedDevice.ProgID", "Description: " + deviceDictionary[progID]);
+                                //ServerForm.LogMessage(0, 0, 0, "ServedDevice.ProgID", "Description: " + deviceDictionary[progID]);
                                 cmbDevice.SelectedItem = deviceDictionary[progID];
                                 break;
                         }
@@ -229,18 +229,18 @@ namespace ASCOM.Remote
             try
             {
 
-                ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Clearing items");
+                //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Started");
                 cmbDevice.Items.Clear();
 
-                ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Setting selected index to -1");
+                //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Setting selected index to -1");
                 cmbDevice.SelectedIndex = -1;
 
-                ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Resetting instance number");
+                //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Resetting instance number");
                 DeviceNumber = 0;
 
                 if (cmbDeviceType.SelectedItem.ToString() == SharedConstants.DEVICE_NOT_CONFIGURED)
                 {
-                    ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - \"None\" device type selected");
+                    //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - \"None\" device type selected");
                     cmbDevice.Items.Clear();
                     cmbDevice.SelectedIndex = -1;
                     cmbDevice.ResetText();
@@ -252,7 +252,7 @@ namespace ASCOM.Remote
                 else
                 {
                     cmbDevice.Enabled = true;
-                    ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Real device type has been selected");
+                    //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Real device type has been selected");
                 }
 
 
@@ -265,7 +265,7 @@ namespace ASCOM.Remote
                 // Set up device list so we can translate ProgID to description
 
                 ArrayList installedDevices = profile.RegisteredDevices(cmbDeviceType.SelectedItem.ToString());
-                ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Created registered device array list");
+                //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Created registered device array list");
 
                 deviceDictionary.Clear();
                 foreach (KeyValuePair kvp in installedDevices)
@@ -274,6 +274,7 @@ namespace ASCOM.Remote
                     cmbDevice.Items.Add(kvp.Value);
                 }
                 if (cmbDevice.Items.Count > 0) cmbDevice.SelectedIndex = 0;
+                //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Finished");
 
             }
             catch (Exception ex)
@@ -333,10 +334,10 @@ namespace ASCOM.Remote
             {
                 // Get an instance of the driver from its ProgID and store this in a dynamic variable so that we can call its method directly
                 Type ProgIdType = Type.GetTypeFromProgID(progID);
-                ServerForm.LogMessage(0, 0, 0, "Setup", string.Format("Found type: {0}", ProgIdType.Name));
+                //ServerForm.LogMessage(0, 0, 0, "Setup", string.Format("Found type: {0}", ProgIdType.Name));
 
                 dynamic oDrv = Activator.CreateInstance(ProgIdType);
-                ServerForm.LogMessage(0, 0, 0, "Setup", "Created driver instance OK");
+                //ServerForm.LogMessage(0, 0, 0, "Setup", "Created driver instance OK");
 
                 try
                 {
@@ -345,7 +346,7 @@ namespace ASCOM.Remote
                         DialogResult dialogResult = MessageBox.Show("Device is connected, OK to disconnect and run Setup?", "Disconnect Device?", MessageBoxButtons.OKCancel);
                         if (dialogResult == DialogResult.OK) // OK to disconnect and run setup dialogue
                         {
-                            ServerForm.LogMessage(0, 0, 0, "Setup", "User gave permission to disconnect device - setting Connected to false");
+                            //ServerForm.LogMessage(0, 0, 0, "Setup", "User gave permission to disconnect device - setting Connected to false");
                             try { oDrv.Connected = false; } catch { }; // Set Connected to false ignoring errors
                             try { oDrv.Link = false; } catch { }; // Set Link to false (for IFocuserV1 devices) ignoring errors
 
@@ -353,11 +354,11 @@ namespace ASCOM.Remote
                             oDrv = null;
                             oDrv = Activator.CreateInstance(ProgIdType);
 
-                            ServerForm.LogMessage(0, 0, 0, "Setup", string.Format("Connected has bee set false and destroyed. New Connected value: {0}", oDrv.Connected));
+                            //ServerForm.LogMessage(0, 0, 0, "Setup", string.Format("Connected has bee set false and destroyed. New Connected value: {0}", oDrv.Connected));
 
-                            ServerForm.LogMessage(0, 0, 0, "Setup", "Device is now disconnected, calling SetupDialog method");
+                            //ServerForm.LogMessage(0, 0, 0, "Setup", "Device is now disconnected, calling SetupDialog method");
                             oDrv.SetupDialog();
-                            ServerForm.LogMessage(0, 0, 0, "Setup", "Completed SetupDialog method, setting Connected to true");
+                            //ServerForm.LogMessage(0, 0, 0, "Setup", "Completed SetupDialog method, setting Connected to true");
 
                             try
                             {
@@ -370,7 +371,7 @@ namespace ASCOM.Remote
                                 oDrv.Link = true;
                             }
 
-                            ServerForm.LogMessage(0, 0, 0, "Setup", "Driver is now Connected");
+                            //ServerForm.LogMessage(0, 0, 0, "Setup", "Driver is now Connected");
                         }
                         else // Not OK to disconnect so just do nothing and exit
                         {
@@ -379,16 +380,16 @@ namespace ASCOM.Remote
                     }
                     else // Driver is not connected 
                     {
-                        ServerForm.LogMessage(0, 0, 0, "Setup", "Device is disconnected so just calling SetupDialog method");
+                        //ServerForm.LogMessage(0, 0, 0, "Setup", "Device is disconnected so just calling SetupDialog method");
                         oDrv.SetupDialog();
-                        ServerForm.LogMessage(0, 0, 0, "Setup", "Completed SetupDialog method");
+                        //ServerForm.LogMessage(0, 0, 0, "Setup", "Completed SetupDialog method");
 
                         try { oDrv.Dispose(); } catch { }; // Dispose the driver if possible
 
                         // Release the COM object properly
                         try
                         {
-                            ServerForm.LogMessage(0, 0, 0, "Setup", "  Releasing COM object");
+                            //ServerForm.LogMessage(0, 0, 0, "Setup", "  Releasing COM object");
                             int LoopCount = 0;
                             int RemainingObjectCount = 0;
 
@@ -396,7 +397,7 @@ namespace ASCOM.Remote
                             {
                                 LoopCount += 1; // Increment the loop counter so that we don't go on for ever!
                                 RemainingObjectCount = Marshal.ReleaseComObject(oDrv);
-                                ServerForm.LogMessage(0, 0, 0, "Setup", "  Remaining object count: " + RemainingObjectCount.ToString() + ", LoopCount: " + LoopCount);
+                                //ServerForm.LogMessage(0, 0, 0, "Setup", "  Remaining object count: " + RemainingObjectCount.ToString() + ", LoopCount: " + LoopCount);
                             } while ((RemainingObjectCount > 0) & (LoopCount < 20));
                         }
                         catch (Exception ex2)
@@ -430,7 +431,7 @@ namespace ASCOM.Remote
         #region Support code
         private bool GetConnectdState(dynamic driverObject)
         {
-            bool connectedState = false;
+            bool connectedState;
 
             try
             {

@@ -106,7 +106,7 @@ namespace ASCOM.Remote
                 return (T)((object)RetVal);
             }
 
-            if (typeof(T) == typeof(Int32))
+            if ((typeof(T) == typeof(Int32)) | (typeof(T) == typeof(int)))
             {
                 string registryValue;
                 if (SubKey == "")

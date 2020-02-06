@@ -131,6 +131,7 @@ namespace ASCOM.Remote
         internal const string ALPACA_DISCOVERY_ENABLED_PROFILENAME = "Alpaca Discovery Enabled"; public const bool ALPACA_DISCOVERY_ENABLED_DEFAULT = true;
         internal const string ALPACA_UNIQUE_ID_PROFILENAME = "Alpaca Unique ID"; public static string ALPACA_UNIQUE_ID_DEFAULT = Guid.Empty.ToString();
         internal const string ALPACA_DISCOVERY_PORT_PROFILENAME = "Alpaca Discovery Port"; public static int ALPACA_DISCOVERY_PORT_DEFAULT = SharedConstants.ALPACA_DISCOVERY_PORT;
+        internal const string MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME = "Maximum Number Of Devices"; public static int MAXIMUM_NUMBER_OF_DEVICES_DEFAULT = 10;
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -224,6 +225,7 @@ namespace ASCOM.Remote
         internal static bool AlpacaDiscoveryEnabled;
         internal static string AlpacaUniqueId; // Unique UUID / GUID for this particular Alpaca device (common to all served devices)
         internal static decimal AlpacaDiscoveryPort; // Port on which the Alpaca discovery listener will listen
+        internal static int MaximumNumberOfDevices;
 
         #endregion
 
@@ -271,25 +273,6 @@ namespace ASCOM.Remote
                 ActiveObjects = new ConcurrentDictionary<string, ActiveObject>();
                 ServerDeviceNames = new SortedSet<string>();
                 ServerDeviceNumbers = new SortedSet<string>();
-
-                // Populate the server device names and numbers lists based on the controls that are present on the setup form
-                using (Form s = new SetupForm())
-                {
-                    // Get the ServedDevice control collection
-                    var controls = s.Controls["SetupTabControl"].Controls["DeviceConfigurationTab"].Controls.OfType<ServedDevice>();
-
-                    // Populate the list of valid device numbers
-                    for (int deviceNumber = 0; deviceNumber < controls.Count(); deviceNumber++)
-                    {
-                        ServerDeviceNumbers.Add(deviceNumber.ToString());
-                    }
-
-                    // Populate the list of configured ServedDevice controls
-                    foreach (Control control in controls)
-                    {
-                        ServerDeviceNames.Add(control.Name);
-                    }
-                }
 
                 ReadProfile();
 
@@ -1017,6 +1000,7 @@ namespace ASCOM.Remote
             LogMessage(0, 0, 0, "Alpaca Discovery", AlpacaDiscoveryEnabled.ToString());
             LogMessage(0, 0, 0, "Alpaca Unique ID", AlpacaUniqueId);
             LogMessage(0, 0, 0, "Alpaca Discovery Port", AlpacaDiscoveryPort.ToString());
+            LogMessage(0, 0, 0, "Maximum Devices", MaximumNumberOfDevices.ToString());
 
             LogBlankLine(0, 0, 0);
 
@@ -1150,29 +1134,67 @@ namespace ASCOM.Remote
                 AlpacaDiscoveryEnabled = driverProfile.GetValue<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, ALPACA_DISCOVERY_ENABLED_DEFAULT);
                 AlpacaUniqueId = driverProfile.GetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, ALPACA_UNIQUE_ID_DEFAULT);
                 AlpacaDiscoveryPort = driverProfile.GetValue<decimal>(ALPACA_DISCOVERY_PORT_PROFILENAME, string.Empty, ALPACA_DISCOVERY_PORT_DEFAULT);
+                MaximumNumberOfDevices = driverProfile.GetValue<int>(MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME, string.Empty, MAXIMUM_NUMBER_OF_DEVICES_DEFAULT);
+
+                // Clear collections before repopulating
+                ServerDeviceNumbers.Clear();
+                ServerDeviceNames.Clear();
+
+                // Populate the server device numbers and names based on the MaximumNumberOfDevices value
+                for (int i = 0; i < MaximumNumberOfDevices; i++)
+                {
+                    ServerDeviceNumbers.Add(i.ToString());
+                    ServerDeviceNames.Add($"ServedDevice{i.ToString("00")}");
+                    LogMessage(0, 0, 0, "ReadProfile", $"Adding served device {i} as ServedDevice{i.ToString("00")}");
+                }
+
+                // Clear collection before repopulating
+                ConfiguredDevices.Clear();
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
-                    string deviceType = driverProfile.GetValue<string>(DEVICETYPE_PROFILENAME, deviceName, DEVICETYPE_DEFAULT);
-                    string progID = driverProfile.GetValue<string>(PROGID_PROFILENAME, deviceName, PROGID_DEFAULT);
-                    string description = driverProfile.GetValue<string>(DESCRIPTION_PROFILENAME, deviceName, DESCRIPTION_DEFAULT);
-                    int deviceNumber = Convert.ToInt32(driverProfile.GetValue<int>(DEVICENUMBER_PROFILENAME, deviceName, DEVICENUMBER_DEFAULT));
-                    bool allowConnectedSetFalse = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_FALSE_PROFILENAME, deviceName, ALLOW_CONNECTED_SET_FALSE_DEFAULT));
-                    bool allowConnectedSetTrue = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_TRUE_PROFILENAME, deviceName, ALLOW_CONNECTED_SET_TRUE_DEFAULT));
-                    bool allowConcurrentAccess = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONCURRENT_ACCESS_PROFILENAME, deviceName, ALLOW_CONCURRENT_ACCESS_DEFAULT));
-                    string uniqueID = driverProfile.GetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, deviceName, SharedConstants.DEVICE_NOT_CONFIGURED);
+                    // Backward compatibility fix for early releases that only hosted 10 devices
+                    string revisedDeviceName = FixDeviceName(deviceName);
+
+                    string deviceType = driverProfile.GetValue<string>(DEVICETYPE_PROFILENAME, revisedDeviceName, DEVICETYPE_DEFAULT);
+                    string progID = driverProfile.GetValue<string>(PROGID_PROFILENAME, revisedDeviceName, PROGID_DEFAULT);
+                    string description = driverProfile.GetValue<string>(DESCRIPTION_PROFILENAME, revisedDeviceName, DESCRIPTION_DEFAULT);
+                    int deviceNumber = Convert.ToInt32(driverProfile.GetValue<int>(DEVICENUMBER_PROFILENAME, revisedDeviceName, DEVICENUMBER_DEFAULT));
+                    bool allowConnectedSetFalse = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_FALSE_PROFILENAME, revisedDeviceName, ALLOW_CONNECTED_SET_FALSE_DEFAULT));
+                    bool allowConnectedSetTrue = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_TRUE_PROFILENAME, revisedDeviceName, ALLOW_CONNECTED_SET_TRUE_DEFAULT));
+                    bool allowConcurrentAccess = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONCURRENT_ACCESS_PROFILENAME, revisedDeviceName, ALLOW_CONCURRENT_ACCESS_DEFAULT));
+                    string uniqueID = driverProfile.GetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, revisedDeviceName, SharedConstants.DEVICE_NOT_CONFIGURED);
 
                     // Upgrade earlier data stores that did not have the UniqueID field by assigning a global ID if this device is configured but has no global ID
                     if ((deviceType != SharedConstants.DEVICE_NOT_CONFIGURED) & (uniqueID == SharedConstants.DEVICE_NOT_CONFIGURED))
                     {
                         uniqueID = Guid.NewGuid().ToString().ToUpperInvariant(); // Assign a new unique ID
-                        driverProfile.SetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, deviceName, uniqueID);
+                        driverProfile.SetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, revisedDeviceName, uniqueID);
                     }
+                    LogMessage(0, 0, 0, "ReadProfile", $"Adding configured device {revisedDeviceName}");
 
                     ConfiguredDevices[deviceName] = new ConfiguredDevice(deviceType, progID, description, deviceNumber, allowConnectedSetFalse, allowConnectedSetTrue, allowConcurrentAccess, uniqueID);
                 }
             }
         }
+
+        /// <summary>
+        /// Turn device names containing ServedDevice0X form into ServedDeviceX form
+        /// </summary>
+        /// <param name="deviceName"></param>
+        /// <returns></returns>
+        private static string FixDeviceName(string deviceName)
+        {
+            if (deviceName.Contains("ServedDevice0"))
+            {
+                return deviceName.Substring(0,12) + deviceName.Substring(13);
+            }
+            else
+            {
+                return deviceName;
+            }
+        }
+
 
         /// <summary>
         /// Write the device configuration to the  ASCOM  Profile store
@@ -1204,16 +1226,20 @@ namespace ASCOM.Remote
                 driverProfile.SetValue<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, AlpacaDiscoveryEnabled);
                 driverProfile.SetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, AlpacaUniqueId);
                 driverProfile.SetValue<decimal>(ALPACA_DISCOVERY_PORT_PROFILENAME, string.Empty, AlpacaDiscoveryPort);
+                driverProfile.SetValue<int>(MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME, string.Empty, MaximumNumberOfDevices);
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
-                    driverProfile.SetValue<string>(DEVICETYPE_PROFILENAME, deviceName, ConfiguredDevices[deviceName].DeviceType.ToString());
-                    driverProfile.SetValue<string>(PROGID_PROFILENAME, deviceName, ConfiguredDevices[deviceName].ProgID.ToString());
-                    driverProfile.SetValue<string>(DESCRIPTION_PROFILENAME, deviceName, ConfiguredDevices[deviceName].Description.ToString());
-                    driverProfile.SetValue<string>(DEVICENUMBER_PROFILENAME, deviceName, ConfiguredDevices[deviceName].DeviceNumber.ToString());
-                    driverProfile.SetValue<bool>(ALLOW_CONNECTED_SET_FALSE_PROFILENAME, deviceName, ConfiguredDevices[deviceName].AllowConnectedSetFalse);
-                    driverProfile.SetValue<bool>(ALLOW_CONNECTED_SET_TRUE_PROFILENAME, deviceName, ConfiguredDevices[deviceName].AllowConnectedSetTrue);
-                    driverProfile.SetValue<bool>(ALLOW_CONCURRENT_ACCESS_PROFILENAME, deviceName, ConfiguredDevices[deviceName].AllowConcurrentAccess);
+                    // Backward compatibility fix for early releases that only hosted 10 devices
+                    string revisedDeviceName = FixDeviceName(deviceName);
+
+                    driverProfile.SetValue<string>(DEVICETYPE_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].DeviceType.ToString());
+                    driverProfile.SetValue<string>(PROGID_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].ProgID.ToString());
+                    driverProfile.SetValue<string>(DESCRIPTION_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].Description.ToString());
+                    driverProfile.SetValue<string>(DEVICENUMBER_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].DeviceNumber.ToString());
+                    driverProfile.SetValue<bool>(ALLOW_CONNECTED_SET_FALSE_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].AllowConnectedSetFalse);
+                    driverProfile.SetValue<bool>(ALLOW_CONNECTED_SET_TRUE_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].AllowConnectedSetTrue);
+                    driverProfile.SetValue<bool>(ALLOW_CONCURRENT_ACCESS_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].AllowConcurrentAccess);
 
                     // Update unique ID if necessary
                     if (ConfiguredDevices[deviceName].DeviceType == SharedConstants.DEVICE_NOT_CONFIGURED)// Invalidate global IDs when devices are set to "none"
@@ -1227,7 +1253,7 @@ namespace ASCOM.Remote
                             ConfiguredDevices[deviceName].UniqueID = Guid.NewGuid().ToString().ToUpperInvariant();
                         }
                     }
-                    driverProfile.SetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, deviceName, ConfiguredDevices[deviceName].UniqueID.ToString());
+                    driverProfile.SetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].UniqueID.ToString());
                 }
             }
         }
