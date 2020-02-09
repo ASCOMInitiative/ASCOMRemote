@@ -2670,12 +2670,14 @@ namespace ASCOM.Remote
                                             case "canreverse":
                                             case "ismoving":
                                             case "reverse":
+                                            case "cansync":
                                                 ReturnBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
-                                            //DOUBLE Get Values
+                                            //FLOAT Get Values
                                             case "position":
                                             case "stepsize":
                                             case "targetposition":
+                                            case "instrumentalposition":
                                                 ReturnFloat(requestData); break;
 
                                             //UNKNOWN METHOD CALL
@@ -2977,6 +2979,7 @@ namespace ASCOM.Remote
                                             case "halt":
                                             case "move":
                                             case "moveabsolute":
+                                            case "sync":
                                                 CallMethod(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             //BOOL Set values
                                             case "reverse":
@@ -3017,7 +3020,7 @@ namespace ASCOM.Remote
                     default:
                         Return400Error(requestData, "Unsupported http verb: " + requestData.Request.HttpMethod);
                         break;
-                }
+                } // Handle GET and PUT requestData.Requests
             }
             catch (KeyNotFoundException ex)
             {
@@ -3468,6 +3471,8 @@ namespace ASCOM.Remote
                         deviceResponse = device.IsMoving; break;
                     case "rotator.reverse":
                         deviceResponse = device.Reverse; break;
+                    case "rotator.cansync":
+                        deviceResponse = device.CanSync; break;
 
                     #endregion
 
@@ -4019,7 +4024,6 @@ namespace ASCOM.Remote
             double deviceResponse = 0.0;
             Exception exReturn = null;
 
-
             try
             {
                 switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
@@ -4031,6 +4035,8 @@ namespace ASCOM.Remote
                         deviceResponse = (double)device.StepSize; break;
                     case "rotator.targetposition":
                         deviceResponse = (double)device.TargetPosition; break;
+                    case "rotator.instrumentalposition":
+                        deviceResponse = (double)device.InstrumentalPosition; break;
 
                     default:
                         LogMessage1(requestData, "ReturnFloat", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
@@ -5248,6 +5254,10 @@ namespace ASCOM.Remote
                     case "rotator.moveabsolute":
                         positionFloat = GetParameter<float>(requestData, SharedConstants.POSITION_PARAMETER_NAME);
                         device.MoveAbsolute(positionFloat);
+                        break;
+                    case "rotator.sync":
+                        positionFloat = GetParameter<float>(requestData, SharedConstants.POSITION_PARAMETER_NAME);
+                        device.Sync(positionFloat);
                         break;
 
                     default:
