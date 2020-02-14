@@ -1187,7 +1187,7 @@ namespace ASCOM.Remote
         {
             if (deviceName.Contains("ServedDevice0"))
             {
-                return deviceName.Substring(0,12) + deviceName.Substring(13);
+                return deviceName.Substring(0, 12) + deviceName.Substring(13);
             }
             else
             {
@@ -4672,12 +4672,31 @@ namespace ASCOM.Remote
             if (imageArray != null) Buffer.BlockCopy(imageArray, 0, imageArrayBytes, 0, imageArrayBytes.Length);
             long timeBlockCopy = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
+            // Release image array memory
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+            imageArray = null;
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
+            ActiveObjects[requestData.DeviceKey].LastImageArray = null;
+            GC.Collect();
+
             string base64String = Convert.ToBase64String(imageArrayBytes, 0, imageArrayBytes.Length, Base64FormattingOptions.None);
             long timeToConvertToBase64 = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
+
+            // Release image array bytes memory
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+            imageArrayBytes = null;
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
+            GC.Collect();
 
             byte[] bytesToSend = Encoding.ASCII.GetBytes(base64String); // Convert the message to be returned into UTF8 bytes that can be sent over the wire
             long timeToConvertBase64StringToByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
             int numberOfUncompressedBytes = bytesToSend.Length;
+
+            // Release base 64 string memory
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+            base64String = null;
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
+            GC.Collect();
 
             if ((compressionType == SharedConstants.ImageArrayCompression.GZip) || (compressionType == SharedConstants.ImageArrayCompression.GZipOrDeflate))
             {
@@ -4709,6 +4728,10 @@ namespace ASCOM.Remote
                 $"Time to compress base64 string: {timeToCompressResponse}ms, " +
                 $"Return data to client: {timeReturnDataToClient}ms.");
 
+            // Release memory so that it can be collected
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+            bytesToSend = null;
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
             GC.Collect();
         }
 
@@ -4963,14 +4986,17 @@ namespace ASCOM.Remote
                         case SharedConstants.ImageArrayCompression.None:
                             // Write the array back to the client using a stream to avoid running out of memory when serialising very large image arrays
                             JsonSerializer serializer1 = new JsonSerializer();
-                            StreamWriter streamWriter1 = new StreamWriter(requestData.Response.OutputStream);
 
-                            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"No compression - ReturnImageArray Before writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
-
-                            using (JsonWriter writer = new JsonTextWriter(streamWriter1))
+                            using (StreamWriter streamWriter1 = new StreamWriter(requestData.Response.OutputStream))
                             {
-                                serializer1.Serialize(writer, responseClass);
+                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"No compression - ReturnImageArray Before writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
+
+                                using (JsonWriter writer = new JsonTextWriter(streamWriter1))
+                                {
+                                    serializer1.Serialize(writer, responseClass);
+                                }
                             }
+                            serializer1 = null;
 
                             if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"No compression - ReturnImageArray After writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
                             requestData.Response.OutputStream.Close();
@@ -4986,6 +5012,13 @@ namespace ASCOM.Remote
             {
                 LogException1(requestData, "ListenerException", string.Format("ReturnImageArray Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
             }
+
+            // Release memory so that it can be cleaned up
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+            deviceResponse = null;
+            responseClass = null;
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
+
             GC.Collect();
         }
 
