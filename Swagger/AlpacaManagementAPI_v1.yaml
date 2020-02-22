@@ -288,7 +288,7 @@ components:
                 description: The device number that must be used to access this device through the Alpaca Device API.
               UniqueID:
                 type: string
-                description: This should be the ProgID for COM devices or a GUID for native Alpaca devices. The GUID identifies a particular type of hardware device, it does not have to be different for every user of that hardware device. For example, the GUID for "SuperSwish Focuser" would be the same for all people who purchased that focuser, but would be different to the GUID for the "SuperSwish FilterWheel".
+                description: A string representation of a random value that uniquely identifies this ASCOM device; the random value should have a minimum of 48bits of randomness. Where possible a UUID / GUID should be used, but this is not mandatory.
           description: Array of device configuration objects.
         ClientTransactionID:
           type: integer
