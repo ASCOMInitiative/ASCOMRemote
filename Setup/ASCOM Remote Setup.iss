@@ -135,7 +135,7 @@ Name: "..\BuildRemote.cmd"; Flags: cmdprompt
 
 [Code]
 const
-   REQUIRED_PLATFORM_VERSION = 6.2;    // Set this to the minimum required ASCOM Platform version for this application
+   REQUIRED_PLATFORM_VERSION = 6.5;    // Set this to the minimum required ASCOM Platform version for this application
    REQUIRED_DOTNET_VERSION = 'v4.7.2';  // Set this to the minimum required Microsoft .NET Framework version for this application
 
 var
