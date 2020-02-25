@@ -132,6 +132,8 @@ namespace ASCOM.Remote
         internal const string ALPACA_UNIQUE_ID_PROFILENAME = "Alpaca Unique ID"; public static string ALPACA_UNIQUE_ID_DEFAULT = Guid.Empty.ToString();
         internal const string ALPACA_DISCOVERY_PORT_PROFILENAME = "Alpaca Discovery Port"; public static int ALPACA_DISCOVERY_PORT_DEFAULT = SharedConstants.ALPACA_DISCOVERY_PORT;
         internal const string MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME = "Maximum Number Of Devices"; public static int MAXIMUM_NUMBER_OF_DEVICES_DEFAULT = 10;
+        internal const string IPV4_ENABLED_PROFILENAME = "IP v4 Enabled"; public const bool IPV4_ENABLED_DEFAULT = true;
+        internal const string IPV6_ENABLED_PROFILENAME = "IP v6 Enabled"; public const bool IPV6_ENABLED_DEFAULT = false;
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -226,6 +228,8 @@ namespace ASCOM.Remote
         internal static string AlpacaUniqueId; // Unique UUID / GUID for this particular Alpaca device (common to all served devices)
         internal static decimal AlpacaDiscoveryPort; // Port on which the Alpaca discovery listener will listen
         internal static int MaximumNumberOfDevices;
+        internal static bool IpV4Enabled;
+        internal static bool IpV6Enabled;
 
         #endregion
 
@@ -711,7 +715,7 @@ namespace ASCOM.Remote
                     ServerForm.LogMessage(0, 0, 0, "DiscoveryServer", $"Received a version 0x{discoveryBroadcastVersionNumber.ToString("X")} discovery packet from the client IP address {endpoint.Address}. Returning Alpaca port number: {ServerPortNumber}");
 
                     // Create a discovery response, convert it to JSON and return this to the caller
-                    AlpacaDiscoveryResponse alpacaDiscoveryResponse = new AlpacaDiscoveryResponse((int)ServerPortNumber, AlpacaUniqueId); // Create the response object
+                    AlpacaDiscoveryResponse alpacaDiscoveryResponse = new AlpacaDiscoveryResponse((int)ServerPortNumber); // Create the response object
                     ServerForm.LogMessage(0, 0, 0, "DiscoveryServer", $"JSON Discovery response: {alpacaDiscoveryResponse}");
 
                     string jsonResponse = JsonConvert.SerializeObject(alpacaDiscoveryResponse); // Convert the response object to a JSON string
@@ -1135,6 +1139,8 @@ namespace ASCOM.Remote
                 AlpacaUniqueId = driverProfile.GetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, ALPACA_UNIQUE_ID_DEFAULT);
                 AlpacaDiscoveryPort = driverProfile.GetValue<decimal>(ALPACA_DISCOVERY_PORT_PROFILENAME, string.Empty, ALPACA_DISCOVERY_PORT_DEFAULT);
                 MaximumNumberOfDevices = driverProfile.GetValue<int>(MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME, string.Empty, MAXIMUM_NUMBER_OF_DEVICES_DEFAULT);
+                IpV4Enabled = driverProfile.GetValue<bool>(IPV4_ENABLED_PROFILENAME, string.Empty, IPV4_ENABLED_DEFAULT);
+                IpV6Enabled = driverProfile.GetValue<bool>(IPV6_ENABLED_PROFILENAME, string.Empty, IPV6_ENABLED_DEFAULT);
 
                 // Clear collections before repopulating
                 ServerDeviceNumbers.Clear();
@@ -1227,6 +1233,8 @@ namespace ASCOM.Remote
                 driverProfile.SetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, AlpacaUniqueId);
                 driverProfile.SetValue<decimal>(ALPACA_DISCOVERY_PORT_PROFILENAME, string.Empty, AlpacaDiscoveryPort);
                 driverProfile.SetValue<int>(MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME, string.Empty, MaximumNumberOfDevices);
+                driverProfile.SetValue<bool>(IPV4_ENABLED_PROFILENAME, string.Empty, IpV4Enabled);
+                driverProfile.SetValue<bool>(IPV6_ENABLED_PROFILENAME, string.Empty, IpV6Enabled);
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
@@ -1937,8 +1945,7 @@ namespace ASCOM.Remote
                                                             AlpacaDeviceDescription remoteServerDescription = new AlpacaDeviceDescription(SharedConstants.ALPACA_DEVICE_MANAGEMENT_SERVERNAME,
                                                                                                                                           SharedConstants.ALPACA_DEVICE_MANAGEMENT_MANUFACTURER,
                                                                                                                                           Assembly.GetEntryAssembly().GetName().Version.ToString(),
-                                                                                                                                          RemoteServerLocation,
-                                                                                                                                          AlpacaUniqueId);
+                                                                                                                                          RemoteServerLocation);
 
                                                             AlpacaDescriptionResponse descriptionResponse = new AlpacaDescriptionResponse(clientTransactionID, serverTransactionID, remoteServerDescription)
                                                             {

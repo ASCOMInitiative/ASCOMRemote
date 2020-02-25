@@ -149,6 +149,17 @@ namespace ASCOM.Remote
                 NumDiscoveryPort.Value = ServerForm.AlpacaDiscoveryPort;
                 NumMaxDevices.Value = ServerForm.MaximumNumberOfDevices;
 
+                // Set the IP v4 / v6 radio boxes
+                if (ServerForm.IpV4Enabled & ServerForm.IpV6Enabled) // Both IPv4 and v6 are enabled so set the "both" button
+                {
+                    RadIpV4AndV6.Checked = true;
+                }
+                else // Only one of v4 or v6 is enabled so set accordingly 
+                {
+                    RadIpV4.Checked = ServerForm.IpV4Enabled;
+                    RadIpV6.Checked = ServerForm.IpV6Enabled;
+                }
+
                 // CORS tab event handler
                 ChkEnableCors_CheckedChanged(ChkEnableCors, new EventArgs()); // Fire the event handlers to ensure that the controls reflect the CORS enabled / disabled state
                 DataGridCorsOrigins_EnabledChanged(DataGridCorsOrigins, new EventArgs());
@@ -477,6 +488,23 @@ namespace ASCOM.Remote
                 ServerForm.AlpacaDiscoveryEnabled = ChkEnableDiscovery.Checked;
                 ServerForm.AlpacaDiscoveryPort = NumDiscoveryPort.Value;
                 ServerForm.MaximumNumberOfDevices = (int)NumMaxDevices.Value;
+
+                // Set the IP v4 and v6 variables as necessary
+                if (RadIpV4.Checked) // The IPv4 radio button is checked so set the IP v4 and IP v6 variables accordingly
+                {
+                    ServerForm.IpV4Enabled = true;
+                    ServerForm.IpV6Enabled = false;
+                }
+                if (RadIpV6.Checked) // The IPv6 radio button is checked so set the IP v4 and IP v6 variables accordingly
+                {
+                    ServerForm.IpV4Enabled = false;
+                    ServerForm.IpV6Enabled = true;
+                }
+                if (RadIpV4AndV6.Checked) // The IPv4 and IPV6 radio button is checked so set the IP v4 and IP v6 variables accordingly
+                {
+                    ServerForm.IpV4Enabled = true;
+                    ServerForm.IpV6Enabled = true;
+                }
 
                 foreach (ServedDevice item in deviceList)
                 {

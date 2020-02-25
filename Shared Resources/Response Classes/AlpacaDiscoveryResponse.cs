@@ -10,13 +10,11 @@ namespace ASCOM.Remote
     {
         public AlpacaDiscoveryResponse() { }
 
-        public AlpacaDiscoveryResponse(int alpacaPort, string alpacaUniqueId)
+        public AlpacaDiscoveryResponse(int alpacaPort)
         {
             AlpacaPort = alpacaPort;
-            AlpacaUniqueId = alpacaUniqueId;
         }
 
         public int AlpacaPort { get; set; }
-        public string AlpacaUniqueId { get; set; }
     }
 }
