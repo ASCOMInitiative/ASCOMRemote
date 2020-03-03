@@ -28,7 +28,7 @@ info:
         
     * A second focuser "StepSize" method URL would be  **http://192.168.1.89:7843/api/v1/focuser/1/stepsize**
 
-    * A rotator "Halt" method URL would be  **http://192.168.1.89:7843/api/v1/rotator/halt**
+    * A rotator "Halt" method URL would be  **http://192.168.1.89:7843/api/v1/rotator/0/halt**
     
     
     
