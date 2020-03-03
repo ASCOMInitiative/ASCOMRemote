@@ -98,13 +98,13 @@ namespace ASCOM.Remote
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
 
             this.Text = $"{DriverDisplayName} Configuration - Version {version} - {DeviceType}";
-            addressList.Items.Add(SharedConstants.LOCALHOST_NAME);
+            addressList.Items.Add(SharedConstants.LOCALHOST_NAME_IPV4);
 
             cmbServiceType.Text = ServiceType;
 
             int selectedIndex = 0;
 
-            if (IPAddressString != SharedConstants.LOCALHOST_NAME)
+            if (IPAddressString != SharedConstants.LOCALHOST_NAME_IPV4)
             {
                 addressList.Items.Add(IPAddressString);
                 selectedIndex = 1;

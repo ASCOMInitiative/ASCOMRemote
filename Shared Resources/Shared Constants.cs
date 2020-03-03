@@ -49,8 +49,9 @@ namespace ASCOM.Remote
         public const int SOCKET_ERROR_RETRY_DELAY_TIME = 1000; // The delay time (milliseconds) between socket actively refused retries
 
         // Remote server setup form constants
-        public const string LOCALHOST_NAME = "localhost";
-        public const string LOCALHOST_ADDRESS = "127.0.0.1"; // Get the localhost loop back address
+        public const string LOCALHOST_NAME_IPV4 = "localhost";
+        public const string LOCALHOST_ADDRESS_IPV4 = "127.0.0.1"; // Get the localhost loop back address
+        public const string LOCALHOST_ADDRESS_IPV6 = "[::1]"; // Get the localhost loop back address
         public const string STRONG_WILDCARD_NAME = "+"; // Symbol for strong IP address wild card
         public const string WEAK_WILDCARD_NAME = "*"; // Symbol for weak IP address wild card
 
@@ -90,7 +91,7 @@ namespace ASCOM.Remote
         // Client driver profile persistence constants
         public const string TRACE_LEVEL_PROFILENAME = "Trace Level"; public const bool CLIENT_TRACE_LEVEL_DEFAULT = true;
         public const string DEBUG_TRACE_PROFILENAME = "Include Debug Trace"; public const bool DEBUG_TRACE_DEFAULT = false;
-        public const string IPADDRESS_PROFILENAME = "IP Address"; public const string IPADDRESS_DEFAULT = SharedConstants.LOCALHOST_ADDRESS;
+        public const string IPADDRESS_PROFILENAME = "IP Address"; public const string IPADDRESS_DEFAULT = SharedConstants.LOCALHOST_ADDRESS_IPV4;
         public const string PORTNUMBER_PROFILENAME = "Port Number"; public const decimal PORTNUMBER_DEFAULT = 11111;
         public const string REMOTE_DEVICE_NUMBER_PROFILENAME = "Remote Device Number"; public const decimal REMOTE_DEVICE_NUMBER_DEFAULT = 0;
         public const string SERVICE_TYPE_PROFILENAME = "Service Type"; public const string SERVICE_TYPE_DEFAULT = "http";
@@ -158,5 +159,7 @@ namespace ASCOM.Remote
         public const string ALPACA_DISCOVERY_BROADCAST_ID = "alpacadiscovery";
         public const int ALPACA_DISCOVERY_PORT = 32227;
         public const string ALPACA_DISCOVERY_RESPONSE_STRING= "alpacaport";
+        public const string ALPACA_DISCOVERY_MULTICAST_GROUP = "ff12::414c:5041:4341";
+
     }
 }

@@ -81,54 +81,11 @@ namespace ASCOM.Remote
 
         private void Form_Load(object sender, EventArgs e)
         {
-            // Declare local variables
-            IPHostEntry host;
-            bool foundAnIPAddress = false;
-            bool foundTheIPAddress = false;
-            int selectedIndex = 0;
-
             try
             {
                 ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Start");
 
-                host = Dns.GetHostEntry(Dns.GetHostName()); // Get an IPHostEntry so that we can get the list of IP addresses on this PC
-                deviceNumberIndexes = new Dictionary<string, int>(); // Create a dictionary to hold the current device instance numbers of every device type
-
-                // Create a list of valid IP addresses on this PC so that the user can select one on which to run the ASCOM device server.
-                addressList.Items.Add(SharedConstants.LOCALHOST_NAME); // Make "localhost" the first entry in the list of addresses
-                foreach (IPAddress ip in host.AddressList) // Add the other addresses on this PC
-                {
-                    //if ((ip.AddressFamily == AddressFamily.InterNetwork) & !foundAnIPAddress) // Only process IPv4 addresses and ignore the rest including IPv6
-                    if (ip.AddressFamily == AddressFamily.InterNetwork) // Only process IPv4 addresses and ignore the rest including IPv6
-                    {
-                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Found {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
-                        foundAnIPAddress = true;
-                        addressList.Items.Add(ip.ToString());
-                        if (ip.ToString() == ServerForm.ServerIPAddressString)
-                        {
-                            selectedIndex = addressList.Items.Count - 1;
-                            foundTheIPAddress = true;
-                        }
-                    }
-                    else
-                    {
-                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Ignored {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
-                    }
-                }
-                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Found an IP address: {0}, Found the IP address: {1}, Stored IP Address: {2}", foundAnIPAddress, foundTheIPAddress, ServerForm.ServerIPAddressString));
-
-                if ((!foundTheIPAddress) & (ServerForm.ServerIPAddressString != "")) // Add the last stored IP address if it isn't found in the search above
-                {
-                    addressList.Items.Add(ServerForm.ServerIPAddressString); // Add the stored address to the list
-                    selectedIndex = addressList.Items.Count - 1; // Select this item in the list
-                }
-
-                // Add the wild card addresses at the end of the list
-                if (ServerForm.ServerIPAddressString != SharedConstants.STRONG_WILDCARD_NAME) addressList.Items.Add(SharedConstants.STRONG_WILDCARD_NAME); // Include the strong wild card character in the list of addresses if not already in use
-                if (ServerForm.ServerIPAddressString != SharedConstants.WEAK_WILDCARD_NAME) addressList.Items.Add(SharedConstants.WEAK_WILDCARD_NAME); // Include the weak wild card character in the list of addresses if not already in use
-
                 // Set up the GUI components
-                addressList.SelectedIndex = selectedIndex;
                 numPort.Value = ServerForm.ServerPortNumber;
                 chkAutoConnect.Checked = ServerForm.StartWithDevicesConnected;
                 chkAccessLog.Checked = ServerForm.AccessLogEnabled;
@@ -159,6 +116,9 @@ namespace ASCOM.Remote
                     RadIpV4.Checked = ServerForm.IpV4Enabled;
                     RadIpV6.Checked = ServerForm.IpV6Enabled;
                 }
+
+                // Populate the address list combo box  
+                PopulateAddressList();
 
                 // CORS tab event handler
                 ChkEnableCors_CheckedChanged(ChkEnableCors, new EventArgs()); // Fire the event handlers to ensure that the controls reflect the CORS enabled / disabled state
@@ -285,6 +245,97 @@ namespace ASCOM.Remote
                 ServerForm.LogException(0, 0, 0, "SetupForm Load", string.Format("Exception on loading form: {0}.", ex.ToString()));
                 MessageBox.Show(string.Format("Setup exception: {0}\r\nThe form may not function correctly.", ex.Message), "Setup form load error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        /// <summary>
+        /// Create a list of valid IP addresses on this PC so that the user can select one on which to run the ASCOM device server.
+        /// </summary>
+        private void PopulateAddressList()
+        {
+            IPHostEntry host;
+            bool foundAnIPAddress = false;
+            bool foundTheIPAddress = false;
+            int selectedIndex = 0;
+            addressList.Items.Clear();
+            ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", "Start");
+
+            host = Dns.GetHostEntry(Dns.GetHostName()); // Get an IPHostEntry so that we can get the list of IP addresses on this PC
+            deviceNumberIndexes = new Dictionary<string, int>(); // Create a dictionary to hold the current device instance numbers of every device type
+
+            // Add the local host entries
+            if (RadIpV4.Checked | RadIpV4AndV6.Checked) // Add IPv4 addresses
+            {
+                addressList.Items.Add(SharedConstants.LOCALHOST_NAME_IPV4); // Make "localhost" the first entry in the list of IPv4 addresses
+            }
+
+            if (RadIpV6.Checked | RadIpV4AndV6.Checked)
+            {
+                addressList.Items.Add(SharedConstants.LOCALHOST_ADDRESS_IPV6); // Make "00:1" the first entry in the list of IPv6 addresses
+            }
+
+            foreach (IPAddress ip in host.AddressList) // Add the other addresses on this PC
+            {
+                //if ((ip.AddressFamily == AddressFamily.InterNetwork) & !foundAnIPAddress) // Only process IPv4 addresses and ignore the rest including IPv6
+                if ((ip.AddressFamily == AddressFamily.InterNetwork) | (ip.AddressFamily == AddressFamily.InterNetworkV6))
+                {
+                    ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("Found {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
+                    foundAnIPAddress = true;
+
+                    if (ip.AddressFamily == AddressFamily.InterNetworkV6) // Add IPv6 addresses
+                    {
+                        if (RadIpV6.Checked | RadIpV4AndV6.Checked)
+                        {
+                            addressList.Items.Add($"[{ip.ToString()}]"); // Add the address if it is enabled
+                            ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("  Added {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
+
+                            if ($"[{ip}]" == ServerForm.ServerIPAddressString)
+                            {
+                                selectedIndex = addressList.Items.Count - 1;
+                                foundTheIPAddress = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (RadIpV4.Checked | RadIpV4AndV6.Checked) // Add IPv4 addresses
+                        {
+                            addressList.Items.Add(ip.ToString()); // Add the address if it is enabled
+                            ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("  Added {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
+
+                            if (ip.ToString() == ServerForm.ServerIPAddressString)
+                            {
+                                selectedIndex = addressList.Items.Count - 1;
+                                foundTheIPAddress = true;
+                            }
+                        }
+                    }
+
+                }
+                else
+                {
+                    ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("Ignored {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
+                }
+            }
+            ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("Found an IP address: {0}, Found the IP address: {1}, Stored IP Address: {2}", foundAnIPAddress, foundTheIPAddress, ServerForm.ServerIPAddressString));
+
+            if ((!foundTheIPAddress) & (ServerForm.ServerIPAddressString != "")) // Add the last stored IP address if it isn't found in the search above
+            {
+                IPAddress serverIpAddress = IPAddress.Parse(ServerForm.ServerIPAddressString);
+                if (((serverIpAddress.AddressFamily == AddressFamily.InterNetwork) & ((RadIpV4.Checked | RadIpV4AndV6.Checked))) | ((serverIpAddress.AddressFamily == AddressFamily.InterNetworkV6) & ((RadIpV6.Checked | RadIpV4AndV6.Checked))))
+                {
+                    addressList.Items.Add(ServerForm.ServerIPAddressString); // Add the stored address to the list
+                    selectedIndex = addressList.Items.Count - 1; // Select this item in the list
+                }
+                else selectedIndex = 0;
+
+            }
+
+            // Add the wild card addresses at the end of the list
+
+            // Include the strong wild card character in the list of addresses if not already in use
+            if (ServerForm.ServerIPAddressString != SharedConstants.STRONG_WILDCARD_NAME) addressList.Items.Add(SharedConstants.STRONG_WILDCARD_NAME);
+            //if (ServerForm.ServerIPAddressString != SharedConstants.WEAK_WILDCARD_NAME) addressList.Items.Add(SharedConstants.WEAK_WILDCARD_NAME); // Include the weak wild card character in the list of addresses if not already in use
+            addressList.SelectedIndex = selectedIndex;
         }
 
         /// <summary>
@@ -469,7 +520,7 @@ namespace ASCOM.Remote
         {
             try
             {
-                if (addressList.Text == SharedConstants.LOCALHOST_NAME) ServerForm.ServerIPAddressString = SharedConstants.LOCALHOST_ADDRESS;
+                if (addressList.Text == SharedConstants.LOCALHOST_NAME_IPV4) ServerForm.ServerIPAddressString = SharedConstants.LOCALHOST_ADDRESS_IPV4;
                 else ServerForm.ServerIPAddressString = addressList.Text;
                 ServerForm.ServerPortNumber = numPort.Value;
                 ServerForm.StartWithDevicesConnected = chkAutoConnect.Checked;
@@ -627,7 +678,7 @@ namespace ASCOM.Remote
                 return false;
             }
 
-            if (ipAddress.ToLower() == SharedConstants.LOCALHOST_NAME)
+            if (ipAddress.ToLower() == SharedConstants.LOCALHOST_NAME_IPV4)
             {
                 errorMessage = "";
                 return true;
@@ -645,11 +696,11 @@ namespace ASCOM.Remote
                 return true;
             }
 
-            if (Regex.Matches(ipAddress, @"\.").Count != 3)
-            {
-                errorMessage = "The IP address must have the form W.X.Y.Z";
-                return false;
-            }
+            //if (Regex.Matches(ipAddress, @"\.").Count != 3)
+            //{
+            //    errorMessage = "The IP address must have the form W.X.Y.Z";
+            //    return false;
+            //}
 
             bool isValidIpAddress = IPAddress.TryParse(ipAddress, out _); // Try and parse the Ip address discarding the output (out _)
             if (isValidIpAddress)
@@ -757,6 +808,21 @@ namespace ASCOM.Remote
 
             ServerForm.MaximumNumberOfDevices = (int)NumMaxDevices.Value;
             ServerForm.ReadProfile();
+        }
+
+        private void RadIpV4_CheckedChanged(object sender, EventArgs e)
+        {
+            PopulateAddressList();
+        }
+
+        private void RadIpV6_CheckedChanged(object sender, EventArgs e)
+        {
+            PopulateAddressList();
+        }
+
+        private void RadIpV4AndV6_CheckedChanged(object sender, EventArgs e)
+        {
+            PopulateAddressList();
         }
     }
 }
