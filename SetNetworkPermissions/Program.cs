@@ -339,58 +339,80 @@ namespace ASCOM.Remote
 
         }
 
-        private static void SetAcl(string Uri, string UserName)
+        private static void SetAcl(string uri, string userName)
         {
             try
             {
-                string command = string.Format($"http add urlacl url={Uri} user={UserName}");
-                TL.LogMessage("SetAcl", "Enable arguments: " + command);
+                string command = $"http add urlacl url={uri} user={userName}";
+                TL.LogMessage("SetAcl", $"Enable arguments: {command}");
 
                 // Parse out the port number and resource value
-                int doubleSlashIndex = Uri.IndexOf("//");
-                int colonIndex = Uri.IndexOf(":", doubleSlashIndex + 2);
-                string portAndUri = Uri.Substring(colonIndex + 1);
+                int doubleSlashIndex = uri.IndexOf("//");
+                int colonIndex;
 
-                string strHostName = "";
-                strHostName = Dns.GetHostName();
-                TL.LogMessage("Network", string.Format("Colon index: {0}, Port and URI: {1}", colonIndex, portAndUri));
 
-                IPHostEntry ipEntry = Dns.GetHostEntry(strHostName);
-
-                foreach (IPAddress curAdd in ipEntry.AddressList)
+                if (uri.Contains("[")) // The URI contains an IPv6 address
                 {
-                    if (curAdd.AddressFamily == AddressFamily.InterNetwork)
-                    {
-                        TL.LogMessage("Network", "IP V4 Network Address: " + curAdd.ToString());
-                        // Remove the URLACL if it exists
-                        string removeCommand = string.Format(@"http delete urlacl url=http://{0}:{1}", curAdd.ToString(), portAndUri);
-                        TL.LogMessage("Network", string.Format("Sending UrlAcl Delete command to NetSh: {0}", removeCommand));
-                        SendNetshCommand(removeCommand);
-                        TL.BlankLine();
-                    }
+                    colonIndex = uri.IndexOf("]:", doubleSlashIndex + 2) + 1;
+                }
+                else // A host name or IPv4 address
+                {
+                    colonIndex = uri.IndexOf(":", doubleSlashIndex + 2);
+                }
+
+                string portAndUri = uri.Substring(colonIndex + 1);
+                TL.LogMessage("SetAcl", $"Colon index: {colonIndex}, Port and URI: {portAndUri}");
+
+
+                HostIpAddresses hostIpAddresses = new HostIpAddresses();
+
+                foreach (IPAddress ipAddress in hostIpAddresses.IpV4Addresses)
+                {
+                    TL.LogMessage("SetAcl", $"Found IP Network Address: {ipAddress}");
+
+                    string removeCommand = $@"http delete urlacl url=http://{ipAddress}:{portAndUri}";
+                    TL.LogMessage("SetAcl", $"Sending UrlAcl Delete command to NetSh: {removeCommand}");
+
+                    // Remove the URL ACL if it exists
+                    SendNetshCommand(removeCommand);
+                    TL.BlankLine();
+                }
+
+                foreach (IPAddress ipAddress in hostIpAddresses.IpV6Addresses)
+                {
+                    TL.LogMessage("SetAcl", $"Found IP Network Address: {ipAddress}");
+
+                    string removeCommand = $@"http delete urlacl url=http://[{ipAddress}]:{portAndUri}";
+                    TL.LogMessage("SetAcl", $"Sending UrlAcl Delete command to NetSh: {removeCommand}");
+
+                    // Remove the URL ACL if it exists
+                    SendNetshCommand(removeCommand);
+                    TL.BlankLine();
                 }
 
                 // Remove localhost entry if present
-                string localHostCommand = string.Format(@"http delete urlacl url=http://127.0.0.1:{0}", portAndUri);
-                TL.LogMessage("Network", string.Format("Sending UrlAcl Delete command to NetSh: {0}", localHostCommand));
+                string localHostCommand = $@"http delete urlacl url=http://127.0.0.1:{portAndUri}";
+                TL.LogMessage("SetAcl", $"Sending UrlAcl Delete command to NetSh: {localHostCommand}");
                 SendNetshCommand(localHostCommand);
 
-                // Remove + and * wild card entries if present
-                string plusCommand = string.Format(@"http delete urlacl url=http://+:{0}", portAndUri);
-                TL.LogMessage("Network", string.Format("Sending UrlAcl Delete command to NetSh: {0}", plusCommand));
+                // Remove + wild card entry if present
+                string plusCommand = $@"http delete urlacl url=http://+:{portAndUri}";
+                TL.LogMessage("SetAcl", $"Sending UrlAcl Delete command to NetSh: {plusCommand}");
                 SendNetshCommand(plusCommand);
-                string starCommand = string.Format(@"http delete urlacl url=http://*:{0}", portAndUri);
-                TL.LogMessage("Network", string.Format("Sending UrlAcl Delete command to NetSh: {0}", starCommand));
+
+                // Remove * wild card entry if present
+                string starCommand = $@"http delete urlacl url=http://*:{portAndUri}";
+                TL.LogMessage("SetAcl", $"Sending UrlAcl Delete command to NetSh: {starCommand}");
                 SendNetshCommand(starCommand);
 
                 // Now send the new UrlAcl
-                TL.LogMessage("SetAcl", "Sending new UrlAcl command to NetSh: " + command);
+                TL.LogMessage("SetAcl", $"Sending new UrlAcl command to NetSh: {command}");
                 SendNetshCommand(command);
 
             }
             catch (Exception ex)
             {
-                TL.LogMessageCrLf("SetAcl", "Process exception: " + ex.ToString());
+                TL.LogMessageCrLf("SetAcl", $"Process exception: {ex}");
             }
         }
 

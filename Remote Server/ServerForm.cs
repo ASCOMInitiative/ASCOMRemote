@@ -185,12 +185,13 @@ namespace ASCOM.Remote
         public bool RestartApplication = false;
 
         internal static HttpListener httpListener;
-        //internal static HttpListener httpListenerIpV6;
-        internal static UdpClient udpClientIpV4;
+        //internal static UdpClient udpClientIpV4;
         internal static TraceLoggerPlus AccessLog;
 
-        private List<UdpClient> discoveryClients = new List<UdpClient>();
-
+        // Lists to hold discovery UDP clients
+        private List<UdpClient> discoveryClientsIpV6 = new List<UdpClient>();
+        private List<UdpClient> discoveryClientsIpV4 = new List<UdpClient>();
+        private int discoveryCount; // Unique number for each discovery packet received
 
         internal readonly object counterLock = new object();
         internal readonly object managementCommandLock = new object();
@@ -342,11 +343,17 @@ namespace ASCOM.Remote
                 StartRESTServer();
             }
 
-            // Bring this form to the front of the screen
-            this.WindowState = FormWindowState.Minimized;
-            this.Show();
-            this.WindowState = FormWindowState.Normal;
-
+            try
+            {
+                // Bring this form to the front of the screen
+                this.WindowState = FormWindowState.Minimized;
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+            }
+            catch (Exception ex)
+            {
+                LogException(0, 0, 0, "ServerForm.Load", $"Exception setting windows state: \r\n{ex.ToString()} ");
+            }
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -382,31 +389,6 @@ namespace ASCOM.Remote
             return serverTransactionIDCounter;
         }
 
-        public IPAddress GetIPAddress()
-        {
-            IPHostEntry host;
-            IPAddress localIP = null;
-            host = Dns.GetHostEntry(Dns.GetHostName());
-            bool found = false;
-            foreach (IPAddress ip in host.AddressList)
-            {
-                if ((ip.AddressFamily == AddressFamily.InterNetwork) & !found)
-                {
-                    localIP = ip;
-                    LogMessage(0, 0, 0, "GetIPAddress", "Found IP Address: " + localIP.ToString());
-                    found = true;
-                }
-                else
-                {
-                    LogMessage(0, 0, 0, "GetIPAddress", "Ignored IP Address: " + ip.ToString());
-                }
-            }
-            if (localIP == null) throw new Exception("Cannot find IP address of this device");
-
-            LogMessage(0, 0, 0, "GetIPAddress", localIP.ToString());
-            return localIP;
-        }
-
         private void StartRESTServer()
         {
             try
@@ -419,6 +401,12 @@ namespace ASCOM.Remote
                     string remoteServerManagementUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
                     string alpacaDeviceManagementUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE);
                     string alpacaDeviceSetupUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE);
+
+                    apiOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
+                    remoteServerManagementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
+                    alpacaDeviceManagementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE);
+                    alpacaDeviceSetupUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE);
+
 
                     // Construct a URI for the configured address i.e the effective address after filtering
                     string configuredOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
@@ -490,6 +478,9 @@ namespace ASCOM.Remote
                                             WindowStyle = ProcessWindowStyle.Hidden,
                                             UseShellExecute = true
                                         };
+
+                                        LogToScreen(" ");
+                                        LogToScreen("Setting network permissions, please wait until the Remote Server restarts, this can take several seconds.");
                                         LogMessage(0, 0, 0, "StartRESTServer", "Starting SetNetworkPermissions process");
                                         Process.Start(psi).WaitForExit();
                                         LogMessage(0, 0, 0, "StartRESTServer", "Completed SetNetworkPermissions process");
@@ -501,9 +492,12 @@ namespace ASCOM.Remote
                                             LogMessage(0, 0, 0, "RestartRESTServer", $"RESTARTING SERVER TO ENABLE NEW PERMISSIONS TO BE USED");
                                             LogMessage(0, 0, 0, "RestartRESTServer", $"");
 
+                                            LogToScreen("Disconnecting devices...");
                                             LogMessage(0, 0, 0, "RestartRESTServer", $"About to disconnect devices...");
                                             DisconnectDevices();
                                             LogMessage(0, 0, 0, "RestartRESTServer", $"Devices disconnected");
+
+                                            LogToScreen("Restarting the Remote Server...");
                                             this.RestartApplication = true;
                                         }
                                         catch (Exception ex2)
@@ -553,77 +547,57 @@ namespace ASCOM.Remote
                 apiIsEnabled = true;
                 LblRESTStatus.BackColor = Color.Green;
                 LblRESTStatus.Text = "Remote Server Up";
+                LogBlankLine(0, 0, 0);
 
                 // Start the Alpaca discovery listeners if configured to do so
                 if (AlpacaDiscoveryEnabled) // Discovery is enabled
                 {
 
-                    if (IpV4Enabled)
+                    // Get a list of all network interfaces on this PC
+                    NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
+
+                    if (IpV4Enabled) // IPv4 discovery is supported
                     {
-                        // Listen on all IPv4 addresses
-                        IPAddress broadcastListenAddressIpV4 = IPAddress.Any;
-
-                        // Call the dispose method if there already is a UDPClient instance
-                        if (udpClientIpV4 != null) udpClientIpV4?.Dispose();
-
-                        LogMessage(0, 0, 0, "StartRESTServer", $"Alpaca ipV4 discovery listener address: {broadcastListenAddressIpV4.ToString()}:{AlpacaDiscoveryPort}");
-
-                        udpClientIpV4 = new UdpClient();
-                        LogMessage(0, 0, 0, "StartRESTServer", $"Created UDP client, configuring options");
-
-                        udpClientIpV4.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-                        udpClientIpV4.EnableBroadcast = true;
-                        udpClientIpV4.MulticastLoopback = false;
-                        udpClientIpV4.ExclusiveAddressUse = false;
-                        udpClientIpV4.Client.Bind(new IPEndPoint(broadcastListenAddressIpV4, (int)AlpacaDiscoveryPort));
-
-                        // Start a wait for an incoming discovery broadcast
-                        LogMessage(0, 0, 0, "StartRESTServer", $"Starting wait for IPv4 discovery broadcasts on {broadcastListenAddressIpV4.ToString()}:{AlpacaDiscoveryPort}.");
-                        udpClientIpV4.BeginReceive(DiscoveryCallback, udpClientIpV4);
-                        LogToScreen($"Listening for IPv4 discovery broadcasts on port {AlpacaDiscoveryPort}.");
-                    }
-
-                    if (IpV6Enabled)
-                    {
-                        // Listen on all IPv6 addresses
-                        IPAddress broadcastListenAddressIpV6 = IPAddress.IPv6Any;
+                        LogMessage(0, 0, 0, "StartRESTServer", $"IPv4 discovery is enabled, searching for interfaces...");
 
                         // Close the IPv6 discovery UDP listeners
-                        CloseIpV6BroadcastListeners();
+                        CloseIpV4BroadcastListeners();
 
-                        // Bind a UDP client to each network adapter and set the index and address for multicast
-                        // Windows needs to have the IP Address and index set for an IPv6 multicast socket
-                        NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
+                        // Bind a UDP client to each network adapter and set the index and address for multicast. Windows needs to have both the IP Address and index set for an IPv6 multicast socket
 
+                        // Examine each adapter in turn to test whether it has a link local IPv6 address to which a UDP client should be bound
                         foreach (var adapter in adapters)
                         {
-                            if (adapter.OperationalStatus == OperationalStatus.Up)
+                            if (adapter.OperationalStatus == OperationalStatus.Up) // Only check operational interfaces
                             {
-                                if (adapter.Supports(NetworkInterfaceComponent.IPv6) && adapter.SupportsMulticast)
+                                if (adapter.Supports(NetworkInterfaceComponent.IPv4)) // Only check interfaces that support IPv4
                                 {
+                                    // Try to get detailed information about this interface
                                     IPInterfaceProperties adapterProperties = adapter.GetIPProperties();
-                                    if (adapterProperties != null)
+                                    if (adapterProperties != null) // Detailed information is available
                                     {
+                                        // Extract a list of all unicast addresses assigned to this adapter
                                         UnicastIPAddressInformationCollection uniCast = adapterProperties.UnicastAddresses;
 
+                                        // Iterate over the unicast addresses looking for IPv4 addresses or the IPv4 loop back address
                                         foreach (UnicastIPAddressInformation uni in uniCast)
                                         {
-                                            if (uni.Address.AddressFamily == AddressFamily.InterNetworkV6)
+                                            if (uni.Address.AddressFamily == AddressFamily.InterNetwork) // Found an IPv4 address
                                             {
-                                                // Create a UDP client for this functional IPv6 interface
-                                                UdpClient udpClientV6 = new UdpClient(AddressFamily.InterNetworkV6);
-                                                udpClientV6.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-                                                udpClientV6.ExclusiveAddressUse = false;
-                                                udpClientV6.Client.Bind(new IPEndPoint(uni.Address, SharedConstants.ALPACA_DISCOVERY_PORT));
-                                                udpClientV6.JoinMulticastGroup(adapterProperties.GetIPv6Properties().Index, IPAddress.Parse(SharedConstants.ALPACA_DISCOVERY_MULTICAST_GROUP));
+                                                // Create a UDP client to listen for Alpaca IPv4 broadcasts on this IPv4 interface
+                                                UdpClient udpClientV4 = new UdpClient(AddressFamily.InterNetwork);
+                                                udpClientV4.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                                                udpClientV4.EnableBroadcast = true;
+                                                udpClientV4.MulticastLoopback = false;
+                                                udpClientV4.ExclusiveAddressUse = false;
+                                                udpClientV4.Client.Bind(new IPEndPoint(uni.Address, (int)AlpacaDiscoveryPort));
 
                                                 //  Add the client to the collection of UDP clients
-                                                discoveryClients.Add(udpClientV6);
-                                                LogMessage(0, 0, 0, "StartRESTServer", $"Added discovery listener on {uni.Address.ToString()}.");
+                                                discoveryClientsIpV4.Add(udpClientV4);
+                                                LogMessage(0, 0, 0, "StartRESTServer", $"Added IPv4 discovery listener on address {uni.Address}");
 
-                                                // Start listening for IPv6 broadcasts on this interface
-                                                udpClientV6.BeginReceive(DiscoveryCallback, udpClientV6);
-
+                                                // Start listening for IPv4 broadcasts on this interface
+                                                udpClientV4.BeginReceive(DiscoveryCallback, udpClientV4);
                                             }
                                         }
                                     }
@@ -631,13 +605,84 @@ namespace ASCOM.Remote
                             }
                         }
 
-                        LogMessage(0, 0, 0, "StartRESTServer", $"Listening for IPv6 discovery broadcasts on {broadcastListenAddressIpV6.ToString()}:{AlpacaDiscoveryPort}.");
+                        LogMessage(0, 0, 0, "StartRESTServer", $"Listening for IPv4 discovery broadcasts on port {AlpacaDiscoveryPort}.");
+                        LogBlankLine(0, 0, 0);
+
+                        LogToScreen($"Listening for IPv4 discovery broadcasts on port {AlpacaDiscoveryPort}.");
+                    }
+                    else
+                    {
+                        LogToScreen($"IPv4 discovery not enabled.");
+                    }
+
+                    if (IpV6Enabled) // IPv6 discovery is supported
+                    {
+                        LogMessage(0, 0, 0, "StartRESTServer", $"IPv6 discovery is enabled, searching for interfaces...");
+
+                        // Close the IPv6 discovery UDP listeners
+                        CloseIpV6BroadcastListeners();
+
+                        // Bind a UDP client to each network adapter and set the index and address for multicast. Windows needs to have both the IP Address and index set for an IPv6 multicast socket
+
+                        // Examine each adapter in turn to test whether it has a link local IPv6 address to which a UDP client should be bound
+                        foreach (var adapter in adapters)
+                        {
+                            if (adapter.OperationalStatus == OperationalStatus.Up) // Only check operational interfaces
+                            {
+                                if (adapter.Supports(NetworkInterfaceComponent.IPv6) && adapter.SupportsMulticast) // Only check interfaces that support IPv6 multicast
+                                {
+                                    // Try to get detailed information about this interface
+                                    IPInterfaceProperties adapterProperties = adapter.GetIPProperties();
+                                    if (adapterProperties != null) // Detailed information is available
+                                    {
+                                        // Extract a list of all unicast addresses assigned to this adapter
+                                        UnicastIPAddressInformationCollection uniCast = adapterProperties.UnicastAddresses;
+
+                                        // Iterate over the unicast addresses looking for IPv6 link local addresses or the IPv6 loop back address
+                                        foreach (UnicastIPAddressInformation uni in uniCast)
+                                        {
+                                            if (uni.Address.IsIPv6LinkLocal | ((uni.Address.AddressFamily == AddressFamily.InterNetworkV6) & IPAddress.IsLoopback(uni.Address))) // Found either an IPv6 link local address or the IPv6 loop back address
+                                            {
+                                                // Create a UDP client to listen for Alpaca IPv6 multi casts on this IPv6 interface
+                                                UdpClient udpClientV6 = new UdpClient(AddressFamily.InterNetworkV6);
+                                                udpClientV6.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                                                udpClientV6.ExclusiveAddressUse = false;
+                                                udpClientV6.Client.Bind(new IPEndPoint(uni.Address, (int)AlpacaDiscoveryPort));
+                                                udpClientV6.JoinMulticastGroup(adapterProperties.GetIPv6Properties().Index, IPAddress.Parse(SharedConstants.ALPACA_DISCOVERY_MULTICAST_GROUP));
+
+                                                //  Add the client to the collection of UDP clients
+                                                discoveryClientsIpV6.Add(udpClientV6);
+                                                LogMessage(0, 0, 0, "StartRESTServer", $"Added discovery listener on {(uni.Address.IsIPv6LinkLocal ? $"link local address {uni.Address} with index {uni.Address.ScopeId}." : $"loopback address {uni.Address}.")}");
+
+                                                // Start listening for IPv6 broadcasts on this interface
+                                                udpClientV6.BeginReceive(DiscoveryCallback, udpClientV6);
+                                            }
+                                            else
+                                            {
+                                                if (uni.Address.AddressFamily == AddressFamily.InterNetworkV6)
+                                                {
+                                                    LogMessage(0, 0, 0, "StartRESTServer", $"Ignoring address {uni.Address} because it is global.");
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        LogMessage(0, 0, 0, "StartRESTServer", $"Listening for IPv6 discovery broadcasts on port {AlpacaDiscoveryPort}.");
+                        LogBlankLine(0, 0, 0);
+
                         LogToScreen($"Listening for IPv6 discovery broadcasts on port {AlpacaDiscoveryPort}.");
+                    }
+                    else
+                    {
+                        LogToScreen($"IPv6 discovery not enabled.");
                     }
                 }
                 else // Discovery is not enabled
                 {
-                    LogMessage(0, 0, 0, "StartRESTServer", $"Listening for discovery broadcasts has been DISABLED by configuration.");
+                    LogMessage(0, 0, 0, "StartRESTServer", $"NOT listening for discovery broadcasts because this is DISABLED by configuration.");
                     LogToScreen($"NOT Listening for discovery broadcasts");
                 }
 
@@ -655,25 +700,35 @@ namespace ASCOM.Remote
         private void CloseIpV6BroadcastListeners()
         {
             // Close any current listeners
-            foreach (UdpClient client in discoveryClients)
+            foreach (UdpClient client in discoveryClientsIpV6)
             {
                 try { client.Close(); } catch { }
                 try { client.Dispose(); } catch { }
             }
 
             // Remove any current, and now closed, listeners
-            discoveryClients.Clear();
+            discoveryClientsIpV6.Clear();
+        }
+
+        private void CloseIpV4BroadcastListeners()
+        {
+            // Close any current listeners
+            foreach (UdpClient client in discoveryClientsIpV4)
+            {
+                try { client.Close(); } catch { }
+                try { client.Dispose(); } catch { }
+            }
+
+            // Remove any current, and now closed, listeners
+            discoveryClientsIpV4.Clear();
         }
 
         private void StopRESTServer()
         {
             if (httpListener != null) // Close and dispose of the current listener, if there is one.
             {
-                // Close the IPv4 discovery UDP listener if one is currently running
-                try { udpClientIpV4.Close(); } catch { }
-                try { udpClientIpV4.Dispose(); } catch { }
-
-                // Close the IPv6 discovery UDP listeners
+                // Close the IPv4 and IPv6 discovery UDP listeners
+                CloseIpV4BroadcastListeners();
                 CloseIpV6BroadcastListeners();
 
                 // Create variables to hold the ASCOM device server operating URIs
@@ -770,47 +825,54 @@ namespace ASCOM.Remote
             }
         }
 
+        /// <summary>
+        /// This method is called on receipt of both IPv4 broadcasts and IPv6 multi casts
+        /// </summary>
+        /// <param name="ar"></param>
         private void DiscoveryCallback(IAsyncResult ar)
         {
+            // Increment the discovery packet number so that all log messages from this particular event can be recognised even if they come out of order due to handling multiple events concurrently
+            int discoveryNumber = Interlocked.Increment(ref discoveryCount);
+
             try
             {
+
+                // Present the supplied state value as a UDP client
                 UdpClient udpClient = (UdpClient)ar.AsyncState;
 
-                IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, SharedConstants.ALPACA_DISCOVERY_PORT); // Create a dummy value into which the actual endpoint can be placed by the UdpClient.EndReceive method
+                // Create a dummy value into which the actual endpoint can be placed by the UdpClient.EndReceive method
+                IPEndPoint remoteEndpoint = new IPEndPoint(IPAddress.Any, (int)AlpacaDiscoveryPort);
 
-                // Obtain the UDP message body and convert it to a string, with remote IP address attached as well
-                string ReceiveString = Encoding.ASCII.GetString(udpClient.EndReceive(ar, ref endpoint));
+                // Convert the UDP message body to a string
+                string ReceiveString = Encoding.ASCII.GetString(udpClient.EndReceive(ar, ref remoteEndpoint));
+
+                // Get the IP address of the interface on this PC that received the message
                 IPEndPoint localIpEndPoint = (IPEndPoint)udpClient.Client.LocalEndPoint;
 
-                // Test whether the user has configured the server to respond on all IP addresses, if so respond without further checks
-                if ((ServerIPAddressString != "*") & (ServerIPAddressString != "+"))
+                // Filter based on receiving port IP address 
+                if ((ServerIPAddressString == "*") | (ServerIPAddressString == "+")) // The Remote Server is configured to respond on all its IP addresses so filtering is not required here
                 {
-                    // If this is a request to an IPv4 interface then process it because we are listening on all IPv4 addresses and can't distinguish them here because they are all presented as 0.0.0.0:PortNumber
-                    if (localIpEndPoint.AddressFamily == AddressFamily.InterNetworkV6) // This is an IPv6 address so we can be selective about whether we respond to it
+                    if (DebugTraceState) LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"The configured server IP address is + or * so we will process this request.");
+                }
+                else  // The Remote Server is configured to respond on one specific address rather than on all of its IP addresses so test whether the received message is on the selected IP address
+                {
+                    if (DebugTraceState) LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"Request received on endpoint: {localIpEndPoint} - Enabled endpoint: {new IPEndPoint(IPAddress.Parse(ServerIPAddressString), (int)AlpacaDiscoveryPort).ToString()}");
+                    if (localIpEndPoint.ToString() != new IPEndPoint(IPAddress.Parse(ServerIPAddressString), (int)AlpacaDiscoveryPort).ToString()) // IP Addresses don't match so we just ignore the request
                     {
-                        // User has configured a specific IP address so test whether this request is to the configured IP address
-                        if (DebugTraceState) LogMessage(0, 0, 0, "DiscoveryCallback", $"Request target IPv6 endpoint: {localIpEndPoint}, Local endpoint: {new IPEndPoint(IPAddress.Parse(ServerIPAddressString), (int)AlpacaDiscoveryPort).ToString()}");
-                        if (localIpEndPoint.ToString() != new IPEndPoint(IPAddress.Parse(ServerIPAddressString), (int)AlpacaDiscoveryPort).ToString()) // IP Addresses don't match so we just ignore the request
-                        {
-                            if (DebugTraceState) LogMessage(0, 0, 0, "DiscoveryCallback", $"The requested IPv6 endpoint is not enabled this request will be dropped.");
-                            // Continue to listen for discovery packets and don't process this request further
-                            udpClient.BeginReceive(DiscoveryCallback, udpClient);
-                            return;
-                        }
-                        else // IP addresses do match so we can process this request
-                        {
-                            if (DebugTraceState) LogMessage(0, 0, 0, "DiscoveryCallback", $"IPv6 Endpoints MATCH");
-                        }
+                        if (DebugTraceState) LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"  The endpoint is NOT enabled - This request will be dropped.");
+                        // Continue to listen for discovery packets and don't process this request further
+                        udpClient.BeginReceive(DiscoveryCallback, udpClient);
+                        return;
+                    }
+                    else // IP addresses do match so we can process this request
+                    {
+                        if (DebugTraceState) LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"  The endpoint is ENABLED - This request will be processed");
                     }
                 }
-                else
-                {
-                    if (DebugTraceState) LogMessage(0, 0, 0, "DiscoveryCallback", $"The configured server IP address is + or * so we will process this request.");
-                }
 
+                if (ServerForm.DebugTraceState) ServerForm.LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"Received UDP broadcast: {ReceiveString}"); // Log received broadcasts if we are debug tracing
 
-                if (ServerForm.DebugTraceState) ServerForm.LogMessage(0, 0, 0, "DiscoveryCallback", $"Received UDP broadcast {ReceiveString}"); // Log received broadcasts if we are debug tracing
-
+                // Filter based on received message content
                 // Validate and process the received datagram if it is a valid Alpaca discovery broadcast
                 if (ReceiveString.StartsWith(SharedConstants.ALPACA_DISCOVERY_BROADCAST_ID)) // The first 15 characters are "alpacadiscovery" so this is an Alpaca discovery packet
                 {
@@ -821,16 +883,16 @@ namespace ASCOM.Remote
                         discoveryBroadcastVersionNumber = ReceiveString.ToCharArray(SharedConstants.ALPACA_DISCOVERY_BROADCAST_ID.Length, 1)[0];
                     }
 
-                    ServerForm.LogMessage(0, 0, 0, "DiscoveryCallback", $"Received a version {discoveryBroadcastVersionNumber} (0x{((int)Char.GetNumericValue(discoveryBroadcastVersionNumber)).ToString("X")}) discovery packet from the client IP address {endpoint.Address} of type {endpoint.AddressFamily}. Returning Alpaca port number: {ServerPortNumber}");
+                    ServerForm.LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"Received a version {discoveryBroadcastVersionNumber} (0x{((int)Char.GetNumericValue(discoveryBroadcastVersionNumber)).ToString("X")}) discovery packet from the client IP address {remoteEndpoint.Address} of type {remoteEndpoint.AddressFamily}. Returning Alpaca port number: {ServerPortNumber}");
 
                     // Create a discovery response, convert it to JSON and return this to the caller
                     AlpacaDiscoveryResponse alpacaDiscoveryResponse = new AlpacaDiscoveryResponse((int)ServerPortNumber); // Create the response object
 
                     string jsonResponse = JsonConvert.SerializeObject(alpacaDiscoveryResponse); // Convert the response object to a JSON string
-                    ServerForm.LogMessage(0, 0, 0, "DiscoveryCallback", $"JSON Discovery response: {jsonResponse}");
+                    ServerForm.LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"JSON Discovery response: {jsonResponse}");
 
                     byte[] response = Encoding.ASCII.GetBytes(jsonResponse); // Convert the JSON string to a byte array and send this back to the caller
-                    udpClient.Send(response, response.Length, endpoint);
+                    udpClient.Send(response, response.Length, remoteEndpoint);
                 }
 
                 // Continue to listen for discovery packets
@@ -838,11 +900,11 @@ namespace ASCOM.Remote
             }
             catch (ObjectDisposedException)
             {
-                LogMessage(0, 0, 0, "DiscoveryCallback", "Alpaca listener has closed down, ignoring this call.");
+                LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", "Alpaca listener has closed down, ignoring this call.");
             }
             catch (Exception ex)
             {
-                LogException(0, 0, 0, "DiscoveryCallback", $"Unexpected exception: {ex.ToString()}");
+                LogException((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"Unexpected exception: {ex.ToString()}");
             }
         }
 
@@ -1559,23 +1621,23 @@ namespace ASCOM.Remote
             // Get the result context from the client's call
             try
             {
-                if (DebugTraceState) LogMessage1(requestData, "WebRequestCallbackIpV4", string.Format("Thread {0} - Request received. Is thread pool thread: {1}. Is background thread: {2}.", Thread.CurrentThread.ManagedThreadId.ToString(), Thread.CurrentThread.IsThreadPoolThread, Thread.CurrentThread.IsBackground));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Request received. Is thread pool thread: {1}. Is background thread: {2}.", Thread.CurrentThread.ManagedThreadId.ToString(), Thread.CurrentThread.IsThreadPoolThread, Thread.CurrentThread.IsBackground));
                 context = listener.EndGetContext(result); // Get the context object
             }
             catch (NullReferenceException) // httpListener is null because we are closing down or because of some other error so just log the event
             {
-                if (DebugTraceState) LogMessage1(requestData, "WebRequestCallbackIpV4", string.Format("Thread {0} - EndGetContext - httpListener is null so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - EndGetContext - httpListener is null so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
                 return;
             }
             catch (ObjectDisposedException) // httpListener is disposed because the Remote server has been stopped or because of some other error so just log the event
             {
-                if (DebugTraceState) LogMessage1(requestData, "WebRequestCallbackIpV4", string.Format("Thread {0} - EndGetContext - httpListener is disposed so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - EndGetContext - httpListener is disposed so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
                 return;
             }
 
             catch (Exception ex)
             {
-                LogException1(requestData, "WebRequestCallbackIpV4", ex.ToString()); // Log the exception
+                LogException1(requestData, "APIRequestCallback", ex.ToString()); // Log the exception
                 if (context != null) // We have a context object but also an exception so return the error message to the client with a 500 status code
                 {
                     requestData.Request = context.Request;
@@ -1585,7 +1647,7 @@ namespace ASCOM.Remote
                 }
                 else // No context object so not possible to return an error to the client, just log the error and increment the error counter
                 {
-                    LogException1(requestData, "WebRequestCallbackIpV4", string.Format("Thread {0} - EndGetContext exception: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), ex.ToString()));
+                    LogException1(requestData, "APIRequestCallback", string.Format("Thread {0} - EndGetContext exception: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), ex.ToString()));
                     Interlocked.Increment(ref numberOfConsecutiveErrors);
                 }
             }
@@ -1593,17 +1655,17 @@ namespace ASCOM.Remote
             // Set up the next call back            
             try
             {
-                if (DebugTraceState) LogMessage1(requestData, "WebRequestCallbackIpV4", string.Format("Thread {0} - Setting up new call back to wait for next request ", Thread.CurrentThread.ManagedThreadId.ToString()));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Setting up new call back to wait for next request ", Thread.CurrentThread.ManagedThreadId.ToString()));
                 httpListener.BeginGetContext(new AsyncCallback(RestRequestReceivedHandler), httpListener);
             }
             catch (NullReferenceException) // httpListener is null because we are closing down or because of some other error so just log the event
             {
-                if (DebugTraceState) LogMessage1(requestData, "WebRequestCallbackIpV4", string.Format("Thread {0} - BeginGetContext - httpListener is null so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - BeginGetContext - httpListener is null so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
                 return;
             }
             catch (Exception ex)
             {
-                LogException1(requestData, "WebRequestCallbackIpV4", ex.ToString()); // Log the exception
+                LogException1(requestData, "APIRequestCallback", ex.ToString()); // Log the exception
                 if (context != null) // We have a context object but also an exception so return the error message to the client with a 500 status code
                 {
                     requestData.Request = context.Request;
@@ -1613,7 +1675,7 @@ namespace ASCOM.Remote
                 }
                 else // No context object so not possible to return an error to the client
                 {
-                    LogException1(requestData, "WebRequestCallbackIpV4", string.Format("Thread {0} - BeginGetContext exception: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), ex.ToString()));
+                    LogException1(requestData, "APIRequestCallback", string.Format("Thread {0} - BeginGetContext exception: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), ex.ToString()));
                     Interlocked.Increment(ref numberOfConsecutiveErrors);
                     return;
                 }
@@ -1621,48 +1683,51 @@ namespace ASCOM.Remote
 
             Interlocked.Exchange(ref numberOfConsecutiveErrors, 0); // Reset the consecutive errors counter to zero
 
-            // Check whether this request has come in on a supported IP version, if not then ignore it
+            // Test whether this request has come in on a supported IP version, if not then ignore it
             IPEndPoint localIpEndPoint = (IPEndPoint)context.Request.LocalEndPoint;
 
             if ((localIpEndPoint.AddressFamily == AddressFamily.InterNetworkV6) & (!IpV6Enabled))
             {
-                if (DebugTraceState) LogMessage1(requestData, "WebRequestCallbackIpV4", $"IPv6 is not enabled on the remote server, this request will be dropped.");
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"IPv6 is not enabled on the remote server, this request will be dropped.");
                 return;
             }
 
             if ((localIpEndPoint.AddressFamily == AddressFamily.InterNetwork) & (!IpV4Enabled))
             {
-                if (DebugTraceState) LogMessage1(requestData, "WebRequestCallbackIpV4", $"IPv4 is not enabled on the remote server, this request will be dropped.");
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"IPv4 is not enabled on the remote server, this request will be dropped.");
                 return;
             }
+
             // Test whether the user has configured the server to respond on all IP addresses, if so process it without further checks
-            if ((ServerIPAddressString != "*") & (ServerIPAddressString != "+"))
+            if ((ServerIPAddressString == "*") | (ServerIPAddressString == "+"))
+            {
+                // User has configured all IP addresses so no filtering is required
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"The configured server IP address is + or * so we will process this request.");
+            }
+            else
             {
                 // User has configured a specific IP address so test whether this request is to the configured IP address
-                if (DebugTraceState) LogMessage1(requestData, "WebRequestCallbackIpV4", $"Request target endpoint: {localIpEndPoint.ToString()}, Local endpoint: {new IPEndPoint(IPAddress.Parse(ServerIPAddressString), (int)ServerPortNumber).ToString()}");
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"Request received on endpoint: {localIpEndPoint.ToString()} - Enabled endpoint: {new IPEndPoint(IPAddress.Parse(ServerIPAddressString), (int)ServerPortNumber).ToString()}");
                 if (localIpEndPoint.ToString() != new IPEndPoint(IPAddress.Parse(ServerIPAddressString), (int)ServerPortNumber).ToString()) // IP Addresses don't match so we just ignore the request
                 {
-                    if (DebugTraceState) LogMessage1(requestData, "WebRequestCallbackIpV4", $"The requested endpoint is not enabled this request will be dropped.");
+                    if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"  The endpoint is NOT enabled - This request will be dropped.");
+
                     return;
                 }
                 else // IP addresses do match so we can process this request
                 {
-                    if (DebugTraceState) LogMessage1(requestData, "WebRequestCallbackIpV4", $"Endpoints MATCH");
+                    if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"  The endpoint is ENABLED - This request will be processed");
                 }
-            }
-            else
-            {
-                if (DebugTraceState) LogMessage1(requestData, "WebRequestCallbackIpV4", $"The configured server IP address is + or * so we will process this request.");
             }
 
             // Now process this request, any exceptions are handled by the ProcessRequest method itself
-            if (DebugTraceState) LogMessage1(requestData, "WebRequestCallbackIpV4", string.Format("Thread {0} - Processing received message.", Thread.CurrentThread.ManagedThreadId.ToString()));
+            if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Processing received message.", Thread.CurrentThread.ManagedThreadId.ToString()));
             ProcessRestRequest(context);
 
             // Shut down the listener and close down device drivers if the maximum number of errors has been reached
             if (numberOfConsecutiveErrors == MAX_ERRORS_BEFORE_CLOSE)
             {
-                LogMessage1(requestData, "WebRequestCallbackIpV4", string.Format("Thread {0} - Maximum number of errors ({1}) reached, closing server and device drivers.", Thread.CurrentThread.ManagedThreadId, MAX_ERRORS_BEFORE_CLOSE));
+                LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Maximum number of errors ({1}) reached, closing server and device drivers.", Thread.CurrentThread.ManagedThreadId, MAX_ERRORS_BEFORE_CLOSE));
 
                 // Clear down the listener
                 StopRESTServer();

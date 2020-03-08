@@ -36,6 +36,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>true</Prefer32Bit>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>
@@ -196,6 +197,7 @@
       <DependentUpon>DriverHostForm.cs</DependentUpon>
     </Compile>
     <Compile Include="HideTabControlBorders.cs" />
+    <Compile Include="HostIpAddresses.cs" />
     <Compile Include="InvalidParameterException.cs" />
     <Compile Include="ServedDevice.cs">
       <SubType>UserControl</SubType>

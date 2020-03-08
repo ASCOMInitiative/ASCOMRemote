@@ -310,9 +310,9 @@
             this.chkAutoConnect.AutoSize = true;
             this.chkAutoConnect.Location = new System.Drawing.Point(270, 192);
             this.chkAutoConnect.Name = "chkAutoConnect";
-            this.chkAutoConnect.Size = new System.Drawing.Size(133, 17);
+            this.chkAutoConnect.Size = new System.Drawing.Size(167, 17);
             this.chkAutoConnect.TabIndex = 2;
-            this.chkAutoConnect.Text = "Auto Connect Devices";
+            this.chkAutoConnect.Text = "Start with Devices Connected";
             this.chkAutoConnect.UseVisualStyleBackColor = true;
             // 
             // chkTrace
@@ -351,9 +351,9 @@
             this.chkManagementInterfaceEnabled.AutoSize = true;
             this.chkManagementInterfaceEnabled.Location = new System.Drawing.Point(483, 192);
             this.chkManagementInterfaceEnabled.Name = "chkManagementInterfaceEnabled";
-            this.chkManagementInterfaceEnabled.Size = new System.Drawing.Size(169, 17);
+            this.chkManagementInterfaceEnabled.Size = new System.Drawing.Size(303, 17);
             this.chkManagementInterfaceEnabled.TabIndex = 3;
-            this.chkManagementInterfaceEnabled.Text = "Enable Management Interface";
+            this.chkManagementInterfaceEnabled.Text = "Enable Management Interface (Alpaca Discovery disabled)";
             this.chkManagementInterfaceEnabled.UseVisualStyleBackColor = true;
             // 
             // errorProvider1
@@ -1694,10 +1694,11 @@
             this.ChkEnableDiscovery.AutoSize = true;
             this.ChkEnableDiscovery.Location = new System.Drawing.Point(483, 215);
             this.ChkEnableDiscovery.Name = "ChkEnableDiscovery";
-            this.ChkEnableDiscovery.Size = new System.Drawing.Size(109, 17);
+            this.ChkEnableDiscovery.Size = new System.Drawing.Size(276, 17);
             this.ChkEnableDiscovery.TabIndex = 45;
-            this.ChkEnableDiscovery.Text = "Enable Discovery";
+            this.ChkEnableDiscovery.Text = "Enable Alpaca Discovery and Management Interface";
             this.ChkEnableDiscovery.UseVisualStyleBackColor = true;
+            this.ChkEnableDiscovery.CheckedChanged += new System.EventHandler(this.ChkEnableDiscovery_CheckedChanged);
             // 
             // label10
             // 

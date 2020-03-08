@@ -252,82 +252,77 @@ namespace ASCOM.Remote
         /// </summary>
         private void PopulateAddressList()
         {
-            IPHostEntry host;
             bool foundAnIPAddress = false;
             bool foundTheIPAddress = false;
             int selectedIndex = 0;
-            addressList.Items.Clear();
+
             ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", "Start");
 
-            host = Dns.GetHostEntry(Dns.GetHostName()); // Get an IPHostEntry so that we can get the list of IP addresses on this PC
+            addressList.Items.Clear();
             deviceNumberIndexes = new Dictionary<string, int>(); // Create a dictionary to hold the current device instance numbers of every device type
 
-            // Add the local host entries
-            if (RadIpV4.Checked | RadIpV4AndV6.Checked) // Add IPv4 addresses
+            HostIpAddresses hostIpAddresses = new HostIpAddresses();
+
+            // Add IPv4 addresses
+            if (RadIpV4.Checked | RadIpV4AndV6.Checked) // IPv4 addresses are required
             {
+                // Add a local host entry
                 addressList.Items.Add(SharedConstants.LOCALHOST_NAME_IPV4); // Make "localhost" the first entry in the list of IPv4 addresses
-            }
-
-            if (RadIpV6.Checked | RadIpV4AndV6.Checked)
-            {
-                addressList.Items.Add(SharedConstants.LOCALHOST_ADDRESS_IPV6); // Make "00:1" the first entry in the list of IPv6 addresses
-            }
-
-            foreach (IPAddress ip in host.AddressList) // Add the other addresses on this PC
-            {
-                //if ((ip.AddressFamily == AddressFamily.InterNetwork) & !foundAnIPAddress) // Only process IPv4 addresses and ignore the rest including IPv6
-                if ((ip.AddressFamily == AddressFamily.InterNetwork) | (ip.AddressFamily == AddressFamily.InterNetworkV6))
+                foreach (IPAddress ipAddress in hostIpAddresses.IpV4Addresses)
                 {
-                    ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("Found {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
+                    addressList.Items.Add(ipAddress.ToString());
+                    ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("  Added {0} Address: {1}", ipAddress.AddressFamily.ToString(), ipAddress.ToString()));
+
                     foundAnIPAddress = true;
 
-                    if (ip.AddressFamily == AddressFamily.InterNetworkV6) // Add IPv6 addresses
+                    if (ipAddress.ToString() == ServerForm.ServerIPAddressString)
                     {
-                        if (RadIpV6.Checked | RadIpV4AndV6.Checked)
-                        {
-                            addressList.Items.Add($"[{ip.ToString()}]"); // Add the address if it is enabled
-                            ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("  Added {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
-
-                            if ($"[{ip}]" == ServerForm.ServerIPAddressString)
-                            {
-                                selectedIndex = addressList.Items.Count - 1;
-                                foundTheIPAddress = true;
-                            }
-                        }
+                        selectedIndex = addressList.Items.Count - 1;
+                        foundTheIPAddress = true;
                     }
-                    else
-                    {
-                        if (RadIpV4.Checked | RadIpV4AndV6.Checked) // Add IPv4 addresses
-                        {
-                            addressList.Items.Add(ip.ToString()); // Add the address if it is enabled
-                            ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("  Added {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
-
-                            if (ip.ToString() == ServerForm.ServerIPAddressString)
-                            {
-                                selectedIndex = addressList.Items.Count - 1;
-                                foundTheIPAddress = true;
-                            }
-                        }
-                    }
-
-                }
-                else
-                {
-                    ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("Ignored {0} Address: {1}", ip.AddressFamily.ToString(), ip.ToString()));
                 }
             }
-            ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("Found an IP address: {0}, Found the IP address: {1}, Stored IP Address: {2}", foundAnIPAddress, foundTheIPAddress, ServerForm.ServerIPAddressString));
+
+            // Add IPv6 addresses
+            if (RadIpV6.Checked | RadIpV4AndV6.Checked) // IPv6 addresses are required
+            {
+                foreach (IPAddress ipAddress in hostIpAddresses.IpV6Addresses)
+                {
+                    addressList.Items.Add($"[{ipAddress}]");
+                    ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("  Added {0} Address: {1}", ipAddress.AddressFamily.ToString(), ipAddress.ToString()));
+
+                    foundAnIPAddress = true;
+
+                    if ($"[{ipAddress}]" == ServerForm.ServerIPAddressString)
+                    {
+                        selectedIndex = addressList.Items.Count - 1;
+                        foundTheIPAddress = true;
+                    }
+                }
+            }
+
+            ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format($"Found an IP address: {foundAnIPAddress}, Found the IP address: {foundTheIPAddress}, Stored IP Address: {ServerForm.ServerIPAddressString}"));
 
             if ((!foundTheIPAddress) & (ServerForm.ServerIPAddressString != "")) // Add the last stored IP address if it isn't found in the search above
             {
-                IPAddress serverIpAddress = IPAddress.Parse(ServerForm.ServerIPAddressString);
-                if (((serverIpAddress.AddressFamily == AddressFamily.InterNetwork) & ((RadIpV4.Checked | RadIpV4AndV6.Checked))) | ((serverIpAddress.AddressFamily == AddressFamily.InterNetworkV6) & ((RadIpV6.Checked | RadIpV4AndV6.Checked))))
+                if (ServerForm.ServerIPAddressString == "+") // Handle the "all addresses special case
                 {
                     addressList.Items.Add(ServerForm.ServerIPAddressString); // Add the stored address to the list
                     selectedIndex = addressList.Items.Count - 1; // Select this item in the list
                 }
-                else selectedIndex = 0;
-
+                else  // One specific address so add it if it parses OK
+                {
+                    IPAddress serverIpAddress = IPAddress.Parse(ServerForm.ServerIPAddressString);
+                    if (
+                            ((serverIpAddress.AddressFamily == AddressFamily.InterNetwork) & ((RadIpV4.Checked | RadIpV4AndV6.Checked))) |
+                            ((serverIpAddress.AddressFamily == AddressFamily.InterNetworkV6) & ((RadIpV6.Checked | RadIpV4AndV6.Checked)))
+                       )
+                    {
+                        addressList.Items.Add(ServerForm.ServerIPAddressString); // Add the stored address to the list
+                        selectedIndex = addressList.Items.Count - 1; // Select this item in the list
+                    }
+                    else selectedIndex = 0;
+                }
             }
 
             // Add the wild card addresses at the end of the list
@@ -823,6 +818,19 @@ namespace ASCOM.Remote
         private void RadIpV4AndV6_CheckedChanged(object sender, EventArgs e)
         {
             PopulateAddressList();
+        }
+
+        private void ChkEnableDiscovery_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ChkEnableDiscovery.Checked)
+            {
+                chkManagementInterfaceEnabled.Checked = true;
+                chkManagementInterfaceEnabled.Enabled = false;
+            }
+            else
+            {
+                chkManagementInterfaceEnabled.Enabled = true;
+            }
         }
     }
 }

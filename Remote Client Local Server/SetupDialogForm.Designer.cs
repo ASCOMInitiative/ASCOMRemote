@@ -64,6 +64,7 @@
             this.LabImageArrayConfiguration1 = new System.Windows.Forms.Label();
             this.cmbImageArrayCompression = new System.Windows.Forms.ComboBox();
             this.LabImageArrayConfiguration2 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numRemoteDeviceNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStandardTimeout)).BeginInit();
@@ -441,6 +442,17 @@
             this.LabImageArrayConfiguration2.TabIndex = 33;
             this.LabImageArrayConfiguration2.Text = "Image array transfer compression";
             // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.ForeColor = System.Drawing.Color.Red;
+            this.label14.Location = new System.Drawing.Point(96, 58);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(503, 13);
+            this.label14.TabIndex = 34;
+            this.label14.Text = "Remote clients only support IPv4, please use the Dynamic Clients in Platform 6.5 " +
+    "if you need IPv6 support";
+            // 
             // SetupDialogForm
             // 
             this.AcceptButton = this.btnOK;
@@ -448,6 +460,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(697, 402);
+            this.Controls.Add(this.label14);
             this.Controls.Add(this.LabImageArrayConfiguration2);
             this.Controls.Add(this.cmbImageArrayCompression);
             this.Controls.Add(this.LabImageArrayConfiguration1);
@@ -533,5 +546,6 @@
         private System.Windows.Forms.ComboBox CmbImageArrayTransferType;
         private System.Windows.Forms.Label LabImageArrayConfiguration2;
         private System.Windows.Forms.ComboBox cmbImageArrayCompression;
+        private System.Windows.Forms.Label label14;
     }
 }
