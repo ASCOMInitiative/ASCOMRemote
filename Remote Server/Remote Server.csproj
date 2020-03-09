@@ -197,7 +197,7 @@
       <DependentUpon>DriverHostForm.cs</DependentUpon>
     </Compile>
     <Compile Include="HideTabControlBorders.cs" />
-    <Compile Include="HostIpAddresses.cs" />
+    <Compile Include="HostPc.cs" />
     <Compile Include="InvalidParameterException.cs" />
     <Compile Include="ServedDevice.cs">
       <SubType>UserControl</SubType>

@@ -261,14 +261,12 @@ namespace ASCOM.Remote
             addressList.Items.Clear();
             deviceNumberIndexes = new Dictionary<string, int>(); // Create a dictionary to hold the current device instance numbers of every device type
 
-            HostIpAddresses hostIpAddresses = new HostIpAddresses();
-
             // Add IPv4 addresses
             if (RadIpV4.Checked | RadIpV4AndV6.Checked) // IPv4 addresses are required
             {
                 // Add a local host entry
                 addressList.Items.Add(SharedConstants.LOCALHOST_NAME_IPV4); // Make "localhost" the first entry in the list of IPv4 addresses
-                foreach (IPAddress ipAddress in hostIpAddresses.IpV4Addresses)
+                foreach (IPAddress ipAddress in HostPc.IpV4Addresses)
                 {
                     addressList.Items.Add(ipAddress.ToString());
                     ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("  Added {0} Address: {1}", ipAddress.AddressFamily.ToString(), ipAddress.ToString()));
@@ -286,7 +284,7 @@ namespace ASCOM.Remote
             // Add IPv6 addresses
             if (RadIpV6.Checked | RadIpV4AndV6.Checked) // IPv6 addresses are required
             {
-                foreach (IPAddress ipAddress in hostIpAddresses.IpV6Addresses)
+                foreach (IPAddress ipAddress in HostPc.IpV6Addresses)
                 {
                     addressList.Items.Add($"[{ipAddress}]");
                     ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("  Added {0} Address: {1}", ipAddress.AddressFamily.ToString(), ipAddress.ToString()));

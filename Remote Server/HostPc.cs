@@ -9,26 +9,48 @@ namespace ASCOM.Remote
     /// <summary>
     /// Class that presents all usable IPv4 and IPv6 addresses on the host
     /// </summary>
-    internal class HostIpAddresses
+    internal class HostPc
     {
-        /// <summary>
-        /// List of IPv4 addresses
-        /// </summary>
-        public List<IPAddress> IpV4Addresses { get; }
-
-        /// <summary>
-        /// List of IPv6 addresses
-        /// </summary>
-        public List<IPAddress> IpV6Addresses { get; }
 
         /// <summary>
         /// Class initialiser
         /// </summary>
-        public HostIpAddresses()
+        public HostPc()
+        {
+        }
+
+        /// <summary>
+        /// Returns the hosts IPv4 addresses
+        /// </summary>
+        /// <returns></returns>
+        public static List<IPAddress> IpV4Addresses
+        {
+            get
+            {
+                return GetIpAddresses(AddressFamily.InterNetwork);
+            }
+        }
+        /// <summary>
+        /// Returns the hosts IPv6 addresses
+        /// </summary>
+        /// <returns></returns>
+        public static List<IPAddress> IpV6Addresses
+        {
+            get
+            {
+                return GetIpAddresses(AddressFamily.InterNetworkV6);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="addressFamily"></param>
+        /// <returns></returns>
+        private static List<IPAddress> GetIpAddresses(AddressFamily addressFamily)
         {
             // Initialise the IPv4 and IPv6 address lists
-            IpV4Addresses = new List<IPAddress>();
-            IpV6Addresses = new List<IPAddress>();
+            List<IPAddress> ipAddresses = new List<IPAddress>();
 
             // Get an array of all network interfaces on this host
             NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
@@ -55,15 +77,9 @@ namespace ASCOM.Remote
                             foreach (UnicastIPAddressInformation uni in uniCast)
                             {
                                 // Save IPv4 addresses to the IPv4 list
-                                if (uni.Address.AddressFamily == AddressFamily.InterNetwork)
+                                if (uni.Address.AddressFamily == addressFamily)
                                 {
-                                    IpV4Addresses.Add(uni.Address);
-                                }
-
-                                // Save IPv6 addresses to the IPv6 list
-                                if (uni.Address.AddressFamily == AddressFamily.InterNetworkV6)
-                                {
-                                    IpV6Addresses.Add(uni.Address);
+                                    ipAddresses.Add(uni.Address);
                                 }
                             }
                         }
@@ -71,43 +87,40 @@ namespace ASCOM.Remote
                 }
             }
 
-            IpV4Addresses.Sort(CompareIPaddresses);
-            IpV6Addresses.Sort(CompareIPaddresses);
+            // Sort the addresses into ascending text order
+            ipAddresses.Sort(CompareIPaddresses);
+
+            return ipAddresses;
         }
 
-        private int CompareIPaddresses(IPAddress x, IPAddress y)
+        /// <summary>
+        /// COmpare two IPAdress values based on their text representations
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        private static int CompareIPaddresses(IPAddress x, IPAddress y)
         {
             if (x == null)
             {
-                if (y == null)
+                if (y == null) // If x is null and y is null, they're equal. 
                 {
-                    // If x is null and y is null, they're
-                    // equal. 
                     return 0;
                 }
-                else
+                else // If x is null and y is not null, y is greater. 
                 {
-                    // If x is null and y is not null, y
-                    // is greater. 
                     return -1;
                 }
             }
-            else
+            else // If x is not null...
             {
-                // If x is not null...
-                //
-                if (y == null)
-                // ...and y is null, x is greater.
+                if (y == null) // ...and y is null, x is greater.
                 {
                     return 1;
                 }
-                else
+                else // ...and y is not null, compare the lengths of the two strings.
                 {
-                    // ...and y is not null, compare the 
-                    // lengths of the two strings.
-                    //
                     return x.ToString().CompareTo(y.ToString());
-
                 }
             }
         }

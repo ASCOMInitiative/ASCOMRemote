@@ -364,9 +364,7 @@ namespace ASCOM.Remote
                 TL.LogMessage("SetAcl", $"Colon index: {colonIndex}, Port and URI: {portAndUri}");
 
 
-                HostIpAddresses hostIpAddresses = new HostIpAddresses();
-
-                foreach (IPAddress ipAddress in hostIpAddresses.IpV4Addresses)
+                foreach (IPAddress ipAddress in HostPc.IpV4Addresses)
                 {
                     TL.LogMessage("SetAcl", $"Found IP Network Address: {ipAddress}");
 
@@ -378,7 +376,7 @@ namespace ASCOM.Remote
                     TL.BlankLine();
                 }
 
-                foreach (IPAddress ipAddress in hostIpAddresses.IpV6Addresses)
+                foreach (IPAddress ipAddress in HostPc.IpV6Addresses)
                 {
                     TL.LogMessage("SetAcl", $"Found IP Network Address: {ipAddress}");
 
