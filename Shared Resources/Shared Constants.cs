@@ -159,7 +159,7 @@ namespace ASCOM.Remote
         public const string ALPACA_DISCOVERY_BROADCAST_ID = "alpacadiscovery";
         public const int ALPACA_DISCOVERY_PORT = 32227;
         public const string ALPACA_DISCOVERY_RESPONSE_STRING= "alpacaport";
-        public const string ALPACA_DISCOVERY_MULTICAST_GROUP = "ff12::a19aca";
+        public const string ALPACA_DISCOVERY_MULTICAST_GROUP = "ff12::a1:9aca";
 
     }
 }
