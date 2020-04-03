@@ -15,7 +15,7 @@ namespace ASCOM.Remote
         /// <param name="DeviceObjectParm"></param>
         /// <param name="AllowConnectedSetFalseParm"></param>
         /// <param name="AllowSetConnectedTrueParm"></param>
-        public ActiveObject(bool AllowConnectedSetFalseParm, bool AllowSetConnectedTrueParm, bool AllowConcurrentAccessParm)
+        public ActiveObject(bool AllowConnectedSetFalseParm, bool AllowSetConnectedTrueParm, bool AllowConcurrentAccessParm, string ConfiguredDeviceKeyParm)
         {
             CommandLock = new object(); // Create a lock object
             InitialisedOk = false; // Initialise flag and error message
@@ -23,7 +23,13 @@ namespace ASCOM.Remote
             AllowConnectedSetFalse = AllowConnectedSetFalseParm;
             AllowConnectedSetTrue = AllowSetConnectedTrueParm;
             AllowConcurrentAccess = AllowConcurrentAccessParm;
+            ConfiguredDeviceKey = ConfiguredDeviceKeyParm;
         }
+
+        /// <summary>
+        /// Key of the corresponding entry in ConfiguredDevices to allow tieback to the main configuration information
+        /// </summary>
+        public string ConfiguredDeviceKey { get; set; }
 
         /// <summary>
         /// The device COM object

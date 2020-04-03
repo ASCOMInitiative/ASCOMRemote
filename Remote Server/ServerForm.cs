@@ -772,7 +772,7 @@ namespace ASCOM.Remote
                         {
 
                             // Create an active object for this device
-                            ActiveObjects[configuredDevice.Value.DeviceKey] = new ActiveObject(configuredDevice.Value.AllowConnectedSetFalse, configuredDevice.Value.AllowConnectedSetTrue, configuredDevice.Value.AllowConcurrentAccess);
+                            ActiveObjects[configuredDevice.Value.DeviceKey] = new ActiveObject(configuredDevice.Value.AllowConnectedSetFalse, configuredDevice.Value.AllowConnectedSetTrue, configuredDevice.Value.AllowConcurrentAccess, configuredDevice.Key);
 
                             if (RunDriversOnSeparateThreads)
                             {
@@ -2271,15 +2271,15 @@ namespace ASCOM.Remote
                             }
                         case 5: // setup/vx/device/device-number/setup
                             {
-                                if (elements[4] == "setup")
+                                if (elements[4] == "setup") // This is a valid device setup URL
                                 {
                                     requestData.Elements = elements;
                                     ReturnHTMLPageOrImage(requestData, SETUP_DEVICE_DEFAULT_INDEX_PAGE_NAME);
                                 }
-                                else
+                                else // This is not a valid setup URL so return a 404 NOT FOUND response
                                 {
-                                    LogMessage(0, 0, 0, "Setup", $"Could not find requested file {request.Url.AbsolutePath}");
-                                    Return404Error(requestData, $"Could not find requested file {request.Url.AbsolutePath}");
+                                    LogMessage(0, 0, 0, "Setup", $"Could not find requested page {request.Url.AbsolutePath}");
+                                    Return404Error(requestData, $"The requested page is not present on the Remote Server: {request.Url.AbsolutePath}");
                                 }
                                 break;
                             }
@@ -3365,15 +3365,9 @@ namespace ASCOM.Remote
                                                 "font-family: sans-serif;" +
                                                 "font-size: 12pt;" +
                                             "}" +
-                                            "h2.lightgreen {" +
-                                              "color: lightgreen;" +
-                                            "}" +
-                                            "h3.yellow {" +
-                                              "color: yellow;" +
-                                            "}" +
-                                            "h3.red {" +
-                                              "color: red;" +
-                                            "}" +
+                                            "h2.lightgreen {color: lightgreen;}" +
+                                            "h3.yellow {color: yellow;}" +
+                                            "h3.red {color: red;}" +
                                         "</style>" +
                                         "<link rel=\"shortcut icon\" href=\"/setup/ascomicon.ico\" type=\"image/x-icon\" />" +
                                     "</head>" +
@@ -3385,8 +3379,10 @@ namespace ASCOM.Remote
                             string deviceKey = $"{requestData.Elements[URL_ELEMENT_DEVICE_TYPE]}/{requestData.Elements[URL_ELEMENT_DEVICE_NUMBER]}"; // Create the device key from the supplied device type and device number parameters
                             if (ActiveObjects.ContainsKey(deviceKey)) // The specified device does exist so return a "can't configure this" response
                             {
+                                // Get the configured device information for this device
+                                ConfiguredDevice configuredDevice = ConfiguredDevices[ActiveObjects[deviceKey].ConfiguredDeviceKey];
                                 indexPage +=
-                                        "<h3 class=\"yellow\">This device can't be configured through the Remote Server web interface</h3>" +
+                                        $"<h3 class=\"yellow\">The {configuredDevice.Description} {configuredDevice.DeviceType} device can't be configured through the Remote Server web interface</h3>" +
                                         "<p>Please use the device's \"Properties\" button in the Remote Server Setup screen</p>";
                             }
                             else // The specified device does not exist so return a message to that effect
