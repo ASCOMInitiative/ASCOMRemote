@@ -121,7 +121,7 @@ Filename: "{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"; Paramet
 [Icons]
 Name: "{group}\ASCOM Remote Documentation"; Filename: "{#RemoteServerDirectory}\{#ASCOMRemoteDocumentationFileName}";
 Name: "{group}\Remote Server"; Filename: "{#RemoteServerDirectory}\{#RemoteServerName}.exe"; Components: ServerComponents
-Name: "{group}\Remote Client Configuration"; Filename: "{#RemoteClientDirectory}\{#DynamicRemoteClientsName}.exe"; Components: not ServerComponents
+Name: "{group}\Remote Client Configuration"; Filename: "{#RemoteClientDirectory}\{#DynamicRemoteClientsName}.exe"; Components: ClientComponents
 
 [Components]
 Name: "ServerComponents"; Description: "Remote Server"; Flags: disablenouninstallwarning
