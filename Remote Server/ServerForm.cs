@@ -2675,6 +2675,9 @@ namespace ASCOM.Remote
                                             case "numy":
                                             case "startx":
                                             case "starty":
+                                            case "offset":
+                                            case "offsetmin":
+                                            case "offsetmax":
                                                 ReturnInt(requestData); break;
                                             // BOOL Get Values
                                             case "canabortexposure":
@@ -2703,6 +2706,7 @@ namespace ASCOM.Remote
                                             case "exposuremax":
                                             case "exposuremin":
                                             case "exposureresolution":
+                                            case "subexposureduration":
                                                 ReturnDouble(requestData); break;
                                             //STRING Get Values
                                             case "lastexposurestarttime":
@@ -2717,14 +2721,17 @@ namespace ASCOM.Remote
                                                 ReturnImageArray(requestData); break;
                                             case "imagearraybase64":
                                                 ReturnImageArrayBase64(requestData); break;
-
                                             //STRING LIST Get Values
                                             case "gains":
                                             case "readoutmodes":
+                                            case "offsets":
                                                 ReturnStringList(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             //SENSORTYPE Get Values
                                             case "sensortype":
                                                 ReturnSensorType(requestData); break;
+                                            //PULSEGUIDESTATUS Get Value
+                                            case "pulseguidestatus":
+                                                ReturnPulseGuideStatus(requestData); break;
 
                                             //UNKNOWN METHOD CALL
                                             default:
@@ -3067,6 +3074,7 @@ namespace ASCOM.Remote
                                                 WriteInt(requestData); break;
                                             //DOUBLE Set values
                                             case "setccdtemperature":
+                                            case "subexposureduration":
                                                 WriteDouble(requestData); break;
                                             //BOOL Set values
                                             case "cooleron":
@@ -3964,7 +3972,6 @@ namespace ASCOM.Remote
             List<string> responseList = new List<string>();
             Exception exReturn = null;
 
-
             try
             {
                 switch (deviceType + "." + requestData.Elements[URL_ELEMENT_METHOD])
@@ -3991,6 +3998,13 @@ namespace ASCOM.Remote
                             responseList.Add(mode);
                         }
                         break;
+                    case "camera.offsets":
+                        deviceResponse = (ArrayList)device.Offsets;
+                        foreach (string offset in deviceResponse)
+                        {
+                            responseList.Add(offset);
+                        }
+                        break;
 
                     default:
                         LogMessage1(requestData, "ReturnStringList", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
@@ -4015,7 +4029,6 @@ namespace ASCOM.Remote
         {
             double deviceResponse = 0.0;
             Exception exReturn = null;
-
 
             try
             {
@@ -4086,6 +4099,8 @@ namespace ASCOM.Remote
                         deviceResponse = device.ExposureMin; break;
                     case "camera.exposureresolution":
                         deviceResponse = device.ExposureResolution; break;
+                    case "camera.subexposureduration":
+                        deviceResponse = device.SubExposureDuration; break;
                     // DOME
                     case "dome.altitude":
                         deviceResponse = device.Altitude; break;
@@ -4195,6 +4210,7 @@ namespace ASCOM.Remote
                 doubleValue = GetParameter<double>(requestData, requestData.Elements[URL_ELEMENT_METHOD]);
                 switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
+                    // TELESCOPE
                     case "telescope.declinationrate":
                         device.DeclinationRate = doubleValue; break;
                     case "telescope.rightascensionrate":
@@ -4216,6 +4232,8 @@ namespace ASCOM.Remote
                     // CAMERA
                     case "camera.setccdtemperature":
                         device.SetCCDTemperature = doubleValue; break;
+                    case "camera.subexposureduration":
+                        device.SubExposureDuration = doubleValue; break;
                     // OBSERVINGCONDITIONS
                     case "observingconditions.averageperiod":
                         device.AveragePeriod = doubleValue; break;
@@ -4410,6 +4428,12 @@ namespace ASCOM.Remote
                         deviceResponse = device.StartX; break;
                     case "camera.starty":
                         deviceResponse = device.StartY; break;
+                    case "camera.offset":
+                        deviceResponse = device.Offset; break;
+                    case "camera.offsetmin":
+                        deviceResponse = device.OffsetMin; break;
+                    case "camera.offsetmax":
+                        deviceResponse = device.OffsetMax; break;
 
                     default:
                         LogMessage1(requestData, "ReturnInt", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
@@ -4704,10 +4728,32 @@ namespace ASCOM.Remote
             CameraStates deviceResponse = CameraStates.cameraIdle;
             Exception exReturn = null;
 
-
             try
             {
                 deviceResponse = (CameraStates)device.CameraState;
+            }
+            catch (Exception ex)
+            {
+                exReturn = ex;
+            }
+
+            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
+            {
+                DriverException = exReturn,
+                SerializeDriverException = IncludeDriverExceptionInJsonResponse
+            };
+            string responseJson = JsonConvert.SerializeObject(responseClass);
+            SendResponseValueToClient(requestData, exReturn, responseJson);
+        }
+
+        private void ReturnPulseGuideStatus(RequestData requestData)
+        {
+            PulseGuideState deviceResponse = PulseGuideState.NotImplemented;
+            Exception exReturn = null;
+
+            try
+            {
+                deviceResponse = (PulseGuideState)device.PulseGuideStatus;
             }
             catch (Exception ex)
             {
