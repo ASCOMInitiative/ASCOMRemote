@@ -2729,9 +2729,6 @@ namespace ASCOM.Remote
                                             //SENSORTYPE Get Values
                                             case "sensortype":
                                                 ReturnSensorType(requestData); break;
-                                            //PULSEGUIDESTATUS Get Value
-                                            case "pulseguidestatus":
-                                                ReturnPulseGuideStatus(requestData); break;
 
                                             //UNKNOWN METHOD CALL
                                             default:
@@ -4731,29 +4728,6 @@ namespace ASCOM.Remote
             try
             {
                 deviceResponse = (CameraStates)device.CameraState;
-            }
-            catch (Exception ex)
-            {
-                exReturn = ex;
-            }
-
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
-            {
-                DriverException = exReturn,
-                SerializeDriverException = IncludeDriverExceptionInJsonResponse
-            };
-            string responseJson = JsonConvert.SerializeObject(responseClass);
-            SendResponseValueToClient(requestData, exReturn, responseJson);
-        }
-
-        private void ReturnPulseGuideStatus(RequestData requestData)
-        {
-            PulseGuideState deviceResponse = PulseGuideState.NotImplemented;
-            Exception exReturn = null;
-
-            try
-            {
-                deviceResponse = (PulseGuideState)device.PulseGuideStatus;
             }
             catch (Exception ex)
             {
