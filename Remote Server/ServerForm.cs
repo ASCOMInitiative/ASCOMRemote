@@ -1767,7 +1767,7 @@ namespace ASCOM.Remote
                 response.Headers.Add(HttpResponseHeader.Server, "ASCOM Rest API Server -");
 
                 // Log the request 
-                LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString()));
+                LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Protocol: HTTP/{request.ProtocolVersion}, Thread: {Thread.CurrentThread.ManagedThreadId}");
 
                 // Create a collection of supplied parameters: query variables in the URL string for HTTP GET requests and form parameters from the request body for HTTP PUT requests.
 
@@ -4945,7 +4945,26 @@ namespace ASCOM.Remote
             }
             long timeToCompressResponse = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
-            requestData.Response.SendChunked = true;
+            // Set chunked transfer mode if the requested protocol is HTTP/1.1 or later
+            try
+            {
+                if (requestData.Response.ProtocolVersion.CompareTo(new Version(1, 1)) >= 0) // Protocol is HTTP/1.1 or later
+                {
+                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"### Protocol is HTTP/1.1 or later - Setting response.SendChuncked = true");
+                    requestData.Response.SendChunked = true;
+                }
+                else // Protocol is HTTP/1.0
+                {
+                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"### Protocol is HTTP/1.0 - NOT setting chuncked transfer mode");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Something went wrong when evaluating the HTTP protocol version or when setting chunked transfer mode. This is not considered fatal here because
+                // we are able to use the request object "as-is" without changing it. If there is a significant issue, the request will fail later in the process and will be dealt with then.
+                LogException1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Exception while evaluating HTTP protocol version or setting chunked mode\r\n{ex}");
+            }
+
             requestData.Response.AddHeader(SharedConstants.BASE64_HANDOFF_HEADER, SharedConstants.BASE64_HANDOFF_SUPPORTED); // Add a header indicating that the content is base64 serialised 
             requestData.Response.ContentType = "image/tiff"; // Must use image/tiff to ensure fast data transmission. All other content types are slower e.g. text/plain takes 8 seconds while image/tiff takes 1 second.
             requestData.Response.ContentLength64 = bytesToSend.Length;
