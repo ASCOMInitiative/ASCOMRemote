@@ -446,12 +446,12 @@
             // 
             this.label14.AutoSize = true;
             this.label14.ForeColor = System.Drawing.Color.Red;
-            this.label14.Location = new System.Drawing.Point(96, 58);
+            this.label14.Location = new System.Drawing.Point(13, 71);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(503, 13);
+            this.label14.Size = new System.Drawing.Size(671, 13);
             this.label14.TabIndex = 34;
-            this.label14.Text = "Remote clients only support IPv4, please use the Dynamic Clients in Platform 6.5 " +
-    "if you need IPv6 support";
+            this.label14.Text = "This client only supports Platform 6.4 interfaces. Please use Platform 6.5\'s Dyna" +
+    "mic Clients for current interface support and driver capabilities.";
             // 
             // SetupDialogForm
             // 
