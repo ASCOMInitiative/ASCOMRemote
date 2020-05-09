@@ -27,6 +27,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Threading.Tasks;
 
 namespace ASCOM.Remote
 {
@@ -391,309 +392,317 @@ namespace ASCOM.Remote
 
         private void StartRESTServer()
         {
-            try
+            if (this.InvokeRequired)
             {
-                if (IpV4Enabled | IpV6Enabled)
+                LogMessage(0, 0, 0, "StartRESTServer", "Invoke required...");
+                this.Invoke(new Action(() => this.StartRESTServer()));
+            }
+            else
+            {
+                try
                 {
-
-                    // Construct URIs that apply to all interfaces on this PC
-                    string apiOperatingUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.API_URL_BASE);
-                    string remoteServerManagementUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
-                    string alpacaDeviceManagementUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE);
-                    string alpacaDeviceSetupUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE);
-
-                    apiOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
-                    remoteServerManagementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
-                    alpacaDeviceManagementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE);
-                    alpacaDeviceSetupUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE);
-
-
-                    // Construct a URI for the configured address i.e the effective address after filtering
-                    string configuredOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
-
-                    LogMessage(0, 0, 0, "StartRESTServer", "IPv4 Operating URI: " + apiOperatingUri);
-                    LogMessage(0, 0, 0, "StartRESTServer", "IPv4 Management URI: " + remoteServerManagementUri);
-                    LogMessage(0, 0, 0, "StartRESTServer", "Configured URI: " + configuredOperatingUri);
-                    LogToScreen($"ASCOM Remote Alpaca device listening URI: {configuredOperatingUri}");
-
-                    // Create the listener on the required URIs
-                    LogMessage(0, 0, 0, "StartRESTServer", "Stopping existing server");
-                    StopRESTServer();
-
-                    LogMessage(0, 0, 0, "StartRESTServer", "Creating the listener");
-                    httpListener = new HttpListener();
-                    httpListener.Prefixes.Add(apiOperatingUri); // Set up the listener on the api URI
-                    httpListener.Prefixes.Add(remoteServerManagementUri); // Set up the listener on the remote server bespoke management command URI
-                    httpListener.Prefixes.Add(alpacaDeviceManagementUri); // Set up the listener on the management URI common to all Alpaca devices
-                    httpListener.Prefixes.Add(alpacaDeviceSetupUri); // Set up the listener on the HTTP Setup URI common to all Alpaca devices
-
-                    // Start the listener and ask permission if required
-                    while (!httpListener.IsListening)
+                    if (IpV4Enabled | IpV6Enabled)
                     {
-                        try
+
+                        // Construct URIs that apply to all interfaces on this PC
+                        string apiOperatingUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.API_URL_BASE);
+                        string remoteServerManagementUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
+                        string alpacaDeviceManagementUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE);
+                        string alpacaDeviceSetupUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE);
+
+                        apiOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
+                        remoteServerManagementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
+                        alpacaDeviceManagementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE);
+                        alpacaDeviceSetupUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE);
+
+
+                        // Construct a URI for the configured address i.e the effective address after filtering
+                        string configuredOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
+
+                        LogMessage(0, 0, 0, "StartRESTServer", "IPv4 Operating URI: " + apiOperatingUri);
+                        LogMessage(0, 0, 0, "StartRESTServer", "IPv4 Management URI: " + remoteServerManagementUri);
+                        LogMessage(0, 0, 0, "StartRESTServer", "Configured URI: " + configuredOperatingUri);
+                        LogToScreen($"ASCOM Remote Alpaca device listening URI: {configuredOperatingUri}");
+
+                        // Create the listener on the required URIs
+                        LogMessage(0, 0, 0, "StartRESTServer", "Stopping existing server");
+                        StopRESTServer();
+
+                        LogMessage(0, 0, 0, "StartRESTServer", "Creating the listener");
+                        httpListener = new HttpListener();
+                        httpListener.Prefixes.Add(apiOperatingUri); // Set up the listener on the api URI
+                        httpListener.Prefixes.Add(remoteServerManagementUri); // Set up the listener on the remote server bespoke management command URI
+                        httpListener.Prefixes.Add(alpacaDeviceManagementUri); // Set up the listener on the management URI common to all Alpaca devices
+                        httpListener.Prefixes.Add(alpacaDeviceSetupUri); // Set up the listener on the HTTP Setup URI common to all Alpaca devices
+
+                        // Start the listener and ask permission if required
+                        while (!httpListener.IsListening)
                         {
-                            LogMessage(0, 0, 0, "StartRESTServer", "Starting the listener");
-                            httpListener.Start();
-                            LogMessage(0, 0, 0, "StartRESTServer", "Listener started");
-                        }
-                        catch (HttpListenerException ex) when (ex.ErrorCode == (int)WindowsErrorCodes.ERROR_ACCESS_DENIED) // User does not have an ACL permitting this address and port to be used so get permission
-                        {
-                            DialogResult dlgResult = MessageBox.Show("You need to give permission for the Remote Server to listen for incoming requests, do you wish to do this?\r\n\r\nThe server will restart after the new permissions are set.\r\n\r\n(Requires administrator privilege)", "HTTP listen permissions required", MessageBoxButtons.YesNo);
-                            if (dlgResult == DialogResult.Yes) // Permission given so set the ACL using net-sh, which will ask for elevation if required
+                            try
                             {
-                                LogMessage(0, 0, 0, "StartRESTServer", "User gave permission to set port ACL");
-                                LogMessage(0, 0, 0, "StartRESTServer", "Closing listener"); // Have to close listener before setting ACL
-                                httpListener.Close();
-                                httpListener = null;
-                                LogMessage(0, 0, 0, "StartRESTServer", "Enabling URIs");
-
-                                string userName = $"\"{Environment.UserDomainName}\\{Environment.UserName}\"";
-
-                                LogMessage(0, 0, 0, "StartRESTServer", $"API URI: {apiOperatingUri}");
-                                LogMessage(0, 0, 0, "StartRESTServer", $"Alpaca HTTP Setup URI: {alpacaDeviceSetupUri}");
-                                LogMessage(0, 0, 0, "StartRESTServer", $"Alpaca device management URI: {alpacaDeviceManagementUri}");
-                                LogMessage(0, 0, 0, "StartRESTServer", $"Remote server management URI: {remoteServerManagementUri}");
-                                LogMessage(0, 0, 0, "StartRESTServer", $"User: {userName}");
-
-                                try
-                                {
-                                    string setNetworkPermissionsPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + SharedConstants.SET_NETWORK_PERMISSIONS_EXE_PATH;
-                                    LogMessage(0, 0, 0, "StartRESTServer", string.Format("SetNetworkPermissionspath: {0}", setNetworkPermissionsPath));
-
-                                    // Check that the SetNetworkPermissions exe exists
-                                    if (File.Exists(setNetworkPermissionsPath)) // SetNetworkPermissions exists
-                                    {
-                                        string args = $"--{SharedConstants.ENABLE_API_URI_COMMAND_NAME} {apiOperatingUri} " +
-                                            $"--{SharedConstants.ENABLE_REMOTE_SERVER_MANAGEMENT_URI_COMMAND_NAME} {remoteServerManagementUri} " +
-                                            $"--{SharedConstants.ENABLE_ALPACA_DEVICE_MANAGEMENT_URI_COMMAND_NAME} {alpacaDeviceManagementUri} " +
-                                            $"--{SharedConstants.ENABLE_ALPACA_SETUP_URI_COMMAND_NAME} {alpacaDeviceSetupUri} " +
-                                            $"--{SharedConstants.ENABLE_HTTP_DOT_SYS_PORT_COMMAND_NAME} {ServerPortNumber} " +
-                                            $"--{SharedConstants.USER_NAME_COMMAND_NAME} {userName}";
-                                        LogMessage(0, 0, 0, "StartRESTServer", $"SetNetworkPermissions arguments: {args}");
-
-                                        ProcessStartInfo psi = new ProcessStartInfo(setNetworkPermissionsPath, args)
-                                        {
-                                            Verb = "runas",
-                                            CreateNoWindow = true,
-                                            WindowStyle = ProcessWindowStyle.Hidden,
-                                            UseShellExecute = true
-                                        };
-
-                                        LogToScreen(" ");
-                                        LogToScreen("Setting network permissions, please wait until the Remote Server restarts, this can take several seconds.");
-                                        LogMessage(0, 0, 0, "StartRESTServer", "Starting SetNetworkPermissions process");
-                                        Process.Start(psi).WaitForExit();
-                                        LogMessage(0, 0, 0, "StartRESTServer", "Completed SetNetworkPermissions process");
-
-                                        // Restart the server so that the revised permissions come into effect
-                                        try
-                                        {
-                                            LogMessage(0, 0, 0, "RestartRESTServer", $"");
-                                            LogMessage(0, 0, 0, "RestartRESTServer", $"RESTARTING SERVER TO ENABLE NEW PERMISSIONS TO BE USED");
-                                            LogMessage(0, 0, 0, "RestartRESTServer", $"");
-
-                                            LogToScreen("Disconnecting devices...");
-                                            LogMessage(0, 0, 0, "RestartRESTServer", $"About to disconnect devices...");
-                                            DisconnectDevices();
-                                            LogMessage(0, 0, 0, "RestartRESTServer", $"Devices disconnected");
-
-                                            LogToScreen("Restarting the Remote Server...");
-                                            this.RestartApplication = true;
-                                        }
-                                        catch (Exception ex2)
-                                        {
-                                            LogMessage(0, 0, 0, "RestartRESTServer", $"Exception while attempting to restart the server: {ex2.Message}");
-                                            LogException(0, 0, 0, "RestartRESTServer", ex2.ToString());
-                                        }
-                                        finally
-                                        {
-                                            LogMessage(0, 0, 0, "RestartRESTServer", $"About to close form ...");
-                                            this.Close(); // Close the form
-                                        }
-                                        return; // Leave the routine and wait for the form to close
-                                    }
-                                    else // SetNetworkPermissions does not exist
-                                    {
-                                        string errorMessage = string.Format("Cannot find SetNetworkPermissions program: {0} ", setNetworkPermissionsPath);
-                                        LogMessage(0, 0, 0, "StartRESTServer", errorMessage);
-                                        LogToScreen(errorMessage);
-                                        return;
-                                    }
-                                }
-                                catch (Exception ex1)
-                                {
-                                    LogException(0, 0, 0, "StartRESTServer", ex1.ToString());
-                                    LogToScreen("Exception while enabling the API and Management URIs: " + ex1.Message);
-                                }
-
-                                // Create a new listener instance and loop round to attempt to start it again
-                                LogMessage(0, 0, 0, "StartRESTServer", "Creating listener");
-                                httpListener = new HttpListener(); // Set up the listener so that Start can be attempted again at the top of the while loop
-                                httpListener.Prefixes.Add(apiOperatingUri); // Set up the listener on the required URI
-                                httpListener.Prefixes.Add(remoteServerManagementUri); // Set up the listener on the management URI
+                                LogMessage(0, 0, 0, "StartRESTServer", "Starting the listener");
+                                httpListener.Start();
+                                LogMessage(0, 0, 0, "StartRESTServer", "Listener started");
                             }
-                            else
+                            catch (HttpListenerException ex) when (ex.ErrorCode == (int)WindowsErrorCodes.ERROR_ACCESS_DENIED) // User does not have an ACL permitting this address and port to be used so get permission
                             {
-                                LogMessage(0, 0, 0, "StartRESTServer", "User did NOT give permission to set port ACL");
-                                return; // Just exit and wait for user to do something
-                            }
-                        }
-                    }
-
-                    LogMessage(0, 0, 0, "StartRESTServer", "Starting wait for incoming API requests");
-                    IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(RestRequestReceivedHandler), httpListener);
-                }
-
-                apiIsEnabled = true;
-                LblRESTStatus.BackColor = Color.Green;
-                LblRESTStatus.Text = "Remote Server Up";
-                LogBlankLine(0, 0, 0);
-
-                // Start the Alpaca discovery listeners if configured to do so
-                if (AlpacaDiscoveryEnabled) // Discovery is enabled
-                {
-
-                    // Get a list of all network interfaces on this PC
-                    NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
-
-                    if (IpV4Enabled) // IPv4 discovery is supported
-                    {
-                        LogMessage(0, 0, 0, "StartRESTServer", $"IPv4 discovery is enabled, searching for interfaces...");
-
-                        // Close the IPv6 discovery UDP listeners
-                        CloseIpV4BroadcastListeners();
-
-                        // Bind a UDP client to each network adapter and set the index and address for multicast. Windows needs to have both the IP Address and index set for an IPv6 multicast socket
-
-                        // Examine each adapter in turn to test whether it has a link local IPv6 address to which a UDP client should be bound
-                        foreach (var adapter in adapters)
-                        {
-                            if (adapter.OperationalStatus == OperationalStatus.Up) // Only check operational interfaces
-                            {
-                                if (adapter.Supports(NetworkInterfaceComponent.IPv4)) // Only check interfaces that support IPv4
+                                DialogResult dlgResult = MessageBox.Show("You need to give permission for the Remote Server to listen for incoming requests, do you wish to do this?\r\n\r\nThe server will restart after the new permissions are set.\r\n\r\n(Requires administrator privilege)", "HTTP listen permissions required", MessageBoxButtons.YesNo);
+                                if (dlgResult == DialogResult.Yes) // Permission given so set the ACL using net-sh, which will ask for elevation if required
                                 {
-                                    // Try to get detailed information about this interface
-                                    IPInterfaceProperties adapterProperties = adapter.GetIPProperties();
-                                    if (adapterProperties != null) // Detailed information is available
-                                    {
-                                        // Extract a list of all unicast addresses assigned to this adapter
-                                        UnicastIPAddressInformationCollection uniCast = adapterProperties.UnicastAddresses;
+                                    LogMessage(0, 0, 0, "StartRESTServer", "User gave permission to set port ACL");
+                                    LogMessage(0, 0, 0, "StartRESTServer", "Closing listener"); // Have to close listener before setting ACL
+                                    httpListener.Close();
+                                    httpListener = null;
+                                    LogMessage(0, 0, 0, "StartRESTServer", "Enabling URIs");
 
-                                        // Iterate over the unicast addresses looking for IPv4 addresses or the IPv4 loop back address
-                                        foreach (UnicastIPAddressInformation uni in uniCast)
+                                    string userName = $"\"{Environment.UserDomainName}\\{Environment.UserName}\"";
+
+                                    LogMessage(0, 0, 0, "StartRESTServer", $"API URI: {apiOperatingUri}");
+                                    LogMessage(0, 0, 0, "StartRESTServer", $"Alpaca HTTP Setup URI: {alpacaDeviceSetupUri}");
+                                    LogMessage(0, 0, 0, "StartRESTServer", $"Alpaca device management URI: {alpacaDeviceManagementUri}");
+                                    LogMessage(0, 0, 0, "StartRESTServer", $"Remote server management URI: {remoteServerManagementUri}");
+                                    LogMessage(0, 0, 0, "StartRESTServer", $"User: {userName}");
+
+                                    try
+                                    {
+                                        string setNetworkPermissionsPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + SharedConstants.SET_NETWORK_PERMISSIONS_EXE_PATH;
+                                        LogMessage(0, 0, 0, "StartRESTServer", string.Format("SetNetworkPermissionspath: {0}", setNetworkPermissionsPath));
+
+                                        // Check that the SetNetworkPermissions exe exists
+                                        if (File.Exists(setNetworkPermissionsPath)) // SetNetworkPermissions exists
                                         {
-                                            if (uni.Address.AddressFamily == AddressFamily.InterNetwork) // Found an IPv4 address
+                                            string args = $"--{SharedConstants.ENABLE_API_URI_COMMAND_NAME} {apiOperatingUri} " +
+                                                $"--{SharedConstants.ENABLE_REMOTE_SERVER_MANAGEMENT_URI_COMMAND_NAME} {remoteServerManagementUri} " +
+                                                $"--{SharedConstants.ENABLE_ALPACA_DEVICE_MANAGEMENT_URI_COMMAND_NAME} {alpacaDeviceManagementUri} " +
+                                                $"--{SharedConstants.ENABLE_ALPACA_SETUP_URI_COMMAND_NAME} {alpacaDeviceSetupUri} " +
+                                                $"--{SharedConstants.ENABLE_HTTP_DOT_SYS_PORT_COMMAND_NAME} {ServerPortNumber} " +
+                                                $"--{SharedConstants.USER_NAME_COMMAND_NAME} {userName}";
+                                            LogMessage(0, 0, 0, "StartRESTServer", $"SetNetworkPermissions arguments: {args}");
+
+                                            ProcessStartInfo psi = new ProcessStartInfo(setNetworkPermissionsPath, args)
                                             {
-                                                // Create a UDP client to listen for Alpaca IPv4 broadcasts on this IPv4 interface
-                                                UdpClient udpClientV4 = new UdpClient(AddressFamily.InterNetwork);
-                                                udpClientV4.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-                                                udpClientV4.EnableBroadcast = true;
-                                                udpClientV4.MulticastLoopback = false;
-                                                udpClientV4.ExclusiveAddressUse = false;
-                                                udpClientV4.Client.Bind(new IPEndPoint(uni.Address, (int)AlpacaDiscoveryPort));
+                                                Verb = "runas",
+                                                CreateNoWindow = true,
+                                                WindowStyle = ProcessWindowStyle.Hidden,
+                                                UseShellExecute = true
+                                            };
 
-                                                //  Add the client to the collection of UDP clients
-                                                discoveryClientsIpV4.Add(udpClientV4);
-                                                LogMessage(0, 0, 0, "StartRESTServer", $"Added IPv4 discovery listener on address {uni.Address}");
+                                            LogToScreen(" ");
+                                            LogToScreen("Setting network permissions, please wait until the Remote Server restarts, this can take several seconds.");
+                                            LogMessage(0, 0, 0, "StartRESTServer", "Starting SetNetworkPermissions process");
+                                            Process.Start(psi).WaitForExit();
+                                            LogMessage(0, 0, 0, "StartRESTServer", "Completed SetNetworkPermissions process");
 
-                                                // Start listening for IPv4 broadcasts on this interface
-                                                udpClientV4.BeginReceive(DiscoveryCallback, udpClientV4);
+                                            // Restart the server so that the revised permissions come into effect
+                                            try
+                                            {
+                                                LogMessage(0, 0, 0, "RestartRESTServer", $"");
+                                                LogMessage(0, 0, 0, "RestartRESTServer", $"RESTARTING SERVER TO ENABLE NEW PERMISSIONS TO BE USED");
+                                                LogMessage(0, 0, 0, "RestartRESTServer", $"");
+
+                                                LogToScreen("Disconnecting devices...");
+                                                LogMessage(0, 0, 0, "RestartRESTServer", $"About to disconnect devices...");
+                                                DisconnectDevices();
+                                                LogMessage(0, 0, 0, "RestartRESTServer", $"Devices disconnected");
+
+                                                LogToScreen("Restarting the Remote Server...");
+                                                this.RestartApplication = true;
                                             }
+                                            catch (Exception ex2)
+                                            {
+                                                LogMessage(0, 0, 0, "RestartRESTServer", $"Exception while attempting to restart the server: {ex2.Message}");
+                                                LogException(0, 0, 0, "RestartRESTServer", ex2.ToString());
+                                            }
+                                            finally
+                                            {
+                                                LogMessage(0, 0, 0, "RestartRESTServer", $"About to close form ...");
+                                                this.Close(); // Close the form
+                                            }
+                                            return; // Leave the routine and wait for the form to close
+                                        }
+                                        else // SetNetworkPermissions does not exist
+                                        {
+                                            string errorMessage = string.Format("Cannot find SetNetworkPermissions program: {0} ", setNetworkPermissionsPath);
+                                            LogMessage(0, 0, 0, "StartRESTServer", errorMessage);
+                                            LogToScreen(errorMessage);
+                                            return;
                                         }
                                     }
+                                    catch (Exception ex1)
+                                    {
+                                        LogException(0, 0, 0, "StartRESTServer", ex1.ToString());
+                                        LogToScreen("Exception while enabling the API and Management URIs: " + ex1.Message);
+                                    }
+
+                                    // Create a new listener instance and loop round to attempt to start it again
+                                    LogMessage(0, 0, 0, "StartRESTServer", "Creating listener");
+                                    httpListener = new HttpListener(); // Set up the listener so that Start can be attempted again at the top of the while loop
+                                    httpListener.Prefixes.Add(apiOperatingUri); // Set up the listener on the required URI
+                                    httpListener.Prefixes.Add(remoteServerManagementUri); // Set up the listener on the management URI
+                                }
+                                else
+                                {
+                                    LogMessage(0, 0, 0, "StartRESTServer", "User did NOT give permission to set port ACL");
+                                    return; // Just exit and wait for user to do something
                                 }
                             }
                         }
 
-                        LogMessage(0, 0, 0, "StartRESTServer", $"Listening for IPv4 discovery broadcasts on port {AlpacaDiscoveryPort}.");
-                        LogBlankLine(0, 0, 0);
-
-                        LogToScreen($"Listening for IPv4 discovery broadcasts on port {AlpacaDiscoveryPort}.");
-                    }
-                    else
-                    {
-                        LogToScreen($"IPv4 discovery not enabled.");
+                        LogMessage(0, 0, 0, "StartRESTServer", "Starting wait for incoming API requests");
+                        IAsyncResult result = httpListener.BeginGetContext(new AsyncCallback(RestRequestReceivedHandler), httpListener);
                     }
 
-                    if (IpV6Enabled) // IPv6 discovery is supported
+                    apiIsEnabled = true;
+                    LblRESTStatus.BackColor = Color.Green;
+                    LblRESTStatus.Text = "Remote Server Up";
+                    LogBlankLine(0, 0, 0);
+
+                    // Start the Alpaca discovery listeners if configured to do so
+                    if (AlpacaDiscoveryEnabled) // Discovery is enabled
                     {
-                        LogMessage(0, 0, 0, "StartRESTServer", $"IPv6 discovery is enabled, searching for interfaces...");
 
-                        // Close the IPv6 discovery UDP listeners
-                        CloseIpV6BroadcastListeners();
+                        // Get a list of all network interfaces on this PC
+                        NetworkInterface[] adapters = NetworkInterface.GetAllNetworkInterfaces();
 
-                        // Bind a UDP client to each network adapter and set the index and address for multicast. Windows needs to have both the IP Address and index set for an IPv6 multicast socket
-
-                        // Examine each adapter in turn to test whether it has a link local IPv6 address to which a UDP client should be bound
-                        foreach (var adapter in adapters)
+                        if (IpV4Enabled) // IPv4 discovery is supported
                         {
-                            if (adapter.OperationalStatus == OperationalStatus.Up) // Only check operational interfaces
+                            LogMessage(0, 0, 0, "StartRESTServer", $"IPv4 discovery is enabled, searching for interfaces...");
+
+                            // Close the IPv6 discovery UDP listeners
+                            CloseIpV4BroadcastListeners();
+
+                            // Bind a UDP client to each network adapter and set the index and address for multicast. Windows needs to have both the IP Address and index set for an IPv6 multicast socket
+
+                            // Examine each adapter in turn to test whether it has a link local IPv6 address to which a UDP client should be bound
+                            foreach (var adapter in adapters)
                             {
-                                if (adapter.Supports(NetworkInterfaceComponent.IPv6) && adapter.SupportsMulticast) // Only check interfaces that support IPv6 multicast
+                                if (adapter.OperationalStatus == OperationalStatus.Up) // Only check operational interfaces
                                 {
-                                    // Try to get detailed information about this interface
-                                    IPInterfaceProperties adapterProperties = adapter.GetIPProperties();
-                                    if (adapterProperties != null) // Detailed information is available
+                                    if (adapter.Supports(NetworkInterfaceComponent.IPv4)) // Only check interfaces that support IPv4
                                     {
-                                        // Extract a list of all unicast addresses assigned to this adapter
-                                        UnicastIPAddressInformationCollection uniCast = adapterProperties.UnicastAddresses;
-
-                                        // Iterate over the unicast addresses looking for IPv6 link local addresses or the IPv6 loop back address
-                                        foreach (UnicastIPAddressInformation uni in uniCast)
+                                        // Try to get detailed information about this interface
+                                        IPInterfaceProperties adapterProperties = adapter.GetIPProperties();
+                                        if (adapterProperties != null) // Detailed information is available
                                         {
-                                            if (uni.Address.IsIPv6LinkLocal | ((uni.Address.AddressFamily == AddressFamily.InterNetworkV6) & IPAddress.IsLoopback(uni.Address))) // Found either an IPv6 link local address or the IPv6 loop back address
-                                            {
-                                                // Create a UDP client to listen for Alpaca IPv6 multi casts on this IPv6 interface
-                                                UdpClient udpClientV6 = new UdpClient(AddressFamily.InterNetworkV6);
-                                                udpClientV6.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-                                                udpClientV6.ExclusiveAddressUse = false;
-                                                udpClientV6.Client.Bind(new IPEndPoint(uni.Address, (int)AlpacaDiscoveryPort));
-                                                udpClientV6.JoinMulticastGroup(adapterProperties.GetIPv6Properties().Index, IPAddress.Parse(SharedConstants.ALPACA_DISCOVERY_MULTICAST_GROUP));
+                                            // Extract a list of all unicast addresses assigned to this adapter
+                                            UnicastIPAddressInformationCollection uniCast = adapterProperties.UnicastAddresses;
 
-                                                //  Add the client to the collection of UDP clients
-                                                discoveryClientsIpV6.Add(udpClientV6);
-                                                LogMessage(0, 0, 0, "StartRESTServer", $"Added discovery listener on {(uni.Address.IsIPv6LinkLocal ? $"link local address {uni.Address} with index {uni.Address.ScopeId}." : $"loopback address {uni.Address}.")}");
-
-                                                // Start listening for IPv6 broadcasts on this interface
-                                                udpClientV6.BeginReceive(DiscoveryCallback, udpClientV6);
-                                            }
-                                            else
+                                            // Iterate over the unicast addresses looking for IPv4 addresses or the IPv4 loop back address
+                                            foreach (UnicastIPAddressInformation uni in uniCast)
                                             {
-                                                if (uni.Address.AddressFamily == AddressFamily.InterNetworkV6)
+                                                if (uni.Address.AddressFamily == AddressFamily.InterNetwork) // Found an IPv4 address
                                                 {
-                                                    LogMessage(0, 0, 0, "StartRESTServer", $"Ignoring address {uni.Address} because it is global.");
+                                                    // Create a UDP client to listen for Alpaca IPv4 broadcasts on this IPv4 interface
+                                                    UdpClient udpClientV4 = new UdpClient(AddressFamily.InterNetwork);
+                                                    udpClientV4.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                                                    udpClientV4.EnableBroadcast = true;
+                                                    udpClientV4.MulticastLoopback = false;
+                                                    udpClientV4.ExclusiveAddressUse = false;
+                                                    udpClientV4.Client.Bind(new IPEndPoint(uni.Address, (int)AlpacaDiscoveryPort));
+
+                                                    //  Add the client to the collection of UDP clients
+                                                    discoveryClientsIpV4.Add(udpClientV4);
+                                                    LogMessage(0, 0, 0, "StartRESTServer", $"Added IPv4 discovery listener on address {uni.Address}");
+
+                                                    // Start listening for IPv4 broadcasts on this interface
+                                                    udpClientV4.BeginReceive(DiscoveryCallback, udpClientV4);
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
+
+                            LogMessage(0, 0, 0, "StartRESTServer", $"Listening for IPv4 discovery broadcasts on port {AlpacaDiscoveryPort}.");
+                            LogBlankLine(0, 0, 0);
+
+                            LogToScreen($"Listening for IPv4 discovery broadcasts on port {AlpacaDiscoveryPort}.");
+                        }
+                        else
+                        {
+                            LogToScreen($"IPv4 discovery not enabled.");
                         }
 
-                        LogMessage(0, 0, 0, "StartRESTServer", $"Listening for IPv6 discovery broadcasts on port {AlpacaDiscoveryPort}.");
-                        LogBlankLine(0, 0, 0);
+                        if (IpV6Enabled) // IPv6 discovery is supported
+                        {
+                            LogMessage(0, 0, 0, "StartRESTServer", $"IPv6 discovery is enabled, searching for interfaces...");
 
-                        LogToScreen($"Listening for IPv6 discovery broadcasts on port {AlpacaDiscoveryPort}.");
+                            // Close the IPv6 discovery UDP listeners
+                            CloseIpV6BroadcastListeners();
+
+                            // Bind a UDP client to each network adapter and set the index and address for multicast. Windows needs to have both the IP Address and index set for an IPv6 multicast socket
+
+                            // Examine each adapter in turn to test whether it has a link local IPv6 address to which a UDP client should be bound
+                            foreach (var adapter in adapters)
+                            {
+                                if (adapter.OperationalStatus == OperationalStatus.Up) // Only check operational interfaces
+                                {
+                                    if (adapter.Supports(NetworkInterfaceComponent.IPv6) && adapter.SupportsMulticast) // Only check interfaces that support IPv6 multicast
+                                    {
+                                        // Try to get detailed information about this interface
+                                        IPInterfaceProperties adapterProperties = adapter.GetIPProperties();
+                                        if (adapterProperties != null) // Detailed information is available
+                                        {
+                                            // Extract a list of all unicast addresses assigned to this adapter
+                                            UnicastIPAddressInformationCollection uniCast = adapterProperties.UnicastAddresses;
+
+                                            // Iterate over the unicast addresses looking for IPv6 link local addresses or the IPv6 loop back address
+                                            foreach (UnicastIPAddressInformation uni in uniCast)
+                                            {
+                                                if (uni.Address.IsIPv6LinkLocal | ((uni.Address.AddressFamily == AddressFamily.InterNetworkV6) & IPAddress.IsLoopback(uni.Address))) // Found either an IPv6 link local address or the IPv6 loop back address
+                                                {
+                                                    // Create a UDP client to listen for Alpaca IPv6 multi casts on this IPv6 interface
+                                                    UdpClient udpClientV6 = new UdpClient(AddressFamily.InterNetworkV6);
+                                                    udpClientV6.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                                                    udpClientV6.ExclusiveAddressUse = false;
+                                                    udpClientV6.Client.Bind(new IPEndPoint(uni.Address, (int)AlpacaDiscoveryPort));
+                                                    udpClientV6.JoinMulticastGroup(adapterProperties.GetIPv6Properties().Index, IPAddress.Parse(SharedConstants.ALPACA_DISCOVERY_MULTICAST_GROUP));
+
+                                                    //  Add the client to the collection of UDP clients
+                                                    discoveryClientsIpV6.Add(udpClientV6);
+                                                    LogMessage(0, 0, 0, "StartRESTServer", $"Added discovery listener on {(uni.Address.IsIPv6LinkLocal ? $"link local address {uni.Address} with index {uni.Address.ScopeId}." : $"loopback address {uni.Address}.")}");
+
+                                                    // Start listening for IPv6 broadcasts on this interface
+                                                    udpClientV6.BeginReceive(DiscoveryCallback, udpClientV6);
+                                                }
+                                                else
+                                                {
+                                                    if (uni.Address.AddressFamily == AddressFamily.InterNetworkV6)
+                                                    {
+                                                        LogMessage(0, 0, 0, "StartRESTServer", $"Ignoring address {uni.Address} because it is global.");
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            LogMessage(0, 0, 0, "StartRESTServer", $"Listening for IPv6 discovery broadcasts on port {AlpacaDiscoveryPort}.");
+                            LogBlankLine(0, 0, 0);
+
+                            LogToScreen($"Listening for IPv6 discovery broadcasts on port {AlpacaDiscoveryPort}.");
+                        }
+                        else
+                        {
+                            LogToScreen($"IPv6 discovery not enabled.");
+                        }
                     }
-                    else
+                    else // Discovery is not enabled
                     {
-                        LogToScreen($"IPv6 discovery not enabled.");
+                        LogMessage(0, 0, 0, "StartRESTServer", $"NOT listening for discovery broadcasts because this is DISABLED by configuration.");
+                        LogToScreen($"NOT Listening for discovery broadcasts");
                     }
+
+                    LogMessage(0, 0, 0, "StartRESTServer", "Server started successfully.");
+                    LogToScreen("Server started successfully.");
+
                 }
-                else // Discovery is not enabled
+                catch (Exception ex)
                 {
-                    LogMessage(0, 0, 0, "StartRESTServer", $"NOT listening for discovery broadcasts because this is DISABLED by configuration.");
-                    LogToScreen($"NOT Listening for discovery broadcasts");
+                    LogException(0, 0, 0, "StartRESTServer", ex.ToString());
+                    LogToScreen("Exception while attempting to start the API or discovery listeners: " + ex.Message);
                 }
-
-                LogMessage(0, 0, 0, "StartRESTServer", "Server started successfully.");
-                LogToScreen("Server started successfully.");
-
-            }
-            catch (Exception ex)
-            {
-                LogException(0, 0, 0, "StartRESTServer", ex.ToString());
-                LogToScreen("Exception while attempting to start the API or discovery listeners: " + ex.Message);
             }
         }
 
@@ -725,106 +734,121 @@ namespace ASCOM.Remote
 
         private void StopRESTServer()
         {
-            if (httpListener != null) // Close and dispose of the current listener, if there is one.
+            if (this.InvokeRequired)
             {
-                // Close the IPv4 and IPv6 discovery UDP listeners
-                CloseIpV4BroadcastListeners();
-                CloseIpV6BroadcastListeners();
-
-                // Create variables to hold the ASCOM device server operating URIs
-                string apiOperatingUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.API_URL_BASE);
-                string remoteServerManagementUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
-                string alpacaDeviceManagementUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE);
-                string alpacaDeviceSetupUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE);
-
-                LogMessage(0, 0, 0, "StopRESTServer", "Removing Prefixes");
-                try { httpListener.Prefixes.Remove(apiOperatingUri); } catch { } // Remove the listener on the api URI
-                try { httpListener.Prefixes.Remove(remoteServerManagementUri); } catch { } // Remove the listener on the remote server bespoke management command URI
-                try { httpListener.Prefixes.Remove(alpacaDeviceManagementUri); } catch { }  // Remove the listener on the management URI common to all Alpaca devices
-                try { httpListener.Prefixes.Remove(alpacaDeviceSetupUri); } catch { }  // Remove the listener on the HTTP Setup URI common to all Alpaca devices
-
-                LogMessage(0, 0, 0, "StopRESTServer", "Stopping the Remote server");
-                try { httpListener.Stop(); } catch { }
-                try { httpListener.Close(); } catch { }
-                try { httpListener = null; } catch { }
+                LogMessage(0, 0, 0, "StopRESTServer", "Invoke required...");
+                this.Invoke(new Action(() => this.StopRESTServer()));
             }
+            else
+            {
+                if (httpListener != null) // Close and dispose of the current listener, if there is one.
+                {
+                    // Close the IPv4 and IPv6 discovery UDP listeners
+                    CloseIpV4BroadcastListeners();
+                    CloseIpV6BroadcastListeners();
 
-            apiIsEnabled = false;
-            LblRESTStatus.BackColor = Color.Red;
-            LblRESTStatus.Text = "Remote Server Down";
+                    // Create variables to hold the ASCOM device server operating URIs
+                    string apiOperatingUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.API_URL_BASE);
+                    string remoteServerManagementUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
+                    string alpacaDeviceManagementUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE);
+                    string alpacaDeviceSetupUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE);
+
+                    LogMessage(0, 0, 0, "StopRESTServer", "Removing Prefixes");
+                    try { httpListener.Prefixes.Remove(apiOperatingUri); } catch { } // Remove the listener on the api URI
+                    try { httpListener.Prefixes.Remove(remoteServerManagementUri); } catch { } // Remove the listener on the remote server bespoke management command URI
+                    try { httpListener.Prefixes.Remove(alpacaDeviceManagementUri); } catch { }  // Remove the listener on the management URI common to all Alpaca devices
+                    try { httpListener.Prefixes.Remove(alpacaDeviceSetupUri); } catch { }  // Remove the listener on the HTTP Setup URI common to all Alpaca devices
+
+                    LogMessage(0, 0, 0, "StopRESTServer", "Stopping the Remote server");
+                    try { httpListener.Stop(); } catch { }
+                    try { httpListener.Close(); } catch { }
+                    try { httpListener = null; } catch { }
+                }
+
+                apiIsEnabled = false;
+                LblRESTStatus.BackColor = Color.Red;
+                LblRESTStatus.Text = "Remote Server Down";
+            }
         }
 
         private void ConnectDevices()
         {
-            try
+            if (this.InvokeRequired)
             {
-                DisconnectDevices(); // Shut down all the ASCOM device instances
-                ActiveObjects.Clear();
-                GC.Collect();
-                LogBlankLine(0, 0, 0);
-
-                // Create new ASCOM device instances
-                foreach (KeyValuePair<string, ConfiguredDevice> configuredDevice in ConfiguredDevices)
-                {
-                    if ((configuredDevice.Value.ProgID != SharedConstants.DEVICE_NOT_CONFIGURED) & (configuredDevice.Value.ProgID.Trim(" ".ToCharArray()) != "")) // Only attempt to process devices with valid ProgIDs
-                    {
-                        try
-                        {
-
-                            // Create an active object for this device
-                            ActiveObjects[configuredDevice.Value.DeviceKey] = new ActiveObject(configuredDevice.Value.AllowConnectedSetFalse, configuredDevice.Value.AllowConnectedSetTrue, configuredDevice.Value.AllowConcurrentAccess, configuredDevice.Key);
-
-                            if (RunDriversOnSeparateThreads)
-                            {
-                                LogMessage(0, 0, 0, "ConnectDevices", string.Format("Creating driver {0} on separate thread. This is thread: {1}", configuredDevice.Value.ProgID, Thread.CurrentThread.ManagedThreadId));
-                                Thread driverThread = new Thread(DriverOnSeparateThread);
-                                driverThread.SetApartmentState(ApartmentState.STA);
-                                driverThread.DisableComObjectEagerCleanup();
-                                driverThread.IsBackground = true;
-                                driverThread.Start(configuredDevice);
-                                LogMessage(0, 0, 0, "ConnectDevices", string.Format("Thread started successfully for {0}. This is thread: {1}", configuredDevice.Value.ProgID, Thread.CurrentThread.ManagedThreadId));
-
-                                string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber);
-
-                                do
-                                {
-                                    Thread.Sleep(50);
-                                    Application.DoEvents();
-                                } while (ActiveObjects[deviceKey].DriverHostForm == null);
-
-                                LogMessage(0, 0, 0, "ConnectDevices", string.Format("Completed create driver delegate for {0} on thread {1}", configuredDevice.Value.ProgID, Thread.CurrentThread.ManagedThreadId));
-                            }
-                            else
-                            {
-                                if (this.InvokeRequired)
-                                {
-                                    CreateInstanceDelegate createInstanceDelegate = new CreateInstanceDelegate(CreateInstance);
-                                    this.Invoke(createInstanceDelegate, new object[] { configuredDevice }); // Force the driver to be created on the main UI thread if we are currently executing on a different thread
-                                }
-                                else CreateInstance(configuredDevice); // We are on the UI thread so just create the driver
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LogToScreen(string.Format("Exception while attempting to create thread for device: {0} {1}", configuredDevice.Value.ProgID, ex.Message));
-                            LogException(0, 0, 0, "ConnectDevices", ex.ToString());
-                        }
-                        LogBlankLine(0, 0, 0);
-                    }
-                }
-
-                devicesAreConnected = true;
-
-                LblDriverStatus.BackColor = Color.Green; // Turn the "Connected / Disconnected" colour box green
-                LblDriverStatus.Text = "Drivers Connected";
+                LogMessage(0, 0, 0, "ConnectDevices", "Invoke required...");
+                this.Invoke(new Action(() => this.ConnectDevices()));
             }
-            catch (Exception ex)
+            else
             {
-                LogToScreen("Exception while attempting to create devices: " + ex.Message);
-                LogException(0, 0, 0, "ConnectDevices", ex.ToString());
+                try
+                {
+                    DisconnectDevices(); // Shut down all the ASCOM device instances
+                    ActiveObjects.Clear();
+                    GC.Collect();
+                    LogBlankLine(0, 0, 0);
+
+                    // Create new ASCOM device instances
+                    foreach (KeyValuePair<string, ConfiguredDevice> configuredDevice in ConfiguredDevices)
+                    {
+                        if ((configuredDevice.Value.ProgID != SharedConstants.DEVICE_NOT_CONFIGURED) & (configuredDevice.Value.ProgID.Trim(" ".ToCharArray()) != "")) // Only attempt to process devices with valid ProgIDs
+                        {
+                            try
+                            {
+
+                                // Create an active object for this device
+                                ActiveObjects[configuredDevice.Value.DeviceKey] = new ActiveObject(configuredDevice.Value.AllowConnectedSetFalse, configuredDevice.Value.AllowConnectedSetTrue, configuredDevice.Value.AllowConcurrentAccess, configuredDevice.Key);
+
+                                if (RunDriversOnSeparateThreads)
+                                {
+                                    LogMessage(0, 0, 0, "ConnectDevices", string.Format("Creating driver {0} on separate thread. This is thread: {1}", configuredDevice.Value.ProgID, Thread.CurrentThread.ManagedThreadId));
+                                    Thread driverThread = new Thread(DriverOnSeparateThread);
+                                    driverThread.SetApartmentState(ApartmentState.STA);
+                                    driverThread.DisableComObjectEagerCleanup();
+                                    driverThread.IsBackground = true;
+                                    driverThread.Start(configuredDevice);
+                                    LogMessage(0, 0, 0, "ConnectDevices", string.Format("Thread started successfully for {0}. This is thread: {1}", configuredDevice.Value.ProgID, Thread.CurrentThread.ManagedThreadId));
+
+                                    string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber);
+
+                                    do
+                                    {
+                                        Thread.Sleep(50);
+                                        Application.DoEvents();
+                                    } while (ActiveObjects[deviceKey].DriverHostForm == null);
+
+                                    LogMessage(0, 0, 0, "ConnectDevices", string.Format("Completed create driver delegate for {0} on thread {1}", configuredDevice.Value.ProgID, Thread.CurrentThread.ManagedThreadId));
+                                }
+                                else
+                                {
+                                    if (this.InvokeRequired)
+                                    {
+                                        CreateInstanceDelegate createInstanceDelegate = new CreateInstanceDelegate(CreateInstance);
+                                        this.Invoke(createInstanceDelegate, new object[] { configuredDevice }); // Force the driver to be created on the main UI thread if we are currently executing on a different thread
+                                    }
+                                    else CreateInstance(configuredDevice); // We are on the UI thread so just create the driver
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                LogToScreen(string.Format("Exception while attempting to create thread for device: {0} {1}", configuredDevice.Value.ProgID, ex.Message));
+                                LogException(0, 0, 0, "ConnectDevices", ex.ToString());
+                            }
+                            LogBlankLine(0, 0, 0);
+                        }
+                    }
+
+                    devicesAreConnected = true;
+
+                    LblDriverStatus.BackColor = Color.Green; // Turn the "Connected / Disconnected" colour box green
+                    LblDriverStatus.Text = "Drivers Connected";
+                }
+                catch (Exception ex)
+                {
+                    LogToScreen("Exception while attempting to create devices: " + ex.Message);
+                    LogException(0, 0, 0, "ConnectDevices", ex.ToString());
+                }
             }
         }
-
         /// <summary>
         /// This method is called on receipt of both IPv4 broadcasts and IPv6 multi casts
         /// </summary>
@@ -992,43 +1016,54 @@ namespace ASCOM.Remote
 
         private void DisconnectDevices()
         {
-            LogBlankLine(0, 0, 0);
-            LogMessage(0, 0, 0, "DisconnectDevices", "Clearing devices");
-            int RemainingObjectCount;
-
-            LblDriverStatus.BackColor = Color.Red; // Turn the "Connected / Disconnected" colour box red
-            LblDriverStatus.Text = "Drivers Unloaded";
-            devicesAreConnected = false;
-
-            // Clear all of the current drivers
-            foreach (KeyValuePair<string, ActiveObject> activeObject in ActiveObjects)
+            LogMessage(0, 0, 0, "DisconnectDevices", "Entered DisconnectDevices()");
+            if (this.InvokeRequired)
             {
-                try
-                {
-                    if (RunDriversOnSeparateThreads)
-                    {
-                        DestroyDriverDelegate destroyDriverDelegate = new DestroyDriverDelegate(activeObject.Value.DriverHostForm.DestroyDriver);
-                        LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Starting invoke of driver delegate for device {0} on thread {1}", activeObject.Key, Thread.CurrentThread.ManagedThreadId));
-                        activeObject.Value.DriverHostForm.Invoke(destroyDriverDelegate);
-                        LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Completed invoke of driver delegate for device {0} on thread {1}", activeObject.Key, Thread.CurrentThread.ManagedThreadId));
-                    }
-                    else
-                    {
-                        RemainingObjectCount = DestroyDriver(activeObject.Key);
-                    }
-                }
-                catch (KeyNotFoundException) { } // Ignore key not found exceptions, they are expected for unconfigured devices
-
-                catch (Exception ex)
-                {
-                    LogException(0, 0, 0, "DisconnectDevices", "  ReleaseComObject Exception: " + ex.ToString());
-                }
-                LogBlankLine(0, 0, 0);
+                LogMessage(0, 0, 0, "DisconnectDevices", "Invoke required...");
+                this.Invoke(new Action(() => this.DisconnectDevices()));
+                LogMessage(0, 0, 0, "DisconnectDevices", "Invoke completed.");
             }
+            else
+            {
+                LogBlankLine(0, 0, 0);
+                LogMessage(0, 0, 0, "DisconnectDevices", "Clearing devices");
+                int RemainingObjectCount;
 
-            ActiveObjects.Clear(); // Clear the list of active objects now that all active device instances have been destroyed
+                LblDriverStatus.BackColor = Color.Red; // Turn the "Connected / Disconnected" colour box red
+                LblDriverStatus.Text = "Drivers Unloaded";
+                devicesAreConnected = false;
 
-            GC.Collect(); // Reclaim memory and destroy all deleted objects
+                // Clear all of the current drivers
+                foreach (KeyValuePair<string, ActiveObject> activeObject in ActiveObjects)
+                {
+                    try
+                    {
+                        if (RunDriversOnSeparateThreads)
+                        {
+                            DestroyDriverDelegate destroyDriverDelegate = new DestroyDriverDelegate(activeObject.Value.DriverHostForm.DestroyDriver);
+                            LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Starting invoke of driver delegate for device {0} on thread {1}", activeObject.Key, Thread.CurrentThread.ManagedThreadId));
+                            activeObject.Value.DriverHostForm.Invoke(destroyDriverDelegate);
+                            LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Completed invoke of driver delegate for device {0} on thread {1}", activeObject.Key, Thread.CurrentThread.ManagedThreadId));
+                        }
+                        else
+                        {
+                            LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Drivers on same thread - destroying device {0} on thread {1}", activeObject.Key, Thread.CurrentThread.ManagedThreadId));
+                            RemainingObjectCount = DestroyDriver(activeObject.Key);
+                        }
+                    }
+                    catch (KeyNotFoundException) { } // Ignore key not found exceptions, they are expected for unconfigured devices
+
+                    catch (Exception ex)
+                    {
+                        LogException(0, 0, 0, "DisconnectDevices", "  ReleaseComObject Exception: " + ex.ToString());
+                    }
+                    LogBlankLine(0, 0, 0);
+                }
+
+                ActiveObjects.Clear(); // Clear the list of active objects now that all active device instances have been destroyed
+
+                GC.Collect(); // Reclaim memory and destroy all deleted objects
+            }
         }
 
         internal static int DestroyDriver(string DeviceKey)
@@ -1272,6 +1307,28 @@ namespace ASCOM.Remote
             //cleanedMessage = cleanedMessage.Replace("\n", string.Empty);
             string cleanedMessage = Regex.Replace(message, @"[^\u0020-\u007E]", string.Empty);
             return cleanedMessage;
+        }
+
+        /// <summary>
+        /// Releases all drivers and shuts down the Remote Server
+        /// </summary>
+        private void ShutdownTask()
+        {
+            if (this.InvokeRequired)
+            {
+                LogMessage(0, 0, 0, "ShutdownTask", "Invoke required...");
+                this.BeginInvoke(new Action(() => ShutdownTask()));
+                LogMessage(0, 0, 0, "ShutdownTask", "Completed Invoke.");
+            }
+            else
+            {
+                LogMessage(0, 0, 0, "ShutdownTask", $"Sleeping to allow shutdown command response to be returned to client");
+                Thread.Sleep(500);
+
+                LogMessage(0, 0, 0, "ShutdownTask", $"Closing Remote Server form");
+                this.Close();
+                LogMessage(0, 0, 0, "ShutdownTask", $"Closed Remote Server form");
+            }
         }
 
         #endregion
@@ -2415,20 +2472,23 @@ namespace ASCOM.Remote
                                                 switch (elements[URL_ELEMENT_SERVER_COMMAND])
                                                 {
                                                     // MANGEMENT_API_ENABLED removed because it won't work if the management api is disabled
-                                                    /*case SharedConstants.MANGEMENT_API_ENABLED:
+                                                    case SharedConstants.REMOTE_SERVER_MANGEMENT_SHUTDOWN_SERVER:
+                                                        LogMessage1(requestData, "ManagementShutdown", string.Format("Shutting down server - getting management lock"));
+                                                        lock (managementCommandLock) // Make sure that this command can only run one at a time!
+                                                        {
+                                                            LogMessage1(requestData, "ManagementShutdown", $"Got lock - API is currently enabled: {apiIsEnabled}");
 
-                                                        string newValueString = suppliedParameters[SharedConstants.MANGEMENT_API_ENABLED];
-                                                        LogMessage1(requestData,"PUT " + commandName, newValueString);
-                                                        if (bool.TryParse(newValueString, out bool newValue))
-                                                        {
-                                                            apiIsEnabled = newValue;
-                                                            ReturnNoResponse(commandName, request, response, null, clientID, clientTransactionID, serverTransactionID);
+                                                            // Disable the device API
+                                                            apiIsEnabled = false;
+
+                                                            LogMessage1(requestData, "ManagementShutdown", $"Starting shutdown task");
+                                                            // This is a "fire and forget" task so the IAsyncresult return value is discarded
+                                                            _ = Task.Run(() => ShutdownTask());
+                                                            LogMessage1(requestData, "ManagementShutdown", $"Completed shutdown task");
+
+                                                            SendEmptyResponseToClient(requestData, null);
                                                         }
-                                                        else
-                                                        {
-                                                            Return400Error(response, string.Format("Management {0} command - supplied value '{1}' can not be converted to boolean.", commandName, newValueString), clientID, clientTransactionID, serverTransactionID);
-                                                        }
-                                                        break; */
+                                                        break;
 
                                                     // Restart the server by closing current drivers and reloading them
                                                     case SharedConstants.REMOTE_SERVER_MANGEMENT_RESTART_SERVER:
@@ -2437,7 +2497,7 @@ namespace ASCOM.Remote
                                                         {
                                                             bool originalAPiIsEnabledState = apiIsEnabled;
                                                             LogMessage1(requestData, "Management Restart", string.Format("Got lock - API is currently enabled: {0}", apiIsEnabled));
-                                                            // Shut off access to the device API
+                                                            // Disable the device API
                                                             apiIsEnabled = false;
                                                             LogMessage1(requestData, "Management Restart", string.Format("Unloading drivers - devices are connected: {0}", devicesAreConnected));
                                                             if (devicesAreConnected) DisconnectDevices();
