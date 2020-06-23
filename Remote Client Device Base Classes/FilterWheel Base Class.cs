@@ -183,7 +183,7 @@ namespace ASCOM.Remote
             get
             {
                 RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
-                string response = string.Format("{0} REMOTE DRIVER: {1}", DriverDisplayName, RemoteClientDriver.Description(clientNumber, client, URIBase, TL));
+                string response = RemoteClientDriver.Description(clientNumber, client, URIBase, TL);
                 TL.LogMessage(clientNumber, "Description", response);
                 return response;
             }
@@ -197,9 +197,9 @@ namespace ASCOM.Remote
             get
             {
                 RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
-                Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                Version version = Assembly.GetExecutingAssembly().GetName().Version;
                 string remoteString = RemoteClientDriver.DriverInfo(clientNumber, client, URIBase, TL);
-                string response = string.Format("{0} Version {1}, REMOTE DRIVER: {2}", DriverDisplayName, version.ToString(), remoteString);
+                string response = $"{DriverDisplayName} Version {version}, REMOTE DRIVER: {remoteString}";
                 TL.LogMessage(clientNumber, "DriverInfo", response);
                 return response;
             }
