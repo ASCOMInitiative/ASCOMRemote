@@ -5112,7 +5112,6 @@ namespace ASCOM.Remote
                             switch (deviceResponse.Rank)
                             {
                                 case 2:
-                                case 3:
                                     if (base64HandoffRequested) // Handle base64 hand-off processing
                                     {
                                         LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
@@ -5132,6 +5131,28 @@ namespace ASCOM.Remote
                                     {
                                         responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
                                         responseClass.Value = (int[,])deviceResponse;
+                                    }
+                                    break;
+                                case 3:
+                                    if (base64HandoffRequested) // Handle base64 hand-off processing
+                                    {
+                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                        responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
+                                        {
+                                            ClientTransactionID = requestData.ClientTransactionID,
+                                            ServerTransactionID = requestData.ServerTransactionID,
+                                            Rank = deviceResponse.Rank,
+                                            Type = (int)SharedConstants.ImageArrayElementTypes.Int,
+                                            Dimension0Length = deviceResponse.GetLength(0)
+                                        };
+                                        if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
+                                        if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
+                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                    }
+                                    else // Normal JSON encoding of the array elements
+                                    {
+                                        responseClass = new IntArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
+                                        responseClass.Value = (int[,,])deviceResponse;
                                     }
                                     break;
 
