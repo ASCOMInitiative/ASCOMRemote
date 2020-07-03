@@ -356,6 +356,7 @@ namespace ASCOM.Remote
             {
                 { SharedConstants.POSITION_PARAMETER_NAME, Position.ToString(CultureInfo.InvariantCulture) }
             };
+            RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
             RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "Move", Parameters, Method.PUT);
             TL.LogMessage(clientNumber, "Move", string.Format("Rotator moved to relative position {0} OK", Position));
         }
@@ -366,8 +367,44 @@ namespace ASCOM.Remote
             {
                 { SharedConstants.POSITION_PARAMETER_NAME, Position.ToString(CultureInfo.InvariantCulture) }
             };
+            RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
             RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "MoveAbsolute", Parameters, Method.PUT);
             TL.LogMessage(clientNumber, "MoveAbsolute", string.Format("Rotator moved to absolute position {0} OK", Position));
+        }
+
+        #endregion
+
+        #region IRotatorV3 Properties and Methods
+
+        public float MechanicalPosition
+        {
+            get
+            {
+                RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
+                return RemoteClientDriver.GetValue<float>(clientNumber, client, URIBase, TL, "MechanicalPosition");
+            }
+        }
+
+        public void Sync(float Position)
+        {
+            Dictionary<string, string> Parameters = new Dictionary<string, string>
+            {
+                { SharedConstants.POSITION_PARAMETER_NAME, Position.ToString(CultureInfo.InvariantCulture) }
+            };
+            RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
+            RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "Sync", Parameters, Method.PUT);
+            TL.LogMessage(clientNumber, "Sync", string.Format("Rotator synced to sky position {0} OK", Position));
+        }
+
+        public void MoveMechanical(float Position)
+        {
+            Dictionary<string, string> Parameters = new Dictionary<string, string>
+            {
+                { SharedConstants.POSITION_PARAMETER_NAME, Position.ToString(CultureInfo.InvariantCulture) }
+            };
+            RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
+            RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "MoveMechanical", Parameters, Method.PUT);
+            TL.LogMessage(clientNumber, "MoveMechanical", string.Format("Rotator moved to mechanical position {0} OK", Position));
         }
 
         #endregion
