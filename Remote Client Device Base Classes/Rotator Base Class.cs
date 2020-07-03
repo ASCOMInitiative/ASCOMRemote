@@ -13,7 +13,7 @@ namespace ASCOM.Remote
     /// <summary>
     /// ASCOM Remote Rotator base class
     /// </summary>
-    public class RotatorBaseClass : ReferenceCountedObjectBase, IRotatorV2
+    public class RotatorBaseClass : ReferenceCountedObjectBase, IRotatorV3
     {
         #region Variables and Constants
 
