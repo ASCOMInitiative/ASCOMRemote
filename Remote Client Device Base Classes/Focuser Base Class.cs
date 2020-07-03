@@ -165,8 +165,7 @@ namespace ASCOM.Remote
             {
                 RemoteClientDriver.SetClientTimeout(client, standardServerResponseTimeout);
                 Version version = Assembly.GetExecutingAssembly().GetName().Version;
-                string remoteString = RemoteClientDriver.DriverInfo(clientNumber, client, URIBase, TL);
-                string response = $"{DriverDisplayName} Version {version}, REMOTE DRIVER: {remoteString}";
+                string response = $"ASCOM Remote Driver v{version} - REMOTE DEVICE: {RemoteClientDriver.DriverInfo(clientNumber, client, URIBase, TL)}";
                 TL.LogMessage(clientNumber, "DriverInfo", response);
                 return response;
             }
