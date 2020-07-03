@@ -353,7 +353,7 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                LogException(0, 0, 0, "ServerForm.Load", $"Exception setting windows state: \r\n{ex.ToString()} ");
+                LogException(0, 0, 0, "ServerForm.Load", $"Exception setting windows state: \r\n{ex} ");
             }
         }
 
@@ -880,7 +880,7 @@ namespace ASCOM.Remote
                 }
                 else  // The Remote Server is configured to respond on one specific address rather than on all of its IP addresses so test whether the received message is on the selected IP address
                 {
-                    if (DebugTraceState) LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"Request received on endpoint: {localIpEndPoint} - Enabled endpoint: {new IPEndPoint(IPAddress.Parse(ServerIPAddressString), (int)AlpacaDiscoveryPort).ToString()}");
+                    if (DebugTraceState) LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"Request received on endpoint: {localIpEndPoint} - Enabled endpoint: {new IPEndPoint(IPAddress.Parse(ServerIPAddressString), (int)AlpacaDiscoveryPort)}");
                     if (localIpEndPoint.ToString() != new IPEndPoint(IPAddress.Parse(ServerIPAddressString), (int)AlpacaDiscoveryPort).ToString()) // IP Addresses don't match so we just ignore the request
                     {
                         if (DebugTraceState) LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"  The endpoint is NOT enabled - This request will be dropped.");
@@ -907,7 +907,7 @@ namespace ASCOM.Remote
                         discoveryBroadcastVersionNumber = ReceiveString.ToCharArray(SharedConstants.ALPACA_DISCOVERY_BROADCAST_ID.Length, 1)[0];
                     }
 
-                    ServerForm.LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"Received a version {discoveryBroadcastVersionNumber} (0x{((int)Char.GetNumericValue(discoveryBroadcastVersionNumber)).ToString("X")}) discovery packet from the client IP address {remoteEndpoint.Address} of type {remoteEndpoint.AddressFamily}. Returning Alpaca port number: {ServerPortNumber}");
+                    ServerForm.LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"Received a version {discoveryBroadcastVersionNumber} (0x{(int)Char.GetNumericValue(discoveryBroadcastVersionNumber):X}) discovery packet from the client IP address {remoteEndpoint.Address} of type {remoteEndpoint.AddressFamily}. Returning Alpaca port number: {ServerPortNumber}");
 
                     // Create a discovery response, convert it to JSON and return this to the caller
                     AlpacaDiscoveryResponse alpacaDiscoveryResponse = new AlpacaDiscoveryResponse((int)ServerPortNumber); // Create the response object
@@ -928,7 +928,7 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                LogException((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"Unexpected exception: {ex.ToString()}");
+                LogException((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"Unexpected exception: {ex}");
             }
         }
 
@@ -978,7 +978,7 @@ namespace ASCOM.Remote
                             }
                             catch (Exception ex2) when (configuredDevice.Value.DeviceType.ToLowerInvariant() == "focuser")
                             {
-                                LogException(0, 0, 0, "CreateInstance", $"Error setting Connected to true for focuser device {configuredDevice.Value.ProgID} now trying Link for IFocuserV1 devices: \r\n{ex2.ToString()}");
+                                LogException(0, 0, 0, "CreateInstance", $"Error setting Connected to true for focuser device {configuredDevice.Value.ProgID} now trying Link for IFocuserV1 devices: \r\n{ex2}");
                                 ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject.Link = true;
                             }
                             ActiveObjects[configuredDevice.Value.DeviceKey].InitialisedOk = true; // Set flag indicating that this device initialised and connected OK
@@ -1227,13 +1227,13 @@ namespace ASCOM.Remote
 
             foreach (string deviceName in ServerDeviceNames)
             {
-                LogMessage(0, 0, 0, deviceName, $"Device Type               = {ConfiguredDevices[deviceName].DeviceType.ToString()}");
-                LogMessage(0, 0, 0, deviceName, $"ProgID                    = {ConfiguredDevices[deviceName].ProgID.ToString()}");
-                LogMessage(0, 0, 0, deviceName, $"Description               = {ConfiguredDevices[deviceName].Description.ToString()}");
-                LogMessage(0, 0, 0, deviceName, $"Device Number             = {ConfiguredDevices[deviceName].DeviceNumber.ToString()}");
-                LogMessage(0, 0, 0, deviceName, $"Allow Connected Set False = {ConfiguredDevices[deviceName].AllowConnectedSetFalse.ToString()}");
-                LogMessage(0, 0, 0, deviceName, $"Allow Connected Set True  = {ConfiguredDevices[deviceName].AllowConnectedSetTrue.ToString()}");
-                LogMessage(0, 0, 0, deviceName, $"Allow Concurrent Access   = {ConfiguredDevices[deviceName].AllowConcurrentAccess.ToString()}");
+                LogMessage(0, 0, 0, deviceName, $"Device Type               = {ConfiguredDevices[deviceName].DeviceType}");
+                LogMessage(0, 0, 0, deviceName, $"ProgID                    = {ConfiguredDevices[deviceName].ProgID}");
+                LogMessage(0, 0, 0, deviceName, $"Description               = {ConfiguredDevices[deviceName].Description}");
+                LogMessage(0, 0, 0, deviceName, $"Device Number             = {ConfiguredDevices[deviceName].DeviceNumber}");
+                LogMessage(0, 0, 0, deviceName, $"Allow Connected Set False = {ConfiguredDevices[deviceName].AllowConnectedSetFalse}");
+                LogMessage(0, 0, 0, deviceName, $"Allow Connected Set True  = {ConfiguredDevices[deviceName].AllowConnectedSetTrue}");
+                LogMessage(0, 0, 0, deviceName, $"Allow Concurrent Access   = {ConfiguredDevices[deviceName].AllowConcurrentAccess}");
                 LogBlankLine(0, 0, 0);
             }
         }
@@ -1379,8 +1379,8 @@ namespace ASCOM.Remote
                 for (int i = 0; i < MaximumNumberOfDevices; i++)
                 {
                     ServerDeviceNumbers.Add(i.ToString());
-                    ServerDeviceNames.Add($"ServedDevice{i.ToString("00")}");
-                    LogMessage(0, 0, 0, "ReadProfile", $"Adding served device {i} as ServedDevice{i.ToString("00")}");
+                    ServerDeviceNames.Add($"ServedDevice{i:00}");
+                    LogMessage(0, 0, 0, "ReadProfile", $"Adding served device {i} as ServedDevice{i:00}");
                 }
 
                 // Clear collection before repopulating
@@ -1764,7 +1764,7 @@ namespace ASCOM.Remote
             else
             {
                 // User has configured a specific IP address so test whether this request is to the configured IP address
-                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"Request received on endpoint: {localIpEndPoint.ToString()} - Enabled endpoint: {new IPEndPoint(IPAddress.Parse(ServerIPAddressString), (int)ServerPortNumber).ToString()}");
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"Request received on endpoint: {localIpEndPoint} - Enabled endpoint: {new IPEndPoint(IPAddress.Parse(ServerIPAddressString), (int)ServerPortNumber)}");
                 if (localIpEndPoint.ToString() != new IPEndPoint(IPAddress.Parse(ServerIPAddressString), (int)ServerPortNumber).ToString()) // IP Addresses don't match so we just ignore the request
                 {
                     if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"  The endpoint is NOT enabled - This request will be dropped.");
@@ -1986,7 +1986,7 @@ namespace ASCOM.Remote
                         if (request.HttpMethod.ToUpperInvariant() == "OPTIONS") // This is a CORS pre-flight request so we need to set some specific headers
                         {
                             // Set the Access-Control-Allow-Methods and Access-Control-Max-Age headers
-                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS method found - This is a CORS PRE_FLIGHT request: {CORS_ALLOWED_METHODS_HEADER} = {CORS_ALLOWED_METHODS}, {CORS_MAX_AGE_HEADER} = { CorsMaxAge.ToString()}");
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS method found - This is a CORS PRE_FLIGHT request: {CORS_ALLOWED_METHODS_HEADER} = {CORS_ALLOWED_METHODS}, {CORS_MAX_AGE_HEADER} = { CorsMaxAge}");
                             response.Headers.Add(CORS_ALLOWED_METHODS_HEADER, CORS_ALLOWED_METHODS);
                             response.Headers.Add(CORS_MAX_AGE_HEADER, CorsMaxAge.ToString());
                             ReturnEmpty200Success(requestData);
