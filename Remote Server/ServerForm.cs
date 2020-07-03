@@ -2950,7 +2950,6 @@ namespace ASCOM.Remote
                                             case "canreverse":
                                             case "ismoving":
                                             case "reverse":
-                                            case "cansync":
                                                 ReturnBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
                                             //FLOAT Get Values
@@ -3749,8 +3748,6 @@ namespace ASCOM.Remote
                         deviceResponse = device.IsMoving; break;
                     case "rotator.reverse":
                         deviceResponse = device.Reverse; break;
-                    case "rotator.cansync":
-                        deviceResponse = device.CanSync; break;
 
                     #endregion
 
