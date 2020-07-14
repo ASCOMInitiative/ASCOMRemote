@@ -503,1272 +503,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
-  '/switch/{device_number}/maxswitch':
-    get:
-      summary: The number of switch devices managed by this driver
-      description: >-
-        Returns the number of switch devices managed by this driver. Devices are
-        numbered from 0 to MaxSwitch - 1
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Switch Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IntResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/switch/{device_number}/canwrite':
-    get:
-      summary: Indicates whether the specified switch device can be written to
-      description: >-
-        Reports if the specified switch device can be written to, default true.
-        This is false if the device cannot be written to, for example a limit
-        switch or a sensor.  Devices are numbered from 0 to MaxSwitch - 1
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/SwitchNumberQuery'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Switch Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/switch/{device_number}/getswitch':
-    get:
-      summary: Return the state of switch device id as a boolean
-      description: >-
-        Return the state of switch device id as a boolean.  Devices are numbered
-        from 0 to MaxSwitch - 1
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/SwitchNumberQuery'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Switch Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/switch/{device_number}/getswitchdescription':
-    get:
-      summary: Gets the description of the specified switch device
-      description: >-
-        Gets the description of the specified switch device. This is to allow a
-        fuller description of the device to be returned, for example for a tool
-        tip. Devices are numbered from 0 to MaxSwitch - 1
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/SwitchNumberQuery'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Switch Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StringResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/switch/{device_number}/getswitchname':
-    get:
-      summary: Gets the name of the specified switch device
-      description: >-
-        Gets the name of the specified switch device. Devices are numbered from
-        0 to MaxSwitch - 1
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/SwitchNumberQuery'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Switch Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StringResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/switch/{device_number}/getswitchvalue':
-    get:
-      summary: Gets the value of the specified switch device as a double
-      description: >-
-        Gets the value of the specified switch device as a double. Devices are
-        numbered from 0 to MaxSwitch - 1, The value of this switch is expected
-        to be between MinSwitchValue and MaxSwitchValue.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/SwitchNumberQuery'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Switch Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DoubleResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/switch/{device_number}/minswitchvalue':
-    get:
-      summary: Gets the minimum value of the specified switch device as a double
-      description: >-
-        Gets the minimum value of the specified switch device as a double.
-        Devices are numbered from 0 to MaxSwitch - 1.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/SwitchNumberQuery'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Switch Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DoubleResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/switch/{device_number}/maxswitchvalue':
-    get:
-      summary: Gets the maximum value of the specified switch device as a double
-      description: >-
-        Gets the maximum value of the specified switch device as a double.
-        Devices are numbered from 0 to MaxSwitch - 1.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/SwitchNumberQuery'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Switch Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DoubleResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/switch/{device_number}/setswitch':
-    put:
-      summary: 'Sets a switch controller device to the specified state, true or false'
-      description: 'Sets a switch controller device to the specified state, true or false.'
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Switch Specific Methods
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                Id:
-                  description: The device number (0 to MaxSwitch - 1)
-                  type: integer
-                  format: int32
-                State:
-                  description: The required control state (True or False)
-                  type: boolean
-                ClientID:
-                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
-                  type: integer
-                  format: uint32
-                ClientTransactionID:
-                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
-                  type: integer
-                  format: uint32
-              required:
-                - Id
-                - State
-  '/switch/{device_number}/setswitchname':
-    put:
-      summary: Sets a switch device name to the specified value
-      description: Sets a switch device name to the specified value.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Switch Specific Methods
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                Id:
-                  description: The device number (0 to MaxSwitch - 1)
-                  type: integer
-                Name:
-                  description: The name of the device
-                  type: string
-                ClientID:
-                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
-                  type: integer
-                  format: uint32
-                ClientTransactionID:
-                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
-                  type: integer
-                  format: uint32
-              required:
-                - Id
-                - Name
-  '/switch/{device_number}/setswitchvalue':
-    put:
-      summary: Sets a switch device value to the specified value
-      description: Sets a switch device value to the specified value.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Switch Specific Methods
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                Id:
-                  description: The device number (0 to MaxSwitch - 1)
-                  type: integer
-                  format: int32
-                Value:
-                  description: >-
-                    The value to be set, between MinSwitchValue and
-                    MaxSwitchValue
-                  type: number
-                ClientID:
-                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
-                  type: integer
-                  format: uint32
-                ClientTransactionID:
-                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
-                  type: integer
-                  format: uint32
-              required:
-                - Id
-                - Value
-  '/switch/{device_number}/switchstep':
-    get:
-      summary: >-
-        Returns the step size that this device supports (the difference between
-        successive values of the device).
-      description: >-
-        Returns the step size that this device supports (the difference between
-        successive values of the device). Devices are numbered from 0 to
-        MaxSwitch - 1.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/SwitchNumberQuery'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Switch Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DoubleResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/safetymonitor/{device_number}/issafe':
-    get:
-      summary: Indicates whether the monitored state is safe for use.
-      description: >-
-        Indicates whether the monitored state is safe for use. True if the state
-        is safe, False if it is unsafe.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - SafetyMonitor Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/altitude':
-    get:
-      summary: The dome altitude
-      description: >-
-        The dome altitude (degrees, horizon zero and increasing positive to 90
-        zenith).
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DoubleResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/athome':
-    get:
-      summary: Indicates whether the dome is in the home position.
-      description: >-
-        Indicates whether the dome is in the home position. This is normally
-        used following a FindHome()  operation. The value is reset with any
-        azimuth slew operation that moves the dome away from the home position.
-        AtHome may also become true durng normal slew operations, if the dome
-        passes through the home position and the dome controller hardware is
-        capable of detecting that; or at the end of a slew operation if the dome
-        comes to rest at the home position.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/atpark':
-    get:
-      summary: Indicates whether the telescope is at the park position
-      description: >-
-        True if the dome is in the programmed park position. Set only following
-        a Park() operation and reset with any slew operation.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/azimuth':
-    get:
-      summary: The dome azimuth
-      description: >-
-        Returns the dome azimuth (degrees, North zero and increasing clockwise,
-        i.e., 90 East, 180 South, 270 West)
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DoubleResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/canfindhome':
-    get:
-      summary: Indicates whether the dome can find the home position.
-      description: True if the dome can move to the home position.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/canpark':
-    get:
-      summary: Indicates whether the dome can be parked.
-      description: True if the dome is capable of programmed parking (Park() method)
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/cansetaltitude':
-    get:
-      summary: Indicates whether the dome altitude can be set
-      description: True if driver is capable of setting the dome altitude.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/cansetazimuth':
-    get:
-      summary: Indicates whether the dome azimuth can be set
-      description: True if driver is capable of setting the dome azimuth.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/cansetpark':
-    get:
-      summary: Indicates whether the dome park position can be set
-      description: True if driver is capable of setting the dome park position.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/cansetshutter':
-    get:
-      summary: Indicates whether the dome shutter can be opened
-      description: True if driver is capable of automatically operating shutter
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/canslave':
-    get:
-      summary: Indicates whether the dome supports slaving to a telescope
-      description: True if driver is capable of slaving to a telescope.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/cansyncazimuth':
-    get:
-      summary: Indicates whether the dome azimuth position can be synched
-      description: >-
-        True if driver is capable of synchronizing the dome azimuth position
-        using the SyncToAzimuth(Double) method.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/shutterstatus':
-    get:
-      summary: Status of the dome shutter or roll-off roof
-      description: >-
-        Returns the status of the dome shutter or roll-off roof. 0 = Open, 1 =
-        Closed, 2 = Opening, 3 = Closing, 4 = Shutter status error
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IntResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/slaved':
-    get:
-      summary: Indicates whether the dome is slaved to the telescope
-      description: 'True if the dome is slaved to the telescope in its hardware, else False.'
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IntResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-    put:
-      summary: Sets whether the dome is slaved to the telescope
-      description: Sets the current subframe height.
-      tags:
-        - Dome Specific Methods
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                Slaved:
-                  description: 'True if telescope is slaved to dome, otherwise false'
-                  type: boolean
-                  default: false
-                ClientID:
-                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
-                  type: integer
-                  format: uint32
-                ClientTransactionID:
-                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
-                  type: integer
-                  format: uint32
-              required:
-                - Slaved
-  '/dome/{device_number}/slewing':
-    get:
-      summary: Indicates whether the any part of the dome is moving
-      description: >-
-        True if any part of the dome is currently moving, False if all dome
-        components are steady.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/dome/{device_number}/abortslew':
-    put:
-      summary: Immediately cancel current dome operation.
-      description: >-
-        Calling this method will immediately disable hardware slewing (Slaved
-        will become False).
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        $ref: '#/components/requestBodies/putStandardClientParameters'
-  '/dome/{device_number}/closeshutter':
-    put:
-      summary: Close the shutter or otherwise shield telescope from the sky.
-      description: Close the shutter or otherwise shield telescope from the sky.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        $ref: '#/components/requestBodies/putStandardClientParameters'
-  '/dome/{device_number}/findhome':
-    put:
-      summary: Start operation to search for the dome home position.
-      description: >-
-        After Home position is established initializes Azimuth to the default
-        value and sets the AtHome flag.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        $ref: '#/components/requestBodies/putStandardClientParameters'
-  '/dome/{device_number}/openshutter':
-    put:
-      summary: Open shutter or otherwise expose telescope to the sky.
-      description: Open shutter or otherwise expose telescope to the sky.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        $ref: '#/components/requestBodies/putStandardClientParameters'
-  '/dome/{device_number}/park':
-    put:
-      summary: Rotate dome in azimuth to park position.
-      description: 'After assuming programmed park position, sets AtPark flag.'
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        $ref: '#/components/requestBodies/putStandardClientParameters'
-  '/dome/{device_number}/setpark':
-    put:
-      summary: >-
-        Set the current azimuth, altitude position of dome to be the park
-        position
-      description: >-
-        Set the current azimuth, altitude position of dome to be the park
-        position.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        $ref: '#/components/requestBodies/putStandardClientParameters'
-  '/dome/{device_number}/slewtoaltitude':
-    put:
-      summary: Slew the dome to the given altitude position.
-      description: Slew the dome to the given altitude position.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                Altitude:
-                  description: >-
-                    Target dome altitude (degrees, horizon zero and increasing
-                    positive to 90 zenith)
-                  type: number
-                ClientID:
-                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
-                  type: integer
-                  format: uint32
-                ClientTransactionID:
-                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
-                  type: integer
-                  format: uint32
-              required:
-                - Altitude
-  '/dome/{device_number}/slewtoazimuth':
-    put:
-      summary: Slew the dome to the given azimuth position.
-      description: Slew the dome to the given azimuth position.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        $ref: '#/components/requestBodies/putDome_devicenumber_slewtoazimuth'
-  '/dome/{device_number}/synctoazimuth':
-    put:
-      summary: Synchronize the current position of the dome to the given azimuth.
-      description: Synchronize the current position of the dome to the given azimuth.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Dome Specific Methods
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        $ref: '#/components/requestBodies/putDome_devicenumber_slewtoazimuth'
   '/camera/{device_number}/bayeroffsetx':
     get:
       summary: Returns the X offset of the Bayer matrix.
@@ -2643,8 +1377,8 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
   '/camera/{device_number}/gain':
     get:
-      summary: Returns an index into the Gains array
-      description: Returns an index into the Gains array for the selected camera gain.
+      summary: Returns the camera's gain
+      description: The camera's gain (GAIN VALUE MODE) OR the index of the selected camera gain description in the Gains array (GAINS INDEX MODE).
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2671,8 +1405,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
     put:
-      summary: Sets an index into the Gains array.
-      description: Sets an index into the Gains array for the selected camera gain.
+      summary: Sets the camera's gain.
+      description: The camera's gain (GAIN VALUE MODE) OR the index of the selected camera gain description in the Gains array (GAINS INDEX MODE).
       tags:
         - Camera Specific Methods
       parameters:
@@ -2719,7 +1453,7 @@ paths:
                 - Gain
   '/camera/{device_number}/gainmax':
     get:
-      summary: Maximum value of Gain
+      summary: Maximum Gain value of that this camera supports
       description: Returns the maximum value of Gain.
       parameters:
         - $ref: '#/components/parameters/device_number'
@@ -2748,7 +1482,7 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
   '/camera/{device_number}/gainmin':
     get:
-      summary: Minimum value of Gain
+      summary: Minimum Gain value of that this camera supports 
       description: Returns the Minimum value of Gain.
       parameters:
         - $ref: '#/components/parameters/device_number'
@@ -2777,7 +1511,7 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
   '/camera/{device_number}/gains':
     get:
-      summary: Gains supported by the camera
+      summary: List of Gain names supported by the camera 
       description: Returns the Gains supported by the camera.
       parameters:
         - $ref: '#/components/parameters/device_number'
@@ -2804,6 +1538,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
+
   '/camera/{device_number}/hasshutter':
     get:
       summary: Indicates whether the camera has a mechanical shutter
@@ -3338,6 +2073,169 @@ paths:
                   format: uint32
               required:
                 - NumY
+  '/camera/{device_number}/offset':
+    get:
+      summary: Returns the camera's offset
+      description: Returns the camera's offset (OFFSET VALUE MODE) OR the index of the selected camera offset description in the offsets array (OFFSETS INDEX MODE).
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Camera Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    put:
+      summary: Sets the camera's offset.
+      description: Sets the camera's offset (OFFSET VALUE MODE) OR the index of the selected camera offset description in the offsets array (OFFSETS INDEX MODE).
+      tags:
+        - Camera Specific Methods
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                offset:
+                  description: Index of the current camera offset in the offsets string array.
+                  type: integer
+                  format: int32
+                  default: 0
+                ClientID:
+                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+                  type: integer
+                  format: uint32
+                ClientTransactionID:
+                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+                  type: integer
+                  format: uint32
+              required:
+                - offset
+  '/camera/{device_number}/offsetmax':
+    get:
+      summary: Maximum offset value of that this camera supports
+      description: Returns the maximum value of offset.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Camera Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/camera/{device_number}/offsetmin':
+    get:
+      summary: Minimum offset value of that this camera supports 
+      description: Returns the Minimum value of offset.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Camera Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/camera/{device_number}/offsets':
+    get:
+      summary: List of offset names supported by the camera 
+      description: Returns the offsets supported by the camera.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Camera Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringArrayResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
   '/camera/{device_number}/percentcompleted':
     get:
       summary: Indicates percentage completeness of the current operation
@@ -4021,6 +2919,1620 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
       requestBody:
         $ref: '#/components/requestBodies/putStandardClientParameters'
+
+
+  '/covercalibrator/{device_number}/brightness':
+    get:
+      summary: Returns the current calibrator brightness
+      description: Returns the current calibrator brightness in the range 0 (completely off) to MaxBrightness (fully on) 
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - CoverCalibrator Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/covercalibrator/{device_number}/calibratorstate':
+    get:
+      summary: Returns the state of the calibration device
+      description: >-
+        Returns the state of the calibration device, if present, otherwise returns "NotPresent". 
+        The calibrator state mode is specified as an integer value from the
+        CalibratorStatus Enum.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - CoverCalibrator Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/covercalibrator/{device_number}/coverstate':
+    get:
+      summary: Returns the state of the device cover" 
+      description: >-
+        Returns the state of the device cover, if present, otherwise returns "NotPresent". 
+        The cover state mode is specified as an integer value from the
+        CoverStatus Enum.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - CoverCalibrator Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/covercalibrator/{device_number}/maxbrightness':
+    get:
+      summary: Returns the calibrator's maximum Brightness value.
+      description: The Brightness value that makes the calibrator deliver its maximum illumination. 
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - CoverCalibrator Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/covercalibrator/{device_number}/calibratoroff':
+    put:
+      summary: Turns the calibrator off
+      description: 'Turns the calibrator off if the device has calibration capability.'
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - CoverCalibrator Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
+  '/covercalibrator/{device_number}/calibratoron':
+    put:
+      summary: Turns the calibrator on at the specified brightness
+      description: >-
+        Turns the calibrator on at the specified brightness if the device has calibration capability.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - CoverCalibrator Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                Brightness:
+                  description: >-
+                    The required brightness in the range 0 to MaxBrightness
+                  type: integer
+                  format: int32
+                ClientID:
+                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+                  type: integer
+                  format: uint32
+                ClientTransactionID:
+                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+                  type: integer
+                  format: uint32
+              required:
+                - Position
+  '/covercalibrator/{device_number}/closecover':
+    put:
+      summary: Initiates cover closing 
+      description: 'Initiates cover closing if a cover is present.'
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - CoverCalibrator Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
+  '/covercalibrator/{device_number}/haltcover':
+    put:
+      summary: Stops any cover movement that may be in progress
+      description: 'Stops any cover movement that may be in progress if a cover is present and cover movement can be interrupted.'
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - CoverCalibrator Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
+  '/covercalibrator/{device_number}/opencover':
+    put:
+      summary: Initiates cover opening
+      description: 'Initiates cover opening if a cover is present.'
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - CoverCalibrator Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
+  '/dome/{device_number}/altitude':
+    get:
+      summary: The dome altitude
+      description: >-
+        The dome altitude (degrees, horizon zero and increasing positive to 90
+        zenith).
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoubleResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/dome/{device_number}/athome':
+    get:
+      summary: Indicates whether the dome is in the home position.
+      description: >-
+        Indicates whether the dome is in the home position. This is normally
+        used following a FindHome()  operation. The value is reset with any
+        azimuth slew operation that moves the dome away from the home position.
+        AtHome may also become true durng normal slew operations, if the dome
+        passes through the home position and the dome controller hardware is
+        capable of detecting that; or at the end of a slew operation if the dome
+        comes to rest at the home position.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/dome/{device_number}/atpark':
+    get:
+      summary: Indicates whether the telescope is at the park position
+      description: >-
+        True if the dome is in the programmed park position. Set only following
+        a Park() operation and reset with any slew operation.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/dome/{device_number}/azimuth':
+    get:
+      summary: The dome azimuth
+      description: >-
+        Returns the dome azimuth (degrees, North zero and increasing clockwise,
+        i.e., 90 East, 180 South, 270 West)
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoubleResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/dome/{device_number}/canfindhome':
+    get:
+      summary: Indicates whether the dome can find the home position.
+      description: True if the dome can move to the home position.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/dome/{device_number}/canpark':
+    get:
+      summary: Indicates whether the dome can be parked.
+      description: True if the dome is capable of programmed parking (Park() method)
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/dome/{device_number}/cansetaltitude':
+    get:
+      summary: Indicates whether the dome altitude can be set
+      description: True if driver is capable of setting the dome altitude.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/dome/{device_number}/cansetazimuth':
+    get:
+      summary: Indicates whether the dome azimuth can be set
+      description: True if driver is capable of setting the dome azimuth.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/dome/{device_number}/cansetpark':
+    get:
+      summary: Indicates whether the dome park position can be set
+      description: True if driver is capable of setting the dome park position.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/dome/{device_number}/cansetshutter':
+    get:
+      summary: Indicates whether the dome shutter can be opened
+      description: True if driver is capable of automatically operating shutter
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/dome/{device_number}/canslave':
+    get:
+      summary: Indicates whether the dome supports slaving to a telescope
+      description: True if driver is capable of slaving to a telescope.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/dome/{device_number}/cansyncazimuth':
+    get:
+      summary: Indicates whether the dome azimuth position can be synched
+      description: >-
+        True if driver is capable of synchronizing the dome azimuth position
+        using the SyncToAzimuth(Double) method.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/dome/{device_number}/shutterstatus':
+    get:
+      summary: Status of the dome shutter or roll-off roof
+      description: >-
+        Returns the status of the dome shutter or roll-off roof. 0 = Open, 1 =
+        Closed, 2 = Opening, 3 = Closing, 4 = Shutter status error
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/dome/{device_number}/slaved':
+    get:
+      summary: Indicates whether the dome is slaved to the telescope
+      description: 'True if the dome is slaved to the telescope in its hardware, else False.'
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    put:
+      summary: Sets whether the dome is slaved to the telescope
+      description: Sets the current subframe height.
+      tags:
+        - Dome Specific Methods
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                Slaved:
+                  description: 'True if telescope is slaved to dome, otherwise false'
+                  type: boolean
+                  default: false
+                ClientID:
+                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+                  type: integer
+                  format: uint32
+                ClientTransactionID:
+                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+                  type: integer
+                  format: uint32
+              required:
+                - Slaved
+  '/dome/{device_number}/slewing':
+    get:
+      summary: Indicates whether the any part of the dome is moving
+      description: >-
+        True if any part of the dome is currently moving, False if all dome
+        components are steady.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/dome/{device_number}/abortslew':
+    put:
+      summary: Immediately cancel current dome operation.
+      description: >-
+        Calling this method will immediately disable hardware slewing (Slaved
+        will become False).
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
+  '/dome/{device_number}/closeshutter':
+    put:
+      summary: Close the shutter or otherwise shield telescope from the sky.
+      description: Close the shutter or otherwise shield telescope from the sky.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
+  '/dome/{device_number}/findhome':
+    put:
+      summary: Start operation to search for the dome home position.
+      description: >-
+        After Home position is established initializes Azimuth to the default
+        value and sets the AtHome flag.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
+  '/dome/{device_number}/openshutter':
+    put:
+      summary: Open shutter or otherwise expose telescope to the sky.
+      description: Open shutter or otherwise expose telescope to the sky.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
+  '/dome/{device_number}/park':
+    put:
+      summary: Rotate dome in azimuth to park position.
+      description: 'After assuming programmed park position, sets AtPark flag.'
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
+  '/dome/{device_number}/setpark':
+    put:
+      summary: >-
+        Set the current azimuth, altitude position of dome to be the park
+        position
+      description: >-
+        Set the current azimuth, altitude position of dome to be the park
+        position.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
+  '/dome/{device_number}/slewtoaltitude':
+    put:
+      summary: Slew the dome to the given altitude position.
+      description: Slew the dome to the given altitude position.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                Altitude:
+                  description: >-
+                    Target dome altitude (degrees, horizon zero and increasing
+                    positive to 90 zenith)
+                  type: number
+                ClientID:
+                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+                  type: integer
+                  format: uint32
+                ClientTransactionID:
+                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+                  type: integer
+                  format: uint32
+              required:
+                - Altitude
+  '/dome/{device_number}/slewtoazimuth':
+    put:
+      summary: Slew the dome to the given azimuth position.
+      description: Slew the dome to the given azimuth position.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        $ref: '#/components/requestBodies/putDome_devicenumber_slewtoazimuth'
+  '/dome/{device_number}/synctoazimuth':
+    put:
+      summary: Synchronize the current position of the dome to the given azimuth.
+      description: Synchronize the current position of the dome to the given azimuth.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Dome Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        $ref: '#/components/requestBodies/putDome_devicenumber_slewtoazimuth'
+  '/filterwheel/{device_number}/focusoffsets':
+    get:
+      summary: Filter focus offsets
+      description: An integer array of filter focus offsets.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - FilterWheel Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntArrayResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/filterwheel/{device_number}/names':
+    get:
+      summary: Filter wheel filter names
+      description: The names of the filters
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - FilterWheel Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringArrayResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/filterwheel/{device_number}/position':
+    get:
+      summary: Returns the current filter wheel position
+      description: Returns the current filter wheel position
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - FilterWheel Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    put:
+      summary: Sets the filter wheel position
+      description: Sets the filter wheel position
+      tags:
+        - FilterWheel Specific Methods
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                Position:
+                  description: The number of the filter wheel position to select
+                  type: integer
+                  format: int32
+                ClientID:
+                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+                  type: integer
+                  format: uint32
+                ClientTransactionID:
+                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+                  type: integer
+                  format: uint32
+              required:
+                - Position
+  '/focuser/{device_number}/absolute':
+    get:
+      summary: Indicates whether the focuser is capable of absolute position.
+      description: >-
+        True if the focuser is capable of absolute position; that is, being
+        commanded to a specific step location.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/focuser/{device_number}/ismoving':
+    get:
+      summary: Indicates whether the focuser is currently moving.
+      description: >-
+        True if the focuser is currently moving to a new position. False if the
+        focuser is stationary.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/focuser/{device_number}/maxincrement':
+    get:
+      summary: Returns the focuser's maximum increment size.
+      description: >-
+        Maximum increment size allowed by the focuser; i.e. the maximum number
+        of steps allowed in one move operation.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/focuser/{device_number}/maxstep':
+    get:
+      summary: Returns the focuser's maximum step size.
+      description: Maximum step position permitted.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/focuser/{device_number}/position':
+    get:
+      summary: Returns the focuser's current position.
+      description: 'Current focuser position, in steps.'
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/focuser/{device_number}/stepsize':
+    get:
+      summary: Returns the focuser's step size.
+      description: Step size (microns) for the focuser.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoubleResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/focuser/{device_number}/tempcomp':
+    get:
+      summary: Retrieves the state of temperature compensation mode
+      description: >-
+        Gets the state of temperature compensation mode (if available), else
+        always False.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    put:
+      summary: Sets the device's temperature compensation mode.
+      description: Sets the state of temperature compensation mode.
+      tags:
+        - Focuser Specific Methods
+      parameters:
+        - name: device_number
+          description: Zero based device number as set on the server
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                TempComp:
+                  description: >-
+                    Set true to enable the focuser's temperature compensation
+                    mode, otherwise false for normal operation.
+                  type: boolean
+                Client:
+                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+                  type: integer
+                  format: uint32
+                ClientTransactionIDForm:
+                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+                  type: integer
+                  format: uint32
+              required:
+                - TempComp
+  '/focuser/{device_number}/tempcompavailable':
+    get:
+      summary: Indicates whether the focuser has temperature compensation.
+      description: True if focuser has temperature compensation available.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/focuser/{device_number}/temperature':
+    get:
+      summary: Returns the focuser's current temperature.
+      description: Current ambient temperature as measured by the focuser.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoubleResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/focuser/{device_number}/halt':
+    put:
+      summary: Immediatley stops focuser motion.
+      description: >-
+        Immediately stop any focuser motion due to a previous Move(Int32) method
+        call.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
+  '/focuser/{device_number}/move':
+    put:
+      summary: Moves the focuser to a new position.
+      description: >-
+        Moves the focuser by the specified amount or to the specified position
+        depending on the value of the Absolute property.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Focuser Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                Position:
+                  description: >-
+                    Step distance or absolute position, depending on the value
+                    of the Absolute property
+                  type: integer
+                  format: int32
+                ClientID:
+                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+                  type: integer
+                  format: uint32
+                ClientTransactionID:
+                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+                  type: integer
+                  format: uint32
+              required:
+                - Position
   '/observingconditions/{device_number}/averageperiod':
     get:
       summary: Returns the time period over which observations will be averaged
@@ -4595,543 +5107,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
-  '/filterwheel/{device_number}/focusoffsets':
-    get:
-      summary: Filter focus offsets
-      description: An integer array of filter focus offsets.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - FilterWheel Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IntArrayResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/filterwheel/{device_number}/names':
-    get:
-      summary: Filter wheel filter names
-      description: The names of the filters
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - FilterWheel Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StringArrayResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/filterwheel/{device_number}/position':
-    get:
-      summary: Returns the current filter wheel position
-      description: Returns the current filter wheel position
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - FilterWheel Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IntResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-    put:
-      summary: Sets the filter wheel position
-      description: Sets the filter wheel position
-      tags:
-        - FilterWheel Specific Methods
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                Position:
-                  description: The number of the filter wheel position to select
-                  type: integer
-                  format: int32
-                ClientID:
-                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
-                  type: integer
-                  format: uint32
-                ClientTransactionID:
-                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
-                  type: integer
-                  format: uint32
-              required:
-                - Position
-  '/focuser/{device_number}/absolute':
-    get:
-      summary: Indicates whether the focuser is capable of absolute position.
-      description: >-
-        True if the focuser is capable of absolute position; that is, being
-        commanded to a specific step location.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Focuser Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/focuser/{device_number}/ismoving':
-    get:
-      summary: Indicates whether the focuser is currently moving.
-      description: >-
-        True if the focuser is currently moving to a new position. False if the
-        focuser is stationary.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Focuser Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/focuser/{device_number}/maxincrement':
-    get:
-      summary: Returns the focuser's maximum increment size.
-      description: >-
-        Maximum increment size allowed by the focuser; i.e. the maximum number
-        of steps allowed in one move operation.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Focuser Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IntResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/focuser/{device_number}/maxstep':
-    get:
-      summary: Returns the focuser's maximum step size.
-      description: Maximum step position permitted.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Focuser Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IntResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/focuser/{device_number}/position':
-    get:
-      summary: Returns the focuser's current position.
-      description: 'Current focuser position, in steps.'
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Focuser Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IntResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/focuser/{device_number}/stepsize':
-    get:
-      summary: Returns the focuser's step size.
-      description: Step size (microns) for the focuser.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Focuser Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DoubleResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/focuser/{device_number}/tempcomp':
-    get:
-      summary: Retrieves the state of temperature compensation mode
-      description: >-
-        Gets the state of temperature compensation mode (if available), else
-        always False.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Focuser Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-    put:
-      summary: Sets the device's temperature compensation mode.
-      description: Sets the state of temperature compensation mode.
-      tags:
-        - Focuser Specific Methods
-      parameters:
-        - name: device_number
-          description: Zero based device number as set on the server
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                TempComp:
-                  description: >-
-                    Set true to enable the focuser's temperature compensation
-                    mode, otherwise false for normal operation.
-                  type: boolean
-                Client:
-                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
-                  type: integer
-                  format: uint32
-                ClientTransactionIDForm:
-                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
-                  type: integer
-                  format: uint32
-              required:
-                - TempComp
-  '/focuser/{device_number}/tempcompavailable':
-    get:
-      summary: Indicates whether the focuser has temperature compensation.
-      description: True if focuser has temperature compensation available.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Focuser Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BoolResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/focuser/{device_number}/temperature':
-    get:
-      summary: Returns the focuser's current temperature.
-      description: Current ambient temperature as measured by the focuser.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Focuser Specific Methods
-      responses:
-        '200':
-          description: Driver response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DoubleResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-  '/focuser/{device_number}/halt':
-    put:
-      summary: Immediatley stops focuser motion.
-      description: >-
-        Immediately stop any focuser motion due to a previous Move(Int32) method
-        call.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Focuser Specific Methods
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        $ref: '#/components/requestBodies/putStandardClientParameters'
-  '/focuser/{device_number}/move':
-    put:
-      summary: Moves the focuser to a new position.
-      description: >-
-        Moves the focuser by the specified amount or to the specified position
-        depending on the value of the Absolute property.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Focuser Specific Methods
-      responses:
-        '200':
-          description: Transaction complete or exception
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MethodResponse'
-        '400':
-          description: 'Method or parameter value error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-        '500':
-          description: 'Server internal error, check error message'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                Position:
-                  description: >-
-                    Step distance or absolute position, depending on the value
-                    of the Absolute property
-                  type: integer
-                  format: int32
-                ClientID:
-                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
-                  type: integer
-                  format: uint32
-                ClientTransactionID:
-                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
-                  type: integer
-                  format: uint32
-              required:
-                - Position
   '/rotator/{device_number}/canreverse':
     get:
       summary: IIndicates whether the Rotator supports the Reverse method.
@@ -5180,6 +5155,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/rotator/{device_number}/mechanicalposition':
+    get:
+      summary: Returns the rotator's mechanical current position.
+      description: 'Returns the raw mechanical position of the rotator in degrees.'
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Rotator Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoubleResponse'
         '400':
           description: 'Method or parameter value error, check error message'
           content:
@@ -5482,6 +5486,578 @@ paths:
                   format: uint32
               required:
                 - Position
+  '/rotator/{device_number}/movemechanical':
+    put:
+      summary: Moves the rotator to a new raw mechanical position.
+      description: Causes the rotator to move the mechanical position of Position degrees.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Rotator Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                Position:
+                  description: Absolute position in degrees.
+                  type: number
+                  format: double
+                ClientID:
+                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+                  type: integer
+                  format: uint32
+                ClientTransactionID:
+                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+                  type: integer
+                  format: uint32
+              required:
+                - Position
+  '/rotator/{device_number}/sync':
+    put:
+      summary: Syncs the rotator to the specified position angle without moving it.
+      description: Causes the rotator to sync to the position of Position degrees.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Rotator Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                Position:
+                  description: Absolute position in degrees.
+                  type: number
+                  format: double
+                ClientID:
+                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+                  type: integer
+                  format: uint32
+                ClientTransactionID:
+                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+                  type: integer
+                  format: uint32
+              required:
+                - Position
+  '/safetymonitor/{device_number}/issafe':
+    get:
+      summary: Indicates whether the monitored state is safe for use.
+      description: >-
+        Indicates whether the monitored state is safe for use. True if the state
+        is safe, False if it is unsafe.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - SafetyMonitor Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/switch/{device_number}/maxswitch':
+    get:
+      summary: The number of switch devices managed by this driver
+      description: >-
+        Returns the number of switch devices managed by this driver. Devices are
+        numbered from 0 to MaxSwitch - 1
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/switch/{device_number}/canwrite':
+    get:
+      summary: Indicates whether the specified switch device can be written to
+      description: >-
+        Reports if the specified switch device can be written to, default true.
+        This is false if the device cannot be written to, for example a limit
+        switch or a sensor.  Devices are numbered from 0 to MaxSwitch - 1
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/SwitchNumberQuery'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/switch/{device_number}/getswitch':
+    get:
+      summary: Return the state of switch device id as a boolean
+      description: >-
+        Return the state of switch device id as a boolean.  Devices are numbered
+        from 0 to MaxSwitch - 1
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/SwitchNumberQuery'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/switch/{device_number}/getswitchdescription':
+    get:
+      summary: Gets the description of the specified switch device
+      description: >-
+        Gets the description of the specified switch device. This is to allow a
+        fuller description of the device to be returned, for example for a tool
+        tip. Devices are numbered from 0 to MaxSwitch - 1
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/SwitchNumberQuery'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/switch/{device_number}/getswitchname':
+    get:
+      summary: Gets the name of the specified switch device
+      description: >-
+        Gets the name of the specified switch device. Devices are numbered from
+        0 to MaxSwitch - 1
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/SwitchNumberQuery'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/switch/{device_number}/getswitchvalue':
+    get:
+      summary: Gets the value of the specified switch device as a double
+      description: >-
+        Gets the value of the specified switch device as a double. Devices are
+        numbered from 0 to MaxSwitch - 1, The value of this switch is expected
+        to be between MinSwitchValue and MaxSwitchValue.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/SwitchNumberQuery'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoubleResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/switch/{device_number}/minswitchvalue':
+    get:
+      summary: Gets the minimum value of the specified switch device as a double
+      description: >-
+        Gets the minimum value of the specified switch device as a double.
+        Devices are numbered from 0 to MaxSwitch - 1.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/SwitchNumberQuery'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoubleResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/switch/{device_number}/maxswitchvalue':
+    get:
+      summary: Gets the maximum value of the specified switch device as a double
+      description: >-
+        Gets the maximum value of the specified switch device as a double.
+        Devices are numbered from 0 to MaxSwitch - 1.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/SwitchNumberQuery'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoubleResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  '/switch/{device_number}/setswitch':
+    put:
+      summary: 'Sets a switch controller device to the specified state, true or false'
+      description: 'Sets a switch controller device to the specified state, true or false.'
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                Id:
+                  description: The device number (0 to MaxSwitch - 1)
+                  type: integer
+                  format: int32
+                State:
+                  description: The required control state (True or False)
+                  type: boolean
+                ClientID:
+                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+                  type: integer
+                  format: uint32
+                ClientTransactionID:
+                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+                  type: integer
+                  format: uint32
+              required:
+                - Id
+                - State
+  '/switch/{device_number}/setswitchname':
+    put:
+      summary: Sets a switch device name to the specified value
+      description: Sets a switch device name to the specified value.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                Id:
+                  description: The device number (0 to MaxSwitch - 1)
+                  type: integer
+                Name:
+                  description: The name of the device
+                  type: string
+                ClientID:
+                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+                  type: integer
+                  format: uint32
+                ClientTransactionID:
+                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+                  type: integer
+                  format: uint32
+              required:
+                - Id
+                - Name
+  '/switch/{device_number}/setswitchvalue':
+    put:
+      summary: Sets a switch device value to the specified value
+      description: Sets a switch device value to the specified value.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                Id:
+                  description: The device number (0 to MaxSwitch - 1)
+                  type: integer
+                  format: int32
+                Value:
+                  description: >-
+                    The value to be set, between MinSwitchValue and
+                    MaxSwitchValue
+                  type: number
+                ClientID:
+                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+                  type: integer
+                  format: uint32
+                ClientTransactionID:
+                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+                  type: integer
+                  format: uint32
+              required:
+                - Id
+                - Value
+  '/switch/{device_number}/switchstep':
+    get:
+      summary: >-
+        Returns the step size that this device supports (the difference between
+        successive values of the device).
+      description: >-
+        Returns the step size that this device supports (the difference between
+        successive values of the device). Devices are numbered from 0 to
+        MaxSwitch - 1.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/SwitchNumberQuery'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoubleResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
   '/telescope/{device_number}/alignmentmode':
     get:
       summary: Returns the current mount alignment mode
