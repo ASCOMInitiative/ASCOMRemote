@@ -6092,9 +6092,9 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
   '/telescope/{device_number}/altitude':
     get:
-      summary: Returns the mount's Altitude above the horizon.
+      summary: Returns the mount's altitude above the horizon.
       description: >-
-        The Altitude above the local horizon of the telescope's current position
+        The altitude above the local horizon of the mount's current position
         (degrees, positive up)
       parameters:
         - $ref: '#/components/parameters/device_number'
@@ -6246,9 +6246,9 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
   '/telescope/{device_number}/azimuth':
     get:
-      summary: Returns the telescope's aperture.
+      summary: Returns the mount's azimuth.
       description: >-
-        The azimuth at the local horizon of the telescope's current position
+        The azimuth at the local horizon of the mount's current position
         (degrees, North-referenced, positive East/clockwise).
       parameters:
         - $ref: '#/components/parameters/device_number'
@@ -6746,9 +6746,9 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
   '/telescope/{device_number}/declination':
     get:
-      summary: Returns the telescope's declination.
+      summary: Returns the mount's declination.
       description: >-
-        The declination (degrees) of the telescope's current equatorial
+        The declination (degrees) of the mount's current equatorial
         coordinates, in the coordinate system given by the EquatorialSystem
         property. Reading the property will raise an error if the value is
         unavailable.
@@ -7185,9 +7185,9 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
   '/telescope/{device_number}/rightascension':
     get:
-      summary: Returns the telescope's right ascension coordinate.
+      summary: Returns the mount's right ascension coordinate.
       description: >-
-        The right ascension (hours) of the telescope's current equatorial
+        The right ascension (hours) of the mount's current equatorial
         coordinates, in the coordinate system given by the EquatorialSystem
         property
       parameters:
