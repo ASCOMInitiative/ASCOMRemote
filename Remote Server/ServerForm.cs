@@ -3127,6 +3127,7 @@ namespace ASCOM.Remote
                                             case "numy":
                                             case "startx":
                                             case "starty":
+                                            case "offset":
                                                 WriteInt(requestData); break;
                                             //DOUBLE Set values
                                             case "setccdtemperature":
@@ -4544,7 +4545,6 @@ namespace ASCOM.Remote
             int intValue;
             Exception exReturn = null;
 
-
             try
             {
                 intValue = GetParameter<int>(requestData, requestData.Elements[URL_ELEMENT_METHOD]);
@@ -4555,6 +4555,8 @@ namespace ASCOM.Remote
                         device.NumX = intValue; break;
                     case "camera.numy":
                         device.NumY = intValue; break;
+                    case "camera.offset":
+                        device.Offset = intValue; break;
                     case "camera.startx":
                         device.StartX = intValue; break;
                     case "camera.starty":
