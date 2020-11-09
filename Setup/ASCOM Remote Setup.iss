@@ -4,7 +4,7 @@
 
 ; Install direrctory names
 #define public RemoteClientDirectory "{app}\RemoteClients" ; Target directory where remote clients will be installed
-#define public RemoteServerDirectory "{pf}\ASCOM\Remote" ; Target directory where the remote server will be installed
+#define public RemoteServerDirectory "{commonpf}\ASCOM\Remote" ; Target directory where the remote server will be installed
 
 ; Install file names
 #define public RemoteClientLocalServerName "ASCOM.RemoteClientLocalServer" ; Remote client local server name
@@ -31,7 +31,7 @@ AppUpdatesURL=http://ascom-standards.org/
 #emit "AppVerName=ASCOM Remote " + MyAppVer + " ("+ BuildType + ")"
 #emit "AppVersion=" + MyAppVer
 Compression=lzma
-DefaultDirName="{cf}\ASCOM"
+DefaultDirName="{commoncf}\ASCOM"
 DefaultGroupName="ASCOM Remote"
 DisableDirPage=yes
 DisableProgramGroupPage=no
@@ -43,8 +43,8 @@ PrivilegesRequired=admin
 SetupIconFile=ASCOM.ico
 SetupLogging=true
 SolidCompression=yes
-UninstallDisplayIcon={pf}\ASCOM\Remote\ASCOM.ico
-UninstallFilesDir="{cf}\ASCOM\Uninstall\Remote"
+UninstallDisplayIcon={commonpf}\ASCOM\Remote\ASCOM.ico
+UninstallFilesDir="{commoncf}\ASCOM\Uninstall\Remote"
 UsePreviousAppDir=no
 UsePreviousGroup=no
 VersionInfoCompany=Peter Simpson
@@ -55,12 +55,13 @@ WizardImageFile=NewWizardImage.bmp
 WizardSmallImageFile=ASCOMLogo.bmp
 #emit "VersionInfoProductVersion=" + MyAppVer
 #emit "VersionInfoVersion=" + MyAppVer
+SignTool = SignASCOMRemote
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Dirs]
-Name: "{cf}\ASCOM\Uninstall\Remote"
+Name: "{commoncf}\ASCOM\Uninstall\Remote"
 
 [Files]
 ; LOCAL SERVER FILES
@@ -106,7 +107,7 @@ Source: "..\Documentation\{#ASCOMRemoteDocumentationFileName}"; DestDir: "{#Remo
 Source: "ASCOM.ico"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
 
 ; WEB CONTENT
-;Source: "..\Web Content\index.html"; DestDir: "{pf}\ASCOM\RemoteServer"; Components: WebContent
+;Source: "..\Web Content\index.html"; DestDir: "{commonpf}\ASCOM\RemoteServer"; Components: WebContent
 
 [Run]
 Filename: "{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"; Parameters: "/regserver"; Components: ClientComponents
