@@ -3579,11 +3579,11 @@ namespace ASCOM.Remote
                 LogMessage1(requestData, "HTTP 404 Error", message);
                 LogToScreen($"ERROR - ClientId: {requestData.ClientID}, ClientTransactionID: {requestData.ClientTransactionID} - {message}");
 
-                TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.NotFound, "403 " + CleanMessage(message), "404 " + CleanMessage(message));
+                TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.NotFound, "404 " + CleanMessage(message), "404 " + CleanMessage(message));
             }
             catch (Exception ex)
             {
-                LogException(0, 0, 0, "Exception while returning HTTP 403 Error", ex.ToString());
+                LogException(0, 0, 0, "Exception while returning HTTP 404 Error", ex.ToString());
             }
         }
 
