@@ -3764,6 +3764,13 @@ namespace ASCOM.Remote
                         throw new InvalidValueException("ReturnBool - Unsupported method: " + requestData.Elements[URL_ELEMENT_METHOD]);
                 }
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -3781,7 +3788,6 @@ namespace ASCOM.Remote
         {
             bool deviceResponse = false;
             Exception exReturn = null;
-
 
             try
             {
@@ -3803,6 +3809,13 @@ namespace ASCOM.Remote
                         throw new InvalidValueException("ReturnShortIndexedBool - Unsupported method: " + requestData.Elements[URL_ELEMENT_METHOD]);
                 }
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -3884,6 +3897,13 @@ namespace ASCOM.Remote
                         throw new InvalidValueException("WriteBool - Unsupported method: " + requestData.Elements[URL_ELEMENT_METHOD]);
                 }
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -3937,6 +3957,13 @@ namespace ASCOM.Remote
                         throw new InvalidValueException("ReturnString - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
                 }
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -3954,7 +3981,6 @@ namespace ASCOM.Remote
         {
             string deviceResponse = "";
             Exception exReturn = null;
-
 
             try
             {
@@ -3976,6 +4002,13 @@ namespace ASCOM.Remote
                         throw new InvalidValueException("ReturnShortIndexedString - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
                 }
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -3993,7 +4026,6 @@ namespace ASCOM.Remote
         {
             string[] deviceResponse = new string[1];
             Exception exReturn = null;
-
 
             try
             {
@@ -4199,6 +4231,13 @@ namespace ASCOM.Remote
                         throw new InvalidValueException("ReturnDouble - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
                 }
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -4216,7 +4255,6 @@ namespace ASCOM.Remote
         {
             double deviceResponse = 0.0;
             Exception exReturn = null;
-
 
             try
             {
@@ -4242,6 +4280,13 @@ namespace ASCOM.Remote
                         throw new InvalidValueException("ReturnShortIndexedDouble - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
                 }
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -4298,6 +4343,13 @@ namespace ASCOM.Remote
                         throw new InvalidValueException("WriteDouble - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
                 }
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -4347,7 +4399,6 @@ namespace ASCOM.Remote
         {
             short deviceResponse = 0;
             Exception exReturn = null;
-
 
             try
             {
@@ -4412,7 +4463,6 @@ namespace ASCOM.Remote
             short shortValue;
             Exception exReturn = null;
 
-
             try
             {
                 shortValue = GetParameter<short>(requestData, requestData.Elements[URL_ELEMENT_METHOD]);
@@ -4440,6 +4490,13 @@ namespace ASCOM.Remote
                         throw new InvalidValueException("WriteShort - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
                 }
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -4513,7 +4570,6 @@ namespace ASCOM.Remote
             int[] deviceResponse = new int[1];
             Exception exReturn = null;
 
-
             try
             {
                 switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
@@ -4567,6 +4623,13 @@ namespace ASCOM.Remote
                         throw new InvalidValueException("WriteInt - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
                 }
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -4624,6 +4687,13 @@ namespace ASCOM.Remote
                         throw new InvalidValueException("WriteDateTime - Unsupported method: " + requestData.Elements[URL_ELEMENT_METHOD]);
                 }
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -4635,7 +4705,6 @@ namespace ASCOM.Remote
         {
             IEnumerable deviceResponse = null;
             Exception exReturn = null;
-
 
             try
             {
@@ -4695,7 +4764,6 @@ namespace ASCOM.Remote
             AlignmentModes deviceResponse = AlignmentModes.algGermanPolar;
             Exception exReturn = null;
 
-
             try
             {
                 deviceResponse = (AlignmentModes)device.AlignmentMode;
@@ -4719,7 +4787,6 @@ namespace ASCOM.Remote
             DriveRates deviceResponse = DriveRates.driveSidereal;
             Exception exReturn = null;
 
-
             try
             {
                 deviceResponse = (DriveRates)device.TrackingRate;
@@ -4742,12 +4809,18 @@ namespace ASCOM.Remote
             DriveRates driveRateValue; ;
             Exception exReturn = null;
 
-
             try
             {
                 driveRateValue = (DriveRates)GetParameter<int>(requestData, requestData.Elements[URL_ELEMENT_METHOD]);
                 device.TrackingRate = driveRateValue;
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -4759,7 +4832,6 @@ namespace ASCOM.Remote
         {
             PierSide deviceResponse = PierSide.pierUnknown;
             Exception exReturn = null;
-
 
             try
             {
@@ -4807,7 +4879,6 @@ namespace ASCOM.Remote
             ShutterState deviceResponse = ShutterState.shutterError;
             Exception exReturn = null;
 
-
             try
             {
                 deviceResponse = (ShutterState)device.ShutterStatus;
@@ -4830,7 +4901,6 @@ namespace ASCOM.Remote
         {
             SensorType deviceResponse = SensorType.CMYG2;
             Exception exReturn = null;
-
 
             try
             {
@@ -5358,12 +5428,18 @@ namespace ASCOM.Remote
             bool deviceResponse = false;
             Exception exReturn = null;
 
-
             try
             {
                 TelescopeAxes axis = (TelescopeAxes)GetParameter<int>(requestData, SharedConstants.AXIS_PARAMETER_NAME);
                 deviceResponse = device.CanMoveAxis(axis);
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -5382,13 +5458,19 @@ namespace ASCOM.Remote
             PierSide deviceResponse = PierSide.pierUnknown;
             Exception exReturn = null;
 
-
             try
             {
                 double ra = GetParameter<double>(requestData, SharedConstants.RA_PARAMETER_NAME);
                 double dec = GetParameter<double>(requestData, SharedConstants.DEC_PARAMETER_NAME);
                 deviceResponse = (PierSide)device.DestinationSideOfPier(ra, dec);
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -5409,12 +5491,18 @@ namespace ASCOM.Remote
             dynamic deviceResponse = null;
             Exception exReturn = null;
 
-
             try
             {
                 TelescopeAxes axis = (TelescopeAxes)GetParameter<int>(requestData, SharedConstants.AXIS_PARAMETER_NAME);
                 deviceResponse = device.AxisRates(axis);
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
@@ -5634,6 +5722,13 @@ namespace ASCOM.Remote
                         throw new InvalidValueException("CallMethod - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
                 }
             }
+            // Handle missing or invalid parameters
+            catch (InvalidParameterException ex)
+            {
+                Return400Error(requestData, ex.Message);
+                return;
+            }
+            // Handle device errors
             catch (Exception ex)
             {
                 exReturn = ex;
