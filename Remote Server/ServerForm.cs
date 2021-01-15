@@ -1894,20 +1894,27 @@ namespace ASCOM.Remote
                             if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Found form parameter string: '{parameter}' whose KeyValuePair array size is: {keyValuePair.Length}");
 
                             string key = keyValuePair[0].Trim(); // Extract the key value
-                            string value = ""; // Initialise a variable to hold the value
-                            if (keyValuePair.Length > 1)
+                            if (!string.IsNullOrEmpty(key))
                             {
-                                value = HttpUtility.UrlDecode(keyValuePair[1].Trim()); // Extract the value so long as one exists
+                                string value = ""; // Initialise a variable to hold the value
+                                if (keyValuePair.Length > 1)
+                                {
+                                    value = HttpUtility.UrlDecode(keyValuePair[1].Trim()); // Extract the value so long as one exists
+                                }
+                                else
+                                {
+                                    LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Warning - No parameter value was found for parameter {parameter} - an empty string will be assumed. Raw parameter string: '{formParameters}'");
+                                    LogToScreen($"WARNING - Request: {request.HttpMethod} {request.Url.PathAndQuery}");
+                                    LogToScreen($"WARNING - No parameter value was found for parameter {parameter} - an empty string will be assumed.");
+                                    LogToScreen($"WARNING - Raw parameter string: '{formParameters}'.");
+                                }
+                                suppliedParameters.Add(key, value); // Add the parameter key and value to the parameter list
+                                if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"  Processed parameter key and value: {key} = {value}");
                             }
                             else
                             {
-                                LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Warning - No parameter value was found for parameter {parameter} - an empty string will be assumed. Raw parameter string: '{formParameters}'");
-                                LogToScreen($"WARNING - Request: {request.HttpMethod} {request.Url.PathAndQuery}");
-                                LogToScreen($"WARNING - No parameter value was found for parameter {parameter} - an empty string will be assumed.");
-                                LogToScreen($"WARNING - Raw parameter string: '{formParameters}'.");
+                                if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Ignoring parameter with no name Form parameters string: '{formParameters}'Form parameters string length: {formParameters.Length}, Raw parameters array size: {rawParameters.Length}");
                             }
-                            suppliedParameters.Add(key, value); // Add the parameter key and value to the parameter list
-                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"  Processed parameter key and value: {key} = {value}");
                         }
                     }
                 }
