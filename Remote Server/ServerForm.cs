@@ -16,15 +16,11 @@ using System.Windows.Forms;
 using ASCOM.Utilities;
 using ASCOM.DeviceInterface;
 using System.Drawing;
-
 using System.Reflection.Emit;
-
 using Newtonsoft.Json;
 using System.Web;
 using System.Text.RegularExpressions;
 using System.IO.Compression;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization.Formatters;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
@@ -48,7 +44,7 @@ namespace ASCOM.Remote
         private const int SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH = 500; // Maximum length of a message that can be logged to the screen - required to prevent huge messages from locking up the system while the text box attempts to processes them
         private const int SCREEN_LOG_MAXIMUM_LENGTH = 50000; // Maximum length of the screen log - The screen log will be pruned to ensure it never exceeds this length, which would start to degrade performance
 
-        private const string CORRECT_API_FORMAT_STRING = "<br>Required format is: <b>" +
+        private const string CORRECT_API_FORMAT_STRING_HTML = "<br>Required format is: <b>" +
                             "<font color=\"red\">api/v</font>" +
                             "<font color=\"blue\">x</font>" +
                             "<font color=\"red\">/</font>" +
@@ -61,12 +57,12 @@ namespace ASCOM.Remote
                             "<font color=\"blue\">x</font>" +
                             " is the one based API version number and " +
                             "<font color=\"blue\">y</font>" +
-                            " is the zero based number of the device. The " +
-                            "<font color=\"blue\">devicetype</font>" +
-                            " and " +
-                            "<font color=\"blue\">method</font>" +
-                            " fields must be in lower case."; // HTML error message when an unrecognised is received
-        private const string CORRECT_SERVER_FORMAT_STRING = "<br>Required format is: <b>" +
+                            " is the zero based number of the device. The whole URL must be in lower case."; // HTML error message when an unrecognised is received
+
+        private const string CORRECT_API_FORMAT_STRING_PLAIN = "Required format is: api/vx/devicetype/y/method where x is the one based API version number and y is the zero based number of the device. " +
+            "The whole URL must be in lower case."; // Plain text error message when an unrecognised is received
+
+        private const string CORRECT_SERVER_FORMAT_STRING_HTML = "<br>Required format is: <b>" +
                             "<font color=\"red\">server/v</font>" +
                             "<font color=\"blue\">x</font>" +
                             "<font color=\"red\">/</font>" +
@@ -77,7 +73,12 @@ namespace ASCOM.Remote
                             "<font color=\"blue\">command</font>" +
                             " fields must be in lower case."; // HTML error message when an unknown server command is received.
 
-        private const string UNRECOGNISED_URI_MESSAGE = "You have reached the <i><b>ASCOM Remote Server</b></i> API portal but your url did not start with /api, /management, /server or /setup (must be lower case) <p><b>Available devices:</b></p>";
+        private const string CORRECT_SERVER_FORMAT_STRING_PLAIN = "Required format is: server/vx/configuration | profile | concurrency where x is the one based API version number. " +
+            "The server and command fields must be in lower case."; // PLain text error message when an unknown server command is received.
+
+        private const string UNRECOGNISED_URI_MESSAGE_HTML = "You have reached the <i><b>ASCOM Remote Server</b></i> API portal but your url did not start with /api, /management, /server or /setup (must be lower case) <p><b>Available devices:</b></p>";
+
+        private const string UNRECOGNISED_URI_MESSAGE_PLAIN = "You have reached the ASCOM Remote Server API portal but your url did not start with /api, /management, /server or /setup (must be lower case) Available devices: \r\n";
 
         private const string GET_UNKNOWN_METHOD_MESSAGE = "GET - Unknown device method: ";
         private const string PUT_UNKNOWN_METHOD_MESSAGE = "PUT - Unknown device method: ";
@@ -1303,8 +1304,6 @@ namespace ASCOM.Remote
         /// <returns>Cleaned message string</returns>
         private string CleanMessage(string message)
         {
-            //string cleanedMessage = message.Replace("\r", string.Empty);
-            //cleanedMessage = cleanedMessage.Replace("\n", string.Empty);
             string cleanedMessage = Regex.Replace(message, @"[^\u0020-\u007E]", string.Empty);
             return cleanedMessage;
         }
@@ -1328,6 +1327,39 @@ namespace ASCOM.Remote
                 LogMessage(0, 0, 0, "ShutdownTask", $"Closing Remote Server form");
                 this.Close();
                 LogMessage(0, 0, 0, "ShutdownTask", $"Closed Remote Server form");
+            }
+        }
+
+        /// <summary>
+        /// Return HTML or plain text version of the error message depending on whether the client accepts text/html
+        /// </summary>
+        /// <param name="requestData">The client request</param>
+        /// <param name="htmlText">HTML formatted text to return to clients that request this</param>
+        /// <param name="plainText">Plain text to be returned to clients that do not specifically request html</param>
+        /// <returns></returns>
+        private string HTMLOrPlainText(RequestData requestData, string htmlText, string plainText)
+        {
+            // Test whether the client requests HTML messages
+            if (requestData.Request.AcceptTypes.Contains<string>("text/html"))  // Client can handle HTML encoding so return HTML version of the message
+            {
+                return htmlText;
+            }
+            else // Client can not handle html encoding so return plain text
+            {
+                return plainText;
+            }
+        }
+
+        private string HTMLOrPlainTextContentType(RequestData requestData)
+        {
+            // Test whether the client requests HTML or plain text responses
+            if (requestData.Request.AcceptTypes.Contains<string>("text/html"))  // Client can handle HTML encoding so return HTML content type
+            {
+                return "text/html; charset=utf-8";
+            }
+            else // Client can not handle html encoding so return plain text content type
+            {
+                return "text/plain; charset=utf-8";
             }
         }
 
@@ -2030,7 +2062,7 @@ namespace ASCOM.Remote
                     // Basic error checking - We must have received 5 elements, now in the elements array, in order to have received a valid API request so check this here:
                     if (elements.Length != 5)
                     {
-                        Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_API_FORMAT_STRING);
+                        Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                         return;
                     } // We don't have 5 elements so return a 400 error
                     else // We have received the required 5 elements in the URI
@@ -2121,12 +2153,12 @@ namespace ASCOM.Remote
                                 } // We have a valid device number
                                 else
                                 {
-                                    Return400Error(requestData, "Unsupported or invalid integer device number: " + elements[URL_ELEMENT_DEVICE_NUMBER] + " " + CORRECT_API_FORMAT_STRING);
+                                    Return400Error(requestData, "Unsupported or invalid integer device number: " + elements[URL_ELEMENT_DEVICE_NUMBER] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                 } // Invalid device number provided so return a 400 error
                                 break;
 
                             default: // Handle invalid API version numbers
-                                Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + CORRECT_API_FORMAT_STRING);
+                                Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                 break;
                         } // Process using the correct API version
 
@@ -2171,7 +2203,7 @@ namespace ASCOM.Remote
                         // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid management API request so check this here:
                         if (elements.Length != 3)
                         {
-                            Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_SERVER_FORMAT_STRING);
+                            Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                             return;
                         } // Invalid management command so return an error
                         else // We have received the required 3 elements in the URI
@@ -2250,7 +2282,7 @@ namespace ASCOM.Remote
                                                             break;
 
                                                         default:
-                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                             break;
                                                     }
                                                     break;
@@ -2259,7 +2291,7 @@ namespace ASCOM.Remote
                                                     {
                                                         // No commands yet so return a default command not supported to everything
                                                         default:
-                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                             break;
                                                     }
                                                     break;
@@ -2275,7 +2307,7 @@ namespace ASCOM.Remote
 
                                         break; // End of valid api version numbers
                                     default:
-                                        Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                        Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                         break;
                                 }
                             }
@@ -2374,7 +2406,7 @@ namespace ASCOM.Remote
                     // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid API request so check this here:
                     if (elements.Length != 3)
                     {
-                        Return400Error(requestData, "Remote management - incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_SERVER_FORMAT_STRING);
+                        Return400Error(requestData, "Remote management - incorrect API format - Received: " + request.Url.AbsolutePath + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                         return;
                     }
                     else // We have received the required 3 elements in the URI
@@ -2464,7 +2496,7 @@ namespace ASCOM.Remote
                                                         break;
 
                                                     default:
-                                                        Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                                        Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                         break;
                                                 }
                                                 break;
@@ -2513,12 +2545,12 @@ namespace ASCOM.Remote
                                                     case SharedConstants.REMOTE_SERVER_MANGEMENT_GET_CONFIGURATION:
                                                         lock (managementCommandLock) // Make sure that this command can only run one at a time!
                                                         {
-                                                            Return400Error(requestData, "Command not implemented: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                                            Return400Error(requestData, "Command not implemented: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                         }
                                                         break;
 
                                                     default:
-                                                        Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                                        Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                         break;
                                                 }
                                                 break;
@@ -2534,7 +2566,7 @@ namespace ASCOM.Remote
 
                                     break; // End of valid api version numbers
                                 default:
-                                    Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                    Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                     break;
                             }
                         }
@@ -2548,17 +2580,17 @@ namespace ASCOM.Remote
 
                 else // A URI that did not start with /api/, /management, /setup or /configuration/ was requested
                 {
-                    LogMessage1(requestData, "Request", string.Format("Non API call - {0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, System.Threading.Thread.CurrentThread.ManagedThreadId.ToString()));
-                    string returnMessage = UNRECOGNISED_URI_MESSAGE;
+                    LogMessage1(requestData, "Request", string.Format("Non API call - {0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString()));
+                    string returnMessage = HTMLOrPlainText(requestData, UNRECOGNISED_URI_MESSAGE_HTML, UNRECOGNISED_URI_MESSAGE_PLAIN);
 
                     foreach (KeyValuePair<string, ConfiguredDevice> device in ConfiguredDevices)
                     {
                         if (device.Value.ProgID != SharedConstants.DEVICE_NOT_CONFIGURED)
                         {
-                            returnMessage += string.Format("{0} {1}: {2} ({3})<br>", device.Value.DeviceType, device.Value.DeviceNumber, device.Value.Description, device.Value.ProgID);
+                            returnMessage += $"{device.Value.DeviceType} {device.Value.DeviceNumber}: {device.Value.Description} ({device.Value.ProgID})" + HTMLOrPlainText(requestData, "<br>", "\r\n");
                         }
                     }
-                    TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.OK, "200 OK", returnMessage);
+                    TransmitResponse(requestData, HTMLOrPlainTextContentType(requestData), HttpStatusCode.OK, "200 OK", returnMessage);
                 } // Not a valid Remote Server request
             }
             catch (Exception ex) // Something serious has gone wrong with the ASCOM Remote server itself so report this to the user
@@ -2705,7 +2737,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2792,7 +2824,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2817,7 +2849,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2849,7 +2881,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2872,7 +2904,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2905,7 +2937,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2937,7 +2969,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2961,7 +2993,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2976,7 +3008,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -3005,14 +3037,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
 
                                     default:// End of valid device types
-                                        Return400Error(requestData, "Unsupported Device Type: " + requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + " " + CORRECT_API_FORMAT_STRING);
+                                        Return400Error(requestData, "Unsupported Device Type: " + requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                         break;
                                 }
                                 break;
@@ -3101,7 +3133,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -3140,7 +3172,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
@@ -3162,7 +3194,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -3188,7 +3220,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
@@ -3203,7 +3235,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
@@ -3229,7 +3261,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -3247,7 +3279,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
@@ -3269,7 +3301,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
@@ -3286,14 +3318,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
                                     #endregion
 
                                     default:
-                                        Return400Error(requestData, "Unsupported Device Type: " + requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + " " + CORRECT_API_FORMAT_STRING);
+                                        Return400Error(requestData, "Unsupported Device Type: " + requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                         break;
                                 }
                                 break;
@@ -3307,7 +3339,7 @@ namespace ASCOM.Remote
             catch (KeyNotFoundException ex)
             {
                 LogException1(requestData, "ProcessDriverCommand", ex.ToString());
-                Return400Error(requestData, string.Format("The requestData.Requested device \"{0} {1}\" does not exist on this server. Supplied URI: {2} {3}", requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData.Elements[URL_ELEMENT_DEVICE_NUMBER], requestData.Request.Url.AbsolutePath, CORRECT_API_FORMAT_STRING));
+                Return400Error(requestData, $"The requested device \"{requestData.Elements[URL_ELEMENT_DEVICE_TYPE]} {requestData.Elements[URL_ELEMENT_DEVICE_NUMBER]}\" does not exist on this server. Supplied URI: {requestData.Request.Url.AbsolutePath}");
             }
         } // Driver request handler
 
@@ -3544,12 +3576,13 @@ namespace ASCOM.Remote
         // Return server error responses to clients
         private void Return400Error(RequestData requestData, string message)
         {
+
             try
             {
                 LogMessage1(requestData, "HTTP 400 Error", message);
                 LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, message));
 
-                TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.BadRequest, "400 - Unable to process request - see response content for details", CleanMessage(message));
+                TransmitResponse(requestData, HTMLOrPlainTextContentType(requestData), HttpStatusCode.BadRequest, "400 - Unable to process request - see response content for details", CleanMessage(message));
             }
             catch (Exception ex)
             {
@@ -3564,7 +3597,7 @@ namespace ASCOM.Remote
                 LogMessage1(requestData, "HTTP 403 Error", message);
                 LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, message));
 
-                TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.Forbidden, "403 " + CleanMessage(message), "403 " + CleanMessage(message));
+                TransmitResponse(requestData, HTMLOrPlainTextContentType(requestData), HttpStatusCode.Forbidden, "403 " + CleanMessage(message), "403 " + CleanMessage(message));
             }
             catch (Exception ex)
             {
@@ -3579,7 +3612,7 @@ namespace ASCOM.Remote
                 LogMessage1(requestData, "HTTP 404 Error", message);
                 LogToScreen($"ERROR - ClientId: {requestData.ClientID}, ClientTransactionID: {requestData.ClientTransactionID} - {message}");
 
-                TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.NotFound, "404 " + CleanMessage(message), "404 " + CleanMessage(message));
+                TransmitResponse(requestData, HTMLOrPlainTextContentType(requestData), HttpStatusCode.NotFound, "404 " + CleanMessage(message), "404 " + CleanMessage(message));
             }
             catch (Exception ex)
             {
@@ -3597,7 +3630,7 @@ namespace ASCOM.Remote
             {
                 LogException(0, 0, 0, "Exception while returning HTTP 500 Error", ex.ToString());
             }
-            TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.InternalServerError, "500 " + CleanMessage(errorMessage), "500 " + CleanMessage(errorMessage));
+            TransmitResponse(requestData, HTMLOrPlainTextContentType(requestData), HttpStatusCode.InternalServerError, "500 " + CleanMessage(errorMessage), "500 " + CleanMessage(errorMessage));
         }
 
         // Return device responses to clients
@@ -5867,6 +5900,7 @@ namespace ASCOM.Remote
                     Array.Resize<string>(ref elements, 5);
                     elements[3] = "";
                     elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND];
+                    requestData.Elements = elements;
                 }
 
                 bytesToSend = Encoding.UTF8.GetBytes(messageToSend); // Convert the message to be returned into UTF8 bytes that can be sent over the wire
