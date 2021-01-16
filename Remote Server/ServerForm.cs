@@ -1340,11 +1340,18 @@ namespace ASCOM.Remote
         private string HTMLOrPlainText(RequestData requestData, string htmlText, string plainText)
         {
             // Test whether the client requests HTML messages
-            if (requestData.Request.AcceptTypes.Contains<string>("text/html"))  // Client can handle HTML encoding so return HTML version of the message
+            if (requestData.Request.AcceptTypes != null) // There are some accept types so check whether text/html is among them
             {
-                return htmlText;
+                if (requestData.Request.AcceptTypes.Contains<string>("text/html"))  // Client can handle HTML encoding so return HTML version of the message
+                {
+                    return htmlText;
+                }
+                else // Client can not handle html encoding so return plain text
+                {
+                    return plainText;
+                }
             }
-            else // Client can not handle html encoding so return plain text
+            else // There are no accept types so assume plain text is appropriate
             {
                 return plainText;
             }
@@ -1352,12 +1359,19 @@ namespace ASCOM.Remote
 
         private string HTMLOrPlainTextContentType(RequestData requestData)
         {
-            // Test whether the client requests HTML or plain text responses
-            if (requestData.Request.AcceptTypes.Contains<string>("text/html"))  // Client can handle HTML encoding so return HTML content type
+            if (requestData.Request.AcceptTypes != null) // There are some accept types so check whether text/html is among them
             {
-                return "text/html; charset=utf-8";
+                // Test whether the client requests HTML or plain text responses
+                if (requestData.Request.AcceptTypes.Contains<string>("text/html"))  // Client can handle HTML encoding so return HTML content type
+                {
+                    return "text/html; charset=utf-8";
+                }
+                else // Client can not handle html encoding so return plain text content type
+                {
+                    return "text/plain; charset=utf-8";
+                }
             }
-            else // Client can not handle html encoding so return plain text content type
+            else // There are no accept types so assume plain text is appropriate
             {
                 return "text/plain; charset=utf-8";
             }
@@ -1860,66 +1874,72 @@ namespace ASCOM.Remote
 
                 // Create a collection of supplied parameters: query variables in the URL string for HTTP GET requests and form parameters from the request body for HTTP PUT requests.
 
-                if (requestData.Request.HttpMethod.ToUpperInvariant() == "GET") // Process query parameters from an HTTP GET
+                switch (requestData.Request.HttpMethod.ToUpperInvariant())
                 {
-                    suppliedParameters.Add(request.QueryString); // Add the query string parameters to the collection
+                    // Process query parameters from an HTTP GET    
+                    case "GET":
+                        suppliedParameters.Add(request.QueryString); // Add the query string parameters to the collection
 
-                    // List query string parameters if in debug mode
-                    if (DebugTraceState)
-                    {
+                        // List query string parameters
                         foreach (string key in suppliedParameters)
                         {
-                            LogMessage1(requestData, "Query Parameter", string.Format("{0} = {1}", key, suppliedParameters[key]));
+                            LogMessage1(requestData, "Query Parameter", $"{key} = {suppliedParameters[key]}");
                         }
-                    }
+                        break;
+
+                    // Process form parameters from an HTTP PUT
+                    case "PUT":
+                        if (request.HasEntityBody) // Add any parameters supplied in the form body
+                        {
+                            string formParameters;
+                            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding)) // Extract the aggregated parameter string from the form within the request
+                            {
+                                formParameters = reader.ReadToEnd();
+                            }
+                            if (formParameters == null) formParameters = ""; // Handle the possibility that we get a null value instead of an empty string
+
+                            string[] rawParameters = formParameters.Split('&'); // Parse the aggregated parameter string into an array of key / value pair strings
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Form parameters string: '{formParameters}'Form parameters string length: {formParameters.Length}, Raw parameters array size: {rawParameters.Length}");
+
+                            foreach (string parameter in rawParameters) // Parse each key / value pair string into its key and value and add these to the parameters collection
+                            {
+                                string[] keyValuePair = parameter.Split('=');
+                                if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Found form parameter string: '{parameter}' whose KeyValuePair array size is: {keyValuePair.Length}");
+
+                                string key = keyValuePair[0].Trim(); // Extract the key value
+                                if (!string.IsNullOrEmpty(key)) // The key has a name so now extract the value
+                                {
+                                    string value = ""; // Initialise a variable to hold the value
+                                    if (keyValuePair.Length > 1) // The key does have a value
+                                    {
+                                        value = HttpUtility.UrlDecode(keyValuePair[1].Trim()); // Extract the value so long as one exists
+                                    }
+                                    else // The key does not have a value
+                                    {
+                                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"No parameter value was found for parameter {parameter} - an empty string will be assumed.");
+                                    }
+
+                                    // Add the parameter key and value to the parameter list
+                                    suppliedParameters.Add(key, value);
+
+                                    // Log the form parameter if debug tracing
+                                    LogMessage1(requestData, "Form Parameter", $"{key} = {value}");
+                                }
+                                else // The key is null or empty so ignore it
+                                {
+                                    if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Ignoring parameter with no name");
+                                }
+                            }
+                        }
+                        break;
+
+                    default:
+
+                        break;
                 }
 
-                if (requestData.Request.HttpMethod.ToUpperInvariant() == "PUT") // Process form parameters from an HTTP PUT
-                {
-                    if (request.HasEntityBody) // Add any parameters supplied in the form POST
-                    {
-                        string formParameters;
-                        using (var reader = new StreamReader(request.InputStream, request.ContentEncoding)) // Extract the aggregated parameter string from the form within the request
-                        {
-                            formParameters = reader.ReadToEnd();
-                        }
-                        if (formParameters == null) formParameters = ""; // Handle the possibility that we get a null value instead of an empty string
-
-                        string[] rawParameters = formParameters.Split('&'); // Parse the aggregated parameter string into an array of key / value pair strings
-                        if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Form parameters string: '{formParameters}'Form parameters string length: {formParameters.Length}, Raw parameters array size: {rawParameters.Length}");
-
-                        foreach (string parameter in rawParameters) // Parse each key / value pair string into its key and value and add these to the parameters collection
-                        {
-                            string[] keyValuePair = parameter.Split('=');
-                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Found form parameter string: '{parameter}' whose KeyValuePair array size is: {keyValuePair.Length}");
-
-                            string key = keyValuePair[0].Trim(); // Extract the key value
-                            if (!string.IsNullOrEmpty(key))
-                            {
-                                string value = ""; // Initialise a variable to hold the value
-                                if (keyValuePair.Length > 1)
-                                {
-                                    value = HttpUtility.UrlDecode(keyValuePair[1].Trim()); // Extract the value so long as one exists
-                                }
-                                else
-                                {
-                                    LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Warning - No parameter value was found for parameter {parameter} - an empty string will be assumed. Raw parameter string: '{formParameters}'");
-                                    LogToScreen($"WARNING - Request: {request.HttpMethod} {request.Url.PathAndQuery}");
-                                    LogToScreen($"WARNING - No parameter value was found for parameter {parameter} - an empty string will be assumed.");
-                                    LogToScreen($"WARNING - Raw parameter string: '{formParameters}'.");
-                                }
-                                suppliedParameters.Add(key, value); // Add the parameter key and value to the parameter list
-                                if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"  Processed parameter key and value: {key} = {value}");
-                            }
-                            else
-                            {
-                                if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Ignoring parameter with no name Form parameters string: '{formParameters}'Form parameters string length: {formParameters.Length}, Raw parameters array size: {rawParameters.Length}");
-                            }
-                        }
-                    }
-                }
-
-                requestData.SuppliedParameters = suppliedParameters; // Add the query or body parameters to the request data
+                // Add the query or body parameters to the request data
+                requestData.SuppliedParameters = suppliedParameters;
 
                 // Extract the caller's IP address into hostIPAddress
                 string clientIpAddress;
@@ -3339,7 +3359,7 @@ namespace ASCOM.Remote
                         }
                         break;
                     default:
-                        Return400Error(requestData, "Unsupported http verb: " + requestData.Request.HttpMethod);
+                        Return400Error(requestData, $"Invalid http verb: {requestData.Request.HttpMethod}, the Alpaca protocol only uses GET and PUT.");
                         break;
                 } // Handle GET and PUT requestData.Requests
             }
