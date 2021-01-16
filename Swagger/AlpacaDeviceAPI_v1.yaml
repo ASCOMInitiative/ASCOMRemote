@@ -9541,7 +9541,7 @@ components:
     ImageArrayResponse:
       type: object
       properties:
-        ArrayType:
+        Type:
           type: integer
           format: int32
           description: >-
