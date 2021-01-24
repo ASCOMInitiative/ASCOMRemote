@@ -1377,6 +1377,28 @@ namespace ASCOM.Remote
             }
         }
 
+        /// <summary>
+        /// Returns the size of a structure in managed memory
+        /// </summary>
+        /// <param name="type">The type of the object whose size is to be determined</param>
+        /// <returns>
+        /// GetManagedSize() returns the size of a structure whose type is 'type', as stored in managed memory.
+        /// For any reference type this will simply return the size of a pointer (4 or 8).
+        /// </returns>
+        public static int GetManagedSize(Type type)
+        {
+            // all this just to invoke one op code with no arguments!
+            var method = new DynamicMethod("GetManagedSizeImpl", typeof(uint), new Type[0]); //, typeof(TypeExtensions), false);
+
+            ILGenerator gen = method.GetILGenerator();
+
+            gen.Emit(OpCodes.Sizeof, type);
+            gen.Emit(OpCodes.Ret);
+
+            var func = (Func<uint>)method.CreateDelegate(typeof(Func<uint>));
+            return checked((int)func());
+        }
+
         #endregion
 
         #region Profile management
@@ -4781,11 +4803,16 @@ namespace ASCOM.Remote
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
 
+            // Initialise a list to hold returned tracking rate values and add any tracking rate values that have been returned
             List<DriveRates> rates = new List<DriveRates>();
-            foreach (DriveRates rate in deviceResponse)
+
+            if (!(deviceResponse is null)) // Avoid processing a null return value because the foreach code will fail 
             {
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Rate = {0}", rate.ToString()));
-                rates.Add(rate);
+                foreach (DriveRates rate in deviceResponse)
+                {
+                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Rate = {0}", rate.ToString()));
+                    rates.Add(rate);
+                }
             }
 
             LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Number of rates: {0}", rates.Count));
@@ -5026,23 +5053,6 @@ namespace ASCOM.Remote
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
 
-        }
-
-        // GetManagedSize() returns the size of a structure whose type
-        // is 'type', as stored in managed memory. For any reference type
-        // this will simply return the size of a pointer (4 or 8).
-        public static int GetManagedSize(Type type)
-        {
-            // all this just to invoke one op code with no arguments!
-            var method = new DynamicMethod("GetManagedSizeImpl", typeof(uint), new Type[0]); //, typeof(TypeExtensions), false);
-
-            ILGenerator gen = method.GetILGenerator();
-
-            gen.Emit(OpCodes.Sizeof, type);
-            gen.Emit(OpCodes.Ret);
-
-            var func = (Func<uint>)method.CreateDelegate(typeof(Func<uint>));
-            return checked((int)func());
         }
 
         /// <summary>
@@ -5568,10 +5578,15 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
+            // Initialise a list to hold returned rate values and add any rate values that have been returned
             List<RateResponse> rateResponse = new List<RateResponse>();
-            foreach (dynamic r in deviceResponse)
+
+            if (!(rateResponse is null)) // Avoid processing a null return value because the foreach code will fail 
             {
-                rateResponse.Add(new RateResponse(r.Minimum, r.Maximum));
+                foreach (dynamic r in deviceResponse)
+                {
+                    rateResponse.Add(new RateResponse(r.Minimum, r.Maximum));
+                }
             }
 
             AxisRatesResponse responseClass = new AxisRatesResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, rateResponse)
