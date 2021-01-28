@@ -5581,7 +5581,7 @@ namespace ASCOM.Remote
             // Initialise a list to hold returned rate values and add any rate values that have been returned
             List<RateResponse> rateResponse = new List<RateResponse>();
 
-            if (!(rateResponse is null)) // Avoid processing a null return value because the foreach code will fail 
+            if (!(deviceResponse is null)) // Avoid processing a null return value because the foreach code will fail 
             {
                 foreach (dynamic r in deviceResponse)
                 {
@@ -5843,42 +5843,42 @@ namespace ASCOM.Remote
             {
                 case "Single":
                     float singleValue;
-                    if (!float.TryParse(parameterStringValue, NumberStyles.Number, CultureInfo.InvariantCulture, out singleValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to a floating point value", parameterStringValue, ParameterName));
+                    if (!float.TryParse(parameterStringValue, NumberStyles.Number, CultureInfo.InvariantCulture, out singleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a floating point value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, singleValue.ToString()));
                     return (T)(object)singleValue;
 
                 case "Double":
                     double doubleValue;
-                    if (!double.TryParse(parameterStringValue, NumberStyles.Number, CultureInfo.InvariantCulture, out doubleValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to a floating point value", parameterStringValue, ParameterName));
+                    if (!double.TryParse(parameterStringValue, NumberStyles.Number, CultureInfo.InvariantCulture, out doubleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a floating point value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, doubleValue.ToString()));
                     return (T)(object)doubleValue;
 
                 case "Int16":
                     short shortValue;
-                    if (!short.TryParse(parameterStringValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out shortValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to an Int16 value", parameterStringValue, ParameterName));
+                    if (!short.TryParse(parameterStringValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out shortValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to an Int16 value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, shortValue.ToString()));
                     return (T)(object)shortValue;
 
                 case "Int32":
                     int intValue;
-                    if (!int.TryParse(parameterStringValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out intValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to an Int32 value", parameterStringValue, ParameterName));
+                    if (!int.TryParse(parameterStringValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out intValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to an Int32 value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, intValue.ToString()));
                     return (T)(object)intValue;
 
                 case "Boolean":
                     bool boolValue;
-                    if (!bool.TryParse(parameterStringValue, out boolValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to a boolean value", parameterStringValue, ParameterName));
+                    if (!bool.TryParse(parameterStringValue, out boolValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a boolean value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, boolValue.ToString()));
                     return (T)(object)boolValue;
 
                 case "DateTime":
                     DateTime dateTimeValue;
-                    if (!DateTime.TryParse(parameterStringValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTimeValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to a DateTime value", parameterStringValue, ParameterName));
+                    if (!DateTime.TryParse(parameterStringValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTimeValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a DateTime value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, dateTimeValue.ToString()));
                     return (T)(object)dateTimeValue;
 
                 default:
-                    string errorMessage = string.Format("Unsupported type: {0} called by requestData.Elements[URL_ELEMENT_METHOD]: ", typeof(T).Name, requestData.Elements[URL_ELEMENT_METHOD]);
+                    string errorMessage = $"Unsupported type: {typeof(T).Name} called by {requestData.Elements[URL_ELEMENT_METHOD]}";
                     LogMessage1(requestData, "GetParameter", errorMessage);
                     throw new InvalidParameterException(errorMessage);
             }
