@@ -3943,7 +3943,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IntResponse'
+                $ref: '#/components/schemas/BoolResponse'
         '400':
           description: 'Method or parameter value error, check error message'
           content:
