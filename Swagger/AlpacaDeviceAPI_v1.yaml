@@ -3022,6 +3022,86 @@ paths:
                   format: uint32
               required:
                 - StartY
+  '/camera/{device_number}/subexposureduration':
+    get:
+      summary: Camera's sub-exposure interval
+      description: >-
+        The Camera's sub exposure duration in seconds. Only available in Camera Interface Version 3 and later.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Camera Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoubleResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Error message describing why the command cannot be processed
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Error message describing why the command cannot be processed
+    put:
+      summary: Sets the current Sub Exposure Duration
+      description: Sets image sub exposure duration in seconds. Only available in Camera Interface Version 3 and later.
+      tags:
+        - Camera Specific Methods
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      responses:
+        '200':
+          description: Transaction complete or exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MethodResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Error message describing why the command cannot be processed
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Error message describing why the command cannot be processed
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                SubExposureDuration:
+                  description: The request sub exposure duration in seconds
+                  type: number
+                  default: 0
+                ClientID:
+                  description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+                  type: integer
+                  format: uint32
+                ClientTransactionID:
+                  description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+                  type: integer
+                  format: uint32
+              required:
+                - SubExposureDuration          
   '/camera/{device_number}/abortexposure':
     put:
       summary: Aborts the current exposure
