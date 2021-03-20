@@ -52,8 +52,9 @@ namespace ASCOM.Remote
         public const string LOCALHOST_NAME_IPV4 = "localhost";
         public const string LOCALHOST_ADDRESS_IPV4 = "127.0.0.1"; // Get the localhost loop back address
         public const string LOCALHOST_ADDRESS_IPV6 = "[::1]"; // Get the localhost loop back address
-        public const string STRONG_WILDCARD_NAME = "+"; // Symbol for strong IP address wild card
-        public const string WEAK_WILDCARD_NAME = "*"; // Symbol for weak IP address wild card
+        public const string BIND_TO_ALL_INTERFACES_DESCRIPTION = "All IP Addresses"; // Text describing requirement to bind to all interfaces
+        public const string BIND_TO_ALL_INTERFACES_IP_ADDRESS_STRONG = "+"; // IP address value that causes binding to all available IP addresses
+        public const string BIND_TO_ALL_INTERFACES_IP_ADDRESS_WEAK = "*"; // IP address value that causes binding to all available IP addresses
 
         // Constants shared by Remote Client Drivers and the ASCOM Remote Server
         public const string API_URL_BASE = "/api/"; // This constant must always be lower case to make the logic tests work properly 

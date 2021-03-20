@@ -405,20 +405,14 @@ namespace ASCOM.Remote
                     if (IpV4Enabled | IpV6Enabled)
                     {
 
-                        // Construct URIs that apply to all interfaces on this PC
-                        string apiOperatingUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.API_URL_BASE);
-                        string remoteServerManagementUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
-                        string alpacaDeviceManagementUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE);
-                        string alpacaDeviceSetupUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE);
-
-                        apiOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
-                        remoteServerManagementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
-                        alpacaDeviceManagementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE);
-                        alpacaDeviceSetupUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE);
-
+                        // Construct URIs based on configured IP address parameters 
+                        string apiOperatingUri = $@"http://{ServerIPAddressString}:{ServerPortNumber}{SharedConstants.API_URL_BASE}";
+                        string remoteServerManagementUri = $@"http://{ServerIPAddressString}:{ServerPortNumber}{SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE}";
+                        string alpacaDeviceManagementUri = $@"http://{ServerIPAddressString}:{ServerPortNumber}{SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE}";
+                        string alpacaDeviceSetupUri = $@"http://{ServerIPAddressString}:{ServerPortNumber}{SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE}";
 
                         // Construct a URI for the configured address i.e the effective address after filtering
-                        string configuredOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
+                        string configuredOperatingUri = $@"http://{ServerIPAddressString}:{ServerPortNumber}{SharedConstants.API_URL_BASE}";
 
                         LogMessage(0, 0, 0, "StartRESTServer", "IPv4 Operating URI: " + apiOperatingUri);
                         LogMessage(0, 0, 0, "StartRESTServer", "IPv4 Management URI: " + remoteServerManagementUri);
@@ -875,7 +869,7 @@ namespace ASCOM.Remote
                 IPEndPoint localIpEndPoint = (IPEndPoint)udpClient.Client.LocalEndPoint;
 
                 // Filter based on receiving port IP address 
-                if ((ServerIPAddressString == "*") | (ServerIPAddressString == "+")) // The Remote Server is configured to respond on all its IP addresses so filtering is not required here
+                if ((ServerIPAddressString == SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_STRONG) | (ServerIPAddressString == SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_STRONG)) // The Remote Server is configured to respond on all its IP addresses so filtering is not required here
                 {
                     if (DebugTraceState) LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"The configured server IP address is + or * so we will process this request.");
                 }
@@ -1824,7 +1818,7 @@ namespace ASCOM.Remote
             }
 
             // Test whether the user has configured the server to respond on all IP addresses, if so process it without further checks
-            if ((ServerIPAddressString == "*") | (ServerIPAddressString == "+"))
+            if ((ServerIPAddressString == SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_STRONG) | (ServerIPAddressString == SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_WEAK))
             {
                 // User has configured all IP addresses so no filtering is required
                 if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"The configured server IP address is + or * so we will process this request.");
