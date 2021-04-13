@@ -609,7 +609,8 @@ namespace ASCOM.Remote
                     string responseContent;
                     if (deviceJsonResponse.Content.Length > 1000) responseContent = deviceJsonResponse.Content.Substring(0, 1000);
                     else responseContent = deviceJsonResponse.Content;
-                    TL.LogMessage(clientNumber, method, string.Format("Response Status: '{0}', Response: {1}", deviceJsonResponse.StatusDescription, responseContent));
+
+                    TL.LogMessage(clientNumber, method, $"Response Status: {deviceJsonResponse.ResponseStatus} - '{deviceJsonResponse.StatusDescription}', Response: {responseContent}");
 
                     if ((deviceJsonResponse.ResponseStatus == ResponseStatus.Completed) & (deviceJsonResponse.StatusCode == System.Net.HttpStatusCode.OK))
                     {
