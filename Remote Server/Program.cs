@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.ExceptionServices;
+using System.Security;
 using System.Threading;
 using System.Windows.Forms;
 using ASCOM.Utilities;
@@ -12,6 +14,7 @@ namespace ASCOM.Remote
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
+        [HandleProcessCorruptedStateExceptions, SecurityCritical]
         static void Main()
         {
 #if !DEBUG // Exclude the unhandled exception handlers from the Debug version so that the application can be debugged in Visual Studio
