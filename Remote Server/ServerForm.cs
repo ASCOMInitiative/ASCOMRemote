@@ -1959,8 +1959,14 @@ namespace ASCOM.Remote
 
                 // Extract the caller's IP address into hostIPAddress
                 string clientIpAddress;
-                if (request.Headers[X_FORWARDED_FOR] != null) clientIpAddress = request.Headers[X_FORWARDED_FOR]; // The request was fronted by an Apache web server
-                else clientIpAddress = request.UserHostAddress; // The request came straight to this application
+                if (request.Headers[X_FORWARDED_FOR] != null)
+                {
+                    clientIpAddress = request.Headers[X_FORWARDED_FOR]; // The request was fronted by an Apache web server
+                }
+                else
+                {
+                    clientIpAddress = request.RemoteEndPoint.ToString(); // The request came straight to this application
+                }
                 AccessLog.LogMessage("    " + clientIpAddress, string.Format("{0} {1}", request.HttpMethod, request.Url.AbsolutePath));
 
                 if (ScreenLogRequests) // Incoming requests are logged to the screen
