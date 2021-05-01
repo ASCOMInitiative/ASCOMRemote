@@ -110,6 +110,7 @@ namespace ASCOM.Remote
         internal const int URL_ELEMENT_SERVER_COMMAND = 2; // For /server/ type uris
 
         // Device server profile persistence constants
+        internal const string SERVER_LOG_FOLDER_PROFILENAME = "Server Log Folder"; // No default value constant because the default Documents folder has to be calculated dynamically at run time
         internal const string SERVER_ACCESS_LOG_PROFILENAME = "Server Access Log Enabled"; public const bool SERVER_ACCESS_LOG_DEFAULT = true;
         internal const string SERVER_TRACE_LEVEL_PROFILENAME = "Server Trace Level"; public const bool SERVER_TRACE_LEVEL_DEFAULT = true;
         internal const string SERVER_DEBUG_TRACE_PROFILENAME = "Server Include Debug Trace"; public const bool SERVER_DEBUG_TRACE_DEFAULT = false;
@@ -137,6 +138,8 @@ namespace ASCOM.Remote
         internal const string MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME = "Maximum Number Of Devices"; public static int MAXIMUM_NUMBER_OF_DEVICES_DEFAULT = 10;
         internal const string IPV4_ENABLED_PROFILENAME = "IP v4 Enabled"; public const bool IPV4_ENABLED_DEFAULT = true;
         internal const string IPV6_ENABLED_PROFILENAME = "IP v6 Enabled"; public const bool IPV6_ENABLED_DEFAULT = false;
+        internal const string ROLLOVER_LOGS_ENABLED_PROFILENAME = "Rollover Logs Enabled"; public const bool ROLLOVER_LOGS_ENABLED_DEFAULT = false;
+        internal const string ROLLOVER_TIME_PROFILENAME = "Rollover Time"; public static DateTime ROLLOVER_TIME_DEFAULT = DateTime.Now.Date; // Default value can't be const because it's a date-time type
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -207,13 +210,14 @@ namespace ASCOM.Remote
         internal static int numberOfConsecutiveErrors = 0; // Counter to record the number of consecutive errors, this is reset to zero whenever a successful async listen occurs
 
         // Variable to hold the last log time so that old logs are closed and new logs are started when we move to a new day
-        internal static DateTime LastTraceLogTime = DateTime.Now; // Initialise to now to ensure that the TraceLoggerPlus code works correctly
-        internal static DateTime LastAccessLogTime = DateTime.Now; // Initialise to now to ensure that the TraceLoggerPlus code works correctly
+        internal static DateTime NextRolloverTime = DateTime.Now; // Initialise to now to ensure that the logging code works correctly
+        internal static DateTime LastAccessLogTime = DateTime.Now; // Initialise to now to ensure that the logging code works correctly
 
         internal static ConcurrentDictionary<string, ConfiguredDevice> ConfiguredDevices;
         internal static ConcurrentDictionary<string, ActiveObject> ActiveObjects;
 
         // Configuration variables that can be changed through the Setup dialogue 
+        internal static string TraceFolder;
         internal static bool TraceState;
         internal static bool DebugTraceState;
         internal static string ServerIPAddressString;
@@ -238,6 +242,8 @@ namespace ASCOM.Remote
         internal static int MaximumNumberOfDevices;
         internal static bool IpV4Enabled;
         internal static bool IpV6Enabled;
+        internal static bool RolloverLogsEnabled;
+        internal static DateTime RolloverTime;
 
         #endregion
 
@@ -278,6 +284,7 @@ namespace ASCOM.Remote
             try
             {
                 InitializeComponent();
+                // This TraceLogger is only used for debugging Profile value Retrieval. It is replaced below after the required logging location is retrieved from the Profile 
                 TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME); // Trace state is enabled or disabled in the ReadProfile method
 
                 // Initialise lists
@@ -288,11 +295,23 @@ namespace ASCOM.Remote
 
                 ReadProfile();
 
+                // Close the debugging log
+                TL.Enabled = false;
+                TL.Dispose();
+
+                // Create the application log file in the folder specified by the user
+                TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME)
+                {
+                    LogFilePath = TraceFolder, // Set the trace folder to the user specified value
+                    Enabled = TraceState // Enable the log if required
+                };
+
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
                 LogMessage(0, 0, 0, "New", string.Format("Remote Server Version {0}, Started on {1}", version.ToString(), DateTime.Now.ToString("dddd d MMMM yyyy HH:mm:ss")));
 
                 AccessLog = new TraceLoggerPlus("", ACCESSLOG_TRACELOGGER_NAME)
                 {
+                    LogFilePath = TraceFolder, // Set the trace folder to the user specified value
                     Enabled = AccessLogEnabled
                 };
 
@@ -1168,20 +1187,29 @@ namespace ASCOM.Remote
             if (TL.Enabled) // We are logging so we have to close the current log and start a new one if we have moved to a new day
             {
                 DateTime now = DateTime.Now;
-                if (LastTraceLogTime.DayOfYear != now.DayOfYear) // We have moved onto tomorrow so close the current log and start another
+
+                //TL.LogMessage("CheckWhetherNewLogRequired", $"Next roll-over time: {NextRolloverTime}, Current time: {now}");
+
+                if (now > NextRolloverTime) // We have moved into the next log period so close the current log and start another
                 {
+                    // Close the current logger
                     TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "EndOfDay", "Closing this log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
                     TL.Enabled = false;
                     TL.Dispose();
                     TL = null;
+
+                    // Start a new logger
                     TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME)
                     {
+                        LogFilePath = TraceFolder,
                         Enabled = true, // Enable the trace logger
                         IpAddressTraceState = LogClientIPAddress // Set the current state of the "include client IP address in trace lines" flag
                     };
+                    
                     TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+
+                    NextRolloverTime = NextRolloverTime.AddDays(1.0); // Update the next roll-over time so that it can be tested on the next logging call
                 }
-                LastTraceLogTime = now; // Update the last log time so that it can be tested on the next logging call
             }
         }
 
@@ -1207,6 +1235,8 @@ namespace ASCOM.Remote
             LogMessage(0, 0, 0, "Alpaca Unique ID", AlpacaUniqueId);
             LogMessage(0, 0, 0, "Alpaca Discovery Port", AlpacaDiscoveryPort.ToString());
             LogMessage(0, 0, 0, "Maximum Devices", MaximumNumberOfDevices.ToString());
+            LogMessage(0, 0, 0, "Rollover Logs Enabled", RolloverLogsEnabled.ToString());
+            LogMessage(0, 0, 0, "Rollover time", RolloverTime.TimeOfDay.ToString());
 
             LogBlankLine(0, 0, 0);
 
@@ -1408,6 +1438,7 @@ namespace ASCOM.Remote
                 TraceState = driverProfile.GetValue<bool>(SERVER_TRACE_LEVEL_PROFILENAME, string.Empty, SERVER_TRACE_LEVEL_DEFAULT);
                 TL.Enabled = TraceState; // Set the trace state here so that it can be used below
 
+                TraceFolder = driverProfile.GetValue<string>(SERVER_LOG_FOLDER_PROFILENAME, string.Empty, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\ASCOM");
                 DebugTraceState = driverProfile.GetValue<bool>(SERVER_DEBUG_TRACE_PROFILENAME, string.Empty, SERVER_DEBUG_TRACE_DEFAULT);
                 ServerIPAddressString = driverProfile.GetValue<string>(SERVER_IPADDRESS_PROFILENAME, string.Empty, SERVER_IPADDRESS_DEFAULT);
                 ServerPortNumber = driverProfile.GetValue<decimal>(SERVER_PORTNUMBER_PROFILENAME, string.Empty, SERVER_PORTNUMBER_DEFAULT);
@@ -1432,6 +1463,10 @@ namespace ASCOM.Remote
                 MaximumNumberOfDevices = driverProfile.GetValue<int>(MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME, string.Empty, MAXIMUM_NUMBER_OF_DEVICES_DEFAULT);
                 IpV4Enabled = driverProfile.GetValue<bool>(IPV4_ENABLED_PROFILENAME, string.Empty, IPV4_ENABLED_DEFAULT);
                 IpV6Enabled = driverProfile.GetValue<bool>(IPV6_ENABLED_PROFILENAME, string.Empty, IPV6_ENABLED_DEFAULT);
+                RolloverLogsEnabled = driverProfile.GetValue<bool>(ROLLOVER_LOGS_ENABLED_PROFILENAME, string.Empty, ROLLOVER_LOGS_ENABLED_DEFAULT);
+                RolloverTime = driverProfile.GetValue<DateTime>(ROLLOVER_TIME_PROFILENAME, string.Empty, ROLLOVER_TIME_DEFAULT);
+
+                SetNextRolloverTime();
 
                 // Clear collections before repopulating
                 ServerDeviceNumbers.Clear();
@@ -1442,7 +1477,6 @@ namespace ASCOM.Remote
                 {
                     ServerDeviceNumbers.Add(i.ToString());
                     ServerDeviceNames.Add($"ServedDevice{i:00}");
-                    LogMessage(0, 0, 0, "ReadProfile", $"Adding served device {i} as ServedDevice{i:00}");
                 }
 
                 // Clear collection before repopulating
@@ -1468,10 +1502,25 @@ namespace ASCOM.Remote
                         uniqueID = Guid.NewGuid().ToString().ToUpperInvariant(); // Assign a new unique ID
                         driverProfile.SetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, revisedDeviceName, uniqueID);
                     }
-                    LogMessage(0, 0, 0, "ReadProfile", $"Adding configured device {revisedDeviceName}");
 
                     ConfiguredDevices[deviceName] = new ConfiguredDevice(deviceType, progID, description, deviceNumber, allowConnectedSetFalse, allowConnectedSetTrue, allowConcurrentAccess, uniqueID);
                 }
+            }
+        }
+
+        private static void SetNextRolloverTime()
+        {
+            // Set the next rollover time based on the retrieved RolloverTime value
+            DateTime todaysRolloverTime = DateTime.Today.Add(RolloverTime.TimeOfDay); // Calculate today's rollover time
+
+            // Check whether we are ahead or behind today's roll-over time
+            if (todaysRolloverTime > DateTime.Now) // Today's roll-time is later than now so we can just wait for us to reach it
+            {
+                NextRolloverTime = todaysRolloverTime;
+            }
+            else // Today's roll-time is earlier than now so we must set the next roll-time to tomorrow's roll-time
+            {
+                NextRolloverTime = todaysRolloverTime.AddDays(1.0);
             }
         }
 
@@ -1492,7 +1541,6 @@ namespace ASCOM.Remote
             }
         }
 
-
         /// <summary>
         /// Write the device configuration to the  ASCOM  Profile store
         /// </summary>
@@ -1501,31 +1549,39 @@ namespace ASCOM.Remote
             using (Configuration driverProfile = new Configuration())
             {
                 // Save the variable state to the Profile
-                driverProfile.SetValue<bool>(SERVER_TRACE_LEVEL_PROFILENAME, string.Empty, TraceState);
-                driverProfile.SetValue<bool>(SERVER_DEBUG_TRACE_PROFILENAME, string.Empty, DebugTraceState);
+                driverProfile.SetValue<string>(SERVER_LOG_FOLDER_PROFILENAME, string.Empty, TraceFolder);
+                driverProfile.SetValueInvariant<bool>(SERVER_TRACE_LEVEL_PROFILENAME, string.Empty, TraceState);
+                driverProfile.SetValueInvariant<bool>(SERVER_DEBUG_TRACE_PROFILENAME, string.Empty, DebugTraceState);
                 driverProfile.SetValue<string>(SERVER_IPADDRESS_PROFILENAME, string.Empty, ServerIPAddressString);
-                driverProfile.SetValue<decimal>(SERVER_PORTNUMBER_PROFILENAME, string.Empty, ServerPortNumber);
-                driverProfile.SetValue<bool>(SERVER_AUTOCONNECT_PROFILENAME, string.Empty, StartWithDevicesConnected);
-                driverProfile.SetValue<bool>(SERVER_ACCESS_LOG_PROFILENAME, string.Empty, AccessLogEnabled);
-                driverProfile.SetValue<bool>(SCREEN_LOG_REQUESTS_PROFILENAME, string.Empty, ScreenLogRequests);
-                driverProfile.SetValue<bool>(SCREEN_LOG_RESPONSES_PROFILENAME, string.Empty, ScreenLogResponses);
-                driverProfile.SetValue<bool>(MANAGEMENT_INTERFACE_ENABLED_PROFILENAME, string.Empty, ManagementInterfaceEnabled);
-                driverProfile.SetValue<bool>(START_WITH_API_ENABLED_PROFILENAME, string.Empty, StartWithApiEnabled);
-                driverProfile.SetValue<bool>(RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME, string.Empty, RunDriversOnSeparateThreads);
-                driverProfile.SetValue<bool>(LOG_CLIENT_IPADDRESS_PROFILENAME, string.Empty, LogClientIPAddress);
+                driverProfile.SetValueInvariant<decimal>(SERVER_PORTNUMBER_PROFILENAME, string.Empty, ServerPortNumber);
+                driverProfile.SetValueInvariant<bool>(SERVER_AUTOCONNECT_PROFILENAME, string.Empty, StartWithDevicesConnected);
+                driverProfile.SetValueInvariant<bool>(SERVER_ACCESS_LOG_PROFILENAME, string.Empty, AccessLogEnabled);
+                driverProfile.SetValueInvariant<bool>(SCREEN_LOG_REQUESTS_PROFILENAME, string.Empty, ScreenLogRequests);
+                driverProfile.SetValueInvariant<bool>(SCREEN_LOG_RESPONSES_PROFILENAME, string.Empty, ScreenLogResponses);
+                driverProfile.SetValueInvariant<bool>(MANAGEMENT_INTERFACE_ENABLED_PROFILENAME, string.Empty, ManagementInterfaceEnabled);
+                driverProfile.SetValueInvariant<bool>(START_WITH_API_ENABLED_PROFILENAME, string.Empty, StartWithApiEnabled);
+                driverProfile.SetValueInvariant<bool>(RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME, string.Empty, RunDriversOnSeparateThreads);
+                driverProfile.SetValueInvariant<bool>(LOG_CLIENT_IPADDRESS_PROFILENAME, string.Empty, LogClientIPAddress);
                 TL.IpAddressTraceState = LogClientIPAddress; // Persist the IP address trace state to the TraceLogger so that it can be used to format lines as required
-                driverProfile.SetValue<bool>(INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME, string.Empty, IncludeDriverExceptionInJsonResponse);
+                driverProfile.SetValueInvariant<bool>(INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME, string.Empty, IncludeDriverExceptionInJsonResponse);
                 driverProfile.SetValue<string>(REMOTE_SERVER_LOCATION_PROFILENAME, string.Empty, RemoteServerLocation);
                 driverProfile.SetValue<string>(CORS_PERMITTED_ORIGINS_PROFILENAME, string.Empty, CorsPermittedOrigins.ToConcatenatedString(SharedConstants.CORS_SERIALISATION_SEPARATOR));
-                driverProfile.SetValue<bool>(CORS_SUPPORT_ENABLED_PROFILENAME, string.Empty, CorsSupportIsEnabled);
-                driverProfile.SetValue<decimal>(CORS_MAX_AGE_PROFILENAME, string.Empty, CorsMaxAge);
-                driverProfile.SetValue<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CorsCredentialsPermitted);
-                driverProfile.SetValue<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, AlpacaDiscoveryEnabled);
+                driverProfile.SetValueInvariant<bool>(CORS_SUPPORT_ENABLED_PROFILENAME, string.Empty, CorsSupportIsEnabled);
+                driverProfile.SetValueInvariant<decimal>(CORS_MAX_AGE_PROFILENAME, string.Empty, CorsMaxAge);
+                driverProfile.SetValueInvariant<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CorsCredentialsPermitted);
+                driverProfile.SetValueInvariant<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, AlpacaDiscoveryEnabled);
                 driverProfile.SetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, AlpacaUniqueId);
-                driverProfile.SetValue<decimal>(ALPACA_DISCOVERY_PORT_PROFILENAME, string.Empty, AlpacaDiscoveryPort);
-                driverProfile.SetValue<int>(MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME, string.Empty, MaximumNumberOfDevices);
-                driverProfile.SetValue<bool>(IPV4_ENABLED_PROFILENAME, string.Empty, IpV4Enabled);
-                driverProfile.SetValue<bool>(IPV6_ENABLED_PROFILENAME, string.Empty, IpV6Enabled);
+                driverProfile.SetValueInvariant<decimal>(ALPACA_DISCOVERY_PORT_PROFILENAME, string.Empty, AlpacaDiscoveryPort);
+                driverProfile.SetValueInvariant<int>(MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME, string.Empty, MaximumNumberOfDevices);
+                driverProfile.SetValueInvariant<bool>(IPV4_ENABLED_PROFILENAME, string.Empty, IpV4Enabled);
+                driverProfile.SetValueInvariant<bool>(IPV6_ENABLED_PROFILENAME, string.Empty, IpV6Enabled);
+                driverProfile.SetValueInvariant<bool>(ROLLOVER_LOGS_ENABLED_PROFILENAME, string.Empty, RolloverLogsEnabled);
+                driverProfile.SetValueInvariant<DateTime>(ROLLOVER_TIME_PROFILENAME, string.Empty, RolloverTime);
+
+                // Update the next rollover time in case the time has changed
+                //TL.LogMessage("WriteProfile", $"NextRolloverTime Before: {NextRolloverTime}");
+                SetNextRolloverTime();
+                //TL.LogMessage("WriteProfile", $"NextRolloverTime After: {NextRolloverTime}");
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
@@ -1967,7 +2023,34 @@ namespace ASCOM.Remote
                 {
                     clientIpAddress = request.RemoteEndPoint.ToString(); // The request came straight to this application
                 }
-                AccessLog.LogMessage("    " + clientIpAddress, string.Format("{0} {1}", request.HttpMethod, request.Url.AbsolutePath));
+
+                // Create an access log entry
+
+                if (AccessLog.Enabled) // We are logging so we have to close the current log and start a new one if we have moved to a new day
+                {
+                    DateTime now = DateTime.Now;
+                    if (LastAccessLogTime.DayOfYear != now.DayOfYear) // We have moved onto tomorrow so close the current log and start another
+                    {
+                        // Close the current logger
+                        AccessLog.LogMessage(clientID, clientTransactionID, serverTransactionID, "EndOfDay", "Closing this log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+                        AccessLog.Enabled = false;
+                        AccessLog.Dispose();
+                        AccessLog = null;
+
+                        // Start a new logger
+                        AccessLog = new TraceLoggerPlus("", ACCESSLOG_TRACELOGGER_NAME)
+                        {
+                            LogFilePath = TraceFolder,
+                            Enabled = true, // Enable the trace logger
+                            IpAddressTraceState = LogClientIPAddress // Set the current state of the "include client IP address in trace lines" flag
+                        };
+                        AccessLog.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+                    }
+                    LastAccessLogTime = now; // Update the last log time so that it can be tested on the next logging call
+
+                    //Write the access log entry
+                    AccessLog.LogMessage("    " + clientIpAddress, string.Format("{0} {1}", request.HttpMethod, request.Url.AbsolutePath));
+                }
 
                 if (ScreenLogRequests) // Incoming requests are logged to the screen
                 {

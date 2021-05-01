@@ -23,11 +23,11 @@ AppID={{0ee690ae-7927-4ee7-b851-f5877c077ff5}
 #define MyAppVer GetFileVersion("..\Remote Server\bin\Release\ASCOM.RemoteServer.exe") ; define variable
 
 AppName=ASCOM Remote
-AppCopyright=Copyright © 2020 ASCOM Initiative
+AppCopyright=Copyright © 2021 ASCOM Initiative
 AppPublisher=ASCOM Initiative
 AppPublisherURL=mailto:peter@peterandjill.co.uk
-AppSupportURL=http://tech.groups.yahoo.com/group/ASCOM-Talk/
-AppUpdatesURL=http://ascom-standards.org/
+AppSupportURL=https://ascomtalk.groups.io/g/Help/topics
+AppUpdatesURL=https://github.com/ASCOMInitiative/ASCOMRemote/releases
 #emit "AppVerName=ASCOM Remote " + MyAppVer + " ("+ BuildType + ")"
 #emit "AppVersion=" + MyAppVer
 Compression=lzma
@@ -137,7 +137,7 @@ Name: "..\BuildRemote.cmd"; Flags: cmdprompt
 [Code]
 const
    REQUIRED_PLATFORM_VERSION = 6.5;    // Set this to the minimum required ASCOM Platform version for this application
-   REQUIRED_DOTNET_VERSION = 'v4.7.2';  // Set this to the minimum required Microsoft .NET Framework version for this application
+   REQUIRED_DOTNET_VERSION = 'v4.8';  // Set this to the minimum required Microsoft .NET Framework version for this application
 
 var
   LightMsgPage: TOutputMsgWizardPage;
@@ -187,7 +187,7 @@ function IsDotNetDetected(version: string; service: cardinal): boolean;
 //    'v4.5.2'        .NET Framework 4.5.2                   'v4.6'          .NET Framework 4.6
 //    'v4.6.1'        .NET Framework 4.6.1                   'v4.6.2'        .NET Framework 4.6.2
 //    'v4.7'          .NET Framework 4.7                     'v4.7.1'        .NET Framework 4.7.1
-//    'v4.7.2'        .NET Framework 4.7.2
+//    'v4.7.2'        .NET Framework 4.7.2                   'v4.8           .NET Framework 4.8
 //
 // service -- Specify any non-negative integer for the required service pack level:
 //    0               No service packs required
@@ -220,6 +220,7 @@ begin
           'v4.7':   versionRelease := 460798; // 460805 before Win10 Creators Update
           'v4.7.1': versionRelease := 461308; // 461310 before Win10 Fall Creators Update
           'v4.7.2': versionRelease := 461808; // 461814 before Win10 April 2018 Update
+          'v4.8':   versionRelease := 528040;
         end;
     end;
 

@@ -16,19 +16,15 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupForm));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.BtnCancel = new System.Windows.Forms.Button();
             this.BtnOK = new System.Windows.Forms.Button();
             this.chkAutoConnect = new System.Windows.Forms.CheckBox();
-            this.chkTrace = new System.Windows.Forms.CheckBox();
-            this.chkDebugTrace = new System.Windows.Forms.CheckBox();
-            this.chkAccessLog = new System.Windows.Forms.CheckBox();
             this.chkManagementInterfaceEnabled = new System.Windows.Forms.CheckBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.ChkStartWithApiEnabled = new System.Windows.Forms.CheckBox();
             this.ChkRunDriversInSeparateThreadss = new System.Windows.Forms.CheckBox();
-            this.ChkLogClientIPAddress = new System.Windows.Forms.CheckBox();
             this.ChkIncludeDriverExceptionsInJsonResponses = new System.Windows.Forms.CheckBox();
             this.SetupTabControl = new System.Windows.Forms.TabControl();
             this.DeviceConfigurationTab = new System.Windows.Forms.TabPage();
@@ -235,6 +231,7 @@
             this.ServedDevice99 = new ASCOM.Remote.ServedDevice();
             this.LblDevicesNotDisconnoected = new System.Windows.Forms.Label();
             this.ServerConfigurationTab = new System.Windows.Forms.TabPage();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.GrpIpVersionSelector = new System.Windows.Forms.GroupBox();
             this.RadIpV4AndV6 = new System.Windows.Forms.RadioButton();
             this.RadIpV6 = new System.Windows.Forms.RadioButton();
@@ -250,6 +247,17 @@
             this.numPort = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.LoggingConfigurationTab = new System.Windows.Forms.TabPage();
+            this.LblLogRolloverTime = new System.Windows.Forms.Label();
+            this.ChkRollOverLogs = new System.Windows.Forms.CheckBox();
+            this.DateTimeLogRolloverTime = new System.Windows.Forms.DateTimePicker();
+            this.label99 = new System.Windows.Forms.Label();
+            this.label98 = new System.Windows.Forms.Label();
+            this.BtnSelectLogFileFolder = new System.Windows.Forms.Button();
+            this.ChkLogClientIPAddress = new System.Windows.Forms.CheckBox();
+            this.chkTrace = new System.Windows.Forms.CheckBox();
+            this.chkDebugTrace = new System.Windows.Forms.CheckBox();
+            this.chkAccessLog = new System.Windows.Forms.CheckBox();
             this.CorsConfigurationTab = new System.Windows.Forms.TabPage();
             this.ChkCorsSupportCredentials = new System.Windows.Forms.CheckBox();
             this.LabMaxAge = new System.Windows.Forms.Label();
@@ -259,7 +267,7 @@
             this.LabHelp2 = new System.Windows.Forms.Label();
             this.LabHelp1 = new System.Windows.Forms.Label();
             this.DataGridCorsOrigins = new System.Windows.Forms.DataGridView();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.DlgSetLogFolderPath = new System.Windows.Forms.FolderBrowserDialog();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SetupTabControl.SuspendLayout();
             this.DeviceConfigurationTab.SuspendLayout();
@@ -279,6 +287,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.NumMaxDevices)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumDiscoveryPort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
+            this.LoggingConfigurationTab.SuspendLayout();
             this.CorsConfigurationTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumCorsMaxAge)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridCorsOrigins)).BeginInit();
@@ -309,48 +318,17 @@
             // chkAutoConnect
             // 
             this.chkAutoConnect.AutoSize = true;
-            this.chkAutoConnect.Location = new System.Drawing.Point(270, 192);
+            this.chkAutoConnect.Location = new System.Drawing.Point(270, 233);
             this.chkAutoConnect.Name = "chkAutoConnect";
             this.chkAutoConnect.Size = new System.Drawing.Size(167, 17);
             this.chkAutoConnect.TabIndex = 2;
             this.chkAutoConnect.Text = "Start with Devices Connected";
             this.chkAutoConnect.UseVisualStyleBackColor = true;
             // 
-            // chkTrace
-            // 
-            this.chkTrace.AutoSize = true;
-            this.chkTrace.Location = new System.Drawing.Point(270, 259);
-            this.chkTrace.Name = "chkTrace";
-            this.chkTrace.Size = new System.Drawing.Size(96, 17);
-            this.chkTrace.TabIndex = 6;
-            this.chkTrace.Text = "Write Log Files";
-            this.chkTrace.UseVisualStyleBackColor = true;
-            // 
-            // chkDebugTrace
-            // 
-            this.chkDebugTrace.AutoSize = true;
-            this.chkDebugTrace.Location = new System.Drawing.Point(270, 282);
-            this.chkDebugTrace.Name = "chkDebugTrace";
-            this.chkDebugTrace.Size = new System.Drawing.Size(135, 17);
-            this.chkDebugTrace.TabIndex = 7;
-            this.chkDebugTrace.Text = "Enable Debug Logging";
-            this.chkDebugTrace.UseVisualStyleBackColor = true;
-            this.chkDebugTrace.CheckedChanged += new System.EventHandler(this.ChkDebugTrace_CheckedChanged);
-            // 
-            // chkAccessLog
-            // 
-            this.chkAccessLog.AutoSize = true;
-            this.chkAccessLog.Location = new System.Drawing.Point(270, 305);
-            this.chkAccessLog.Name = "chkAccessLog";
-            this.chkAccessLog.Size = new System.Drawing.Size(118, 17);
-            this.chkAccessLog.TabIndex = 4;
-            this.chkAccessLog.Text = "Enable Access Log";
-            this.chkAccessLog.UseVisualStyleBackColor = true;
-            // 
             // chkManagementInterfaceEnabled
             // 
             this.chkManagementInterfaceEnabled.AutoSize = true;
-            this.chkManagementInterfaceEnabled.Location = new System.Drawing.Point(483, 192);
+            this.chkManagementInterfaceEnabled.Location = new System.Drawing.Point(483, 233);
             this.chkManagementInterfaceEnabled.Name = "chkManagementInterfaceEnabled";
             this.chkManagementInterfaceEnabled.Size = new System.Drawing.Size(303, 17);
             this.chkManagementInterfaceEnabled.TabIndex = 3;
@@ -364,7 +342,7 @@
             // ChkStartWithApiEnabled
             // 
             this.ChkStartWithApiEnabled.AutoSize = true;
-            this.ChkStartWithApiEnabled.Location = new System.Drawing.Point(270, 215);
+            this.ChkStartWithApiEnabled.Location = new System.Drawing.Point(270, 256);
             this.ChkStartWithApiEnabled.Name = "ChkStartWithApiEnabled";
             this.ChkStartWithApiEnabled.Size = new System.Drawing.Size(131, 17);
             this.ChkStartWithApiEnabled.TabIndex = 5;
@@ -374,27 +352,17 @@
             // ChkRunDriversInSeparateThreadss
             // 
             this.ChkRunDriversInSeparateThreadss.AutoSize = true;
-            this.ChkRunDriversInSeparateThreadss.Location = new System.Drawing.Point(483, 259);
+            this.ChkRunDriversInSeparateThreadss.Location = new System.Drawing.Point(270, 279);
             this.ChkRunDriversInSeparateThreadss.Name = "ChkRunDriversInSeparateThreadss";
             this.ChkRunDriversInSeparateThreadss.Size = new System.Drawing.Size(181, 17);
             this.ChkRunDriversInSeparateThreadss.TabIndex = 34;
             this.ChkRunDriversInSeparateThreadss.Text = "Run Drivers in Separate Threads";
             this.ChkRunDriversInSeparateThreadss.UseVisualStyleBackColor = true;
             // 
-            // ChkLogClientIPAddress
-            // 
-            this.ChkLogClientIPAddress.AutoSize = true;
-            this.ChkLogClientIPAddress.Location = new System.Drawing.Point(483, 282);
-            this.ChkLogClientIPAddress.Name = "ChkLogClientIPAddress";
-            this.ChkLogClientIPAddress.Size = new System.Drawing.Size(134, 17);
-            this.ChkLogClientIPAddress.TabIndex = 35;
-            this.ChkLogClientIPAddress.Text = "Log Client\'s IP Address";
-            this.ChkLogClientIPAddress.UseVisualStyleBackColor = true;
-            // 
             // ChkIncludeDriverExceptionsInJsonResponses
             // 
             this.ChkIncludeDriverExceptionsInJsonResponses.AutoSize = true;
-            this.ChkIncludeDriverExceptionsInJsonResponses.Location = new System.Drawing.Point(483, 305);
+            this.ChkIncludeDriverExceptionsInJsonResponses.Location = new System.Drawing.Point(483, 279);
             this.ChkIncludeDriverExceptionsInJsonResponses.Name = "ChkIncludeDriverExceptionsInJsonResponses";
             this.ChkIncludeDriverExceptionsInJsonResponses.Size = new System.Drawing.Size(364, 17);
             this.ChkIncludeDriverExceptionsInJsonResponses.TabIndex = 36;
@@ -405,6 +373,7 @@
             // 
             this.SetupTabControl.Controls.Add(this.DeviceConfigurationTab);
             this.SetupTabControl.Controls.Add(this.ServerConfigurationTab);
+            this.SetupTabControl.Controls.Add(this.LoggingConfigurationTab);
             this.SetupTabControl.Controls.Add(this.CorsConfigurationTab);
             this.SetupTabControl.Location = new System.Drawing.Point(12, 10);
             this.SetupTabControl.Name = "SetupTabControl";
@@ -3065,12 +3034,8 @@
             this.ServerConfigurationTab.Controls.Add(this.chkManagementInterfaceEnabled);
             this.ServerConfigurationTab.Controls.Add(this.ChkIncludeDriverExceptionsInJsonResponses);
             this.ServerConfigurationTab.Controls.Add(this.chkAutoConnect);
-            this.ServerConfigurationTab.Controls.Add(this.ChkLogClientIPAddress);
-            this.ServerConfigurationTab.Controls.Add(this.chkTrace);
             this.ServerConfigurationTab.Controls.Add(this.ChkRunDriversInSeparateThreadss);
-            this.ServerConfigurationTab.Controls.Add(this.chkDebugTrace);
             this.ServerConfigurationTab.Controls.Add(this.ChkStartWithApiEnabled);
-            this.ServerConfigurationTab.Controls.Add(this.chkAccessLog);
             this.ServerConfigurationTab.Location = new System.Drawing.Point(4, 22);
             this.ServerConfigurationTab.Margin = new System.Windows.Forms.Padding(0);
             this.ServerConfigurationTab.Name = "ServerConfigurationTab";
@@ -3079,12 +3044,27 @@
             this.ServerConfigurationTab.TabIndex = 1;
             this.ServerConfigurationTab.Text = "Server Configuration";
             // 
+            // textBox1
+            // 
+            this.textBox1.BackColor = System.Drawing.Color.Yellow;
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.textBox1.Location = new System.Drawing.Point(19, 36);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(231, 165);
+            this.textBox1.TabIndex = 51;
+            this.textBox1.Text = resources.GetString("textBox1.Text");
+            // 
             // GrpIpVersionSelector
             // 
             this.GrpIpVersionSelector.Controls.Add(this.RadIpV4AndV6);
             this.GrpIpVersionSelector.Controls.Add(this.RadIpV6);
             this.GrpIpVersionSelector.Controls.Add(this.RadIpV4);
-            this.GrpIpVersionSelector.Location = new System.Drawing.Point(841, 64);
+            this.GrpIpVersionSelector.Location = new System.Drawing.Point(841, 93);
             this.GrpIpVersionSelector.Name = "GrpIpVersionSelector";
             this.GrpIpVersionSelector.Size = new System.Drawing.Size(133, 103);
             this.GrpIpVersionSelector.TabIndex = 50;
@@ -3130,7 +3110,7 @@
             // label96
             // 
             this.label96.AutoSize = true;
-            this.label96.Location = new System.Drawing.Point(396, 347);
+            this.label96.Location = new System.Drawing.Point(396, 336);
             this.label96.Name = "label96";
             this.label96.Size = new System.Drawing.Size(274, 13);
             this.label96.TabIndex = 49;
@@ -3143,7 +3123,7 @@
             0,
             0,
             0});
-            this.NumMaxDevices.Location = new System.Drawing.Point(270, 345);
+            this.NumMaxDevices.Location = new System.Drawing.Point(270, 334);
             this.NumMaxDevices.Minimum = new decimal(new int[] {
             10,
             0,
@@ -3163,7 +3143,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(604, 141);
+            this.label13.Location = new System.Drawing.Point(604, 170);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(192, 13);
             this.label13.TabIndex = 47;
@@ -3171,7 +3151,7 @@
             // 
             // NumDiscoveryPort
             // 
-            this.NumDiscoveryPort.Location = new System.Drawing.Point(511, 139);
+            this.NumDiscoveryPort.Location = new System.Drawing.Point(511, 168);
             this.NumDiscoveryPort.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -3194,7 +3174,7 @@
             // ChkEnableDiscovery
             // 
             this.ChkEnableDiscovery.AutoSize = true;
-            this.ChkEnableDiscovery.Location = new System.Drawing.Point(483, 215);
+            this.ChkEnableDiscovery.Location = new System.Drawing.Point(483, 256);
             this.ChkEnableDiscovery.Name = "ChkEnableDiscovery";
             this.ChkEnableDiscovery.Size = new System.Drawing.Size(276, 17);
             this.ChkEnableDiscovery.TabIndex = 45;
@@ -3205,7 +3185,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(604, 39);
+            this.label10.Location = new System.Drawing.Point(604, 68);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(82, 13);
             this.label10.TabIndex = 44;
@@ -3214,21 +3194,21 @@
             // addressList
             // 
             this.addressList.FormattingEnabled = true;
-            this.addressList.Location = new System.Drawing.Point(270, 86);
+            this.addressList.Location = new System.Drawing.Point(270, 115);
             this.addressList.Name = "addressList";
             this.addressList.Size = new System.Drawing.Size(328, 21);
             this.addressList.TabIndex = 39;
             // 
             // TxtRemoteServerLocation
             // 
-            this.TxtRemoteServerLocation.Location = new System.Drawing.Point(270, 36);
+            this.TxtRemoteServerLocation.Location = new System.Drawing.Point(270, 65);
             this.TxtRemoteServerLocation.Name = "TxtRemoteServerLocation";
             this.TxtRemoteServerLocation.Size = new System.Drawing.Size(328, 20);
             this.TxtRemoteServerLocation.TabIndex = 43;
             // 
             // numPort
             // 
-            this.numPort.Location = new System.Drawing.Point(511, 113);
+            this.numPort.Location = new System.Drawing.Point(511, 142);
             this.numPort.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -3251,7 +3231,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(604, 115);
+            this.label8.Location = new System.Drawing.Point(604, 144);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(73, 13);
             this.label8.TabIndex = 42;
@@ -3260,11 +3240,127 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(604, 89);
+            this.label7.Location = new System.Drawing.Point(604, 118);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(91, 13);
             this.label7.TabIndex = 41;
             this.label7.Text = "Server IP address";
+            // 
+            // LoggingConfigurationTab
+            // 
+            this.LoggingConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
+            this.LoggingConfigurationTab.Controls.Add(this.LblLogRolloverTime);
+            this.LoggingConfigurationTab.Controls.Add(this.ChkRollOverLogs);
+            this.LoggingConfigurationTab.Controls.Add(this.DateTimeLogRolloverTime);
+            this.LoggingConfigurationTab.Controls.Add(this.label99);
+            this.LoggingConfigurationTab.Controls.Add(this.label98);
+            this.LoggingConfigurationTab.Controls.Add(this.BtnSelectLogFileFolder);
+            this.LoggingConfigurationTab.Controls.Add(this.ChkLogClientIPAddress);
+            this.LoggingConfigurationTab.Controls.Add(this.chkTrace);
+            this.LoggingConfigurationTab.Controls.Add(this.chkDebugTrace);
+            this.LoggingConfigurationTab.Controls.Add(this.chkAccessLog);
+            this.LoggingConfigurationTab.Location = new System.Drawing.Point(4, 22);
+            this.LoggingConfigurationTab.Name = "LoggingConfigurationTab";
+            this.LoggingConfigurationTab.Padding = new System.Windows.Forms.Padding(3);
+            this.LoggingConfigurationTab.Size = new System.Drawing.Size(1026, 394);
+            this.LoggingConfigurationTab.TabIndex = 4;
+            this.LoggingConfigurationTab.Text = "Logging Configuration";
+            // 
+            // LblLogRolloverTime
+            // 
+            this.LblLogRolloverTime.AutoSize = true;
+            this.LblLogRolloverTime.Location = new System.Drawing.Point(415, 226);
+            this.LblLogRolloverTime.Name = "LblLogRolloverTime";
+            this.LblLogRolloverTime.Size = new System.Drawing.Size(137, 13);
+            this.LblLogRolloverTime.TabIndex = 68;
+            this.LblLogRolloverTime.Text = "Log rollover time (local time)";
+            // 
+            // ChkRollOverLogs
+            // 
+            this.ChkRollOverLogs.AutoSize = true;
+            this.ChkRollOverLogs.Location = new System.Drawing.Point(341, 200);
+            this.ChkRollOverLogs.Name = "ChkRollOverLogs";
+            this.ChkRollOverLogs.Size = new System.Drawing.Size(194, 17);
+            this.ChkRollOverLogs.TabIndex = 67;
+            this.ChkRollOverLogs.Text = "Make logs roll over at specified time";
+            this.ChkRollOverLogs.UseVisualStyleBackColor = true;
+            this.ChkRollOverLogs.CheckedChanged += new System.EventHandler(this.ChkRollOverLogs_CheckedChanged);
+            // 
+            // DateTimeLogRolloverTime
+            // 
+            this.DateTimeLogRolloverTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
+            this.DateTimeLogRolloverTime.Location = new System.Drawing.Point(341, 223);
+            this.DateTimeLogRolloverTime.Name = "DateTimeLogRolloverTime";
+            this.DateTimeLogRolloverTime.ShowUpDown = true;
+            this.DateTimeLogRolloverTime.Size = new System.Drawing.Size(68, 20);
+            this.DateTimeLogRolloverTime.TabIndex = 66;
+            // 
+            // label99
+            // 
+            this.label99.AutoSize = true;
+            this.label99.Location = new System.Drawing.Point(422, 317);
+            this.label99.Name = "label99";
+            this.label99.Size = new System.Drawing.Size(132, 13);
+            this.label99.TabIndex = 65;
+            this.label99.Text = "Remote Server is restarted";
+            // 
+            // label98
+            // 
+            this.label98.AutoSize = true;
+            this.label98.Location = new System.Drawing.Point(422, 304);
+            this.label98.Name = "label98";
+            this.label98.Size = new System.Drawing.Size(167, 13);
+            this.label98.TabIndex = 64;
+            this.label98.Text = "Change only takes effect after the";
+            // 
+            // BtnSelectLogFileFolder
+            // 
+            this.BtnSelectLogFileFolder.Location = new System.Drawing.Point(341, 297);
+            this.BtnSelectLogFileFolder.Name = "BtnSelectLogFileFolder";
+            this.BtnSelectLogFileFolder.Size = new System.Drawing.Size(75, 40);
+            this.BtnSelectLogFileFolder.TabIndex = 63;
+            this.BtnSelectLogFileFolder.Text = "Set Log File Folder";
+            this.BtnSelectLogFileFolder.UseVisualStyleBackColor = true;
+            // 
+            // ChkLogClientIPAddress
+            // 
+            this.ChkLogClientIPAddress.AutoSize = true;
+            this.ChkLogClientIPAddress.Location = new System.Drawing.Point(341, 137);
+            this.ChkLogClientIPAddress.Name = "ChkLogClientIPAddress";
+            this.ChkLogClientIPAddress.Size = new System.Drawing.Size(134, 17);
+            this.ChkLogClientIPAddress.TabIndex = 62;
+            this.ChkLogClientIPAddress.Text = "Log Client\'s IP Address";
+            this.ChkLogClientIPAddress.UseVisualStyleBackColor = true;
+            // 
+            // chkTrace
+            // 
+            this.chkTrace.AutoSize = true;
+            this.chkTrace.Location = new System.Drawing.Point(341, 68);
+            this.chkTrace.Name = "chkTrace";
+            this.chkTrace.Size = new System.Drawing.Size(96, 17);
+            this.chkTrace.TabIndex = 60;
+            this.chkTrace.Text = "Write Log Files";
+            this.chkTrace.UseVisualStyleBackColor = true;
+            // 
+            // chkDebugTrace
+            // 
+            this.chkDebugTrace.AutoSize = true;
+            this.chkDebugTrace.Location = new System.Drawing.Point(341, 91);
+            this.chkDebugTrace.Name = "chkDebugTrace";
+            this.chkDebugTrace.Size = new System.Drawing.Size(135, 17);
+            this.chkDebugTrace.TabIndex = 61;
+            this.chkDebugTrace.Text = "Enable Debug Logging";
+            this.chkDebugTrace.UseVisualStyleBackColor = true;
+            // 
+            // chkAccessLog
+            // 
+            this.chkAccessLog.AutoSize = true;
+            this.chkAccessLog.Location = new System.Drawing.Point(341, 114);
+            this.chkAccessLog.Name = "chkAccessLog";
+            this.chkAccessLog.Size = new System.Drawing.Size(118, 17);
+            this.chkAccessLog.TabIndex = 59;
+            this.chkAccessLog.Text = "Enable Access Log";
+            this.chkAccessLog.UseVisualStyleBackColor = true;
             // 
             // CorsConfigurationTab
             // 
@@ -3389,21 +3485,6 @@
             this.DataGridCorsOrigins.Size = new System.Drawing.Size(586, 217);
             this.DataGridCorsOrigins.TabIndex = 0;
             // 
-            // textBox1
-            // 
-            this.textBox1.BackColor = System.Drawing.Color.Yellow;
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.textBox1.Location = new System.Drawing.Point(19, 86);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(231, 165);
-            this.textBox1.TabIndex = 51;
-            this.textBox1.Text = resources.GetString("textBox1.Text");
-            // 
             // SetupForm
             // 
             this.AcceptButton = this.BtnCancel;
@@ -3451,6 +3532,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.NumMaxDevices)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumDiscoveryPort)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).EndInit();
+            this.LoggingConfigurationTab.ResumeLayout(false);
+            this.LoggingConfigurationTab.PerformLayout();
             this.CorsConfigurationTab.ResumeLayout(false);
             this.CorsConfigurationTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumCorsMaxAge)).EndInit();
@@ -3463,14 +3546,10 @@
         private System.Windows.Forms.Button BtnCancel;
         private System.Windows.Forms.Button BtnOK;
         private System.Windows.Forms.CheckBox chkAutoConnect;
-        private System.Windows.Forms.CheckBox chkTrace;
-        private System.Windows.Forms.CheckBox chkDebugTrace;
-        private System.Windows.Forms.CheckBox chkAccessLog;
         private System.Windows.Forms.CheckBox chkManagementInterfaceEnabled;
         private System.Windows.Forms.ErrorProvider errorProvider1;
         private System.Windows.Forms.CheckBox ChkStartWithApiEnabled;
         private System.Windows.Forms.CheckBox ChkRunDriversInSeparateThreadss;
-        private System.Windows.Forms.CheckBox ChkLogClientIPAddress;
         private System.Windows.Forms.CheckBox ChkIncludeDriverExceptionsInJsonResponses;
         private System.Windows.Forms.TabPage ServerConfigurationTab;
         private System.Windows.Forms.Label label10;
@@ -3702,5 +3781,17 @@
         private System.Windows.Forms.RadioButton RadIpV6;
         private System.Windows.Forms.RadioButton RadIpV4;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.FolderBrowserDialog DlgSetLogFolderPath;
+        private System.Windows.Forms.TabPage LoggingConfigurationTab;
+        private System.Windows.Forms.CheckBox ChkRollOverLogs;
+        private System.Windows.Forms.DateTimePicker DateTimeLogRolloverTime;
+        private System.Windows.Forms.Label label99;
+        private System.Windows.Forms.Label label98;
+        private System.Windows.Forms.Button BtnSelectLogFileFolder;
+        private System.Windows.Forms.CheckBox ChkLogClientIPAddress;
+        private System.Windows.Forms.CheckBox chkTrace;
+        private System.Windows.Forms.CheckBox chkDebugTrace;
+        private System.Windows.Forms.CheckBox chkAccessLog;
+        private System.Windows.Forms.Label LblLogRolloverTime;
     }
 }

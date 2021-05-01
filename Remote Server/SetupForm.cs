@@ -105,6 +105,11 @@ namespace ASCOM.Remote
                 ChkEnableDiscovery.Checked = ServerForm.AlpacaDiscoveryEnabled;
                 NumDiscoveryPort.Value = ServerForm.AlpacaDiscoveryPort;
                 NumMaxDevices.Value = ServerForm.MaximumNumberOfDevices;
+                DlgSetLogFolderPath.SelectedPath = ServerForm.TraceFolder;
+                DlgSetLogFolderPath.Description = "Select the Remote Server Log File Folder (Default: Documents\\ASCOM)";
+                ChkRollOverLogs.Checked = ServerForm.RolloverLogsEnabled;
+                DateTimeLogRolloverTime.Value = ServerForm.RolloverTime;
+                SetRolloverTimeControlState();
 
                 // Set the IP v4 / v6 radio boxes
                 if (ServerForm.IpV4Enabled & ServerForm.IpV6Enabled) // Both IPv4 and v6 are enabled so set the "both" button
@@ -547,6 +552,9 @@ namespace ASCOM.Remote
                 ServerForm.AlpacaDiscoveryEnabled = ChkEnableDiscovery.Checked;
                 ServerForm.AlpacaDiscoveryPort = NumDiscoveryPort.Value;
                 ServerForm.MaximumNumberOfDevices = (int)NumMaxDevices.Value;
+                ServerForm.TraceFolder = DlgSetLogFolderPath.SelectedPath;
+                ServerForm.RolloverLogsEnabled = ChkRollOverLogs.Checked;
+                ServerForm.RolloverTime = DateTimeLogRolloverTime.Value;
 
                 // Set the IP v4 and v6 variables as necessary
                 if (RadIpV4.Checked) // The IPv4 radio button is checked so set the IP v4 and IP v6 variables accordingly
@@ -639,6 +647,16 @@ namespace ASCOM.Remote
             {
                 chkManagementInterfaceEnabled.Enabled = true;
             }
+        }
+
+        private void BtnSelectLogFileFolder_Click(object sender, EventArgs e)
+        {
+            DlgSetLogFolderPath.ShowDialog();
+        }
+
+        private void ChkRollOverLogs_CheckedChanged(object sender, EventArgs e)
+        {
+            SetRolloverTimeControlState();
         }
 
         #endregion
@@ -756,6 +774,20 @@ namespace ASCOM.Remote
             {
                 errorMessage = "Address given is not a valid IP address.";
                 return false;
+            }
+        }
+
+        private void SetRolloverTimeControlState()
+        {
+            if (ChkRollOverLogs.Checked)
+            {
+                DateTimeLogRolloverTime.Enabled = true;
+                LblLogRolloverTime.Enabled = true;
+            }
+            else
+            {
+                DateTimeLogRolloverTime.Enabled = false;
+                LblLogRolloverTime.Enabled = false;
             }
         }
 
