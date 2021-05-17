@@ -110,6 +110,7 @@ namespace ASCOM.Remote
                 ChkRollOverLogs.Checked = ServerForm.RolloverLogsEnabled;
                 DateTimeLogRolloverTime.Value = ServerForm.RolloverTime;
                 SetRolloverTimeControlState();
+                ChkUseUtcTime.Checked = ServerForm.UseUtcTimeInLogs;
 
                 // Set the IP v4 / v6 radio boxes
                 if (ServerForm.IpV4Enabled & ServerForm.IpV6Enabled) // Both IPv4 and v6 are enabled so set the "both" button
@@ -134,16 +135,16 @@ namespace ASCOM.Remote
                     // Populate the device types list
                     foreach (string deviceType in profile.RegisteredDeviceTypes)
                     {
-                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Adding device type: " + deviceType);
+                        //ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Adding device type: " + deviceType);
                         registeredDeviceTypes.Add(deviceType); // Remember the device types on this system
                     }
                 }
                 ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Number of configured devices: {0}.", ServerForm.ConfiguredDevices.Count));
 
-                foreach (string deviceName in ServerForm.ConfiguredDevices.Keys)
-                {
-                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("ConfiguredDevices contains key {0}.", deviceName));
-                }
+                //foreach (string deviceName in ServerForm.ConfiguredDevices.Keys)
+                //{
+                //    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("ConfiguredDevices contains key {0}.", deviceName));
+                //}
 
                 // Populate the device list with all configured controls
                 deviceList = WalkControls(this, new List<ServedDevice>());
@@ -555,6 +556,7 @@ namespace ASCOM.Remote
                 ServerForm.TraceFolder = DlgSetLogFolderPath.SelectedPath;
                 ServerForm.RolloverLogsEnabled = ChkRollOverLogs.Checked;
                 ServerForm.RolloverTime = DateTimeLogRolloverTime.Value;
+                ServerForm.UseUtcTimeInLogs = ChkUseUtcTime.Checked;
 
                 // Set the IP v4 and v6 variables as necessary
                 if (RadIpV4.Checked) // The IPv4 radio button is checked so set the IP v4 and IP v6 variables accordingly
@@ -676,11 +678,11 @@ namespace ASCOM.Remote
                         if (int.Parse(control.Name.Substring("ServedDevice".Length)) < ServerForm.MaximumNumberOfDevices)
                         {
                             deviceList.Add(control as ServedDevice);
-                            ServerForm.LogMessage(0, 0, 0, "WalkControls", $"Found served device: {control.Name}");
+                            //ServerForm.LogMessage(0, 0, 0, "WalkControls", $"Found served device: {control.Name}");
                         }
                         else
                         {
-                            ServerForm.LogMessage(0, 0, 0, "WalkControls", $"Ignoring served device: {control.Name}");
+                            //ServerForm.LogMessage(0, 0, 0, "WalkControls", $"Ignoring served device: {control.Name}");
                         }
                     }
                     else

@@ -24,6 +24,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
+using System.Security.Principal;
 
 namespace ASCOM.Remote
 {
@@ -140,6 +141,7 @@ namespace ASCOM.Remote
         internal const string IPV6_ENABLED_PROFILENAME = "IP v6 Enabled"; public const bool IPV6_ENABLED_DEFAULT = false;
         internal const string ROLLOVER_LOGS_ENABLED_PROFILENAME = "Rollover Logs Enabled"; public const bool ROLLOVER_LOGS_ENABLED_DEFAULT = false;
         internal const string ROLLOVER_TIME_PROFILENAME = "Rollover Time"; public static DateTime ROLLOVER_TIME_DEFAULT = DateTime.Now.Date; // Default value can't be const because it's a date-time type
+        internal const string USE_UTC_TIME_IN_LOGS_PROFILENAME = "Use UTC Time In Logs"; public const bool USE_UTC_TIME_IN_LOGS_ENABLED_DEFAULT = false;
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -210,8 +212,8 @@ namespace ASCOM.Remote
         internal static int numberOfConsecutiveErrors = 0; // Counter to record the number of consecutive errors, this is reset to zero whenever a successful async listen occurs
 
         // Variable to hold the last log time so that old logs are closed and new logs are started when we move to a new day
-        internal static DateTime NextRolloverTime = DateTime.Now; // Initialise to now to ensure that the logging code works correctly
-        internal static DateTime LastAccessLogTime = DateTime.Now; // Initialise to now to ensure that the logging code works correctly
+        internal static DateTime NextTraceLogRolloverTime = DateTime.Now; // Initialise to now to ensure that the roll-over code works correctly
+        internal static DateTime NextAccessLogRolloverTime = DateTime.Now; // Initialise to now to ensure that the roll-over code works correctly
 
         internal static ConcurrentDictionary<string, ConfiguredDevice> ConfiguredDevices;
         internal static ConcurrentDictionary<string, ActiveObject> ActiveObjects;
@@ -244,6 +246,7 @@ namespace ASCOM.Remote
         internal static bool IpV6Enabled;
         internal static bool RolloverLogsEnabled;
         internal static DateTime RolloverTime;
+        internal static bool UseUtcTimeInLogs;
 
         #endregion
 
@@ -285,7 +288,10 @@ namespace ASCOM.Remote
             {
                 InitializeComponent();
                 // This TraceLogger is only used for debugging Profile value Retrieval. It is replaced below after the required logging location is retrieved from the Profile 
-                TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME); // Trace state is enabled or disabled in the ReadProfile method
+                TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME) // Trace state is enabled or disabled in the ReadProfile method
+                {
+                    UseUtcTime = UseUtcTimeInLogs
+                };
 
                 // Initialise lists
                 ConfiguredDevices = new ConcurrentDictionary<string, ConfiguredDevice>();
@@ -300,19 +306,22 @@ namespace ASCOM.Remote
                 TL.Dispose();
 
                 // Create the application log file in the folder specified by the user
-                TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME)
+                TL = new TraceLoggerPlus("", TraceFolder, SERVER_TRACELOGGER_NAME, TraceState)
                 {
                     LogFilePath = TraceFolder, // Set the trace folder to the user specified value
-                    Enabled = TraceState // Enable the log if required
+                    Enabled = TraceState, // Enable the log if required
+                    UseUtcTime = UseUtcTimeInLogs
                 };
 
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
-                LogMessage(0, 0, 0, "New", string.Format("Remote Server Version {0}, Started on {1}", version.ToString(), DateTime.Now.ToString("dddd d MMMM yyyy HH:mm:ss")));
+                LogMessage(0, 0, 0, "New", $"Remote Server Version {version}, Started on {DateTime.Now.ToString("dddd d MMMM yyyy HH: mm:ss")}");
+                LogMessage(0, 0, 0, "New", $"Running as user {WindowsIdentity.GetCurrent().Name}");
 
-                AccessLog = new TraceLoggerPlus("", ACCESSLOG_TRACELOGGER_NAME)
+                AccessLog = new TraceLoggerPlus("", TraceFolder, ACCESSLOG_TRACELOGGER_NAME, AccessLogEnabled)
                 {
                     LogFilePath = TraceFolder, // Set the trace folder to the user specified value
-                    Enabled = AccessLogEnabled
+                    Enabled = AccessLogEnabled,
+                    UseUtcTime = UseUtcTimeInLogs
                 };
 
                 LogMessage(0, 0, 0, "New", "Setting screen log check boxes"); // Must be done before enabling event handlers!
@@ -1190,7 +1199,7 @@ namespace ASCOM.Remote
 
                 //TL.LogMessage("CheckWhetherNewLogRequired", $"Next roll-over time: {NextRolloverTime}, Current time: {now}");
 
-                if (now > NextRolloverTime) // We have moved into the next log period so close the current log and start another
+                if (now > NextTraceLogRolloverTime) // We have moved into the next log period so close the current log and start another
                 {
                     // Close the current logger
                     TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "EndOfDay", "Closing this log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
@@ -1205,10 +1214,10 @@ namespace ASCOM.Remote
                         Enabled = true, // Enable the trace logger
                         IpAddressTraceState = LogClientIPAddress // Set the current state of the "include client IP address in trace lines" flag
                     };
-                    
+
                     TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
 
-                    NextRolloverTime = NextRolloverTime.AddDays(1.0); // Update the next roll-over time so that it can be tested on the next logging call
+                    NextTraceLogRolloverTime = NextTraceLogRolloverTime.AddDays(1.0); // Update the next roll-over time so that it can be tested on the next logging call
                 }
             }
         }
@@ -1235,8 +1244,11 @@ namespace ASCOM.Remote
             LogMessage(0, 0, 0, "Alpaca Unique ID", AlpacaUniqueId);
             LogMessage(0, 0, 0, "Alpaca Discovery Port", AlpacaDiscoveryPort.ToString());
             LogMessage(0, 0, 0, "Maximum Devices", MaximumNumberOfDevices.ToString());
+            LogMessage(0, 0, 0, "IpV4 Enabled", IpV4Enabled.ToString());
+            LogMessage(0, 0, 0, "IpV6 Enabled", IpV6Enabled.ToString());
             LogMessage(0, 0, 0, "Rollover Logs Enabled", RolloverLogsEnabled.ToString());
-            LogMessage(0, 0, 0, "Rollover time", RolloverTime.TimeOfDay.ToString());
+            LogMessage(0, 0, 0, "Rollover Time", RolloverTime.TimeOfDay.ToString());
+            LogMessage(0, 0, 0, "Use UTC in Logs", UseUtcTimeInLogs.ToString());
 
             LogBlankLine(0, 0, 0);
 
@@ -1465,7 +1477,9 @@ namespace ASCOM.Remote
                 IpV6Enabled = driverProfile.GetValue<bool>(IPV6_ENABLED_PROFILENAME, string.Empty, IPV6_ENABLED_DEFAULT);
                 RolloverLogsEnabled = driverProfile.GetValue<bool>(ROLLOVER_LOGS_ENABLED_PROFILENAME, string.Empty, ROLLOVER_LOGS_ENABLED_DEFAULT);
                 RolloverTime = driverProfile.GetValue<DateTime>(ROLLOVER_TIME_PROFILENAME, string.Empty, ROLLOVER_TIME_DEFAULT);
+                UseUtcTimeInLogs = driverProfile.GetValue<bool>(USE_UTC_TIME_IN_LOGS_PROFILENAME, string.Empty, USE_UTC_TIME_IN_LOGS_ENABLED_DEFAULT);
 
+                // Set the next log roll-over time using the persisted roll-over time value
                 SetNextRolloverTime();
 
                 // Clear collections before repopulating
@@ -1516,11 +1530,13 @@ namespace ASCOM.Remote
             // Check whether we are ahead or behind today's roll-over time
             if (todaysRolloverTime > DateTime.Now) // Today's roll-time is later than now so we can just wait for us to reach it
             {
-                NextRolloverTime = todaysRolloverTime;
+                NextTraceLogRolloverTime = todaysRolloverTime;
+                NextAccessLogRolloverTime = todaysRolloverTime;
             }
             else // Today's roll-time is earlier than now so we must set the next roll-time to tomorrow's roll-time
             {
-                NextRolloverTime = todaysRolloverTime.AddDays(1.0);
+                NextTraceLogRolloverTime = todaysRolloverTime.AddDays(1.0);
+                NextAccessLogRolloverTime = todaysRolloverTime;
             }
         }
 
@@ -1577,6 +1593,7 @@ namespace ASCOM.Remote
                 driverProfile.SetValueInvariant<bool>(IPV6_ENABLED_PROFILENAME, string.Empty, IpV6Enabled);
                 driverProfile.SetValueInvariant<bool>(ROLLOVER_LOGS_ENABLED_PROFILENAME, string.Empty, RolloverLogsEnabled);
                 driverProfile.SetValueInvariant<DateTime>(ROLLOVER_TIME_PROFILENAME, string.Empty, RolloverTime);
+                driverProfile.SetValueInvariant<bool>(USE_UTC_TIME_IN_LOGS_PROFILENAME, string.Empty, UseUtcTimeInLogs);
 
                 // Update the next rollover time in case the time has changed
                 //TL.LogMessage("WriteProfile", $"NextRolloverTime Before: {NextRolloverTime}");
@@ -1635,6 +1652,13 @@ namespace ASCOM.Remote
             SetupForm frm = new SetupForm();
             DialogResult outcome = frm.ShowDialog();
             LogMessage(0, 0, 0, "SetupButton", string.Format("Setup dialogue outcome: {0}", outcome.ToString()));
+
+            // Update use of UTC time in case this was changed in the setup dialogue
+            if (outcome == DialogResult.OK)
+            {
+                TL.UseUtcTime = UseUtcTimeInLogs;
+                AccessLog.UseUtcTime = UseUtcTimeInLogs;
+            }
 
             // Log new configuration
             WriteConfigurationToLog();
@@ -2029,7 +2053,8 @@ namespace ASCOM.Remote
                 if (AccessLog.Enabled) // We are logging so we have to close the current log and start a new one if we have moved to a new day
                 {
                     DateTime now = DateTime.Now;
-                    if (LastAccessLogTime.DayOfYear != now.DayOfYear) // We have moved onto tomorrow so close the current log and start another
+
+                    if (now > NextAccessLogRolloverTime) // We have moved into the next log period so close the current log and start another
                     {
                         // Close the current logger
                         AccessLog.LogMessage(clientID, clientTransactionID, serverTransactionID, "EndOfDay", "Closing this log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
@@ -2044,9 +2069,11 @@ namespace ASCOM.Remote
                             Enabled = true, // Enable the trace logger
                             IpAddressTraceState = LogClientIPAddress // Set the current state of the "include client IP address in trace lines" flag
                         };
+
                         AccessLog.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+
+                        NextAccessLogRolloverTime = NextTraceLogRolloverTime.AddDays(1.0); // Update the next roll-over time so that it can be tested on the next logging call
                     }
-                    LastAccessLogTime = now; // Update the last log time so that it can be tested on the next logging call
 
                     //Write the access log entry
                     AccessLog.LogMessage("    " + clientIpAddress, string.Format("{0} {1}", request.HttpMethod, request.Url.AbsolutePath));
@@ -5151,6 +5178,11 @@ namespace ASCOM.Remote
             Stopwatch sw = new Stopwatch();
             long lastTime;
             byte[] imageArrayBytes;
+            int imageArrayElementSize = 0;
+            string imageArrayElementType;
+            int imageArrayBytesLength = 0;
+            int base64StringLength = 0;
+
             SharedConstants.ImageArrayCompression compressionType = SharedConstants.ImageArrayCompression.None; // Flag to indicate what type of compression the client supports - initialised to indicate a default of no compression
 
             sw.Start();
@@ -5174,12 +5206,15 @@ namespace ASCOM.Remote
 
             if (imageArray != null)
             {
-                int imageArrayElementSize = GetManagedSize(imageArray.GetType().GetElementType()); // Find the size of each array element from the array element type
+                imageArrayElementSize = GetManagedSize(imageArray.GetType().GetElementType()); // Find the size of each array element from the array element type
                 imageArrayBytes = new byte[imageArray.Length * imageArrayElementSize]; // Size the byte array as the product of the element size and the number of elements
+                imageArrayElementType = imageArray.GetType().GetElementType().Name;
+                imageArrayBytesLength = imageArrayBytes.Length;
             }
             else
             {
                 imageArrayBytes = new byte[0];
+                imageArrayElementType = "No array elements";
             }
             long timeBCreateByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
@@ -5194,6 +5229,7 @@ namespace ASCOM.Remote
             GC.Collect();
 
             string base64String = Convert.ToBase64String(imageArrayBytes, 0, imageArrayBytes.Length, Base64FormattingOptions.None);
+            base64StringLength = base64String.Length;
             long timeToConvertToBase64 = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
             // Release image array bytes memory
@@ -5255,7 +5291,11 @@ namespace ASCOM.Remote
             long timeReturnDataToClient = sw.ElapsedMilliseconds - lastTime; // Record the duration
 
             LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"### Base64 response sent to client. " +
-                $"Base64 bytes to send: {bytesToSend.Length:n0}bytes, " +
+                $"Image array element type: {imageArrayElementType}, " +
+                $"Image array element size: {imageArrayElementSize:n0}, " +
+                $"Image array bytes length: {imageArrayBytesLength:n0}, " +
+                $"Base64 string length: {base64StringLength:n0}, " +
+                $"Base64 bytes to send: {bytesToSend.Length:n0} bytes, " +
                 $"Timings - Overall: {sw.ElapsedMilliseconds}, Time to assign image pointer: {timeAssignImage}ms, Create byte array: {timeBCreateByteArray}ms, Copy image to byte array: {timeBlockCopy}ms, " +
                 $"Convert to base64: {timeToConvertToBase64}ms, Convert base64string to byte array: {timeToConvertBase64StringToByteArray}ms. " +
                 $"Time to compress base64 string: {timeToCompressResponse}ms, " +

@@ -2,6 +2,7 @@
 using System.Text;
 using System.Security.Cryptography;
 using ASCOM.Utilities;
+using ASCOM.Utilities.Interfaces;
 
 namespace ASCOM.Remote
 {
@@ -18,7 +19,7 @@ namespace ASCOM.Remote
         // Encryption uses the Microsoft Data Protection API (DPAPI) for simplicity and avoidance of the need to manage keys. 
         const DataProtectionScope dataProtectionScope = DataProtectionScope.LocalMachine;
 
-        public static string Encrypt(this string clearText, TraceLogger TL)
+        public static string Encrypt(this string clearText, ITraceLogger TL)
         {
             try
             {
@@ -26,7 +27,7 @@ namespace ASCOM.Remote
                 byte[] entropyBytes = Encoding.UTF8.GetBytes(GenerateEntropy());
                 byte[] encryptedBytes = ProtectedData.Protect(clearBytes, entropyBytes, dataProtectionScope);
                 string encryptedText = Convert.ToBase64String(encryptedBytes);
-                TL.LogMessage("Encrypt", encryptedText);
+                TL.LogMessage("Encrypt", encryptedText,false);
                 return encryptedText;
             }
             catch (Exception ex)
@@ -36,7 +37,7 @@ namespace ASCOM.Remote
             }
         }
 
-        public static string Unencrypt(this string encryptedText, TraceLogger TL)
+        public static string Unencrypt(this string encryptedText, ITraceLogger TL)
         {
             try
             {
@@ -45,7 +46,7 @@ namespace ASCOM.Remote
                 byte[] entropyBytes = Encoding.UTF8.GetBytes(GenerateEntropy());
                 byte[] clearBytes = ProtectedData.Unprotect(encryptedBytes, entropyBytes, dataProtectionScope);
                 string clearText = Encoding.UTF8.GetString(clearBytes);
-                TL.LogMessage("Unencrypt", encryptedText);
+                TL.LogMessage("Unencrypt", encryptedText,false);
                 return clearText;
             }
             catch (Exception ex)

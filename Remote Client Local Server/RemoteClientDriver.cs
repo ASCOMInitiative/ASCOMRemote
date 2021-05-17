@@ -20,6 +20,7 @@ using System.Security.Cryptography;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using ASCOM.Utilities.Interfaces;
 
 namespace ASCOM.Remote
 {
@@ -1175,19 +1176,19 @@ namespace ASCOM.Remote
         /// </summary>
         /// <param name="response">The driver's response </param>
         /// <returns>True if the call was successful otherwise returns false.</returns>
-        private static bool CallWasSuccessful(TraceLogger TL, RestResponseBase response)
+        private static bool CallWasSuccessful(ITraceLogger TL, RestResponseBase response)
         {
-            TL.LogMessage("CallWasSuccessful", string.Format("DriverException == null: {0}, ErrorMessage: {1}, ErrorNumber: 0x{2}", response.DriverException == null, response.ErrorMessage, response.ErrorNumber.ToString("X8")));
-            if (response.DriverException != null) TL.LogMessage("CallWasSuccessfulEx", response.DriverException.ToString());
+            TL.LogMessage("CallWasSuccessful", string.Format("DriverException == null: {0}, ErrorMessage: {1}, ErrorNumber: 0x{2}", response.DriverException == null, response.ErrorMessage, response.ErrorNumber.ToString("X8")),false);
+            if (response.DriverException != null) TL.LogMessage("CallWasSuccessfulEx", response.DriverException.ToString(),false);
             if ((response.DriverException == null) & (response.ErrorMessage == "") & (response.ErrorNumber == 0))
             {
-                TL.LogMessage("CallWasSuccessful", "Returning True");
+                TL.LogMessage("CallWasSuccessful", "Returning True",false);
                 TL.BlankLine();
                 return true; // All was OK so return true
             }
             else
             {
-                TL.LogMessage("CallWasSuccessful", "Returning False");
+                TL.LogMessage("CallWasSuccessful", "Returning False",false);
                 TL.BlankLine();
                 return false; // Some sort of issue so return false
             }

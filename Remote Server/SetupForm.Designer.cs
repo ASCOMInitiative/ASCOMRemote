@@ -268,6 +268,10 @@
             this.LabHelp1 = new System.Windows.Forms.Label();
             this.DataGridCorsOrigins = new System.Windows.Forms.DataGridView();
             this.DlgSetLogFolderPath = new System.Windows.Forms.FolderBrowserDialog();
+            this.ChkUseUtcTime = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SetupTabControl.SuspendLayout();
             this.DeviceConfigurationTab.SuspendLayout();
@@ -291,6 +295,9 @@
             this.CorsConfigurationTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumCorsMaxAge)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridCorsOrigins)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // BtnCancel
@@ -3249,16 +3256,9 @@
             // LoggingConfigurationTab
             // 
             this.LoggingConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
-            this.LoggingConfigurationTab.Controls.Add(this.LblLogRolloverTime);
-            this.LoggingConfigurationTab.Controls.Add(this.ChkRollOverLogs);
-            this.LoggingConfigurationTab.Controls.Add(this.DateTimeLogRolloverTime);
-            this.LoggingConfigurationTab.Controls.Add(this.label99);
-            this.LoggingConfigurationTab.Controls.Add(this.label98);
-            this.LoggingConfigurationTab.Controls.Add(this.BtnSelectLogFileFolder);
-            this.LoggingConfigurationTab.Controls.Add(this.ChkLogClientIPAddress);
-            this.LoggingConfigurationTab.Controls.Add(this.chkTrace);
-            this.LoggingConfigurationTab.Controls.Add(this.chkDebugTrace);
-            this.LoggingConfigurationTab.Controls.Add(this.chkAccessLog);
+            this.LoggingConfigurationTab.Controls.Add(this.groupBox3);
+            this.LoggingConfigurationTab.Controls.Add(this.groupBox2);
+            this.LoggingConfigurationTab.Controls.Add(this.groupBox1);
             this.LoggingConfigurationTab.Location = new System.Drawing.Point(4, 22);
             this.LoggingConfigurationTab.Name = "LoggingConfigurationTab";
             this.LoggingConfigurationTab.Padding = new System.Windows.Forms.Padding(3);
@@ -3269,7 +3269,7 @@
             // LblLogRolloverTime
             // 
             this.LblLogRolloverTime.AutoSize = true;
-            this.LblLogRolloverTime.Location = new System.Drawing.Point(415, 226);
+            this.LblLogRolloverTime.Location = new System.Drawing.Point(80, 45);
             this.LblLogRolloverTime.Name = "LblLogRolloverTime";
             this.LblLogRolloverTime.Size = new System.Drawing.Size(137, 13);
             this.LblLogRolloverTime.TabIndex = 68;
@@ -3278,7 +3278,7 @@
             // ChkRollOverLogs
             // 
             this.ChkRollOverLogs.AutoSize = true;
-            this.ChkRollOverLogs.Location = new System.Drawing.Point(341, 200);
+            this.ChkRollOverLogs.Location = new System.Drawing.Point(6, 19);
             this.ChkRollOverLogs.Name = "ChkRollOverLogs";
             this.ChkRollOverLogs.Size = new System.Drawing.Size(194, 17);
             this.ChkRollOverLogs.TabIndex = 67;
@@ -3289,7 +3289,7 @@
             // DateTimeLogRolloverTime
             // 
             this.DateTimeLogRolloverTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.DateTimeLogRolloverTime.Location = new System.Drawing.Point(341, 223);
+            this.DateTimeLogRolloverTime.Location = new System.Drawing.Point(6, 42);
             this.DateTimeLogRolloverTime.Name = "DateTimeLogRolloverTime";
             this.DateTimeLogRolloverTime.ShowUpDown = true;
             this.DateTimeLogRolloverTime.Size = new System.Drawing.Size(68, 20);
@@ -3298,7 +3298,8 @@
             // label99
             // 
             this.label99.AutoSize = true;
-            this.label99.Location = new System.Drawing.Point(422, 317);
+            this.label99.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.label99.Location = new System.Drawing.Point(87, 39);
             this.label99.Name = "label99";
             this.label99.Size = new System.Drawing.Size(132, 13);
             this.label99.TabIndex = 65;
@@ -3307,7 +3308,8 @@
             // label98
             // 
             this.label98.AutoSize = true;
-            this.label98.Location = new System.Drawing.Point(422, 304);
+            this.label98.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.label98.Location = new System.Drawing.Point(87, 26);
             this.label98.Name = "label98";
             this.label98.Size = new System.Drawing.Size(167, 13);
             this.label98.TabIndex = 64;
@@ -3315,17 +3317,18 @@
             // 
             // BtnSelectLogFileFolder
             // 
-            this.BtnSelectLogFileFolder.Location = new System.Drawing.Point(341, 297);
+            this.BtnSelectLogFileFolder.Location = new System.Drawing.Point(6, 19);
             this.BtnSelectLogFileFolder.Name = "BtnSelectLogFileFolder";
             this.BtnSelectLogFileFolder.Size = new System.Drawing.Size(75, 40);
             this.BtnSelectLogFileFolder.TabIndex = 63;
-            this.BtnSelectLogFileFolder.Text = "Set Log File Folder";
+            this.BtnSelectLogFileFolder.Text = "Set Log File Base Folder";
             this.BtnSelectLogFileFolder.UseVisualStyleBackColor = true;
+            this.BtnSelectLogFileFolder.Click += new System.EventHandler(this.BtnSelectLogFileFolder_Click);
             // 
             // ChkLogClientIPAddress
             // 
             this.ChkLogClientIPAddress.AutoSize = true;
-            this.ChkLogClientIPAddress.Location = new System.Drawing.Point(341, 137);
+            this.ChkLogClientIPAddress.Location = new System.Drawing.Point(6, 88);
             this.ChkLogClientIPAddress.Name = "ChkLogClientIPAddress";
             this.ChkLogClientIPAddress.Size = new System.Drawing.Size(134, 17);
             this.ChkLogClientIPAddress.TabIndex = 62;
@@ -3335,7 +3338,7 @@
             // chkTrace
             // 
             this.chkTrace.AutoSize = true;
-            this.chkTrace.Location = new System.Drawing.Point(341, 68);
+            this.chkTrace.Location = new System.Drawing.Point(6, 19);
             this.chkTrace.Name = "chkTrace";
             this.chkTrace.Size = new System.Drawing.Size(96, 17);
             this.chkTrace.TabIndex = 60;
@@ -3345,7 +3348,7 @@
             // chkDebugTrace
             // 
             this.chkDebugTrace.AutoSize = true;
-            this.chkDebugTrace.Location = new System.Drawing.Point(341, 91);
+            this.chkDebugTrace.Location = new System.Drawing.Point(6, 42);
             this.chkDebugTrace.Name = "chkDebugTrace";
             this.chkDebugTrace.Size = new System.Drawing.Size(135, 17);
             this.chkDebugTrace.TabIndex = 61;
@@ -3355,7 +3358,7 @@
             // chkAccessLog
             // 
             this.chkAccessLog.AutoSize = true;
-            this.chkAccessLog.Location = new System.Drawing.Point(341, 114);
+            this.chkAccessLog.Location = new System.Drawing.Point(6, 65);
             this.chkAccessLog.Name = "chkAccessLog";
             this.chkAccessLog.Size = new System.Drawing.Size(118, 17);
             this.chkAccessLog.TabIndex = 59;
@@ -3485,6 +3488,54 @@
             this.DataGridCorsOrigins.Size = new System.Drawing.Size(586, 217);
             this.DataGridCorsOrigins.TabIndex = 0;
             // 
+            // ChkUseUtcTime
+            // 
+            this.ChkUseUtcTime.AutoSize = true;
+            this.ChkUseUtcTime.Location = new System.Drawing.Point(6, 111);
+            this.ChkUseUtcTime.Name = "ChkUseUtcTime";
+            this.ChkUseUtcTime.Size = new System.Drawing.Size(125, 17);
+            this.ChkUseUtcTime.TabIndex = 69;
+            this.ChkUseUtcTime.Text = "Use UTC time in logs";
+            this.ChkUseUtcTime.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.ChkRollOverLogs);
+            this.groupBox1.Controls.Add(this.DateTimeLogRolloverTime);
+            this.groupBox1.Controls.Add(this.LblLogRolloverTime);
+            this.groupBox1.Location = new System.Drawing.Point(379, 185);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(261, 74);
+            this.groupBox1.TabIndex = 70;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Log Roll-over";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.BtnSelectLogFileFolder);
+            this.groupBox2.Controls.Add(this.label98);
+            this.groupBox2.Controls.Add(this.label99);
+            this.groupBox2.Location = new System.Drawing.Point(379, 279);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(261, 74);
+            this.groupBox2.TabIndex = 71;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Log File Location";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.chkTrace);
+            this.groupBox3.Controls.Add(this.chkAccessLog);
+            this.groupBox3.Controls.Add(this.chkDebugTrace);
+            this.groupBox3.Controls.Add(this.ChkUseUtcTime);
+            this.groupBox3.Controls.Add(this.ChkLogClientIPAddress);
+            this.groupBox3.Location = new System.Drawing.Point(379, 32);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(261, 135);
+            this.groupBox3.TabIndex = 72;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Logging Configuration";
+            // 
             // SetupForm
             // 
             this.AcceptButton = this.BtnCancel;
@@ -3533,11 +3584,16 @@
             ((System.ComponentModel.ISupportInitialize)(this.NumDiscoveryPort)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).EndInit();
             this.LoggingConfigurationTab.ResumeLayout(false);
-            this.LoggingConfigurationTab.PerformLayout();
             this.CorsConfigurationTab.ResumeLayout(false);
             this.CorsConfigurationTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumCorsMaxAge)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridCorsOrigins)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -3793,5 +3849,9 @@
         private System.Windows.Forms.CheckBox chkDebugTrace;
         private System.Windows.Forms.CheckBox chkAccessLog;
         private System.Windows.Forms.Label LblLogRolloverTime;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.CheckBox ChkUseUtcTime;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }
