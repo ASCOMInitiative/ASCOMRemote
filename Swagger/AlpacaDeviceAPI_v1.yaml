@@ -5,7 +5,7 @@ servers:
 
 info:
   title: ASCOM Alpaca Device API
-  version: "v1"
+  version: v1
   description: >
     The Alpaca API uses RESTful techniques and TCP/IP to enable ASCOM applications and devices to communicate across modern network environments.
 
@@ -7337,6 +7337,37 @@ paths:
               schema:
                 type: string
                 description: Error message describing why the command cannot be processed
+  '/telescope/{device_number}/canunpark':
+    get:
+      summary: Indicates whether the telescope can be unparked.
+      description: True if this telescope is capable of programmed unparking (UnPark() method)
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Telescope Specific Methods
+      responses:
+        '200':
+          description: Driver response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BoolResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Error message describing why the command cannot be processed
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: Error message describing why the command cannot be processed
   '/telescope/{device_number}/declination':
     get:
       summary: Returns the mount's declination.
@@ -9778,15 +9809,6 @@ components:
         ErrorMessage:
           type: string
           description: Empty string for a successful transaction, or a message describing the issue that was encountered.
-    ErrorMessage:
-      type: string
-      properties:
-        Value:
-          type: string
-          description: Empty string for a successful transaction, or a message describing the issue that was encountered. If an error message is returned, a non zero error number must also be returned.
-    AlpacaErrorMessage:
-      type: string
-      description: Error message describing why the command cannot be processed
     BoolResponse:
       type: object
       properties:
