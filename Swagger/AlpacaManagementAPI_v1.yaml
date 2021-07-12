@@ -92,12 +92,14 @@ paths:
             text/html:
               schema:
                 type: string
+                description: HTML page with device information.
         '500':
           description: Server internal error so return an error message
           content:
             text/html:
               schema:
                 type: string
+                description: HTML message describing the issue.
                 
   '/setup/v1/{device_type}/{device_number}/setup':
     get:
@@ -125,12 +127,14 @@ paths:
             text/html:
               schema:
                 type: string
+                description: HTML message describing the issue.
         '500':
           description: 'Server internal error so return an error message'
           content:
             text/html:
               schema:
                 type: string
+                description: HTML message describing the issue.
                 
   '/management/apiversions':
     get:
@@ -151,13 +155,13 @@ paths:
         '400':
           description: 'Method or parameter value error, check error message'
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
         '500':
           description: 'Server internal error, check error message'
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
                 
@@ -173,23 +177,23 @@ paths:
         - Management Interface (JSON)
       responses:
         '200':
-          description: Cross cutting information that applies to all devices servered through this URL:Port.
+          description: Cross cutting information that applies to all devices served through this URL:Port.
           content:
             application/json:
               schema:
-                 $ref: '#/components/schemas/DescriptionResponse'
+                $ref: '#/components/schemas/DescriptionResponse'
         '403':
           description: 'The provided path specifies an unsupported device or method, return an error message to display in the browser'
           content:
-            text/html:
+            text/plain:
               schema:
-                type: string
+                $ref: '#/components/schemas/ErrorMessage'
         '500':
           description: 'Server internal error so return an error message'
           content:
-            text/html:
+            text/plain:
               schema:
-                type: string
+                $ref: '#/components/schemas/ErrorMessage'
                 
   '/management/v1/configureddevices':
     get:
@@ -211,15 +215,15 @@ paths:
         '403':
           description: 'The provided path specifies an unsupported device or method, return an error message to display in the browser'
           content:
-            text/html:
+            text/plain:
               schema:
-                type: string
+                $ref: '#/components/schemas/ErrorMessage'
         '500':
           description: 'Server internal error so return an error message'
           content:
-            text/html:
+            text/plain:
               schema:
-                type: string
+                $ref: '#/components/schemas/ErrorMessage'
 
 components:
   parameters:
@@ -360,8 +364,4 @@ components:
 
     ErrorMessage:
       type: string
-      description: Error message
-      properties:
-        Value:
-          type: string
-          description: Error message
+      description: Plain text message describing the issue.
