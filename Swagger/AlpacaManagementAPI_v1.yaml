@@ -177,11 +177,11 @@ paths:
         - Management Interface (JSON)
       responses:
         '200':
-          description: Cross cutting information that applies to all devices servered through this URL:Port.
+          description: Cross cutting information that applies to all devices served through this URL:Port.
           content:
-            text/plain:
+            application/json:
               schema:
-                $ref: '#/components/schemas/ErrorMessage'
+                $ref: '#/components/schemas/DescriptionResponse'
         '403':
           description: 'The provided path specifies an unsupported device or method, return an error message to display in the browser'
           content:
@@ -245,29 +245,30 @@ components:
       schema:
         type: integer
         format: uint32
-        default: 0
         minimum: 0
         maximum: 4294967295
         
     ClientIDQuery:
       name: ClientID
-      description: Client's unique ID.
+      description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
       in: query
       required: false
       schema:
         type: integer
-        format: int32
-        default: 1
+        format: uint32
+        minimum: 0
+        maximum: 4294967295
         
     ClientTransactionIDQuery:
       name: ClientTransactionID
-      description: Client's transaction ID.
+      description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
       in: query
       required: false
       schema:
         type: integer
-        format: int32
-        default: 1234
+        format: uint32
+        minimum: 0
+        maximum: 4294967295
         
   schemas:
     ConfiguredDevicesResponse:
