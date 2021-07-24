@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -394,7 +395,7 @@ namespace ASCOM.Remote
             RemoteClientDriver.SetClientTimeout(client, longServerResponseTimeout);
             Dictionary<string, string> Parameters = new Dictionary<string, string>
             {
-                { SharedConstants.POSITION_PARAMETER_NAME, Position.ToString() }
+                { SharedConstants.POSITION_PARAMETER_NAME, Position.ToString(CultureInfo.InvariantCulture) }
             };
             RemoteClientDriver.SendToRemoteDriver<NoReturnValue>(clientNumber, client, URIBase, TL, "Move", Parameters, Method.PUT);
         }

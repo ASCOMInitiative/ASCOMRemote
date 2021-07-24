@@ -367,7 +367,7 @@ namespace ASCOM.Remote
                             catch (Exception ex2) when (DeviceType.ToLowerInvariant() == "focuser")
                             {
                                 // Connected failed so try Link in case this is an IFocuserV1 device
-                                ServerForm.LogException(0, 0, 0, "Setup", $"Error setting Connected to true for focuser device {ProgID}, now trying Link for IFocuserV1 devices: \r\n{ex2.ToString()}");
+                                ServerForm.LogException(0, 0, 0, "Setup", $"Error setting Connected to true for focuser device {ProgID}, now trying Link for IFocuserV1 devices: \r\n{ex2}");
                                 oDrv.Link = true;
                             }
 

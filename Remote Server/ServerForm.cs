@@ -16,18 +16,15 @@ using System.Windows.Forms;
 using ASCOM.Utilities;
 using ASCOM.DeviceInterface;
 using System.Drawing;
-
 using System.Reflection.Emit;
-
 using Newtonsoft.Json;
 using System.Web;
 using System.Text.RegularExpressions;
 using System.IO.Compression;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization.Formatters;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
+using System.Security.Principal;
 
 namespace ASCOM.Remote
 {
@@ -48,7 +45,7 @@ namespace ASCOM.Remote
         private const int SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH = 500; // Maximum length of a message that can be logged to the screen - required to prevent huge messages from locking up the system while the text box attempts to processes them
         private const int SCREEN_LOG_MAXIMUM_LENGTH = 50000; // Maximum length of the screen log - The screen log will be pruned to ensure it never exceeds this length, which would start to degrade performance
 
-        private const string CORRECT_API_FORMAT_STRING = "<br>Required format is: <b>" +
+        private const string CORRECT_API_FORMAT_STRING_HTML = "<br>Required format is: <b>" +
                             "<font color=\"red\">api/v</font>" +
                             "<font color=\"blue\">x</font>" +
                             "<font color=\"red\">/</font>" +
@@ -61,12 +58,12 @@ namespace ASCOM.Remote
                             "<font color=\"blue\">x</font>" +
                             " is the one based API version number and " +
                             "<font color=\"blue\">y</font>" +
-                            " is the zero based number of the device. The " +
-                            "<font color=\"blue\">devicetype</font>" +
-                            " and " +
-                            "<font color=\"blue\">method</font>" +
-                            " fields must be in lower case."; // HTML error message when an unrecognised is received
-        private const string CORRECT_SERVER_FORMAT_STRING = "<br>Required format is: <b>" +
+                            " is the zero based number of the device. The whole URL must be in lower case."; // HTML error message when an unrecognised is received
+
+        private const string CORRECT_API_FORMAT_STRING_PLAIN = "Required format is: api/vx/devicetype/y/method where x is the one based API version number and y is the zero based number of the device. " +
+            "The whole URL must be in lower case."; // Plain text error message when an unrecognised is received
+
+        private const string CORRECT_SERVER_FORMAT_STRING_HTML = "<br>Required format is: <b>" +
                             "<font color=\"red\">server/v</font>" +
                             "<font color=\"blue\">x</font>" +
                             "<font color=\"red\">/</font>" +
@@ -77,7 +74,12 @@ namespace ASCOM.Remote
                             "<font color=\"blue\">command</font>" +
                             " fields must be in lower case."; // HTML error message when an unknown server command is received.
 
-        private const string UNRECOGNISED_URI_MESSAGE = "You have reached the <i><b>ASCOM Remote Server</b></i> API portal but your url did not start with /api, /management, /server or /setup (must be lower case) <p><b>Available devices:</b></p>";
+        private const string CORRECT_SERVER_FORMAT_STRING_PLAIN = "Required format is: server/vx/configuration | profile | concurrency where x is the one based API version number. " +
+            "The server and command fields must be in lower case."; // PLain text error message when an unknown server command is received.
+
+        private const string UNRECOGNISED_URI_MESSAGE_HTML = "You have reached the <i><b>ASCOM Remote Server</b></i> API portal but your url did not start with /api, /management, /server or /setup (must be lower case) <p><b>Available devices:</b></p>";
+
+        private const string UNRECOGNISED_URI_MESSAGE_PLAIN = "You have reached the ASCOM Remote Server API portal but your url did not start with /api, /management, /server or /setup (must be lower case) Available devices: \r\n";
 
         private const string GET_UNKNOWN_METHOD_MESSAGE = "GET - Unknown device method: ";
         private const string PUT_UNKNOWN_METHOD_MESSAGE = "PUT - Unknown device method: ";
@@ -109,6 +111,7 @@ namespace ASCOM.Remote
         internal const int URL_ELEMENT_SERVER_COMMAND = 2; // For /server/ type uris
 
         // Device server profile persistence constants
+        internal const string SERVER_LOG_FOLDER_PROFILENAME = "Server Log Folder"; // No default value constant because the default Documents folder has to be calculated dynamically at run time
         internal const string SERVER_ACCESS_LOG_PROFILENAME = "Server Access Log Enabled"; public const bool SERVER_ACCESS_LOG_DEFAULT = true;
         internal const string SERVER_TRACE_LEVEL_PROFILENAME = "Server Trace Level"; public const bool SERVER_TRACE_LEVEL_DEFAULT = true;
         internal const string SERVER_DEBUG_TRACE_PROFILENAME = "Server Include Debug Trace"; public const bool SERVER_DEBUG_TRACE_DEFAULT = false;
@@ -136,6 +139,9 @@ namespace ASCOM.Remote
         internal const string MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME = "Maximum Number Of Devices"; public static int MAXIMUM_NUMBER_OF_DEVICES_DEFAULT = 10;
         internal const string IPV4_ENABLED_PROFILENAME = "IP v4 Enabled"; public const bool IPV4_ENABLED_DEFAULT = true;
         internal const string IPV6_ENABLED_PROFILENAME = "IP v6 Enabled"; public const bool IPV6_ENABLED_DEFAULT = false;
+        internal const string ROLLOVER_LOGS_ENABLED_PROFILENAME = "Rollover Logs Enabled"; public const bool ROLLOVER_LOGS_ENABLED_DEFAULT = false;
+        internal const string ROLLOVER_TIME_PROFILENAME = "Rollover Time"; public static DateTime ROLLOVER_TIME_DEFAULT = DateTime.Now.Date; // Default value can't be const because it's a date-time type
+        internal const string USE_UTC_TIME_IN_LOGS_PROFILENAME = "Use UTC Time In Logs"; public const bool USE_UTC_TIME_IN_LOGS_ENABLED_DEFAULT = false;
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -206,13 +212,14 @@ namespace ASCOM.Remote
         internal static int numberOfConsecutiveErrors = 0; // Counter to record the number of consecutive errors, this is reset to zero whenever a successful async listen occurs
 
         // Variable to hold the last log time so that old logs are closed and new logs are started when we move to a new day
-        internal static DateTime LastTraceLogTime = DateTime.Now; // Initialise to now to ensure that the TraceLoggerPlus code works correctly
-        internal static DateTime LastAccessLogTime = DateTime.Now; // Initialise to now to ensure that the TraceLoggerPlus code works correctly
+        internal static DateTime NextTraceLogRolloverTime = DateTime.Now; // Initialise to now to ensure that the roll-over code works correctly
+        internal static DateTime NextAccessLogRolloverTime = DateTime.Now; // Initialise to now to ensure that the roll-over code works correctly
 
         internal static ConcurrentDictionary<string, ConfiguredDevice> ConfiguredDevices;
         internal static ConcurrentDictionary<string, ActiveObject> ActiveObjects;
 
         // Configuration variables that can be changed through the Setup dialogue 
+        internal static string TraceFolder;
         internal static bool TraceState;
         internal static bool DebugTraceState;
         internal static string ServerIPAddressString;
@@ -237,6 +244,9 @@ namespace ASCOM.Remote
         internal static int MaximumNumberOfDevices;
         internal static bool IpV4Enabled;
         internal static bool IpV6Enabled;
+        internal static bool RolloverLogsEnabled;
+        internal static DateTime RolloverTime;
+        internal static bool UseUtcTimeInLogs;
 
         #endregion
 
@@ -277,7 +287,11 @@ namespace ASCOM.Remote
             try
             {
                 InitializeComponent();
-                TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME); // Trace state is enabled or disabled in the ReadProfile method
+                // This TraceLogger is only used for debugging Profile value Retrieval. It is replaced below after the required logging location is retrieved from the Profile 
+                TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME) // Trace state is enabled or disabled in the ReadProfile method
+                {
+                    UseUtcTime = UseUtcTimeInLogs
+                };
 
                 // Initialise lists
                 ConfiguredDevices = new ConcurrentDictionary<string, ConfiguredDevice>();
@@ -287,12 +301,27 @@ namespace ASCOM.Remote
 
                 ReadProfile();
 
-                Version version = Assembly.GetEntryAssembly().GetName().Version;
-                LogMessage(0, 0, 0, "New", string.Format("Remote Server Version {0}, Started on {1}", version.ToString(), DateTime.Now.ToString("dddd d MMMM yyyy HH:mm:ss")));
+                // Close the debugging log
+                TL.Enabled = false;
+                TL.Dispose();
 
-                AccessLog = new TraceLoggerPlus("", ACCESSLOG_TRACELOGGER_NAME)
+                // Create the application log file in the folder specified by the user
+                TL = new TraceLoggerPlus("", TraceFolder, SERVER_TRACELOGGER_NAME, TraceState)
                 {
-                    Enabled = AccessLogEnabled
+                    LogFilePath = TraceFolder, // Set the trace folder to the user specified value
+                    Enabled = TraceState, // Enable the log if required
+                    UseUtcTime = UseUtcTimeInLogs
+                };
+
+                Version version = Assembly.GetEntryAssembly().GetName().Version;
+                LogMessage(0, 0, 0, "New", $"Remote Server Version {version}, Started on {DateTime.Now.ToString("dddd d MMMM yyyy HH: mm:ss")}");
+                LogMessage(0, 0, 0, "New", $"Running as user {WindowsIdentity.GetCurrent().Name}");
+
+                AccessLog = new TraceLoggerPlus("", TraceFolder, ACCESSLOG_TRACELOGGER_NAME, AccessLogEnabled)
+                {
+                    LogFilePath = TraceFolder, // Set the trace folder to the user specified value
+                    Enabled = AccessLogEnabled,
+                    UseUtcTime = UseUtcTimeInLogs
                 };
 
                 LogMessage(0, 0, 0, "New", "Setting screen log check boxes"); // Must be done before enabling event handlers!
@@ -404,20 +433,14 @@ namespace ASCOM.Remote
                     if (IpV4Enabled | IpV6Enabled)
                     {
 
-                        // Construct URIs that apply to all interfaces on this PC
-                        string apiOperatingUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.API_URL_BASE);
-                        string remoteServerManagementUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
-                        string alpacaDeviceManagementUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE);
-                        string alpacaDeviceSetupUri = string.Format(@"http://+:{0}{1}", ServerPortNumber, SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE);
-
-                        apiOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
-                        remoteServerManagementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE);
-                        alpacaDeviceManagementUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE);
-                        alpacaDeviceSetupUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE);
-
+                        // Construct URIs based on configured IP address parameters 
+                        string apiOperatingUri = $@"http://{ServerIPAddressString}:{ServerPortNumber}{SharedConstants.API_URL_BASE}";
+                        string remoteServerManagementUri = $@"http://{ServerIPAddressString}:{ServerPortNumber}{SharedConstants.REMOTE_SERVER_MANAGEMENT_URL_BASE}";
+                        string alpacaDeviceManagementUri = $@"http://{ServerIPAddressString}:{ServerPortNumber}{SharedConstants.ALPACA_DEVICE_MANAGEMENT_URL_BASE}";
+                        string alpacaDeviceSetupUri = $@"http://{ServerIPAddressString}:{ServerPortNumber}{SharedConstants.ALPACA_DEVICE_SETUP_URL_BASE}";
 
                         // Construct a URI for the configured address i.e the effective address after filtering
-                        string configuredOperatingUri = string.Format(@"http://{0}:{1}{2}", ServerIPAddressString, ServerPortNumber, SharedConstants.API_URL_BASE);
+                        string configuredOperatingUri = $@"http://{ServerIPAddressString}:{ServerPortNumber}{SharedConstants.API_URL_BASE}";
 
                         LogMessage(0, 0, 0, "StartRESTServer", "IPv4 Operating URI: " + apiOperatingUri);
                         LogMessage(0, 0, 0, "StartRESTServer", "IPv4 Management URI: " + remoteServerManagementUri);
@@ -874,7 +897,7 @@ namespace ASCOM.Remote
                 IPEndPoint localIpEndPoint = (IPEndPoint)udpClient.Client.LocalEndPoint;
 
                 // Filter based on receiving port IP address 
-                if ((ServerIPAddressString == "*") | (ServerIPAddressString == "+")) // The Remote Server is configured to respond on all its IP addresses so filtering is not required here
+                if ((ServerIPAddressString == SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_STRONG) | (ServerIPAddressString == SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_STRONG)) // The Remote Server is configured to respond on all its IP addresses so filtering is not required here
                 {
                     if (DebugTraceState) LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"The configured server IP address is + or * so we will process this request.");
                 }
@@ -1173,20 +1196,29 @@ namespace ASCOM.Remote
             if (TL.Enabled) // We are logging so we have to close the current log and start a new one if we have moved to a new day
             {
                 DateTime now = DateTime.Now;
-                if (LastTraceLogTime.DayOfYear != now.DayOfYear) // We have moved onto tomorrow so close the current log and start another
+
+                //TL.LogMessage("CheckWhetherNewLogRequired", $"Next roll-over time: {NextRolloverTime}, Current time: {now}");
+
+                if (now > NextTraceLogRolloverTime) // We have moved into the next log period so close the current log and start another
                 {
+                    // Close the current logger
                     TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "EndOfDay", "Closing this log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
                     TL.Enabled = false;
                     TL.Dispose();
                     TL = null;
+
+                    // Start a new logger
                     TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME)
                     {
+                        LogFilePath = TraceFolder,
                         Enabled = true, // Enable the trace logger
                         IpAddressTraceState = LogClientIPAddress // Set the current state of the "include client IP address in trace lines" flag
                     };
+
                     TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+
+                    NextTraceLogRolloverTime = NextTraceLogRolloverTime.AddDays(1.0); // Update the next roll-over time so that it can be tested on the next logging call
                 }
-                LastTraceLogTime = now; // Update the last log time so that it can be tested on the next logging call
             }
         }
 
@@ -1212,6 +1244,11 @@ namespace ASCOM.Remote
             LogMessage(0, 0, 0, "Alpaca Unique ID", AlpacaUniqueId);
             LogMessage(0, 0, 0, "Alpaca Discovery Port", AlpacaDiscoveryPort.ToString());
             LogMessage(0, 0, 0, "Maximum Devices", MaximumNumberOfDevices.ToString());
+            LogMessage(0, 0, 0, "IpV4 Enabled", IpV4Enabled.ToString());
+            LogMessage(0, 0, 0, "IpV6 Enabled", IpV6Enabled.ToString());
+            LogMessage(0, 0, 0, "Rollover Logs Enabled", RolloverLogsEnabled.ToString());
+            LogMessage(0, 0, 0, "Rollover Time", RolloverTime.TimeOfDay.ToString());
+            LogMessage(0, 0, 0, "Use UTC in Logs", UseUtcTimeInLogs.ToString());
 
             LogBlankLine(0, 0, 0);
 
@@ -1303,8 +1340,6 @@ namespace ASCOM.Remote
         /// <returns>Cleaned message string</returns>
         private string CleanMessage(string message)
         {
-            //string cleanedMessage = message.Replace("\r", string.Empty);
-            //cleanedMessage = cleanedMessage.Replace("\n", string.Empty);
             string cleanedMessage = Regex.Replace(message, @"[^\u0020-\u007E]", string.Empty);
             return cleanedMessage;
         }
@@ -1331,6 +1366,75 @@ namespace ASCOM.Remote
             }
         }
 
+        /// <summary>
+        /// Return HTML or plain text version of the error message depending on whether the client accepts text/html
+        /// </summary>
+        /// <param name="requestData">The client request</param>
+        /// <param name="htmlText">HTML formatted text to return to clients that request this</param>
+        /// <param name="plainText">Plain text to be returned to clients that do not specifically request html</param>
+        /// <returns></returns>
+        private string HTMLOrPlainText(RequestData requestData, string htmlText, string plainText)
+        {
+            // Test whether the client requests HTML messages
+            if (requestData.Request.AcceptTypes != null) // There are some accept types so check whether text/html is among them
+            {
+                if (requestData.Request.AcceptTypes.Contains<string>("text/html"))  // Client can handle HTML encoding so return HTML version of the message
+                {
+                    return htmlText;
+                }
+                else // Client can not handle html encoding so return plain text
+                {
+                    return plainText;
+                }
+            }
+            else // There are no accept types so assume plain text is appropriate
+            {
+                return plainText;
+            }
+        }
+
+        private string HTMLOrPlainTextContentType(RequestData requestData)
+        {
+            if (requestData.Request.AcceptTypes != null) // There are some accept types so check whether text/html is among them
+            {
+                // Test whether the client requests HTML or plain text responses
+                if (requestData.Request.AcceptTypes.Contains<string>("text/html"))  // Client can handle HTML encoding so return HTML content type
+                {
+                    return "text/html; charset=utf-8";
+                }
+                else // Client can not handle html encoding so return plain text content type
+                {
+                    return "text/plain; charset=utf-8";
+                }
+            }
+            else // There are no accept types so assume plain text is appropriate
+            {
+                return "text/plain; charset=utf-8";
+            }
+        }
+
+        /// <summary>
+        /// Returns the size of a structure in managed memory
+        /// </summary>
+        /// <param name="type">The type of the object whose size is to be determined</param>
+        /// <returns>
+        /// GetManagedSize() returns the size of a structure whose type is 'type', as stored in managed memory.
+        /// For any reference type this will simply return the size of a pointer (4 or 8).
+        /// </returns>
+        public static int GetManagedSize(Type type)
+        {
+            // all this just to invoke one op code with no arguments!
+            var method = new DynamicMethod("GetManagedSizeImpl", typeof(uint), new Type[0]); //, typeof(TypeExtensions), false);
+
+            ILGenerator gen = method.GetILGenerator();
+
+            gen.Emit(OpCodes.Sizeof, type);
+            gen.Emit(OpCodes.Ret);
+
+            var func = (Func<uint>)method.CreateDelegate(typeof(Func<uint>));
+            return checked((int)func());
+        }
+
         #endregion
 
         #region Profile management
@@ -1346,6 +1450,7 @@ namespace ASCOM.Remote
                 TraceState = driverProfile.GetValue<bool>(SERVER_TRACE_LEVEL_PROFILENAME, string.Empty, SERVER_TRACE_LEVEL_DEFAULT);
                 TL.Enabled = TraceState; // Set the trace state here so that it can be used below
 
+                TraceFolder = driverProfile.GetValue<string>(SERVER_LOG_FOLDER_PROFILENAME, string.Empty, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\ASCOM");
                 DebugTraceState = driverProfile.GetValue<bool>(SERVER_DEBUG_TRACE_PROFILENAME, string.Empty, SERVER_DEBUG_TRACE_DEFAULT);
                 ServerIPAddressString = driverProfile.GetValue<string>(SERVER_IPADDRESS_PROFILENAME, string.Empty, SERVER_IPADDRESS_DEFAULT);
                 ServerPortNumber = driverProfile.GetValue<decimal>(SERVER_PORTNUMBER_PROFILENAME, string.Empty, SERVER_PORTNUMBER_DEFAULT);
@@ -1370,6 +1475,12 @@ namespace ASCOM.Remote
                 MaximumNumberOfDevices = driverProfile.GetValue<int>(MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME, string.Empty, MAXIMUM_NUMBER_OF_DEVICES_DEFAULT);
                 IpV4Enabled = driverProfile.GetValue<bool>(IPV4_ENABLED_PROFILENAME, string.Empty, IPV4_ENABLED_DEFAULT);
                 IpV6Enabled = driverProfile.GetValue<bool>(IPV6_ENABLED_PROFILENAME, string.Empty, IPV6_ENABLED_DEFAULT);
+                RolloverLogsEnabled = driverProfile.GetValue<bool>(ROLLOVER_LOGS_ENABLED_PROFILENAME, string.Empty, ROLLOVER_LOGS_ENABLED_DEFAULT);
+                RolloverTime = driverProfile.GetValue<DateTime>(ROLLOVER_TIME_PROFILENAME, string.Empty, ROLLOVER_TIME_DEFAULT);
+                UseUtcTimeInLogs = driverProfile.GetValue<bool>(USE_UTC_TIME_IN_LOGS_PROFILENAME, string.Empty, USE_UTC_TIME_IN_LOGS_ENABLED_DEFAULT);
+
+                // Set the next log roll-over time using the persisted roll-over time value
+                SetNextRolloverTime();
 
                 // Clear collections before repopulating
                 ServerDeviceNumbers.Clear();
@@ -1380,7 +1491,6 @@ namespace ASCOM.Remote
                 {
                     ServerDeviceNumbers.Add(i.ToString());
                     ServerDeviceNames.Add($"ServedDevice{i:00}");
-                    LogMessage(0, 0, 0, "ReadProfile", $"Adding served device {i} as ServedDevice{i:00}");
                 }
 
                 // Clear collection before repopulating
@@ -1406,10 +1516,27 @@ namespace ASCOM.Remote
                         uniqueID = Guid.NewGuid().ToString().ToUpperInvariant(); // Assign a new unique ID
                         driverProfile.SetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, revisedDeviceName, uniqueID);
                     }
-                    LogMessage(0, 0, 0, "ReadProfile", $"Adding configured device {revisedDeviceName}");
 
                     ConfiguredDevices[deviceName] = new ConfiguredDevice(deviceType, progID, description, deviceNumber, allowConnectedSetFalse, allowConnectedSetTrue, allowConcurrentAccess, uniqueID);
                 }
+            }
+        }
+
+        private static void SetNextRolloverTime()
+        {
+            // Set the next rollover time based on the retrieved RolloverTime value
+            DateTime todaysRolloverTime = DateTime.Today.Add(RolloverTime.TimeOfDay); // Calculate today's rollover time
+
+            // Check whether we are ahead or behind today's roll-over time
+            if (todaysRolloverTime > DateTime.Now) // Today's roll-time is later than now so we can just wait for us to reach it
+            {
+                NextTraceLogRolloverTime = todaysRolloverTime;
+                NextAccessLogRolloverTime = todaysRolloverTime;
+            }
+            else // Today's roll-time is earlier than now so we must set the next roll-time to tomorrow's roll-time
+            {
+                NextTraceLogRolloverTime = todaysRolloverTime.AddDays(1.0);
+                NextAccessLogRolloverTime = todaysRolloverTime;
             }
         }
 
@@ -1430,7 +1557,6 @@ namespace ASCOM.Remote
             }
         }
 
-
         /// <summary>
         /// Write the device configuration to the  ASCOM  Profile store
         /// </summary>
@@ -1439,31 +1565,40 @@ namespace ASCOM.Remote
             using (Configuration driverProfile = new Configuration())
             {
                 // Save the variable state to the Profile
-                driverProfile.SetValue<bool>(SERVER_TRACE_LEVEL_PROFILENAME, string.Empty, TraceState);
-                driverProfile.SetValue<bool>(SERVER_DEBUG_TRACE_PROFILENAME, string.Empty, DebugTraceState);
+                driverProfile.SetValue<string>(SERVER_LOG_FOLDER_PROFILENAME, string.Empty, TraceFolder);
+                driverProfile.SetValueInvariant<bool>(SERVER_TRACE_LEVEL_PROFILENAME, string.Empty, TraceState);
+                driverProfile.SetValueInvariant<bool>(SERVER_DEBUG_TRACE_PROFILENAME, string.Empty, DebugTraceState);
                 driverProfile.SetValue<string>(SERVER_IPADDRESS_PROFILENAME, string.Empty, ServerIPAddressString);
-                driverProfile.SetValue<decimal>(SERVER_PORTNUMBER_PROFILENAME, string.Empty, ServerPortNumber);
-                driverProfile.SetValue<bool>(SERVER_AUTOCONNECT_PROFILENAME, string.Empty, StartWithDevicesConnected);
-                driverProfile.SetValue<bool>(SERVER_ACCESS_LOG_PROFILENAME, string.Empty, AccessLogEnabled);
-                driverProfile.SetValue<bool>(SCREEN_LOG_REQUESTS_PROFILENAME, string.Empty, ScreenLogRequests);
-                driverProfile.SetValue<bool>(SCREEN_LOG_RESPONSES_PROFILENAME, string.Empty, ScreenLogResponses);
-                driverProfile.SetValue<bool>(MANAGEMENT_INTERFACE_ENABLED_PROFILENAME, string.Empty, ManagementInterfaceEnabled);
-                driverProfile.SetValue<bool>(START_WITH_API_ENABLED_PROFILENAME, string.Empty, StartWithApiEnabled);
-                driverProfile.SetValue<bool>(RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME, string.Empty, RunDriversOnSeparateThreads);
-                driverProfile.SetValue<bool>(LOG_CLIENT_IPADDRESS_PROFILENAME, string.Empty, LogClientIPAddress);
+                driverProfile.SetValueInvariant<decimal>(SERVER_PORTNUMBER_PROFILENAME, string.Empty, ServerPortNumber);
+                driverProfile.SetValueInvariant<bool>(SERVER_AUTOCONNECT_PROFILENAME, string.Empty, StartWithDevicesConnected);
+                driverProfile.SetValueInvariant<bool>(SERVER_ACCESS_LOG_PROFILENAME, string.Empty, AccessLogEnabled);
+                driverProfile.SetValueInvariant<bool>(SCREEN_LOG_REQUESTS_PROFILENAME, string.Empty, ScreenLogRequests);
+                driverProfile.SetValueInvariant<bool>(SCREEN_LOG_RESPONSES_PROFILENAME, string.Empty, ScreenLogResponses);
+                driverProfile.SetValueInvariant<bool>(MANAGEMENT_INTERFACE_ENABLED_PROFILENAME, string.Empty, ManagementInterfaceEnabled);
+                driverProfile.SetValueInvariant<bool>(START_WITH_API_ENABLED_PROFILENAME, string.Empty, StartWithApiEnabled);
+                driverProfile.SetValueInvariant<bool>(RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME, string.Empty, RunDriversOnSeparateThreads);
+                driverProfile.SetValueInvariant<bool>(LOG_CLIENT_IPADDRESS_PROFILENAME, string.Empty, LogClientIPAddress);
                 TL.IpAddressTraceState = LogClientIPAddress; // Persist the IP address trace state to the TraceLogger so that it can be used to format lines as required
-                driverProfile.SetValue<bool>(INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME, string.Empty, IncludeDriverExceptionInJsonResponse);
+                driverProfile.SetValueInvariant<bool>(INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME, string.Empty, IncludeDriverExceptionInJsonResponse);
                 driverProfile.SetValue<string>(REMOTE_SERVER_LOCATION_PROFILENAME, string.Empty, RemoteServerLocation);
                 driverProfile.SetValue<string>(CORS_PERMITTED_ORIGINS_PROFILENAME, string.Empty, CorsPermittedOrigins.ToConcatenatedString(SharedConstants.CORS_SERIALISATION_SEPARATOR));
-                driverProfile.SetValue<bool>(CORS_SUPPORT_ENABLED_PROFILENAME, string.Empty, CorsSupportIsEnabled);
-                driverProfile.SetValue<decimal>(CORS_MAX_AGE_PROFILENAME, string.Empty, CorsMaxAge);
-                driverProfile.SetValue<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CorsCredentialsPermitted);
-                driverProfile.SetValue<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, AlpacaDiscoveryEnabled);
+                driverProfile.SetValueInvariant<bool>(CORS_SUPPORT_ENABLED_PROFILENAME, string.Empty, CorsSupportIsEnabled);
+                driverProfile.SetValueInvariant<decimal>(CORS_MAX_AGE_PROFILENAME, string.Empty, CorsMaxAge);
+                driverProfile.SetValueInvariant<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CorsCredentialsPermitted);
+                driverProfile.SetValueInvariant<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, AlpacaDiscoveryEnabled);
                 driverProfile.SetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, AlpacaUniqueId);
-                driverProfile.SetValue<decimal>(ALPACA_DISCOVERY_PORT_PROFILENAME, string.Empty, AlpacaDiscoveryPort);
-                driverProfile.SetValue<int>(MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME, string.Empty, MaximumNumberOfDevices);
-                driverProfile.SetValue<bool>(IPV4_ENABLED_PROFILENAME, string.Empty, IpV4Enabled);
-                driverProfile.SetValue<bool>(IPV6_ENABLED_PROFILENAME, string.Empty, IpV6Enabled);
+                driverProfile.SetValueInvariant<decimal>(ALPACA_DISCOVERY_PORT_PROFILENAME, string.Empty, AlpacaDiscoveryPort);
+                driverProfile.SetValueInvariant<int>(MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME, string.Empty, MaximumNumberOfDevices);
+                driverProfile.SetValueInvariant<bool>(IPV4_ENABLED_PROFILENAME, string.Empty, IpV4Enabled);
+                driverProfile.SetValueInvariant<bool>(IPV6_ENABLED_PROFILENAME, string.Empty, IpV6Enabled);
+                driverProfile.SetValueInvariant<bool>(ROLLOVER_LOGS_ENABLED_PROFILENAME, string.Empty, RolloverLogsEnabled);
+                driverProfile.SetValueInvariant<DateTime>(ROLLOVER_TIME_PROFILENAME, string.Empty, RolloverTime);
+                driverProfile.SetValueInvariant<bool>(USE_UTC_TIME_IN_LOGS_PROFILENAME, string.Empty, UseUtcTimeInLogs);
+
+                // Update the next rollover time in case the time has changed
+                //TL.LogMessage("WriteProfile", $"NextRolloverTime Before: {NextRolloverTime}");
+                SetNextRolloverTime();
+                //TL.LogMessage("WriteProfile", $"NextRolloverTime After: {NextRolloverTime}");
 
                 foreach (string deviceName in ServerDeviceNames)
                 {
@@ -1517,6 +1652,13 @@ namespace ASCOM.Remote
             SetupForm frm = new SetupForm();
             DialogResult outcome = frm.ShowDialog();
             LogMessage(0, 0, 0, "SetupButton", string.Format("Setup dialogue outcome: {0}", outcome.ToString()));
+
+            // Update use of UTC time in case this was changed in the setup dialogue
+            if (outcome == DialogResult.OK)
+            {
+                TL.UseUtcTime = UseUtcTimeInLogs;
+                AccessLog.UseUtcTime = UseUtcTimeInLogs;
+            }
 
             // Log new configuration
             WriteConfigurationToLog();
@@ -1756,7 +1898,7 @@ namespace ASCOM.Remote
             }
 
             // Test whether the user has configured the server to respond on all IP addresses, if so process it without further checks
-            if ((ServerIPAddressString == "*") | (ServerIPAddressString == "+"))
+            if ((ServerIPAddressString == SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_STRONG) | (ServerIPAddressString == SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_WEAK))
             {
                 // User has configured all IP addresses so no filtering is required
                 if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"The configured server IP address is + or * so we will process this request.");
@@ -1828,65 +1970,114 @@ namespace ASCOM.Remote
 
                 // Create a collection of supplied parameters: query variables in the URL string for HTTP GET requests and form parameters from the request body for HTTP PUT requests.
 
-                if (requestData.Request.HttpMethod.ToUpperInvariant() == "GET") // Process query parameters from an HTTP GET
+                switch (requestData.Request.HttpMethod.ToUpperInvariant())
                 {
-                    suppliedParameters.Add(request.QueryString); // Add the query string parameters to the collection
+                    // Process query parameters from an HTTP GET    
+                    case "GET":
+                        suppliedParameters.Add(request.QueryString); // Add the query string parameters to the collection
 
-                    // List query string parameters if in debug mode
-                    if (DebugTraceState)
-                    {
+                        // List query string parameters
                         foreach (string key in suppliedParameters)
                         {
-                            LogMessage1(requestData, "Query Parameter", string.Format("{0} = {1}", key, suppliedParameters[key]));
+                            LogMessage1(requestData, "Query Parameter", $"{key} = {suppliedParameters[key]}");
                         }
-                    }
+                        break;
+
+                    // Process form parameters from an HTTP PUT
+                    case "PUT":
+                        if (request.HasEntityBody) // Add any parameters supplied in the form body
+                        {
+                            string formParameters;
+                            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding)) // Extract the aggregated parameter string from the form within the request
+                            {
+                                formParameters = reader.ReadToEnd();
+                            }
+                            if (formParameters == null) formParameters = ""; // Handle the possibility that we get a null value instead of an empty string
+
+                            string[] rawParameters = formParameters.Split('&'); // Parse the aggregated parameter string into an array of key / value pair strings
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Form parameters string: '{formParameters}'Form parameters string length: {formParameters.Length}, Raw parameters array size: {rawParameters.Length}");
+
+                            foreach (string parameter in rawParameters) // Parse each key / value pair string into its key and value and add these to the parameters collection
+                            {
+                                string[] keyValuePair = parameter.Split('=');
+                                if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Found form parameter string: '{parameter}' whose KeyValuePair array size is: {keyValuePair.Length}");
+
+                                string key = keyValuePair[0].Trim(); // Extract the key value
+                                if (!string.IsNullOrEmpty(key)) // The key has a name so now extract the value
+                                {
+                                    string value = ""; // Initialise a variable to hold the value
+                                    if (keyValuePair.Length > 1) // The key does have a value
+                                    {
+                                        value = HttpUtility.UrlDecode(keyValuePair[1].Trim()); // Extract the value so long as one exists
+                                    }
+                                    else // The key does not have a value
+                                    {
+                                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"No parameter value was found for parameter {parameter} - an empty string will be assumed.");
+                                    }
+
+                                    // Add the parameter key and value to the parameter list
+                                    suppliedParameters.Add(key, value);
+
+                                    // Log the form parameter if debug tracing
+                                    LogMessage1(requestData, "Form Parameter", $"{key} = {value}");
+                                }
+                                else // The key is null or empty so ignore it
+                                {
+                                    if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Ignoring parameter with no name");
+                                }
+                            }
+                        }
+                        break;
+
+                    default:
+
+                        break;
                 }
 
-                if (requestData.Request.HttpMethod.ToUpperInvariant() == "PUT") // Process form parameters from an HTTP PUT
-                {
-                    if (request.HasEntityBody) // Add any parameters supplied in the form POST
-                    {
-                        string formParameters;
-                        using (var reader = new StreamReader(request.InputStream, request.ContentEncoding)) // Extract the aggregated parameter string from the form within the request
-                        {
-                            formParameters = reader.ReadToEnd();
-                        }
-                        if (formParameters == null) formParameters = ""; // Handle the possibility that we get a null value instead of an empty string
-
-                        string[] rawParameters = formParameters.Split('&'); // Parse the aggregated parameter string into an array of key / value pair strings
-                        if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Form parameters string: '{formParameters}'Form parameters string length: {formParameters.Length}, Raw parameters array size: {rawParameters.Length}");
-
-                        foreach (string parameter in rawParameters) // Parse each key / value pair string into its key and value and add these to the parameters collection
-                        {
-                            string[] keyValuePair = parameter.Split('=');
-                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Found form parameter string: '{parameter}' whose KeyValuePair array size is: {keyValuePair.Length}");
-
-                            string key = keyValuePair[0].Trim(); // Extract the key value
-                            string value = ""; // Initialise a variable to hold the value
-                            if (keyValuePair.Length > 1)
-                            {
-                                value = HttpUtility.UrlDecode(keyValuePair[1].Trim()); // Extract the value so long as one exists
-                            }
-                            else
-                            {
-                                LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Warning - No parameter value was found for parameter {parameter} - an empty string will be assumed. Raw parameter string: '{formParameters}'");
-                                LogToScreen($"WARNING - Request: {request.HttpMethod} {request.Url.PathAndQuery}");
-                                LogToScreen($"WARNING - No parameter value was found for parameter {parameter} - an empty string will be assumed.");
-                                LogToScreen($"WARNING - Raw parameter string: '{formParameters}'.");
-                            }
-                            suppliedParameters.Add(key, value); // Add the parameter key and value to the parameter list
-                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"  Processed parameter key and value: {key} = {value}");
-                        }
-                    }
-                }
-
-                requestData.SuppliedParameters = suppliedParameters; // Add the query or body parameters to the request data
+                // Add the query or body parameters to the request data
+                requestData.SuppliedParameters = suppliedParameters;
 
                 // Extract the caller's IP address into hostIPAddress
                 string clientIpAddress;
-                if (request.Headers[X_FORWARDED_FOR] != null) clientIpAddress = request.Headers[X_FORWARDED_FOR]; // The request was fronted by an Apache web server
-                else clientIpAddress = request.UserHostAddress; // The request came straight to this application
-                AccessLog.LogMessage("    " + clientIpAddress, string.Format("{0} {1}", request.HttpMethod, request.Url.AbsolutePath));
+                if (request.Headers[X_FORWARDED_FOR] != null)
+                {
+                    clientIpAddress = request.Headers[X_FORWARDED_FOR]; // The request was fronted by an Apache web server
+                }
+                else
+                {
+                    clientIpAddress = request.RemoteEndPoint.ToString(); // The request came straight to this application
+                }
+
+                // Create an access log entry
+
+                if (AccessLog.Enabled) // We are logging so we have to close the current log and start a new one if we have moved to a new day
+                {
+                    DateTime now = DateTime.Now;
+
+                    if (now > NextAccessLogRolloverTime) // We have moved into the next log period so close the current log and start another
+                    {
+                        // Close the current logger
+                        AccessLog.LogMessage(clientID, clientTransactionID, serverTransactionID, "EndOfDay", "Closing this log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+                        AccessLog.Enabled = false;
+                        AccessLog.Dispose();
+                        AccessLog = null;
+
+                        // Start a new logger
+                        AccessLog = new TraceLoggerPlus("", ACCESSLOG_TRACELOGGER_NAME)
+                        {
+                            LogFilePath = TraceFolder,
+                            Enabled = true, // Enable the trace logger
+                            IpAddressTraceState = LogClientIPAddress // Set the current state of the "include client IP address in trace lines" flag
+                        };
+
+                        AccessLog.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+
+                        NextAccessLogRolloverTime = NextTraceLogRolloverTime.AddDays(1.0); // Update the next roll-over time so that it can be tested on the next logging call
+                    }
+
+                    //Write the access log entry
+                    AccessLog.LogMessage("    " + clientIpAddress, string.Format("{0} {1}", request.HttpMethod, request.Url.AbsolutePath));
+                }
 
                 if (ScreenLogRequests) // Incoming requests are logged to the screen
                 {
@@ -2030,7 +2221,7 @@ namespace ASCOM.Remote
                     // Basic error checking - We must have received 5 elements, now in the elements array, in order to have received a valid API request so check this here:
                     if (elements.Length != 5)
                     {
-                        Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_API_FORMAT_STRING);
+                        Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                         return;
                     } // We don't have 5 elements so return a 400 error
                     else // We have received the required 5 elements in the URI
@@ -2121,12 +2312,12 @@ namespace ASCOM.Remote
                                 } // We have a valid device number
                                 else
                                 {
-                                    Return400Error(requestData, "Unsupported or invalid integer device number: " + elements[URL_ELEMENT_DEVICE_NUMBER] + " " + CORRECT_API_FORMAT_STRING);
+                                    Return400Error(requestData, "Unsupported or invalid integer device number: " + elements[URL_ELEMENT_DEVICE_NUMBER] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                 } // Invalid device number provided so return a 400 error
                                 break;
 
                             default: // Handle invalid API version numbers
-                                Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + CORRECT_API_FORMAT_STRING);
+                                Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                 break;
                         } // Process using the correct API version
 
@@ -2171,7 +2362,7 @@ namespace ASCOM.Remote
                         // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid management API request so check this here:
                         if (elements.Length != 3)
                         {
-                            Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_SERVER_FORMAT_STRING);
+                            Return400Error(requestData, "Incorrect API format - Received: " + request.Url.AbsolutePath + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                             return;
                         } // Invalid management command so return an error
                         else // We have received the required 3 elements in the URI
@@ -2250,7 +2441,7 @@ namespace ASCOM.Remote
                                                             break;
 
                                                         default:
-                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                             break;
                                                     }
                                                     break;
@@ -2259,7 +2450,7 @@ namespace ASCOM.Remote
                                                     {
                                                         // No commands yet so return a default command not supported to everything
                                                         default:
-                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                             break;
                                                     }
                                                     break;
@@ -2275,7 +2466,7 @@ namespace ASCOM.Remote
 
                                         break; // End of valid api version numbers
                                     default:
-                                        Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                        Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                         break;
                                 }
                             }
@@ -2374,7 +2565,7 @@ namespace ASCOM.Remote
                     // Basic error checking - We must have received 3 elements, now in the elements array, in order to have received a valid API request so check this here:
                     if (elements.Length != 3)
                     {
-                        Return400Error(requestData, "Remote management - incorrect API format - Received: " + request.Url.AbsolutePath + " Required format is: <b> " + CORRECT_SERVER_FORMAT_STRING);
+                        Return400Error(requestData, "Remote management - incorrect API format - Received: " + request.Url.AbsolutePath + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                         return;
                     }
                     else // We have received the required 3 elements in the URI
@@ -2464,7 +2655,7 @@ namespace ASCOM.Remote
                                                         break;
 
                                                     default:
-                                                        Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                                        Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                         break;
                                                 }
                                                 break;
@@ -2513,12 +2704,12 @@ namespace ASCOM.Remote
                                                     case SharedConstants.REMOTE_SERVER_MANGEMENT_GET_CONFIGURATION:
                                                         lock (managementCommandLock) // Make sure that this command can only run one at a time!
                                                         {
-                                                            Return400Error(requestData, "Command not implemented: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                                            Return400Error(requestData, "Command not implemented: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                         }
                                                         break;
 
                                                     default:
-                                                        Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                                        Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                         break;
                                                 }
                                                 break;
@@ -2534,7 +2725,7 @@ namespace ASCOM.Remote
 
                                     break; // End of valid api version numbers
                                 default:
-                                    Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + CORRECT_SERVER_FORMAT_STRING);
+                                    Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                     break;
                             }
                         }
@@ -2548,17 +2739,17 @@ namespace ASCOM.Remote
 
                 else // A URI that did not start with /api/, /management, /setup or /configuration/ was requested
                 {
-                    LogMessage1(requestData, "Request", string.Format("Non API call - {0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, System.Threading.Thread.CurrentThread.ManagedThreadId.ToString()));
-                    string returnMessage = UNRECOGNISED_URI_MESSAGE;
+                    LogMessage1(requestData, "Request", string.Format("Non API call - {0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString()));
+                    string returnMessage = HTMLOrPlainText(requestData, UNRECOGNISED_URI_MESSAGE_HTML, UNRECOGNISED_URI_MESSAGE_PLAIN);
 
                     foreach (KeyValuePair<string, ConfiguredDevice> device in ConfiguredDevices)
                     {
                         if (device.Value.ProgID != SharedConstants.DEVICE_NOT_CONFIGURED)
                         {
-                            returnMessage += string.Format("{0} {1}: {2} ({3})<br>", device.Value.DeviceType, device.Value.DeviceNumber, device.Value.Description, device.Value.ProgID);
+                            returnMessage += $"{device.Value.DeviceType} {device.Value.DeviceNumber}: {device.Value.Description} ({device.Value.ProgID})" + HTMLOrPlainText(requestData, "<br>", "\r\n");
                         }
                     }
-                    TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.OK, "200 OK", returnMessage);
+                    TransmitResponse(requestData, HTMLOrPlainTextContentType(requestData), HttpStatusCode.OK, "200 OK", returnMessage);
                 } // Not a valid Remote Server request
             }
             catch (Exception ex) // Something serious has gone wrong with the ASCOM Remote server itself so report this to the user
@@ -2705,7 +2896,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2792,7 +2983,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2817,7 +3008,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2849,7 +3040,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2872,7 +3063,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2905,7 +3096,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2937,7 +3128,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2961,7 +3152,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -2976,7 +3167,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -3005,14 +3196,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
 
                                     default:// End of valid device types
-                                        Return400Error(requestData, "Unsupported Device Type: " + requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + " " + CORRECT_API_FORMAT_STRING);
+                                        Return400Error(requestData, "Unsupported Device Type: " + requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                         break;
                                 }
                                 break;
@@ -3101,7 +3292,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -3140,7 +3331,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
@@ -3162,7 +3353,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -3188,7 +3379,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
@@ -3203,7 +3394,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
@@ -3229,7 +3420,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
@@ -3247,7 +3438,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
@@ -3269,7 +3460,7 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
@@ -3286,28 +3477,28 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + CORRECT_API_FORMAT_STRING);
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
                                     #endregion
 
                                     default:
-                                        Return400Error(requestData, "Unsupported Device Type: " + requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + " " + CORRECT_API_FORMAT_STRING);
+                                        Return400Error(requestData, "Unsupported Device Type: " + requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                         break;
                                 }
                                 break;
                         }
                         break;
                     default:
-                        Return400Error(requestData, "Unsupported http verb: " + requestData.Request.HttpMethod);
+                        Return400Error(requestData, $"Invalid http verb: {requestData.Request.HttpMethod}, the Alpaca protocol only uses GET and PUT.");
                         break;
                 } // Handle GET and PUT requestData.Requests
             }
             catch (KeyNotFoundException ex)
             {
                 LogException1(requestData, "ProcessDriverCommand", ex.ToString());
-                Return400Error(requestData, string.Format("The requestData.Requested device \"{0} {1}\" does not exist on this server. Supplied URI: {2} {3}", requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData.Elements[URL_ELEMENT_DEVICE_NUMBER], requestData.Request.Url.AbsolutePath, CORRECT_API_FORMAT_STRING));
+                Return400Error(requestData, $"The requested device \"{requestData.Elements[URL_ELEMENT_DEVICE_TYPE]} {requestData.Elements[URL_ELEMENT_DEVICE_NUMBER]}\" does not exist on this server. Supplied URI: {requestData.Request.Url.AbsolutePath}");
             }
         } // Driver request handler
 
@@ -3544,12 +3735,13 @@ namespace ASCOM.Remote
         // Return server error responses to clients
         private void Return400Error(RequestData requestData, string message)
         {
+
             try
             {
                 LogMessage1(requestData, "HTTP 400 Error", message);
                 LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, message));
 
-                TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.BadRequest, "400 - Unable to process request - see response content for details", CleanMessage(message));
+                TransmitResponse(requestData, HTMLOrPlainTextContentType(requestData), HttpStatusCode.BadRequest, "400 - Unable to process request - see response content for details", CleanMessage(message));
             }
             catch (Exception ex)
             {
@@ -3564,7 +3756,7 @@ namespace ASCOM.Remote
                 LogMessage1(requestData, "HTTP 403 Error", message);
                 LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, message));
 
-                TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.Forbidden, "403 " + CleanMessage(message), "403 " + CleanMessage(message));
+                TransmitResponse(requestData, HTMLOrPlainTextContentType(requestData), HttpStatusCode.Forbidden, "403 " + CleanMessage(message), "403 " + CleanMessage(message));
             }
             catch (Exception ex)
             {
@@ -3579,7 +3771,7 @@ namespace ASCOM.Remote
                 LogMessage1(requestData, "HTTP 404 Error", message);
                 LogToScreen($"ERROR - ClientId: {requestData.ClientID}, ClientTransactionID: {requestData.ClientTransactionID} - {message}");
 
-                TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.NotFound, "404 " + CleanMessage(message), "404 " + CleanMessage(message));
+                TransmitResponse(requestData, HTMLOrPlainTextContentType(requestData), HttpStatusCode.NotFound, "404 " + CleanMessage(message), "404 " + CleanMessage(message));
             }
             catch (Exception ex)
             {
@@ -3597,7 +3789,7 @@ namespace ASCOM.Remote
             {
                 LogException(0, 0, 0, "Exception while returning HTTP 500 Error", ex.ToString());
             }
-            TransmitResponse(requestData, "text/html; charset=utf-8", HttpStatusCode.InternalServerError, "500 " + CleanMessage(errorMessage), "500 " + CleanMessage(errorMessage));
+            TransmitResponse(requestData, HTMLOrPlainTextContentType(requestData), HttpStatusCode.InternalServerError, "500 " + CleanMessage(errorMessage), "500 " + CleanMessage(errorMessage));
         }
 
         // Return device responses to clients
@@ -4721,11 +4913,16 @@ namespace ASCOM.Remote
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
 
+            // Initialise a list to hold returned tracking rate values and add any tracking rate values that have been returned
             List<DriveRates> rates = new List<DriveRates>();
-            foreach (DriveRates rate in deviceResponse)
+
+            if (!(deviceResponse is null)) // Avoid processing a null return value because the foreach code will fail 
             {
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Rate = {0}", rate.ToString()));
-                rates.Add(rate);
+                foreach (DriveRates rate in deviceResponse)
+                {
+                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Rate = {0}", rate.ToString()));
+                    rates.Add(rate);
+                }
             }
 
             LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Number of rates: {0}", rates.Count));
@@ -4968,23 +5165,6 @@ namespace ASCOM.Remote
 
         }
 
-        // GetManagedSize() returns the size of a structure whose type
-        // is 'type', as stored in managed memory. For any reference type
-        // this will simply return the size of a pointer (4 or 8).
-        public static int GetManagedSize(Type type)
-        {
-            // all this just to invoke one op code with no arguments!
-            var method = new DynamicMethod("GetManagedSizeImpl", typeof(uint), new Type[0]); //, typeof(TypeExtensions), false);
-
-            ILGenerator gen = method.GetILGenerator();
-
-            gen.Emit(OpCodes.Sizeof, type);
-            gen.Emit(OpCodes.Ret);
-
-            var func = (Func<uint>)method.CreateDelegate(typeof(Func<uint>));
-            return checked((int)func());
-        }
-
         /// <summary>
         /// Return Base64 serialised image data to the client
         /// </summary>
@@ -4998,6 +5178,11 @@ namespace ASCOM.Remote
             Stopwatch sw = new Stopwatch();
             long lastTime;
             byte[] imageArrayBytes;
+            int imageArrayElementSize = 0;
+            string imageArrayElementType;
+            int imageArrayBytesLength = 0;
+            int base64StringLength = 0;
+
             SharedConstants.ImageArrayCompression compressionType = SharedConstants.ImageArrayCompression.None; // Flag to indicate what type of compression the client supports - initialised to indicate a default of no compression
 
             sw.Start();
@@ -5021,12 +5206,15 @@ namespace ASCOM.Remote
 
             if (imageArray != null)
             {
-                int imageArrayElementSize = GetManagedSize(imageArray.GetType().GetElementType()); // Find the size of each array element from the array element type
+                imageArrayElementSize = GetManagedSize(imageArray.GetType().GetElementType()); // Find the size of each array element from the array element type
                 imageArrayBytes = new byte[imageArray.Length * imageArrayElementSize]; // Size the byte array as the product of the element size and the number of elements
+                imageArrayElementType = imageArray.GetType().GetElementType().Name;
+                imageArrayBytesLength = imageArrayBytes.Length;
             }
             else
             {
                 imageArrayBytes = new byte[0];
+                imageArrayElementType = "No array elements";
             }
             long timeBCreateByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
@@ -5041,6 +5229,7 @@ namespace ASCOM.Remote
             GC.Collect();
 
             string base64String = Convert.ToBase64String(imageArrayBytes, 0, imageArrayBytes.Length, Base64FormattingOptions.None);
+            base64StringLength = base64String.Length;
             long timeToConvertToBase64 = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
             // Release image array bytes memory
@@ -5102,7 +5291,11 @@ namespace ASCOM.Remote
             long timeReturnDataToClient = sw.ElapsedMilliseconds - lastTime; // Record the duration
 
             LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"### Base64 response sent to client. " +
-                $"Base64 bytes to send: {bytesToSend.Length:n0}bytes, " +
+                $"Image array element type: {imageArrayElementType}, " +
+                $"Image array element size: {imageArrayElementSize:n0}, " +
+                $"Image array bytes length: {imageArrayBytesLength:n0}, " +
+                $"Base64 string length: {base64StringLength:n0}, " +
+                $"Base64 bytes to send: {bytesToSend.Length:n0} bytes, " +
                 $"Timings - Overall: {sw.ElapsedMilliseconds}, Time to assign image pointer: {timeAssignImage}ms, Create byte array: {timeBCreateByteArray}ms, Copy image to byte array: {timeBlockCopy}ms, " +
                 $"Convert to base64: {timeToConvertToBase64}ms, Convert base64string to byte array: {timeToConvertBase64StringToByteArray}ms. " +
                 $"Time to compress base64 string: {timeToCompressResponse}ms, " +
@@ -5508,10 +5701,15 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
+            // Initialise a list to hold returned rate values and add any rate values that have been returned
             List<RateResponse> rateResponse = new List<RateResponse>();
-            foreach (dynamic r in deviceResponse)
+
+            if (!(deviceResponse is null)) // Avoid processing a null return value because the foreach code will fail 
             {
-                rateResponse.Add(new RateResponse(r.Minimum, r.Maximum));
+                foreach (dynamic r in deviceResponse)
+                {
+                    rateResponse.Add(new RateResponse(r.Minimum, r.Maximum));
+                }
             }
 
             AxisRatesResponse responseClass = new AxisRatesResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, rateResponse)
@@ -5768,42 +5966,42 @@ namespace ASCOM.Remote
             {
                 case "Single":
                     float singleValue;
-                    if (!float.TryParse(parameterStringValue, NumberStyles.Number, CultureInfo.InvariantCulture, out singleValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to a floating point value", parameterStringValue, ParameterName));
+                    if (!float.TryParse(parameterStringValue, NumberStyles.Number, CultureInfo.InvariantCulture, out singleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a floating point value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, singleValue.ToString()));
                     return (T)(object)singleValue;
 
                 case "Double":
                     double doubleValue;
-                    if (!double.TryParse(parameterStringValue, NumberStyles.Number, CultureInfo.InvariantCulture, out doubleValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to a floating point value", parameterStringValue, ParameterName));
+                    if (!double.TryParse(parameterStringValue, NumberStyles.Number, CultureInfo.InvariantCulture, out doubleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a floating point value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, doubleValue.ToString()));
                     return (T)(object)doubleValue;
 
                 case "Int16":
                     short shortValue;
-                    if (!short.TryParse(parameterStringValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out shortValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to an Int16 value", parameterStringValue, ParameterName));
+                    if (!short.TryParse(parameterStringValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out shortValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to an Int16 value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, shortValue.ToString()));
                     return (T)(object)shortValue;
 
                 case "Int32":
                     int intValue;
-                    if (!int.TryParse(parameterStringValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out intValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to an Int32 value", parameterStringValue, ParameterName));
+                    if (!int.TryParse(parameterStringValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out intValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to an Int32 value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, intValue.ToString()));
                     return (T)(object)intValue;
 
                 case "Boolean":
                     bool boolValue;
-                    if (!bool.TryParse(parameterStringValue, out boolValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to a boolean value", parameterStringValue, ParameterName));
+                    if (!bool.TryParse(parameterStringValue, out boolValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a boolean value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, boolValue.ToString()));
                     return (T)(object)boolValue;
 
                 case "DateTime":
                     DateTime dateTimeValue;
-                    if (!DateTime.TryParse(parameterStringValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTimeValue)) throw new InvalidParameterException(string.Format("GetParameter - Supplied argument {0} for parameter {1} can not be converted to a DateTime value", parameterStringValue, ParameterName));
+                    if (!DateTime.TryParse(parameterStringValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTimeValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a DateTime value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, dateTimeValue.ToString()));
                     return (T)(object)dateTimeValue;
 
                 default:
-                    string errorMessage = string.Format("Unsupported type: {0} called by requestData.Elements[URL_ELEMENT_METHOD]: ", typeof(T).Name, requestData.Elements[URL_ELEMENT_METHOD]);
+                    string errorMessage = $"Unsupported type: {typeof(T).Name} called by {requestData.Elements[URL_ELEMENT_METHOD]}";
                     LogMessage1(requestData, "GetParameter", errorMessage);
                     throw new InvalidParameterException(errorMessage);
             }
@@ -5867,6 +6065,7 @@ namespace ASCOM.Remote
                     Array.Resize<string>(ref elements, 5);
                     elements[3] = "";
                     elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND];
+                    requestData.Elements = elements;
                 }
 
                 bytesToSend = Encoding.UTF8.GetBytes(messageToSend); // Convert the message to be returned into UTF8 bytes that can be sent over the wire

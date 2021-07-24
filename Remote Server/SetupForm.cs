@@ -105,6 +105,12 @@ namespace ASCOM.Remote
                 ChkEnableDiscovery.Checked = ServerForm.AlpacaDiscoveryEnabled;
                 NumDiscoveryPort.Value = ServerForm.AlpacaDiscoveryPort;
                 NumMaxDevices.Value = ServerForm.MaximumNumberOfDevices;
+                DlgSetLogFolderPath.SelectedPath = ServerForm.TraceFolder;
+                DlgSetLogFolderPath.Description = "Select the Remote Server Log File Folder (Default: Documents\\ASCOM)";
+                ChkRollOverLogs.Checked = ServerForm.RolloverLogsEnabled;
+                DateTimeLogRolloverTime.Value = ServerForm.RolloverTime;
+                SetRolloverTimeControlState();
+                ChkUseUtcTime.Checked = ServerForm.UseUtcTimeInLogs;
 
                 // Set the IP v4 / v6 radio boxes
                 if (ServerForm.IpV4Enabled & ServerForm.IpV6Enabled) // Both IPv4 and v6 are enabled so set the "both" button
@@ -129,16 +135,16 @@ namespace ASCOM.Remote
                     // Populate the device types list
                     foreach (string deviceType in profile.RegisteredDeviceTypes)
                     {
-                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Adding device type: " + deviceType);
+                        //ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Adding device type: " + deviceType);
                         registeredDeviceTypes.Add(deviceType); // Remember the device types on this system
                     }
                 }
                 ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Number of configured devices: {0}.", ServerForm.ConfiguredDevices.Count));
 
-                foreach (string deviceName in ServerForm.ConfiguredDevices.Keys)
-                {
-                    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("ConfiguredDevices contains key {0}.", deviceName));
-                }
+                //foreach (string deviceName in ServerForm.ConfiguredDevices.Keys)
+                //{
+                //    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("ConfiguredDevices contains key {0}.", deviceName));
+                //}
 
                 // Populate the device list with all configured controls
                 deviceList = WalkControls(this, new List<ServedDevice>());
@@ -303,31 +309,35 @@ namespace ASCOM.Remote
 
             if ((!foundTheIPAddress) & (ServerForm.ServerIPAddressString != "")) // Add the last stored IP address if it isn't found in the search above
             {
-                if (ServerForm.ServerIPAddressString == "+") // Handle the "all addresses special case
+                if (ServerForm.ServerIPAddressString == SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_STRONG) // Handle the "Strong bind all addresses" special case
                 {
-                    addressList.Items.Add(ServerForm.ServerIPAddressString); // Add the stored address to the list
+                    addressList.Items.Add(SharedConstants.BIND_TO_ALL_INTERFACES_DESCRIPTION); // Add the "All interfaces" description to the list
+                    selectedIndex = addressList.Items.Count - 1; // Select this item in the list
+                }
+                else if (ServerForm.ServerIPAddressString == SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_WEAK) // Handle the "Weak bind all addresses" special case
+                {
+                    addressList.Items.Add(SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_WEAK); // Add the "Weak bind" * character to the list
                     selectedIndex = addressList.Items.Count - 1; // Select this item in the list
                 }
                 else  // One specific address so add it if it parses OK
                 {
                     IPAddress serverIpAddress = IPAddress.Parse(ServerForm.ServerIPAddressString);
-                    if (
-                            ((serverIpAddress.AddressFamily == AddressFamily.InterNetwork) & ((RadIpV4.Checked | RadIpV4AndV6.Checked))) |
-                            ((serverIpAddress.AddressFamily == AddressFamily.InterNetworkV6) & ((RadIpV6.Checked | RadIpV4AndV6.Checked)))
-                       )
+                    if (((serverIpAddress.AddressFamily == AddressFamily.InterNetwork) & ((RadIpV4.Checked | RadIpV4AndV6.Checked))) |
+                        ((serverIpAddress.AddressFamily == AddressFamily.InterNetworkV6) & ((RadIpV6.Checked | RadIpV4AndV6.Checked)))) // Address parses OK so add it
                     {
                         addressList.Items.Add(ServerForm.ServerIPAddressString); // Add the stored address to the list
                         selectedIndex = addressList.Items.Count - 1; // Select this item in the list
                     }
-                    else selectedIndex = 0;
+                    else // Address does not parse so ignore it, should not occur because IP addresses are validated on entry through the Setup GUI
+                    {
+                        selectedIndex = 0;
+                    }
                 }
             }
 
-            // Add the wild card addresses at the end of the list
+            // Include the "All interfaces" name at the end of the list of addresses if not already in use
+            if (ServerForm.ServerIPAddressString != SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_STRONG) addressList.Items.Add(SharedConstants.BIND_TO_ALL_INTERFACES_DESCRIPTION);
 
-            // Include the strong wild card character in the list of addresses if not already in use
-            if (ServerForm.ServerIPAddressString != SharedConstants.STRONG_WILDCARD_NAME) addressList.Items.Add(SharedConstants.STRONG_WILDCARD_NAME);
-            //if (ServerForm.ServerIPAddressString != SharedConstants.WEAK_WILDCARD_NAME) addressList.Items.Add(SharedConstants.WEAK_WILDCARD_NAME); // Include the weak wild card character in the list of addresses if not already in use
             addressList.SelectedIndex = selectedIndex;
         }
 
@@ -513,8 +523,19 @@ namespace ASCOM.Remote
         {
             try
             {
-                if (addressList.Text == SharedConstants.LOCALHOST_NAME_IPV4) ServerForm.ServerIPAddressString = SharedConstants.LOCALHOST_ADDRESS_IPV4;
-                else ServerForm.ServerIPAddressString = addressList.Text;
+                // Save the selected IP address
+                if (addressList.Text == SharedConstants.LOCALHOST_NAME_IPV4) // Handle IPV4 localhost address special case
+                {
+                    ServerForm.ServerIPAddressString = SharedConstants.LOCALHOST_ADDRESS_IPV4;
+                }
+                else if (addressList.Text == SharedConstants.BIND_TO_ALL_INTERFACES_DESCRIPTION) // Handle "All IP addresses" special case
+                {
+                    ServerForm.ServerIPAddressString = SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_STRONG;
+                }
+                else // Handle all other IP addresses
+                {
+                    ServerForm.ServerIPAddressString = addressList.Text;
+                }
                 ServerForm.ServerPortNumber = numPort.Value;
                 ServerForm.StartWithDevicesConnected = chkAutoConnect.Checked;
                 ServerForm.AccessLogEnabled = chkAccessLog.Checked;
@@ -532,6 +553,10 @@ namespace ASCOM.Remote
                 ServerForm.AlpacaDiscoveryEnabled = ChkEnableDiscovery.Checked;
                 ServerForm.AlpacaDiscoveryPort = NumDiscoveryPort.Value;
                 ServerForm.MaximumNumberOfDevices = (int)NumMaxDevices.Value;
+                ServerForm.TraceFolder = DlgSetLogFolderPath.SelectedPath;
+                ServerForm.RolloverLogsEnabled = ChkRollOverLogs.Checked;
+                ServerForm.RolloverTime = DateTimeLogRolloverTime.Value;
+                ServerForm.UseUtcTimeInLogs = ChkUseUtcTime.Checked;
 
                 // Set the IP v4 and v6 variables as necessary
                 if (RadIpV4.Checked) // The IPv4 radio button is checked so set the IP v4 and IP v6 variables accordingly
@@ -590,6 +615,52 @@ namespace ASCOM.Remote
             }
         }
 
+        private void NumMaxDevices_ValueChanged(object sender, EventArgs e)
+        {
+            maxDevicesHasChanged = true;
+
+            ServerForm.MaximumNumberOfDevices = (int)NumMaxDevices.Value;
+            ServerForm.ReadProfile();
+        }
+
+        private void RadIpV4_CheckedChanged(object sender, EventArgs e)
+        {
+            PopulateAddressList();
+        }
+
+        private void RadIpV6_CheckedChanged(object sender, EventArgs e)
+        {
+            PopulateAddressList();
+        }
+
+        private void RadIpV4AndV6_CheckedChanged(object sender, EventArgs e)
+        {
+            PopulateAddressList();
+        }
+
+        private void ChkEnableDiscovery_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ChkEnableDiscovery.Checked)
+            {
+                chkManagementInterfaceEnabled.Checked = true;
+                chkManagementInterfaceEnabled.Enabled = false;
+            }
+            else
+            {
+                chkManagementInterfaceEnabled.Enabled = true;
+            }
+        }
+
+        private void BtnSelectLogFileFolder_Click(object sender, EventArgs e)
+        {
+            DlgSetLogFolderPath.ShowDialog();
+        }
+
+        private void ChkRollOverLogs_CheckedChanged(object sender, EventArgs e)
+        {
+            SetRolloverTimeControlState();
+        }
+
         #endregion
 
         #region Utility methods
@@ -607,11 +678,11 @@ namespace ASCOM.Remote
                         if (int.Parse(control.Name.Substring("ServedDevice".Length)) < ServerForm.MaximumNumberOfDevices)
                         {
                             deviceList.Add(control as ServedDevice);
-                            ServerForm.LogMessage(0, 0, 0, "WalkControls", $"Found served device: {control.Name}");
+                            //ServerForm.LogMessage(0, 0, 0, "WalkControls", $"Found served device: {control.Name}");
                         }
                         else
                         {
-                            ServerForm.LogMessage(0, 0, 0, "WalkControls", $"Ignoring served device: {control.Name}");
+                            //ServerForm.LogMessage(0, 0, 0, "WalkControls", $"Ignoring served device: {control.Name}");
                         }
                     }
                     else
@@ -677,25 +748,25 @@ namespace ASCOM.Remote
                 return true;
             }
 
-            if (ipAddress.ToLower() == "*")
+            if (ipAddress == SharedConstants.BIND_TO_ALL_INTERFACES_DESCRIPTION)
             {
                 errorMessage = "";
                 return true;
             }
 
-            if (ipAddress.ToLower() == "+")
+            if (ipAddress == SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_WEAK)
             {
                 errorMessage = "";
                 return true;
             }
 
-            //if (Regex.Matches(ipAddress, @"\.").Count != 3)
-            //{
-            //    errorMessage = "The IP address must have the form W.X.Y.Z";
-            //    return false;
-            //}
+            if (ipAddress == SharedConstants.BIND_TO_ALL_INTERFACES_IP_ADDRESS_STRONG)
+            {
+                errorMessage = "";
+                return true;
+            }
 
-            bool isValidIpAddress = IPAddress.TryParse(ipAddress, out _); // Try and parse the Ip address discarding the output (out _)
+            bool isValidIpAddress = IPAddress.TryParse(ipAddress, out _); // Try and parse the IP address discarding the output (out _)
             if (isValidIpAddress)
             {
                 errorMessage = "";
@@ -705,6 +776,20 @@ namespace ASCOM.Remote
             {
                 errorMessage = "Address given is not a valid IP address.";
                 return false;
+            }
+        }
+
+        private void SetRolloverTimeControlState()
+        {
+            if (ChkRollOverLogs.Checked)
+            {
+                DateTimeLogRolloverTime.Enabled = true;
+                LblLogRolloverTime.Enabled = true;
+            }
+            else
+            {
+                DateTimeLogRolloverTime.Enabled = false;
+                LblLogRolloverTime.Enabled = false;
             }
         }
 
@@ -795,40 +880,5 @@ namespace ASCOM.Remote
         }
         #endregion
 
-        private void NumMaxDevices_ValueChanged(object sender, EventArgs e)
-        {
-            maxDevicesHasChanged = true;
-
-            ServerForm.MaximumNumberOfDevices = (int)NumMaxDevices.Value;
-            ServerForm.ReadProfile();
-        }
-
-        private void RadIpV4_CheckedChanged(object sender, EventArgs e)
-        {
-            PopulateAddressList();
-        }
-
-        private void RadIpV6_CheckedChanged(object sender, EventArgs e)
-        {
-            PopulateAddressList();
-        }
-
-        private void RadIpV4AndV6_CheckedChanged(object sender, EventArgs e)
-        {
-            PopulateAddressList();
-        }
-
-        private void ChkEnableDiscovery_CheckedChanged(object sender, EventArgs e)
-        {
-            if (ChkEnableDiscovery.Checked)
-            {
-                chkManagementInterfaceEnabled.Checked = true;
-                chkManagementInterfaceEnabled.Enabled = false;
-            }
-            else
-            {
-                chkManagementInterfaceEnabled.Enabled = true;
-            }
-        }
     }
 }

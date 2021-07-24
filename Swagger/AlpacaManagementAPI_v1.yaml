@@ -179,9 +179,13 @@ paths:
         '200':
           description: Cross cutting information that applies to all devices served through this URL:Port.
           content:
-            application/json:
+            text/plain:
               schema:
+<<<<<<< HEAD
                 $ref: '#/components/schemas/DescriptionResponse'
+=======
+                $ref: '#/components/schemas/ErrorMessage'
+>>>>>>> develop
         '403':
           description: 'The provided path specifies an unsupported device or method, return an error message to display in the browser'
           content:
@@ -365,4 +369,8 @@ components:
 
     ErrorMessage:
       type: string
+<<<<<<< HEAD
       description: Plain text message describing the issue.
+=======
+      description: Plain text message describing the issue.
+>>>>>>> develop

@@ -16,33 +16,39 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupForm));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.BtnCancel = new System.Windows.Forms.Button();
             this.BtnOK = new System.Windows.Forms.Button();
             this.chkAutoConnect = new System.Windows.Forms.CheckBox();
-            this.chkTrace = new System.Windows.Forms.CheckBox();
-            this.chkDebugTrace = new System.Windows.Forms.CheckBox();
-            this.chkAccessLog = new System.Windows.Forms.CheckBox();
             this.chkManagementInterfaceEnabled = new System.Windows.Forms.CheckBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.ChkStartWithApiEnabled = new System.Windows.Forms.CheckBox();
             this.ChkRunDriversInSeparateThreadss = new System.Windows.Forms.CheckBox();
-            this.ChkLogClientIPAddress = new System.Windows.Forms.CheckBox();
             this.ChkIncludeDriverExceptionsInJsonResponses = new System.Windows.Forms.CheckBox();
             this.SetupTabControl = new System.Windows.Forms.TabControl();
             this.DeviceConfigurationTab = new System.Windows.Forms.TabPage();
             this.DeviceTabs = new System.Windows.Forms.TabControl();
             this.DeviceTab0 = new System.Windows.Forms.TabPage();
             this.label12 = new System.Windows.Forms.Label();
+            this.ServedDevice00 = new ASCOM.Remote.ServedDevice();
             this.label11 = new System.Windows.Forms.Label();
+            this.ServedDevice01 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice02 = new ASCOM.Remote.ServedDevice();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.ServedDevice03 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice04 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice05 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice06 = new ASCOM.Remote.ServedDevice();
             this.label6 = new System.Windows.Forms.Label();
+            this.ServedDevice07 = new ASCOM.Remote.ServedDevice();
             this.label5 = new System.Windows.Forms.Label();
+            this.ServedDevice08 = new ASCOM.Remote.ServedDevice();
             this.label4 = new System.Windows.Forms.Label();
+            this.ServedDevice09 = new ASCOM.Remote.ServedDevice();
             this.DeviceTab1 = new System.Windows.Forms.TabPage();
             this.label15 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
@@ -53,6 +59,16 @@
             this.label22 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
+            this.ServedDevice10 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice11 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice12 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice13 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice14 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice15 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice16 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice17 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice18 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice19 = new ASCOM.Remote.ServedDevice();
             this.DeviceTab2 = new System.Windows.Forms.TabPage();
             this.label18 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
@@ -63,6 +79,16 @@
             this.label30 = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
+            this.ServedDevice20 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice21 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice22 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice23 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice24 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice25 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice26 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice27 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice28 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice29 = new ASCOM.Remote.ServedDevice();
             this.DeviceTab3 = new System.Windows.Forms.TabPage();
             this.label33 = new System.Windows.Forms.Label();
             this.label34 = new System.Windows.Forms.Label();
@@ -73,6 +99,16 @@
             this.label39 = new System.Windows.Forms.Label();
             this.label40 = new System.Windows.Forms.Label();
             this.label41 = new System.Windows.Forms.Label();
+            this.ServedDevice30 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice31 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice32 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice33 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice34 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice35 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice36 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice37 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice38 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice39 = new ASCOM.Remote.ServedDevice();
             this.DeviceTab4 = new System.Windows.Forms.TabPage();
             this.label42 = new System.Windows.Forms.Label();
             this.label43 = new System.Windows.Forms.Label();
@@ -83,6 +119,16 @@
             this.label48 = new System.Windows.Forms.Label();
             this.label49 = new System.Windows.Forms.Label();
             this.label50 = new System.Windows.Forms.Label();
+            this.ServedDevice40 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice41 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice42 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice43 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice44 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice45 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice46 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice47 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice48 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice49 = new ASCOM.Remote.ServedDevice();
             this.DeviceTab5 = new System.Windows.Forms.TabPage();
             this.label51 = new System.Windows.Forms.Label();
             this.label52 = new System.Windows.Forms.Label();
@@ -93,6 +139,16 @@
             this.label57 = new System.Windows.Forms.Label();
             this.label58 = new System.Windows.Forms.Label();
             this.label59 = new System.Windows.Forms.Label();
+            this.ServedDevice50 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice51 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice52 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice53 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice54 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice55 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice56 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice57 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice58 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice59 = new ASCOM.Remote.ServedDevice();
             this.DeviceTab6 = new System.Windows.Forms.TabPage();
             this.label60 = new System.Windows.Forms.Label();
             this.label61 = new System.Windows.Forms.Label();
@@ -103,6 +159,16 @@
             this.label66 = new System.Windows.Forms.Label();
             this.label67 = new System.Windows.Forms.Label();
             this.label68 = new System.Windows.Forms.Label();
+            this.ServedDevice60 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice61 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice62 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice63 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice64 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice65 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice66 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice67 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice68 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice69 = new ASCOM.Remote.ServedDevice();
             this.DeviceTab7 = new System.Windows.Forms.TabPage();
             this.label69 = new System.Windows.Forms.Label();
             this.label70 = new System.Windows.Forms.Label();
@@ -113,6 +179,16 @@
             this.label75 = new System.Windows.Forms.Label();
             this.label76 = new System.Windows.Forms.Label();
             this.label77 = new System.Windows.Forms.Label();
+            this.ServedDevice70 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice71 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice72 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice73 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice74 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice75 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice76 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice77 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice78 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice79 = new ASCOM.Remote.ServedDevice();
             this.DeviceTab8 = new System.Windows.Forms.TabPage();
             this.label78 = new System.Windows.Forms.Label();
             this.label79 = new System.Windows.Forms.Label();
@@ -123,6 +199,16 @@
             this.label84 = new System.Windows.Forms.Label();
             this.label85 = new System.Windows.Forms.Label();
             this.label86 = new System.Windows.Forms.Label();
+            this.ServedDevice80 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice81 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice82 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice83 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice84 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice85 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice86 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice87 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice88 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice89 = new ASCOM.Remote.ServedDevice();
             this.DeviceTab9 = new System.Windows.Forms.TabPage();
             this.label87 = new System.Windows.Forms.Label();
             this.label88 = new System.Windows.Forms.Label();
@@ -133,8 +219,19 @@
             this.label93 = new System.Windows.Forms.Label();
             this.label94 = new System.Windows.Forms.Label();
             this.label95 = new System.Windows.Forms.Label();
+            this.ServedDevice90 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice91 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice92 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice93 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice94 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice95 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice96 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice97 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice98 = new ASCOM.Remote.ServedDevice();
+            this.ServedDevice99 = new ASCOM.Remote.ServedDevice();
             this.LblDevicesNotDisconnoected = new System.Windows.Forms.Label();
             this.ServerConfigurationTab = new System.Windows.Forms.TabPage();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.GrpIpVersionSelector = new System.Windows.Forms.GroupBox();
             this.RadIpV4AndV6 = new System.Windows.Forms.RadioButton();
             this.RadIpV6 = new System.Windows.Forms.RadioButton();
@@ -150,6 +247,17 @@
             this.numPort = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.LoggingConfigurationTab = new System.Windows.Forms.TabPage();
+            this.LblLogRolloverTime = new System.Windows.Forms.Label();
+            this.ChkRollOverLogs = new System.Windows.Forms.CheckBox();
+            this.DateTimeLogRolloverTime = new System.Windows.Forms.DateTimePicker();
+            this.label99 = new System.Windows.Forms.Label();
+            this.label98 = new System.Windows.Forms.Label();
+            this.BtnSelectLogFileFolder = new System.Windows.Forms.Button();
+            this.ChkLogClientIPAddress = new System.Windows.Forms.CheckBox();
+            this.chkTrace = new System.Windows.Forms.CheckBox();
+            this.chkDebugTrace = new System.Windows.Forms.CheckBox();
+            this.chkAccessLog = new System.Windows.Forms.CheckBox();
             this.CorsConfigurationTab = new System.Windows.Forms.TabPage();
             this.ChkCorsSupportCredentials = new System.Windows.Forms.CheckBox();
             this.LabMaxAge = new System.Windows.Forms.Label();
@@ -159,106 +267,11 @@
             this.LabHelp2 = new System.Windows.Forms.Label();
             this.LabHelp1 = new System.Windows.Forms.Label();
             this.DataGridCorsOrigins = new System.Windows.Forms.DataGridView();
-            this.ServedDevice00 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice01 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice02 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice03 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice04 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice05 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice06 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice07 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice08 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice09 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice10 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice11 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice12 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice13 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice14 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice15 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice16 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice17 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice18 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice19 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice20 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice21 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice22 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice23 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice24 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice25 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice26 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice27 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice28 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice29 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice30 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice31 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice32 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice33 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice34 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice35 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice36 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice37 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice38 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice39 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice40 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice41 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice42 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice43 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice44 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice45 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice46 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice47 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice48 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice49 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice50 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice51 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice52 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice53 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice54 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice55 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice56 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice57 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice58 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice59 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice60 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice61 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice62 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice63 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice64 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice65 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice66 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice67 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice68 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice69 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice70 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice71 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice72 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice73 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice74 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice75 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice76 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice77 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice78 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice79 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice80 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice81 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice82 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice83 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice84 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice85 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice86 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice87 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice88 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice89 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice90 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice91 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice92 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice93 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice94 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice95 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice96 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice97 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice98 = new ASCOM.Remote.ServedDevice();
-            this.ServedDevice99 = new ASCOM.Remote.ServedDevice();
+            this.DlgSetLogFolderPath = new System.Windows.Forms.FolderBrowserDialog();
+            this.ChkUseUtcTime = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SetupTabControl.SuspendLayout();
             this.DeviceConfigurationTab.SuspendLayout();
@@ -278,9 +291,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.NumMaxDevices)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumDiscoveryPort)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
+            this.LoggingConfigurationTab.SuspendLayout();
             this.CorsConfigurationTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumCorsMaxAge)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridCorsOrigins)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // BtnCancel
@@ -308,48 +325,17 @@
             // chkAutoConnect
             // 
             this.chkAutoConnect.AutoSize = true;
-            this.chkAutoConnect.Location = new System.Drawing.Point(270, 192);
+            this.chkAutoConnect.Location = new System.Drawing.Point(270, 233);
             this.chkAutoConnect.Name = "chkAutoConnect";
             this.chkAutoConnect.Size = new System.Drawing.Size(167, 17);
             this.chkAutoConnect.TabIndex = 2;
             this.chkAutoConnect.Text = "Start with Devices Connected";
             this.chkAutoConnect.UseVisualStyleBackColor = true;
             // 
-            // chkTrace
-            // 
-            this.chkTrace.AutoSize = true;
-            this.chkTrace.Location = new System.Drawing.Point(270, 259);
-            this.chkTrace.Name = "chkTrace";
-            this.chkTrace.Size = new System.Drawing.Size(96, 17);
-            this.chkTrace.TabIndex = 6;
-            this.chkTrace.Text = "Write Log Files";
-            this.chkTrace.UseVisualStyleBackColor = true;
-            // 
-            // chkDebugTrace
-            // 
-            this.chkDebugTrace.AutoSize = true;
-            this.chkDebugTrace.Location = new System.Drawing.Point(270, 282);
-            this.chkDebugTrace.Name = "chkDebugTrace";
-            this.chkDebugTrace.Size = new System.Drawing.Size(135, 17);
-            this.chkDebugTrace.TabIndex = 7;
-            this.chkDebugTrace.Text = "Enable Debug Logging";
-            this.chkDebugTrace.UseVisualStyleBackColor = true;
-            this.chkDebugTrace.CheckedChanged += new System.EventHandler(this.ChkDebugTrace_CheckedChanged);
-            // 
-            // chkAccessLog
-            // 
-            this.chkAccessLog.AutoSize = true;
-            this.chkAccessLog.Location = new System.Drawing.Point(270, 305);
-            this.chkAccessLog.Name = "chkAccessLog";
-            this.chkAccessLog.Size = new System.Drawing.Size(118, 17);
-            this.chkAccessLog.TabIndex = 4;
-            this.chkAccessLog.Text = "Enable Access Log";
-            this.chkAccessLog.UseVisualStyleBackColor = true;
-            // 
             // chkManagementInterfaceEnabled
             // 
             this.chkManagementInterfaceEnabled.AutoSize = true;
-            this.chkManagementInterfaceEnabled.Location = new System.Drawing.Point(483, 192);
+            this.chkManagementInterfaceEnabled.Location = new System.Drawing.Point(483, 233);
             this.chkManagementInterfaceEnabled.Name = "chkManagementInterfaceEnabled";
             this.chkManagementInterfaceEnabled.Size = new System.Drawing.Size(303, 17);
             this.chkManagementInterfaceEnabled.TabIndex = 3;
@@ -363,7 +349,7 @@
             // ChkStartWithApiEnabled
             // 
             this.ChkStartWithApiEnabled.AutoSize = true;
-            this.ChkStartWithApiEnabled.Location = new System.Drawing.Point(270, 215);
+            this.ChkStartWithApiEnabled.Location = new System.Drawing.Point(270, 256);
             this.ChkStartWithApiEnabled.Name = "ChkStartWithApiEnabled";
             this.ChkStartWithApiEnabled.Size = new System.Drawing.Size(131, 17);
             this.ChkStartWithApiEnabled.TabIndex = 5;
@@ -373,27 +359,17 @@
             // ChkRunDriversInSeparateThreadss
             // 
             this.ChkRunDriversInSeparateThreadss.AutoSize = true;
-            this.ChkRunDriversInSeparateThreadss.Location = new System.Drawing.Point(483, 259);
+            this.ChkRunDriversInSeparateThreadss.Location = new System.Drawing.Point(270, 279);
             this.ChkRunDriversInSeparateThreadss.Name = "ChkRunDriversInSeparateThreadss";
             this.ChkRunDriversInSeparateThreadss.Size = new System.Drawing.Size(181, 17);
             this.ChkRunDriversInSeparateThreadss.TabIndex = 34;
             this.ChkRunDriversInSeparateThreadss.Text = "Run Drivers in Separate Threads";
             this.ChkRunDriversInSeparateThreadss.UseVisualStyleBackColor = true;
             // 
-            // ChkLogClientIPAddress
-            // 
-            this.ChkLogClientIPAddress.AutoSize = true;
-            this.ChkLogClientIPAddress.Location = new System.Drawing.Point(483, 282);
-            this.ChkLogClientIPAddress.Name = "ChkLogClientIPAddress";
-            this.ChkLogClientIPAddress.Size = new System.Drawing.Size(134, 17);
-            this.ChkLogClientIPAddress.TabIndex = 35;
-            this.ChkLogClientIPAddress.Text = "Log Client\'s IP Address";
-            this.ChkLogClientIPAddress.UseVisualStyleBackColor = true;
-            // 
             // ChkIncludeDriverExceptionsInJsonResponses
             // 
             this.ChkIncludeDriverExceptionsInJsonResponses.AutoSize = true;
-            this.ChkIncludeDriverExceptionsInJsonResponses.Location = new System.Drawing.Point(483, 305);
+            this.ChkIncludeDriverExceptionsInJsonResponses.Location = new System.Drawing.Point(483, 279);
             this.ChkIncludeDriverExceptionsInJsonResponses.Name = "ChkIncludeDriverExceptionsInJsonResponses";
             this.ChkIncludeDriverExceptionsInJsonResponses.Size = new System.Drawing.Size(364, 17);
             this.ChkIncludeDriverExceptionsInJsonResponses.TabIndex = 36;
@@ -404,8 +380,9 @@
             // 
             this.SetupTabControl.Controls.Add(this.DeviceConfigurationTab);
             this.SetupTabControl.Controls.Add(this.ServerConfigurationTab);
+            this.SetupTabControl.Controls.Add(this.LoggingConfigurationTab);
             this.SetupTabControl.Controls.Add(this.CorsConfigurationTab);
-            this.SetupTabControl.Location = new System.Drawing.Point(12, 12);
+            this.SetupTabControl.Location = new System.Drawing.Point(12, 10);
             this.SetupTabControl.Name = "SetupTabControl";
             this.SetupTabControl.SelectedIndex = 0;
             this.SetupTabControl.Size = new System.Drawing.Size(1034, 420);
@@ -478,6 +455,21 @@
             this.label12.TabIndex = 60;
             this.label12.Text = "Enable";
             // 
+            // ServedDevice00
+            // 
+            this.ServedDevice00.AllowConcurrentAccess = false;
+            this.ServedDevice00.AllowConnectedSetFalse = false;
+            this.ServedDevice00.AllowConnectedSetTrue = false;
+            this.ServedDevice00.Description = "";
+            this.ServedDevice00.DeviceNumber = 0;
+            this.ServedDevice00.DevicesAreConnected = false;
+            this.ServedDevice00.DeviceType = "None";
+            this.ServedDevice00.Location = new System.Drawing.Point(8, 40);
+            this.ServedDevice00.Name = "ServedDevice00";
+            this.ServedDevice00.ProgID = "";
+            this.ServedDevice00.Size = new System.Drawing.Size(960, 22);
+            this.ServedDevice00.TabIndex = 41;
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
@@ -486,6 +478,36 @@
             this.label11.Size = new System.Drawing.Size(97, 13);
             this.label11.TabIndex = 59;
             this.label11.Text = "Concurrent Access";
+            // 
+            // ServedDevice01
+            // 
+            this.ServedDevice01.AllowConcurrentAccess = false;
+            this.ServedDevice01.AllowConnectedSetFalse = false;
+            this.ServedDevice01.AllowConnectedSetTrue = false;
+            this.ServedDevice01.Description = "";
+            this.ServedDevice01.DeviceNumber = 0;
+            this.ServedDevice01.DevicesAreConnected = false;
+            this.ServedDevice01.DeviceType = "None";
+            this.ServedDevice01.Location = new System.Drawing.Point(8, 68);
+            this.ServedDevice01.Name = "ServedDevice01";
+            this.ServedDevice01.ProgID = "";
+            this.ServedDevice01.Size = new System.Drawing.Size(960, 22);
+            this.ServedDevice01.TabIndex = 42;
+            // 
+            // ServedDevice02
+            // 
+            this.ServedDevice02.AllowConcurrentAccess = false;
+            this.ServedDevice02.AllowConnectedSetFalse = false;
+            this.ServedDevice02.AllowConnectedSetTrue = false;
+            this.ServedDevice02.Description = "";
+            this.ServedDevice02.DeviceNumber = 0;
+            this.ServedDevice02.DevicesAreConnected = false;
+            this.ServedDevice02.DeviceType = "None";
+            this.ServedDevice02.Location = new System.Drawing.Point(8, 96);
+            this.ServedDevice02.Name = "ServedDevice02";
+            this.ServedDevice02.ProgID = "";
+            this.ServedDevice02.Size = new System.Drawing.Size(960, 22);
+            this.ServedDevice02.TabIndex = 44;
             // 
             // label1
             // 
@@ -523,6 +545,66 @@
             this.label3.TabIndex = 46;
             this.label3.Text = "Device Number";
             // 
+            // ServedDevice03
+            // 
+            this.ServedDevice03.AllowConcurrentAccess = false;
+            this.ServedDevice03.AllowConnectedSetFalse = false;
+            this.ServedDevice03.AllowConnectedSetTrue = false;
+            this.ServedDevice03.Description = "";
+            this.ServedDevice03.DeviceNumber = 0;
+            this.ServedDevice03.DevicesAreConnected = false;
+            this.ServedDevice03.DeviceType = "None";
+            this.ServedDevice03.Location = new System.Drawing.Point(8, 124);
+            this.ServedDevice03.Name = "ServedDevice03";
+            this.ServedDevice03.ProgID = "";
+            this.ServedDevice03.Size = new System.Drawing.Size(960, 22);
+            this.ServedDevice03.TabIndex = 47;
+            // 
+            // ServedDevice04
+            // 
+            this.ServedDevice04.AllowConcurrentAccess = false;
+            this.ServedDevice04.AllowConnectedSetFalse = false;
+            this.ServedDevice04.AllowConnectedSetTrue = false;
+            this.ServedDevice04.Description = "";
+            this.ServedDevice04.DeviceNumber = 0;
+            this.ServedDevice04.DevicesAreConnected = false;
+            this.ServedDevice04.DeviceType = "None";
+            this.ServedDevice04.Location = new System.Drawing.Point(8, 152);
+            this.ServedDevice04.Name = "ServedDevice04";
+            this.ServedDevice04.ProgID = "";
+            this.ServedDevice04.Size = new System.Drawing.Size(960, 22);
+            this.ServedDevice04.TabIndex = 48;
+            // 
+            // ServedDevice05
+            // 
+            this.ServedDevice05.AllowConcurrentAccess = false;
+            this.ServedDevice05.AllowConnectedSetFalse = false;
+            this.ServedDevice05.AllowConnectedSetTrue = false;
+            this.ServedDevice05.Description = "";
+            this.ServedDevice05.DeviceNumber = 0;
+            this.ServedDevice05.DevicesAreConnected = false;
+            this.ServedDevice05.DeviceType = "None";
+            this.ServedDevice05.Location = new System.Drawing.Point(8, 180);
+            this.ServedDevice05.Name = "ServedDevice05";
+            this.ServedDevice05.ProgID = "";
+            this.ServedDevice05.Size = new System.Drawing.Size(960, 22);
+            this.ServedDevice05.TabIndex = 49;
+            // 
+            // ServedDevice06
+            // 
+            this.ServedDevice06.AllowConcurrentAccess = false;
+            this.ServedDevice06.AllowConnectedSetFalse = false;
+            this.ServedDevice06.AllowConnectedSetTrue = false;
+            this.ServedDevice06.Description = "";
+            this.ServedDevice06.DeviceNumber = 0;
+            this.ServedDevice06.DevicesAreConnected = false;
+            this.ServedDevice06.DeviceType = "None";
+            this.ServedDevice06.Location = new System.Drawing.Point(8, 208);
+            this.ServedDevice06.Name = "ServedDevice06";
+            this.ServedDevice06.ProgID = "";
+            this.ServedDevice06.Size = new System.Drawing.Size(960, 22);
+            this.ServedDevice06.TabIndex = 50;
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -531,6 +613,21 @@
             this.label6.Size = new System.Drawing.Size(29, 13);
             this.label6.TabIndex = 56;
             this.label6.Text = "True";
+            // 
+            // ServedDevice07
+            // 
+            this.ServedDevice07.AllowConcurrentAccess = false;
+            this.ServedDevice07.AllowConnectedSetFalse = false;
+            this.ServedDevice07.AllowConnectedSetTrue = false;
+            this.ServedDevice07.Description = "";
+            this.ServedDevice07.DeviceNumber = 0;
+            this.ServedDevice07.DevicesAreConnected = false;
+            this.ServedDevice07.DeviceType = "None";
+            this.ServedDevice07.Location = new System.Drawing.Point(8, 236);
+            this.ServedDevice07.Name = "ServedDevice07";
+            this.ServedDevice07.ProgID = "";
+            this.ServedDevice07.Size = new System.Drawing.Size(960, 22);
+            this.ServedDevice07.TabIndex = 51;
             // 
             // label5
             // 
@@ -541,6 +638,21 @@
             this.label5.TabIndex = 55;
             this.label5.Text = "False";
             // 
+            // ServedDevice08
+            // 
+            this.ServedDevice08.AllowConcurrentAccess = false;
+            this.ServedDevice08.AllowConnectedSetFalse = false;
+            this.ServedDevice08.AllowConnectedSetTrue = false;
+            this.ServedDevice08.Description = "";
+            this.ServedDevice08.DeviceNumber = 0;
+            this.ServedDevice08.DevicesAreConnected = false;
+            this.ServedDevice08.DeviceType = "None";
+            this.ServedDevice08.Location = new System.Drawing.Point(8, 264);
+            this.ServedDevice08.Name = "ServedDevice08";
+            this.ServedDevice08.ProgID = "";
+            this.ServedDevice08.Size = new System.Drawing.Size(960, 22);
+            this.ServedDevice08.TabIndex = 52;
+            // 
             // label4
             // 
             this.label4.AutoSize = true;
@@ -549,6 +661,21 @@
             this.label4.Size = new System.Drawing.Size(131, 13);
             this.label4.TabIndex = 54;
             this.label4.Text = "Allow Connected to be set";
+            // 
+            // ServedDevice09
+            // 
+            this.ServedDevice09.AllowConcurrentAccess = false;
+            this.ServedDevice09.AllowConnectedSetFalse = false;
+            this.ServedDevice09.AllowConnectedSetTrue = false;
+            this.ServedDevice09.Description = "";
+            this.ServedDevice09.DeviceNumber = 0;
+            this.ServedDevice09.DevicesAreConnected = false;
+            this.ServedDevice09.DeviceType = "None";
+            this.ServedDevice09.Location = new System.Drawing.Point(8, 292);
+            this.ServedDevice09.Name = "ServedDevice09";
+            this.ServedDevice09.ProgID = "";
+            this.ServedDevice09.Size = new System.Drawing.Size(960, 22);
+            this.ServedDevice09.TabIndex = 53;
             // 
             // DeviceTab1
             // 
@@ -659,1383 +786,6 @@
             this.label24.Size = new System.Drawing.Size(131, 13);
             this.label24.TabIndex = 54;
             this.label24.Text = "Allow Connected to be set";
-            // 
-            // DeviceTab2
-            // 
-            this.DeviceTab2.BackColor = System.Drawing.SystemColors.Control;
-            this.DeviceTab2.Controls.Add(this.label18);
-            this.DeviceTab2.Controls.Add(this.label25);
-            this.DeviceTab2.Controls.Add(this.label26);
-            this.DeviceTab2.Controls.Add(this.label27);
-            this.DeviceTab2.Controls.Add(this.label28);
-            this.DeviceTab2.Controls.Add(this.label29);
-            this.DeviceTab2.Controls.Add(this.label30);
-            this.DeviceTab2.Controls.Add(this.label31);
-            this.DeviceTab2.Controls.Add(this.label32);
-            this.DeviceTab2.Controls.Add(this.ServedDevice20);
-            this.DeviceTab2.Controls.Add(this.ServedDevice21);
-            this.DeviceTab2.Controls.Add(this.ServedDevice22);
-            this.DeviceTab2.Controls.Add(this.ServedDevice23);
-            this.DeviceTab2.Controls.Add(this.ServedDevice24);
-            this.DeviceTab2.Controls.Add(this.ServedDevice25);
-            this.DeviceTab2.Controls.Add(this.ServedDevice26);
-            this.DeviceTab2.Controls.Add(this.ServedDevice27);
-            this.DeviceTab2.Controls.Add(this.ServedDevice28);
-            this.DeviceTab2.Controls.Add(this.ServedDevice29);
-            this.DeviceTab2.Location = new System.Drawing.Point(4, 22);
-            this.DeviceTab2.Name = "DeviceTab2";
-            this.DeviceTab2.Padding = new System.Windows.Forms.Padding(3);
-            this.DeviceTab2.Size = new System.Drawing.Size(1004, 323);
-            this.DeviceTab2.TabIndex = 1;
-            this.DeviceTab2.Text = "Devices 20 to 29";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(928, 8);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(40, 13);
-            this.label18.TabIndex = 79;
-            this.label18.Text = "Enable";
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(899, 24);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(97, 13);
-            this.label25.TabIndex = 78;
-            this.label25.Text = "Concurrent Access";
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(56, 24);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(68, 13);
-            this.label26.TabIndex = 63;
-            this.label26.Text = "Device Type";
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(426, 24);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(41, 13);
-            this.label27.TabIndex = 65;
-            this.label27.Text = "Device";
-            // 
-            // label28
-            // 
-            this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(648, 24);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(89, 13);
-            this.label28.TabIndex = 77;
-            this.label28.Text = "Configure Device";
-            // 
-            // label29
-            // 
-            this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(187, 24);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(81, 13);
-            this.label29.TabIndex = 66;
-            this.label29.Text = "Device Number";
-            // 
-            // label30
-            // 
-            this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(844, 24);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(29, 13);
-            this.label30.TabIndex = 76;
-            this.label30.Text = "True";
-            // 
-            // label31
-            // 
-            this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(784, 24);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(32, 13);
-            this.label31.TabIndex = 75;
-            this.label31.Text = "False";
-            // 
-            // label32
-            // 
-            this.label32.AutoSize = true;
-            this.label32.Location = new System.Drawing.Point(764, 8);
-            this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(131, 13);
-            this.label32.TabIndex = 74;
-            this.label32.Text = "Allow Connected to be set";
-            // 
-            // DeviceTab3
-            // 
-            this.DeviceTab3.BackColor = System.Drawing.SystemColors.Control;
-            this.DeviceTab3.Controls.Add(this.label33);
-            this.DeviceTab3.Controls.Add(this.label34);
-            this.DeviceTab3.Controls.Add(this.label35);
-            this.DeviceTab3.Controls.Add(this.label36);
-            this.DeviceTab3.Controls.Add(this.label37);
-            this.DeviceTab3.Controls.Add(this.label38);
-            this.DeviceTab3.Controls.Add(this.label39);
-            this.DeviceTab3.Controls.Add(this.label40);
-            this.DeviceTab3.Controls.Add(this.label41);
-            this.DeviceTab3.Controls.Add(this.ServedDevice30);
-            this.DeviceTab3.Controls.Add(this.ServedDevice31);
-            this.DeviceTab3.Controls.Add(this.ServedDevice32);
-            this.DeviceTab3.Controls.Add(this.ServedDevice33);
-            this.DeviceTab3.Controls.Add(this.ServedDevice34);
-            this.DeviceTab3.Controls.Add(this.ServedDevice35);
-            this.DeviceTab3.Controls.Add(this.ServedDevice36);
-            this.DeviceTab3.Controls.Add(this.ServedDevice37);
-            this.DeviceTab3.Controls.Add(this.ServedDevice38);
-            this.DeviceTab3.Controls.Add(this.ServedDevice39);
-            this.DeviceTab3.Location = new System.Drawing.Point(4, 22);
-            this.DeviceTab3.Name = "DeviceTab3";
-            this.DeviceTab3.Size = new System.Drawing.Size(1004, 323);
-            this.DeviceTab3.TabIndex = 3;
-            this.DeviceTab3.Text = "Devices 30 to 39";
-            // 
-            // label33
-            // 
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(928, 8);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(40, 13);
-            this.label33.TabIndex = 79;
-            this.label33.Text = "Enable";
-            // 
-            // label34
-            // 
-            this.label34.AutoSize = true;
-            this.label34.Location = new System.Drawing.Point(899, 24);
-            this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(97, 13);
-            this.label34.TabIndex = 78;
-            this.label34.Text = "Concurrent Access";
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(56, 24);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(68, 13);
-            this.label35.TabIndex = 63;
-            this.label35.Text = "Device Type";
-            // 
-            // label36
-            // 
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(426, 24);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(41, 13);
-            this.label36.TabIndex = 65;
-            this.label36.Text = "Device";
-            // 
-            // label37
-            // 
-            this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(648, 24);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(89, 13);
-            this.label37.TabIndex = 77;
-            this.label37.Text = "Configure Device";
-            // 
-            // label38
-            // 
-            this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(187, 24);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(81, 13);
-            this.label38.TabIndex = 66;
-            this.label38.Text = "Device Number";
-            // 
-            // label39
-            // 
-            this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(844, 24);
-            this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(29, 13);
-            this.label39.TabIndex = 76;
-            this.label39.Text = "True";
-            // 
-            // label40
-            // 
-            this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(784, 24);
-            this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(32, 13);
-            this.label40.TabIndex = 75;
-            this.label40.Text = "False";
-            // 
-            // label41
-            // 
-            this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(764, 8);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(131, 13);
-            this.label41.TabIndex = 74;
-            this.label41.Text = "Allow Connected to be set";
-            // 
-            // DeviceTab4
-            // 
-            this.DeviceTab4.BackColor = System.Drawing.SystemColors.Control;
-            this.DeviceTab4.Controls.Add(this.label42);
-            this.DeviceTab4.Controls.Add(this.label43);
-            this.DeviceTab4.Controls.Add(this.label44);
-            this.DeviceTab4.Controls.Add(this.label45);
-            this.DeviceTab4.Controls.Add(this.label46);
-            this.DeviceTab4.Controls.Add(this.label47);
-            this.DeviceTab4.Controls.Add(this.label48);
-            this.DeviceTab4.Controls.Add(this.label49);
-            this.DeviceTab4.Controls.Add(this.label50);
-            this.DeviceTab4.Controls.Add(this.ServedDevice40);
-            this.DeviceTab4.Controls.Add(this.ServedDevice41);
-            this.DeviceTab4.Controls.Add(this.ServedDevice42);
-            this.DeviceTab4.Controls.Add(this.ServedDevice43);
-            this.DeviceTab4.Controls.Add(this.ServedDevice44);
-            this.DeviceTab4.Controls.Add(this.ServedDevice45);
-            this.DeviceTab4.Controls.Add(this.ServedDevice46);
-            this.DeviceTab4.Controls.Add(this.ServedDevice47);
-            this.DeviceTab4.Controls.Add(this.ServedDevice48);
-            this.DeviceTab4.Controls.Add(this.ServedDevice49);
-            this.DeviceTab4.Location = new System.Drawing.Point(4, 22);
-            this.DeviceTab4.Name = "DeviceTab4";
-            this.DeviceTab4.Size = new System.Drawing.Size(1004, 323);
-            this.DeviceTab4.TabIndex = 4;
-            this.DeviceTab4.Text = "Devices 40 to 49";
-            // 
-            // label42
-            // 
-            this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(928, 8);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(40, 13);
-            this.label42.TabIndex = 79;
-            this.label42.Text = "Enable";
-            // 
-            // label43
-            // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(899, 24);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(97, 13);
-            this.label43.TabIndex = 78;
-            this.label43.Text = "Concurrent Access";
-            // 
-            // label44
-            // 
-            this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(56, 24);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(68, 13);
-            this.label44.TabIndex = 63;
-            this.label44.Text = "Device Type";
-            // 
-            // label45
-            // 
-            this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(426, 24);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(41, 13);
-            this.label45.TabIndex = 65;
-            this.label45.Text = "Device";
-            // 
-            // label46
-            // 
-            this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(648, 24);
-            this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(89, 13);
-            this.label46.TabIndex = 77;
-            this.label46.Text = "Configure Device";
-            // 
-            // label47
-            // 
-            this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(187, 24);
-            this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(81, 13);
-            this.label47.TabIndex = 66;
-            this.label47.Text = "Device Number";
-            // 
-            // label48
-            // 
-            this.label48.AutoSize = true;
-            this.label48.Location = new System.Drawing.Point(844, 24);
-            this.label48.Name = "label48";
-            this.label48.Size = new System.Drawing.Size(29, 13);
-            this.label48.TabIndex = 76;
-            this.label48.Text = "True";
-            // 
-            // label49
-            // 
-            this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(784, 24);
-            this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(32, 13);
-            this.label49.TabIndex = 75;
-            this.label49.Text = "False";
-            // 
-            // label50
-            // 
-            this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(764, 8);
-            this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(131, 13);
-            this.label50.TabIndex = 74;
-            this.label50.Text = "Allow Connected to be set";
-            // 
-            // DeviceTab5
-            // 
-            this.DeviceTab5.BackColor = System.Drawing.SystemColors.Control;
-            this.DeviceTab5.Controls.Add(this.label51);
-            this.DeviceTab5.Controls.Add(this.label52);
-            this.DeviceTab5.Controls.Add(this.label53);
-            this.DeviceTab5.Controls.Add(this.label54);
-            this.DeviceTab5.Controls.Add(this.label55);
-            this.DeviceTab5.Controls.Add(this.label56);
-            this.DeviceTab5.Controls.Add(this.label57);
-            this.DeviceTab5.Controls.Add(this.label58);
-            this.DeviceTab5.Controls.Add(this.label59);
-            this.DeviceTab5.Controls.Add(this.ServedDevice50);
-            this.DeviceTab5.Controls.Add(this.ServedDevice51);
-            this.DeviceTab5.Controls.Add(this.ServedDevice52);
-            this.DeviceTab5.Controls.Add(this.ServedDevice53);
-            this.DeviceTab5.Controls.Add(this.ServedDevice54);
-            this.DeviceTab5.Controls.Add(this.ServedDevice55);
-            this.DeviceTab5.Controls.Add(this.ServedDevice56);
-            this.DeviceTab5.Controls.Add(this.ServedDevice57);
-            this.DeviceTab5.Controls.Add(this.ServedDevice58);
-            this.DeviceTab5.Controls.Add(this.ServedDevice59);
-            this.DeviceTab5.Location = new System.Drawing.Point(4, 22);
-            this.DeviceTab5.Name = "DeviceTab5";
-            this.DeviceTab5.Size = new System.Drawing.Size(1004, 323);
-            this.DeviceTab5.TabIndex = 5;
-            this.DeviceTab5.Text = "Devices 50 to 59";
-            // 
-            // label51
-            // 
-            this.label51.AutoSize = true;
-            this.label51.Location = new System.Drawing.Point(928, 8);
-            this.label51.Name = "label51";
-            this.label51.Size = new System.Drawing.Size(40, 13);
-            this.label51.TabIndex = 79;
-            this.label51.Text = "Enable";
-            // 
-            // label52
-            // 
-            this.label52.AutoSize = true;
-            this.label52.Location = new System.Drawing.Point(899, 24);
-            this.label52.Name = "label52";
-            this.label52.Size = new System.Drawing.Size(97, 13);
-            this.label52.TabIndex = 78;
-            this.label52.Text = "Concurrent Access";
-            // 
-            // label53
-            // 
-            this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(56, 24);
-            this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(68, 13);
-            this.label53.TabIndex = 63;
-            this.label53.Text = "Device Type";
-            // 
-            // label54
-            // 
-            this.label54.AutoSize = true;
-            this.label54.Location = new System.Drawing.Point(426, 24);
-            this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(41, 13);
-            this.label54.TabIndex = 65;
-            this.label54.Text = "Device";
-            // 
-            // label55
-            // 
-            this.label55.AutoSize = true;
-            this.label55.Location = new System.Drawing.Point(648, 24);
-            this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(89, 13);
-            this.label55.TabIndex = 77;
-            this.label55.Text = "Configure Device";
-            // 
-            // label56
-            // 
-            this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(187, 24);
-            this.label56.Name = "label56";
-            this.label56.Size = new System.Drawing.Size(81, 13);
-            this.label56.TabIndex = 66;
-            this.label56.Text = "Device Number";
-            // 
-            // label57
-            // 
-            this.label57.AutoSize = true;
-            this.label57.Location = new System.Drawing.Point(844, 24);
-            this.label57.Name = "label57";
-            this.label57.Size = new System.Drawing.Size(29, 13);
-            this.label57.TabIndex = 76;
-            this.label57.Text = "True";
-            // 
-            // label58
-            // 
-            this.label58.AutoSize = true;
-            this.label58.Location = new System.Drawing.Point(784, 24);
-            this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(32, 13);
-            this.label58.TabIndex = 75;
-            this.label58.Text = "False";
-            // 
-            // label59
-            // 
-            this.label59.AutoSize = true;
-            this.label59.Location = new System.Drawing.Point(764, 8);
-            this.label59.Name = "label59";
-            this.label59.Size = new System.Drawing.Size(131, 13);
-            this.label59.TabIndex = 74;
-            this.label59.Text = "Allow Connected to be set";
-            // 
-            // DeviceTab6
-            // 
-            this.DeviceTab6.BackColor = System.Drawing.SystemColors.Control;
-            this.DeviceTab6.Controls.Add(this.label60);
-            this.DeviceTab6.Controls.Add(this.label61);
-            this.DeviceTab6.Controls.Add(this.label62);
-            this.DeviceTab6.Controls.Add(this.label63);
-            this.DeviceTab6.Controls.Add(this.label64);
-            this.DeviceTab6.Controls.Add(this.label65);
-            this.DeviceTab6.Controls.Add(this.label66);
-            this.DeviceTab6.Controls.Add(this.label67);
-            this.DeviceTab6.Controls.Add(this.label68);
-            this.DeviceTab6.Controls.Add(this.ServedDevice60);
-            this.DeviceTab6.Controls.Add(this.ServedDevice61);
-            this.DeviceTab6.Controls.Add(this.ServedDevice62);
-            this.DeviceTab6.Controls.Add(this.ServedDevice63);
-            this.DeviceTab6.Controls.Add(this.ServedDevice64);
-            this.DeviceTab6.Controls.Add(this.ServedDevice65);
-            this.DeviceTab6.Controls.Add(this.ServedDevice66);
-            this.DeviceTab6.Controls.Add(this.ServedDevice67);
-            this.DeviceTab6.Controls.Add(this.ServedDevice68);
-            this.DeviceTab6.Controls.Add(this.ServedDevice69);
-            this.DeviceTab6.Location = new System.Drawing.Point(4, 22);
-            this.DeviceTab6.Name = "DeviceTab6";
-            this.DeviceTab6.Size = new System.Drawing.Size(1004, 323);
-            this.DeviceTab6.TabIndex = 6;
-            this.DeviceTab6.Text = "Devices 60 to 69";
-            // 
-            // label60
-            // 
-            this.label60.AutoSize = true;
-            this.label60.Location = new System.Drawing.Point(928, 8);
-            this.label60.Name = "label60";
-            this.label60.Size = new System.Drawing.Size(40, 13);
-            this.label60.TabIndex = 79;
-            this.label60.Text = "Enable";
-            // 
-            // label61
-            // 
-            this.label61.AutoSize = true;
-            this.label61.Location = new System.Drawing.Point(899, 24);
-            this.label61.Name = "label61";
-            this.label61.Size = new System.Drawing.Size(97, 13);
-            this.label61.TabIndex = 78;
-            this.label61.Text = "Concurrent Access";
-            // 
-            // label62
-            // 
-            this.label62.AutoSize = true;
-            this.label62.Location = new System.Drawing.Point(56, 24);
-            this.label62.Name = "label62";
-            this.label62.Size = new System.Drawing.Size(68, 13);
-            this.label62.TabIndex = 63;
-            this.label62.Text = "Device Type";
-            // 
-            // label63
-            // 
-            this.label63.AutoSize = true;
-            this.label63.Location = new System.Drawing.Point(426, 24);
-            this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(41, 13);
-            this.label63.TabIndex = 65;
-            this.label63.Text = "Device";
-            // 
-            // label64
-            // 
-            this.label64.AutoSize = true;
-            this.label64.Location = new System.Drawing.Point(648, 24);
-            this.label64.Name = "label64";
-            this.label64.Size = new System.Drawing.Size(89, 13);
-            this.label64.TabIndex = 77;
-            this.label64.Text = "Configure Device";
-            // 
-            // label65
-            // 
-            this.label65.AutoSize = true;
-            this.label65.Location = new System.Drawing.Point(187, 24);
-            this.label65.Name = "label65";
-            this.label65.Size = new System.Drawing.Size(81, 13);
-            this.label65.TabIndex = 66;
-            this.label65.Text = "Device Number";
-            // 
-            // label66
-            // 
-            this.label66.AutoSize = true;
-            this.label66.Location = new System.Drawing.Point(844, 24);
-            this.label66.Name = "label66";
-            this.label66.Size = new System.Drawing.Size(29, 13);
-            this.label66.TabIndex = 76;
-            this.label66.Text = "True";
-            // 
-            // label67
-            // 
-            this.label67.AutoSize = true;
-            this.label67.Location = new System.Drawing.Point(784, 24);
-            this.label67.Name = "label67";
-            this.label67.Size = new System.Drawing.Size(32, 13);
-            this.label67.TabIndex = 75;
-            this.label67.Text = "False";
-            // 
-            // label68
-            // 
-            this.label68.AutoSize = true;
-            this.label68.Location = new System.Drawing.Point(764, 8);
-            this.label68.Name = "label68";
-            this.label68.Size = new System.Drawing.Size(131, 13);
-            this.label68.TabIndex = 74;
-            this.label68.Text = "Allow Connected to be set";
-            // 
-            // DeviceTab7
-            // 
-            this.DeviceTab7.BackColor = System.Drawing.SystemColors.Control;
-            this.DeviceTab7.Controls.Add(this.label69);
-            this.DeviceTab7.Controls.Add(this.label70);
-            this.DeviceTab7.Controls.Add(this.label71);
-            this.DeviceTab7.Controls.Add(this.label72);
-            this.DeviceTab7.Controls.Add(this.label73);
-            this.DeviceTab7.Controls.Add(this.label74);
-            this.DeviceTab7.Controls.Add(this.label75);
-            this.DeviceTab7.Controls.Add(this.label76);
-            this.DeviceTab7.Controls.Add(this.label77);
-            this.DeviceTab7.Controls.Add(this.ServedDevice70);
-            this.DeviceTab7.Controls.Add(this.ServedDevice71);
-            this.DeviceTab7.Controls.Add(this.ServedDevice72);
-            this.DeviceTab7.Controls.Add(this.ServedDevice73);
-            this.DeviceTab7.Controls.Add(this.ServedDevice74);
-            this.DeviceTab7.Controls.Add(this.ServedDevice75);
-            this.DeviceTab7.Controls.Add(this.ServedDevice76);
-            this.DeviceTab7.Controls.Add(this.ServedDevice77);
-            this.DeviceTab7.Controls.Add(this.ServedDevice78);
-            this.DeviceTab7.Controls.Add(this.ServedDevice79);
-            this.DeviceTab7.Location = new System.Drawing.Point(4, 22);
-            this.DeviceTab7.Name = "DeviceTab7";
-            this.DeviceTab7.Size = new System.Drawing.Size(1004, 323);
-            this.DeviceTab7.TabIndex = 7;
-            this.DeviceTab7.Text = "Devices 70 to 79";
-            // 
-            // label69
-            // 
-            this.label69.AutoSize = true;
-            this.label69.Location = new System.Drawing.Point(928, 8);
-            this.label69.Name = "label69";
-            this.label69.Size = new System.Drawing.Size(40, 13);
-            this.label69.TabIndex = 79;
-            this.label69.Text = "Enable";
-            // 
-            // label70
-            // 
-            this.label70.AutoSize = true;
-            this.label70.Location = new System.Drawing.Point(899, 24);
-            this.label70.Name = "label70";
-            this.label70.Size = new System.Drawing.Size(97, 13);
-            this.label70.TabIndex = 78;
-            this.label70.Text = "Concurrent Access";
-            // 
-            // label71
-            // 
-            this.label71.AutoSize = true;
-            this.label71.Location = new System.Drawing.Point(56, 24);
-            this.label71.Name = "label71";
-            this.label71.Size = new System.Drawing.Size(68, 13);
-            this.label71.TabIndex = 63;
-            this.label71.Text = "Device Type";
-            // 
-            // label72
-            // 
-            this.label72.AutoSize = true;
-            this.label72.Location = new System.Drawing.Point(426, 24);
-            this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(41, 13);
-            this.label72.TabIndex = 65;
-            this.label72.Text = "Device";
-            // 
-            // label73
-            // 
-            this.label73.AutoSize = true;
-            this.label73.Location = new System.Drawing.Point(648, 24);
-            this.label73.Name = "label73";
-            this.label73.Size = new System.Drawing.Size(89, 13);
-            this.label73.TabIndex = 77;
-            this.label73.Text = "Configure Device";
-            // 
-            // label74
-            // 
-            this.label74.AutoSize = true;
-            this.label74.Location = new System.Drawing.Point(187, 24);
-            this.label74.Name = "label74";
-            this.label74.Size = new System.Drawing.Size(81, 13);
-            this.label74.TabIndex = 66;
-            this.label74.Text = "Device Number";
-            // 
-            // label75
-            // 
-            this.label75.AutoSize = true;
-            this.label75.Location = new System.Drawing.Point(844, 24);
-            this.label75.Name = "label75";
-            this.label75.Size = new System.Drawing.Size(29, 13);
-            this.label75.TabIndex = 76;
-            this.label75.Text = "True";
-            // 
-            // label76
-            // 
-            this.label76.AutoSize = true;
-            this.label76.Location = new System.Drawing.Point(784, 24);
-            this.label76.Name = "label76";
-            this.label76.Size = new System.Drawing.Size(32, 13);
-            this.label76.TabIndex = 75;
-            this.label76.Text = "False";
-            // 
-            // label77
-            // 
-            this.label77.AutoSize = true;
-            this.label77.Location = new System.Drawing.Point(764, 8);
-            this.label77.Name = "label77";
-            this.label77.Size = new System.Drawing.Size(131, 13);
-            this.label77.TabIndex = 74;
-            this.label77.Text = "Allow Connected to be set";
-            // 
-            // DeviceTab8
-            // 
-            this.DeviceTab8.BackColor = System.Drawing.SystemColors.Control;
-            this.DeviceTab8.Controls.Add(this.label78);
-            this.DeviceTab8.Controls.Add(this.label79);
-            this.DeviceTab8.Controls.Add(this.label80);
-            this.DeviceTab8.Controls.Add(this.label81);
-            this.DeviceTab8.Controls.Add(this.label82);
-            this.DeviceTab8.Controls.Add(this.label83);
-            this.DeviceTab8.Controls.Add(this.label84);
-            this.DeviceTab8.Controls.Add(this.label85);
-            this.DeviceTab8.Controls.Add(this.label86);
-            this.DeviceTab8.Controls.Add(this.ServedDevice80);
-            this.DeviceTab8.Controls.Add(this.ServedDevice81);
-            this.DeviceTab8.Controls.Add(this.ServedDevice82);
-            this.DeviceTab8.Controls.Add(this.ServedDevice83);
-            this.DeviceTab8.Controls.Add(this.ServedDevice84);
-            this.DeviceTab8.Controls.Add(this.ServedDevice85);
-            this.DeviceTab8.Controls.Add(this.ServedDevice86);
-            this.DeviceTab8.Controls.Add(this.ServedDevice87);
-            this.DeviceTab8.Controls.Add(this.ServedDevice88);
-            this.DeviceTab8.Controls.Add(this.ServedDevice89);
-            this.DeviceTab8.Location = new System.Drawing.Point(4, 22);
-            this.DeviceTab8.Name = "DeviceTab8";
-            this.DeviceTab8.Size = new System.Drawing.Size(1004, 323);
-            this.DeviceTab8.TabIndex = 8;
-            this.DeviceTab8.Text = "Devices 80 to 89";
-            // 
-            // label78
-            // 
-            this.label78.AutoSize = true;
-            this.label78.Location = new System.Drawing.Point(928, 8);
-            this.label78.Name = "label78";
-            this.label78.Size = new System.Drawing.Size(40, 13);
-            this.label78.TabIndex = 79;
-            this.label78.Text = "Enable";
-            // 
-            // label79
-            // 
-            this.label79.AutoSize = true;
-            this.label79.Location = new System.Drawing.Point(899, 24);
-            this.label79.Name = "label79";
-            this.label79.Size = new System.Drawing.Size(97, 13);
-            this.label79.TabIndex = 78;
-            this.label79.Text = "Concurrent Access";
-            // 
-            // label80
-            // 
-            this.label80.AutoSize = true;
-            this.label80.Location = new System.Drawing.Point(56, 24);
-            this.label80.Name = "label80";
-            this.label80.Size = new System.Drawing.Size(68, 13);
-            this.label80.TabIndex = 63;
-            this.label80.Text = "Device Type";
-            // 
-            // label81
-            // 
-            this.label81.AutoSize = true;
-            this.label81.Location = new System.Drawing.Point(426, 24);
-            this.label81.Name = "label81";
-            this.label81.Size = new System.Drawing.Size(41, 13);
-            this.label81.TabIndex = 65;
-            this.label81.Text = "Device";
-            // 
-            // label82
-            // 
-            this.label82.AutoSize = true;
-            this.label82.Location = new System.Drawing.Point(648, 24);
-            this.label82.Name = "label82";
-            this.label82.Size = new System.Drawing.Size(89, 13);
-            this.label82.TabIndex = 77;
-            this.label82.Text = "Configure Device";
-            // 
-            // label83
-            // 
-            this.label83.AutoSize = true;
-            this.label83.Location = new System.Drawing.Point(187, 24);
-            this.label83.Name = "label83";
-            this.label83.Size = new System.Drawing.Size(81, 13);
-            this.label83.TabIndex = 66;
-            this.label83.Text = "Device Number";
-            // 
-            // label84
-            // 
-            this.label84.AutoSize = true;
-            this.label84.Location = new System.Drawing.Point(844, 24);
-            this.label84.Name = "label84";
-            this.label84.Size = new System.Drawing.Size(29, 13);
-            this.label84.TabIndex = 76;
-            this.label84.Text = "True";
-            // 
-            // label85
-            // 
-            this.label85.AutoSize = true;
-            this.label85.Location = new System.Drawing.Point(784, 24);
-            this.label85.Name = "label85";
-            this.label85.Size = new System.Drawing.Size(32, 13);
-            this.label85.TabIndex = 75;
-            this.label85.Text = "False";
-            // 
-            // label86
-            // 
-            this.label86.AutoSize = true;
-            this.label86.Location = new System.Drawing.Point(764, 8);
-            this.label86.Name = "label86";
-            this.label86.Size = new System.Drawing.Size(131, 13);
-            this.label86.TabIndex = 74;
-            this.label86.Text = "Allow Connected to be set";
-            // 
-            // DeviceTab9
-            // 
-            this.DeviceTab9.BackColor = System.Drawing.SystemColors.Control;
-            this.DeviceTab9.Controls.Add(this.label87);
-            this.DeviceTab9.Controls.Add(this.label88);
-            this.DeviceTab9.Controls.Add(this.label89);
-            this.DeviceTab9.Controls.Add(this.label90);
-            this.DeviceTab9.Controls.Add(this.label91);
-            this.DeviceTab9.Controls.Add(this.label92);
-            this.DeviceTab9.Controls.Add(this.label93);
-            this.DeviceTab9.Controls.Add(this.label94);
-            this.DeviceTab9.Controls.Add(this.label95);
-            this.DeviceTab9.Controls.Add(this.ServedDevice90);
-            this.DeviceTab9.Controls.Add(this.ServedDevice91);
-            this.DeviceTab9.Controls.Add(this.ServedDevice92);
-            this.DeviceTab9.Controls.Add(this.ServedDevice93);
-            this.DeviceTab9.Controls.Add(this.ServedDevice94);
-            this.DeviceTab9.Controls.Add(this.ServedDevice95);
-            this.DeviceTab9.Controls.Add(this.ServedDevice96);
-            this.DeviceTab9.Controls.Add(this.ServedDevice97);
-            this.DeviceTab9.Controls.Add(this.ServedDevice98);
-            this.DeviceTab9.Controls.Add(this.ServedDevice99);
-            this.DeviceTab9.Location = new System.Drawing.Point(4, 22);
-            this.DeviceTab9.Name = "DeviceTab9";
-            this.DeviceTab9.Size = new System.Drawing.Size(1004, 323);
-            this.DeviceTab9.TabIndex = 9;
-            this.DeviceTab9.Text = "Devices 90 to 99";
-            // 
-            // label87
-            // 
-            this.label87.AutoSize = true;
-            this.label87.Location = new System.Drawing.Point(928, 8);
-            this.label87.Name = "label87";
-            this.label87.Size = new System.Drawing.Size(40, 13);
-            this.label87.TabIndex = 79;
-            this.label87.Text = "Enable";
-            // 
-            // label88
-            // 
-            this.label88.AutoSize = true;
-            this.label88.Location = new System.Drawing.Point(899, 24);
-            this.label88.Name = "label88";
-            this.label88.Size = new System.Drawing.Size(97, 13);
-            this.label88.TabIndex = 78;
-            this.label88.Text = "Concurrent Access";
-            // 
-            // label89
-            // 
-            this.label89.AutoSize = true;
-            this.label89.Location = new System.Drawing.Point(56, 24);
-            this.label89.Name = "label89";
-            this.label89.Size = new System.Drawing.Size(68, 13);
-            this.label89.TabIndex = 63;
-            this.label89.Text = "Device Type";
-            // 
-            // label90
-            // 
-            this.label90.AutoSize = true;
-            this.label90.Location = new System.Drawing.Point(426, 24);
-            this.label90.Name = "label90";
-            this.label90.Size = new System.Drawing.Size(41, 13);
-            this.label90.TabIndex = 65;
-            this.label90.Text = "Device";
-            // 
-            // label91
-            // 
-            this.label91.AutoSize = true;
-            this.label91.Location = new System.Drawing.Point(648, 24);
-            this.label91.Name = "label91";
-            this.label91.Size = new System.Drawing.Size(89, 13);
-            this.label91.TabIndex = 77;
-            this.label91.Text = "Configure Device";
-            // 
-            // label92
-            // 
-            this.label92.AutoSize = true;
-            this.label92.Location = new System.Drawing.Point(187, 24);
-            this.label92.Name = "label92";
-            this.label92.Size = new System.Drawing.Size(81, 13);
-            this.label92.TabIndex = 66;
-            this.label92.Text = "Device Number";
-            // 
-            // label93
-            // 
-            this.label93.AutoSize = true;
-            this.label93.Location = new System.Drawing.Point(844, 24);
-            this.label93.Name = "label93";
-            this.label93.Size = new System.Drawing.Size(29, 13);
-            this.label93.TabIndex = 76;
-            this.label93.Text = "True";
-            // 
-            // label94
-            // 
-            this.label94.AutoSize = true;
-            this.label94.Location = new System.Drawing.Point(784, 24);
-            this.label94.Name = "label94";
-            this.label94.Size = new System.Drawing.Size(32, 13);
-            this.label94.TabIndex = 75;
-            this.label94.Text = "False";
-            // 
-            // label95
-            // 
-            this.label95.AutoSize = true;
-            this.label95.Location = new System.Drawing.Point(764, 8);
-            this.label95.Name = "label95";
-            this.label95.Size = new System.Drawing.Size(131, 13);
-            this.label95.TabIndex = 74;
-            this.label95.Text = "Allow Connected to be set";
-            // 
-            // LblDevicesNotDisconnoected
-            // 
-            this.LblDevicesNotDisconnoected.AutoSize = true;
-            this.LblDevicesNotDisconnoected.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LblDevicesNotDisconnoected.ForeColor = System.Drawing.Color.Red;
-            this.LblDevicesNotDisconnoected.Location = new System.Drawing.Point(571, 358);
-            this.LblDevicesNotDisconnoected.Name = "LblDevicesNotDisconnoected";
-            this.LblDevicesNotDisconnoected.Size = new System.Drawing.Size(257, 26);
-            this.LblDevicesNotDisconnoected.TabIndex = 58;
-            this.LblDevicesNotDisconnoected.Text = "Devices are Connected\r\nConfiguration requires that devices are Disconnected";
-            this.LblDevicesNotDisconnoected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // ServerConfigurationTab
-            // 
-            this.ServerConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
-            this.ServerConfigurationTab.Controls.Add(this.GrpIpVersionSelector);
-            this.ServerConfigurationTab.Controls.Add(this.label96);
-            this.ServerConfigurationTab.Controls.Add(this.NumMaxDevices);
-            this.ServerConfigurationTab.Controls.Add(this.label13);
-            this.ServerConfigurationTab.Controls.Add(this.NumDiscoveryPort);
-            this.ServerConfigurationTab.Controls.Add(this.ChkEnableDiscovery);
-            this.ServerConfigurationTab.Controls.Add(this.label10);
-            this.ServerConfigurationTab.Controls.Add(this.addressList);
-            this.ServerConfigurationTab.Controls.Add(this.TxtRemoteServerLocation);
-            this.ServerConfigurationTab.Controls.Add(this.numPort);
-            this.ServerConfigurationTab.Controls.Add(this.label8);
-            this.ServerConfigurationTab.Controls.Add(this.label7);
-            this.ServerConfigurationTab.Controls.Add(this.chkManagementInterfaceEnabled);
-            this.ServerConfigurationTab.Controls.Add(this.ChkIncludeDriverExceptionsInJsonResponses);
-            this.ServerConfigurationTab.Controls.Add(this.chkAutoConnect);
-            this.ServerConfigurationTab.Controls.Add(this.ChkLogClientIPAddress);
-            this.ServerConfigurationTab.Controls.Add(this.chkTrace);
-            this.ServerConfigurationTab.Controls.Add(this.ChkRunDriversInSeparateThreadss);
-            this.ServerConfigurationTab.Controls.Add(this.chkDebugTrace);
-            this.ServerConfigurationTab.Controls.Add(this.ChkStartWithApiEnabled);
-            this.ServerConfigurationTab.Controls.Add(this.chkAccessLog);
-            this.ServerConfigurationTab.Location = new System.Drawing.Point(4, 22);
-            this.ServerConfigurationTab.Margin = new System.Windows.Forms.Padding(0);
-            this.ServerConfigurationTab.Name = "ServerConfigurationTab";
-            this.ServerConfigurationTab.Padding = new System.Windows.Forms.Padding(3);
-            this.ServerConfigurationTab.Size = new System.Drawing.Size(1026, 394);
-            this.ServerConfigurationTab.TabIndex = 1;
-            this.ServerConfigurationTab.Text = "Server Configuration";
-            // 
-            // GrpIpVersionSelector
-            // 
-            this.GrpIpVersionSelector.Controls.Add(this.RadIpV4AndV6);
-            this.GrpIpVersionSelector.Controls.Add(this.RadIpV6);
-            this.GrpIpVersionSelector.Controls.Add(this.RadIpV4);
-            this.GrpIpVersionSelector.Location = new System.Drawing.Point(841, 64);
-            this.GrpIpVersionSelector.Name = "GrpIpVersionSelector";
-            this.GrpIpVersionSelector.Size = new System.Drawing.Size(133, 103);
-            this.GrpIpVersionSelector.TabIndex = 50;
-            this.GrpIpVersionSelector.TabStop = false;
-            this.GrpIpVersionSelector.Text = "Supported IP Version(s)";
-            // 
-            // RadIpV4AndV6
-            // 
-            this.RadIpV4AndV6.AutoSize = true;
-            this.RadIpV4AndV6.Location = new System.Drawing.Point(6, 75);
-            this.RadIpV4AndV6.Name = "RadIpV4AndV6";
-            this.RadIpV4AndV6.Size = new System.Drawing.Size(88, 17);
-            this.RadIpV4AndV6.TabIndex = 2;
-            this.RadIpV4AndV6.TabStop = true;
-            this.RadIpV4AndV6.Text = "IP V4 and V6";
-            this.RadIpV4AndV6.UseVisualStyleBackColor = true;
-            this.RadIpV4AndV6.CheckedChanged += new System.EventHandler(this.RadIpV4AndV6_CheckedChanged);
-            // 
-            // RadIpV6
-            // 
-            this.RadIpV6.AutoSize = true;
-            this.RadIpV6.Location = new System.Drawing.Point(6, 49);
-            this.RadIpV6.Name = "RadIpV6";
-            this.RadIpV6.Size = new System.Drawing.Size(75, 17);
-            this.RadIpV6.TabIndex = 1;
-            this.RadIpV6.TabStop = true;
-            this.RadIpV6.Text = "IP V6 Only";
-            this.RadIpV6.UseVisualStyleBackColor = true;
-            this.RadIpV6.CheckedChanged += new System.EventHandler(this.RadIpV6_CheckedChanged);
-            // 
-            // RadIpV4
-            // 
-            this.RadIpV4.AutoSize = true;
-            this.RadIpV4.Location = new System.Drawing.Point(6, 23);
-            this.RadIpV4.Name = "RadIpV4";
-            this.RadIpV4.Size = new System.Drawing.Size(75, 17);
-            this.RadIpV4.TabIndex = 0;
-            this.RadIpV4.TabStop = true;
-            this.RadIpV4.Text = "IP V4 Only";
-            this.RadIpV4.UseVisualStyleBackColor = true;
-            this.RadIpV4.CheckedChanged += new System.EventHandler(this.RadIpV4_CheckedChanged);
-            // 
-            // label96
-            // 
-            this.label96.AutoSize = true;
-            this.label96.Location = new System.Drawing.Point(396, 347);
-            this.label96.Name = "label96";
-            this.label96.Size = new System.Drawing.Size(274, 13);
-            this.label96.TabIndex = 49;
-            this.label96.Text = "Maximum number of served devices (in increments of 10)";
-            // 
-            // NumMaxDevices
-            // 
-            this.NumMaxDevices.Increment = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.NumMaxDevices.Location = new System.Drawing.Point(270, 345);
-            this.NumMaxDevices.Minimum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.NumMaxDevices.Name = "NumMaxDevices";
-            this.NumMaxDevices.ReadOnly = true;
-            this.NumMaxDevices.Size = new System.Drawing.Size(120, 20);
-            this.NumMaxDevices.TabIndex = 48;
-            this.NumMaxDevices.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.NumMaxDevices.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(604, 141);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(192, 13);
-            this.label13.TabIndex = 47;
-            this.label13.Text = "Discovery Listener Port (Default 32227)";
-            // 
-            // NumDiscoveryPort
-            // 
-            this.NumDiscoveryPort.Location = new System.Drawing.Point(511, 139);
-            this.NumDiscoveryPort.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-            this.NumDiscoveryPort.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.NumDiscoveryPort.Name = "NumDiscoveryPort";
-            this.NumDiscoveryPort.Size = new System.Drawing.Size(87, 20);
-            this.NumDiscoveryPort.TabIndex = 46;
-            this.NumDiscoveryPort.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // ChkEnableDiscovery
-            // 
-            this.ChkEnableDiscovery.AutoSize = true;
-            this.ChkEnableDiscovery.Location = new System.Drawing.Point(483, 215);
-            this.ChkEnableDiscovery.Name = "ChkEnableDiscovery";
-            this.ChkEnableDiscovery.Size = new System.Drawing.Size(276, 17);
-            this.ChkEnableDiscovery.TabIndex = 45;
-            this.ChkEnableDiscovery.Text = "Enable Alpaca Discovery and Management Interface";
-            this.ChkEnableDiscovery.UseVisualStyleBackColor = true;
-            this.ChkEnableDiscovery.CheckedChanged += new System.EventHandler(this.ChkEnableDiscovery_CheckedChanged);
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(604, 39);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(82, 13);
-            this.label10.TabIndex = 44;
-            this.label10.Text = "Server Location";
-            // 
-            // addressList
-            // 
-            this.addressList.FormattingEnabled = true;
-            this.addressList.Location = new System.Drawing.Point(270, 86);
-            this.addressList.Name = "addressList";
-            this.addressList.Size = new System.Drawing.Size(328, 21);
-            this.addressList.TabIndex = 39;
-            // 
-            // TxtRemoteServerLocation
-            // 
-            this.TxtRemoteServerLocation.Location = new System.Drawing.Point(270, 36);
-            this.TxtRemoteServerLocation.Name = "TxtRemoteServerLocation";
-            this.TxtRemoteServerLocation.Size = new System.Drawing.Size(328, 20);
-            this.TxtRemoteServerLocation.TabIndex = 43;
-            // 
-            // numPort
-            // 
-            this.numPort.Location = new System.Drawing.Point(511, 113);
-            this.numPort.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-            this.numPort.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numPort.Name = "numPort";
-            this.numPort.Size = new System.Drawing.Size(87, 20);
-            this.numPort.TabIndex = 40;
-            this.numPort.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(604, 115);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(73, 13);
-            this.label8.TabIndex = 42;
-            this.label8.Text = "Server IP Port";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(604, 89);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(91, 13);
-            this.label7.TabIndex = 41;
-            this.label7.Text = "Server IP address";
-            // 
-            // CorsConfigurationTab
-            // 
-            this.CorsConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
-            this.CorsConfigurationTab.Controls.Add(this.ChkCorsSupportCredentials);
-            this.CorsConfigurationTab.Controls.Add(this.LabMaxAge);
-            this.CorsConfigurationTab.Controls.Add(this.NumCorsMaxAge);
-            this.CorsConfigurationTab.Controls.Add(this.ChkEnableCors);
-            this.CorsConfigurationTab.Controls.Add(this.label14);
-            this.CorsConfigurationTab.Controls.Add(this.LabHelp2);
-            this.CorsConfigurationTab.Controls.Add(this.LabHelp1);
-            this.CorsConfigurationTab.Controls.Add(this.DataGridCorsOrigins);
-            this.CorsConfigurationTab.Location = new System.Drawing.Point(4, 22);
-            this.CorsConfigurationTab.Name = "CorsConfigurationTab";
-            this.CorsConfigurationTab.Padding = new System.Windows.Forms.Padding(3);
-            this.CorsConfigurationTab.Size = new System.Drawing.Size(1026, 394);
-            this.CorsConfigurationTab.TabIndex = 2;
-            this.CorsConfigurationTab.Text = "CORS Configuration";
-            // 
-            // ChkCorsSupportCredentials
-            // 
-            this.ChkCorsSupportCredentials.AutoSize = true;
-            this.ChkCorsSupportCredentials.Location = new System.Drawing.Point(827, 166);
-            this.ChkCorsSupportCredentials.Name = "ChkCorsSupportCredentials";
-            this.ChkCorsSupportCredentials.Size = new System.Drawing.Size(118, 17);
-            this.ChkCorsSupportCredentials.TabIndex = 10;
-            this.ChkCorsSupportCredentials.Text = "Support Credentials";
-            this.ChkCorsSupportCredentials.UseVisualStyleBackColor = true;
-            // 
-            // LabMaxAge
-            // 
-            this.LabMaxAge.AutoSize = true;
-            this.LabMaxAge.Location = new System.Drawing.Point(495, 286);
-            this.LabMaxAge.Name = "LabMaxAge";
-            this.LabMaxAge.Size = new System.Drawing.Size(169, 13);
-            this.LabMaxAge.TabIndex = 9;
-            this.LabMaxAge.Text = "CORS Max Age Header (seconds)";
-            // 
-            // NumCorsMaxAge
-            // 
-            this.NumCorsMaxAge.Increment = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.NumCorsMaxAge.Location = new System.Drawing.Point(369, 284);
-            this.NumCorsMaxAge.Maximum = new decimal(new int[] {
-            100000000,
-            0,
-            0,
-            0});
-            this.NumCorsMaxAge.Name = "NumCorsMaxAge";
-            this.NumCorsMaxAge.Size = new System.Drawing.Size(120, 20);
-            this.NumCorsMaxAge.TabIndex = 8;
-            this.NumCorsMaxAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.NumCorsMaxAge.Value = new decimal(new int[] {
-            3600,
-            0,
-            0,
-            0});
-            // 
-            // ChkEnableCors
-            // 
-            this.ChkEnableCors.AutoSize = true;
-            this.ChkEnableCors.Location = new System.Drawing.Point(827, 142);
-            this.ChkEnableCors.Name = "ChkEnableCors";
-            this.ChkEnableCors.Size = new System.Drawing.Size(132, 17);
-            this.ChkEnableCors.TabIndex = 7;
-            this.ChkEnableCors.Text = "Enable CORS Support";
-            this.ChkEnableCors.UseVisualStyleBackColor = true;
-            // 
-            // label14
-            // 
-            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(52, 18);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(921, 23);
-            this.label14.TabIndex = 6;
-            this.label14.Text = "CORS support is not required by most users. It only needs to be enabled when ASCO" +
-    "M Remote is used within a cross site scripting environment.";
-            this.label14.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // LabHelp2
-            // 
-            this.LabHelp2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabHelp2.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.LabHelp2.Location = new System.Drawing.Point(55, 340);
-            this.LabHelp2.Name = "LabHelp2";
-            this.LabHelp2.Size = new System.Drawing.Size(918, 20);
-            this.LabHelp2.TabIndex = 5;
-            this.LabHelp2.Text = " If a CORS request comes from an origin that is not in this list, the returned Ac" +
-    "cess-Control-Allow-Origin header will contain the first entry in this table.";
-            this.LabHelp2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // LabHelp1
-            // 
-            this.LabHelp1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabHelp1.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.LabHelp1.Location = new System.Drawing.Point(49, 320);
-            this.LabHelp1.Name = "LabHelp1";
-            this.LabHelp1.Size = new System.Drawing.Size(924, 20);
-            this.LabHelp1.TabIndex = 2;
-            this.LabHelp1.Text = "The default origin * indicates that all hosts are permitted to access the Remote " +
-    "Server";
-            this.LabHelp1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // DataGridCorsOrigins
-            // 
-            this.DataGridCorsOrigins.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DataGridCorsOrigins.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.DataGridCorsOrigins.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.DataGridCorsOrigins.EnableHeadersVisualStyles = false;
-            this.DataGridCorsOrigins.Location = new System.Drawing.Point(219, 50);
-            this.DataGridCorsOrigins.Name = "DataGridCorsOrigins";
-            this.DataGridCorsOrigins.Size = new System.Drawing.Size(586, 217);
-            this.DataGridCorsOrigins.TabIndex = 0;
-            // 
-            // ServedDevice00
-            // 
-            this.ServedDevice00.AllowConcurrentAccess = false;
-            this.ServedDevice00.AllowConnectedSetFalse = false;
-            this.ServedDevice00.AllowConnectedSetTrue = false;
-            this.ServedDevice00.Description = "";
-            this.ServedDevice00.DeviceNumber = 0;
-            this.ServedDevice00.DevicesAreConnected = false;
-            this.ServedDevice00.DeviceType = "None";
-            this.ServedDevice00.Location = new System.Drawing.Point(8, 40);
-            this.ServedDevice00.Name = "ServedDevice00";
-            this.ServedDevice00.ProgID = "";
-            this.ServedDevice00.Size = new System.Drawing.Size(960, 22);
-            this.ServedDevice00.TabIndex = 41;
-            // 
-            // ServedDevice01
-            // 
-            this.ServedDevice01.AllowConcurrentAccess = false;
-            this.ServedDevice01.AllowConnectedSetFalse = false;
-            this.ServedDevice01.AllowConnectedSetTrue = false;
-            this.ServedDevice01.Description = "";
-            this.ServedDevice01.DeviceNumber = 0;
-            this.ServedDevice01.DevicesAreConnected = false;
-            this.ServedDevice01.DeviceType = "None";
-            this.ServedDevice01.Location = new System.Drawing.Point(8, 68);
-            this.ServedDevice01.Name = "ServedDevice01";
-            this.ServedDevice01.ProgID = "";
-            this.ServedDevice01.Size = new System.Drawing.Size(960, 22);
-            this.ServedDevice01.TabIndex = 42;
-            // 
-            // ServedDevice02
-            // 
-            this.ServedDevice02.AllowConcurrentAccess = false;
-            this.ServedDevice02.AllowConnectedSetFalse = false;
-            this.ServedDevice02.AllowConnectedSetTrue = false;
-            this.ServedDevice02.Description = "";
-            this.ServedDevice02.DeviceNumber = 0;
-            this.ServedDevice02.DevicesAreConnected = false;
-            this.ServedDevice02.DeviceType = "None";
-            this.ServedDevice02.Location = new System.Drawing.Point(8, 96);
-            this.ServedDevice02.Name = "ServedDevice02";
-            this.ServedDevice02.ProgID = "";
-            this.ServedDevice02.Size = new System.Drawing.Size(960, 22);
-            this.ServedDevice02.TabIndex = 44;
-            // 
-            // ServedDevice03
-            // 
-            this.ServedDevice03.AllowConcurrentAccess = false;
-            this.ServedDevice03.AllowConnectedSetFalse = false;
-            this.ServedDevice03.AllowConnectedSetTrue = false;
-            this.ServedDevice03.Description = "";
-            this.ServedDevice03.DeviceNumber = 0;
-            this.ServedDevice03.DevicesAreConnected = false;
-            this.ServedDevice03.DeviceType = "None";
-            this.ServedDevice03.Location = new System.Drawing.Point(8, 124);
-            this.ServedDevice03.Name = "ServedDevice03";
-            this.ServedDevice03.ProgID = "";
-            this.ServedDevice03.Size = new System.Drawing.Size(960, 22);
-            this.ServedDevice03.TabIndex = 47;
-            // 
-            // ServedDevice04
-            // 
-            this.ServedDevice04.AllowConcurrentAccess = false;
-            this.ServedDevice04.AllowConnectedSetFalse = false;
-            this.ServedDevice04.AllowConnectedSetTrue = false;
-            this.ServedDevice04.Description = "";
-            this.ServedDevice04.DeviceNumber = 0;
-            this.ServedDevice04.DevicesAreConnected = false;
-            this.ServedDevice04.DeviceType = "None";
-            this.ServedDevice04.Location = new System.Drawing.Point(8, 152);
-            this.ServedDevice04.Name = "ServedDevice04";
-            this.ServedDevice04.ProgID = "";
-            this.ServedDevice04.Size = new System.Drawing.Size(960, 22);
-            this.ServedDevice04.TabIndex = 48;
-            // 
-            // ServedDevice05
-            // 
-            this.ServedDevice05.AllowConcurrentAccess = false;
-            this.ServedDevice05.AllowConnectedSetFalse = false;
-            this.ServedDevice05.AllowConnectedSetTrue = false;
-            this.ServedDevice05.Description = "";
-            this.ServedDevice05.DeviceNumber = 0;
-            this.ServedDevice05.DevicesAreConnected = false;
-            this.ServedDevice05.DeviceType = "None";
-            this.ServedDevice05.Location = new System.Drawing.Point(8, 180);
-            this.ServedDevice05.Name = "ServedDevice05";
-            this.ServedDevice05.ProgID = "";
-            this.ServedDevice05.Size = new System.Drawing.Size(960, 22);
-            this.ServedDevice05.TabIndex = 49;
-            // 
-            // ServedDevice06
-            // 
-            this.ServedDevice06.AllowConcurrentAccess = false;
-            this.ServedDevice06.AllowConnectedSetFalse = false;
-            this.ServedDevice06.AllowConnectedSetTrue = false;
-            this.ServedDevice06.Description = "";
-            this.ServedDevice06.DeviceNumber = 0;
-            this.ServedDevice06.DevicesAreConnected = false;
-            this.ServedDevice06.DeviceType = "None";
-            this.ServedDevice06.Location = new System.Drawing.Point(8, 208);
-            this.ServedDevice06.Name = "ServedDevice06";
-            this.ServedDevice06.ProgID = "";
-            this.ServedDevice06.Size = new System.Drawing.Size(960, 22);
-            this.ServedDevice06.TabIndex = 50;
-            // 
-            // ServedDevice07
-            // 
-            this.ServedDevice07.AllowConcurrentAccess = false;
-            this.ServedDevice07.AllowConnectedSetFalse = false;
-            this.ServedDevice07.AllowConnectedSetTrue = false;
-            this.ServedDevice07.Description = "";
-            this.ServedDevice07.DeviceNumber = 0;
-            this.ServedDevice07.DevicesAreConnected = false;
-            this.ServedDevice07.DeviceType = "None";
-            this.ServedDevice07.Location = new System.Drawing.Point(8, 236);
-            this.ServedDevice07.Name = "ServedDevice07";
-            this.ServedDevice07.ProgID = "";
-            this.ServedDevice07.Size = new System.Drawing.Size(960, 22);
-            this.ServedDevice07.TabIndex = 51;
-            // 
-            // ServedDevice08
-            // 
-            this.ServedDevice08.AllowConcurrentAccess = false;
-            this.ServedDevice08.AllowConnectedSetFalse = false;
-            this.ServedDevice08.AllowConnectedSetTrue = false;
-            this.ServedDevice08.Description = "";
-            this.ServedDevice08.DeviceNumber = 0;
-            this.ServedDevice08.DevicesAreConnected = false;
-            this.ServedDevice08.DeviceType = "None";
-            this.ServedDevice08.Location = new System.Drawing.Point(8, 264);
-            this.ServedDevice08.Name = "ServedDevice08";
-            this.ServedDevice08.ProgID = "";
-            this.ServedDevice08.Size = new System.Drawing.Size(960, 22);
-            this.ServedDevice08.TabIndex = 52;
-            // 
-            // ServedDevice09
-            // 
-            this.ServedDevice09.AllowConcurrentAccess = false;
-            this.ServedDevice09.AllowConnectedSetFalse = false;
-            this.ServedDevice09.AllowConnectedSetTrue = false;
-            this.ServedDevice09.Description = "";
-            this.ServedDevice09.DeviceNumber = 0;
-            this.ServedDevice09.DevicesAreConnected = false;
-            this.ServedDevice09.DeviceType = "None";
-            this.ServedDevice09.Location = new System.Drawing.Point(8, 292);
-            this.ServedDevice09.Name = "ServedDevice09";
-            this.ServedDevice09.ProgID = "";
-            this.ServedDevice09.Size = new System.Drawing.Size(960, 22);
-            this.ServedDevice09.TabIndex = 53;
             // 
             // ServedDevice10
             // 
@@ -2187,6 +937,116 @@
             this.ServedDevice19.Size = new System.Drawing.Size(960, 22);
             this.ServedDevice19.TabIndex = 53;
             // 
+            // DeviceTab2
+            // 
+            this.DeviceTab2.BackColor = System.Drawing.SystemColors.Control;
+            this.DeviceTab2.Controls.Add(this.label18);
+            this.DeviceTab2.Controls.Add(this.label25);
+            this.DeviceTab2.Controls.Add(this.label26);
+            this.DeviceTab2.Controls.Add(this.label27);
+            this.DeviceTab2.Controls.Add(this.label28);
+            this.DeviceTab2.Controls.Add(this.label29);
+            this.DeviceTab2.Controls.Add(this.label30);
+            this.DeviceTab2.Controls.Add(this.label31);
+            this.DeviceTab2.Controls.Add(this.label32);
+            this.DeviceTab2.Controls.Add(this.ServedDevice20);
+            this.DeviceTab2.Controls.Add(this.ServedDevice21);
+            this.DeviceTab2.Controls.Add(this.ServedDevice22);
+            this.DeviceTab2.Controls.Add(this.ServedDevice23);
+            this.DeviceTab2.Controls.Add(this.ServedDevice24);
+            this.DeviceTab2.Controls.Add(this.ServedDevice25);
+            this.DeviceTab2.Controls.Add(this.ServedDevice26);
+            this.DeviceTab2.Controls.Add(this.ServedDevice27);
+            this.DeviceTab2.Controls.Add(this.ServedDevice28);
+            this.DeviceTab2.Controls.Add(this.ServedDevice29);
+            this.DeviceTab2.Location = new System.Drawing.Point(4, 22);
+            this.DeviceTab2.Name = "DeviceTab2";
+            this.DeviceTab2.Padding = new System.Windows.Forms.Padding(3);
+            this.DeviceTab2.Size = new System.Drawing.Size(1004, 323);
+            this.DeviceTab2.TabIndex = 1;
+            this.DeviceTab2.Text = "Devices 20 to 29";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(928, 8);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(40, 13);
+            this.label18.TabIndex = 79;
+            this.label18.Text = "Enable";
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(899, 24);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(97, 13);
+            this.label25.TabIndex = 78;
+            this.label25.Text = "Concurrent Access";
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(56, 24);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(68, 13);
+            this.label26.TabIndex = 63;
+            this.label26.Text = "Device Type";
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Location = new System.Drawing.Point(426, 24);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(41, 13);
+            this.label27.TabIndex = 65;
+            this.label27.Text = "Device";
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(648, 24);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(89, 13);
+            this.label28.TabIndex = 77;
+            this.label28.Text = "Configure Device";
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Location = new System.Drawing.Point(187, 24);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(81, 13);
+            this.label29.TabIndex = 66;
+            this.label29.Text = "Device Number";
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(844, 24);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(29, 13);
+            this.label30.TabIndex = 76;
+            this.label30.Text = "True";
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Location = new System.Drawing.Point(784, 24);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(32, 13);
+            this.label31.TabIndex = 75;
+            this.label31.Text = "False";
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Location = new System.Drawing.Point(764, 8);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(131, 13);
+            this.label32.TabIndex = 74;
+            this.label32.Text = "Allow Connected to be set";
+            // 
             // ServedDevice20
             // 
             this.ServedDevice20.AllowConcurrentAccess = false;
@@ -2336,6 +1196,115 @@
             this.ServedDevice29.ProgID = "";
             this.ServedDevice29.Size = new System.Drawing.Size(960, 22);
             this.ServedDevice29.TabIndex = 73;
+            // 
+            // DeviceTab3
+            // 
+            this.DeviceTab3.BackColor = System.Drawing.SystemColors.Control;
+            this.DeviceTab3.Controls.Add(this.label33);
+            this.DeviceTab3.Controls.Add(this.label34);
+            this.DeviceTab3.Controls.Add(this.label35);
+            this.DeviceTab3.Controls.Add(this.label36);
+            this.DeviceTab3.Controls.Add(this.label37);
+            this.DeviceTab3.Controls.Add(this.label38);
+            this.DeviceTab3.Controls.Add(this.label39);
+            this.DeviceTab3.Controls.Add(this.label40);
+            this.DeviceTab3.Controls.Add(this.label41);
+            this.DeviceTab3.Controls.Add(this.ServedDevice30);
+            this.DeviceTab3.Controls.Add(this.ServedDevice31);
+            this.DeviceTab3.Controls.Add(this.ServedDevice32);
+            this.DeviceTab3.Controls.Add(this.ServedDevice33);
+            this.DeviceTab3.Controls.Add(this.ServedDevice34);
+            this.DeviceTab3.Controls.Add(this.ServedDevice35);
+            this.DeviceTab3.Controls.Add(this.ServedDevice36);
+            this.DeviceTab3.Controls.Add(this.ServedDevice37);
+            this.DeviceTab3.Controls.Add(this.ServedDevice38);
+            this.DeviceTab3.Controls.Add(this.ServedDevice39);
+            this.DeviceTab3.Location = new System.Drawing.Point(4, 22);
+            this.DeviceTab3.Name = "DeviceTab3";
+            this.DeviceTab3.Size = new System.Drawing.Size(1004, 323);
+            this.DeviceTab3.TabIndex = 3;
+            this.DeviceTab3.Text = "Devices 30 to 39";
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(928, 8);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(40, 13);
+            this.label33.TabIndex = 79;
+            this.label33.Text = "Enable";
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Location = new System.Drawing.Point(899, 24);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(97, 13);
+            this.label34.TabIndex = 78;
+            this.label34.Text = "Concurrent Access";
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(56, 24);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(68, 13);
+            this.label35.TabIndex = 63;
+            this.label35.Text = "Device Type";
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(426, 24);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(41, 13);
+            this.label36.TabIndex = 65;
+            this.label36.Text = "Device";
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(648, 24);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(89, 13);
+            this.label37.TabIndex = 77;
+            this.label37.Text = "Configure Device";
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(187, 24);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(81, 13);
+            this.label38.TabIndex = 66;
+            this.label38.Text = "Device Number";
+            // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.Location = new System.Drawing.Point(844, 24);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(29, 13);
+            this.label39.TabIndex = 76;
+            this.label39.Text = "True";
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(784, 24);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(32, 13);
+            this.label40.TabIndex = 75;
+            this.label40.Text = "False";
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Location = new System.Drawing.Point(764, 8);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(131, 13);
+            this.label41.TabIndex = 74;
+            this.label41.Text = "Allow Connected to be set";
             // 
             // ServedDevice30
             // 
@@ -2487,6 +1456,115 @@
             this.ServedDevice39.Size = new System.Drawing.Size(960, 22);
             this.ServedDevice39.TabIndex = 73;
             // 
+            // DeviceTab4
+            // 
+            this.DeviceTab4.BackColor = System.Drawing.SystemColors.Control;
+            this.DeviceTab4.Controls.Add(this.label42);
+            this.DeviceTab4.Controls.Add(this.label43);
+            this.DeviceTab4.Controls.Add(this.label44);
+            this.DeviceTab4.Controls.Add(this.label45);
+            this.DeviceTab4.Controls.Add(this.label46);
+            this.DeviceTab4.Controls.Add(this.label47);
+            this.DeviceTab4.Controls.Add(this.label48);
+            this.DeviceTab4.Controls.Add(this.label49);
+            this.DeviceTab4.Controls.Add(this.label50);
+            this.DeviceTab4.Controls.Add(this.ServedDevice40);
+            this.DeviceTab4.Controls.Add(this.ServedDevice41);
+            this.DeviceTab4.Controls.Add(this.ServedDevice42);
+            this.DeviceTab4.Controls.Add(this.ServedDevice43);
+            this.DeviceTab4.Controls.Add(this.ServedDevice44);
+            this.DeviceTab4.Controls.Add(this.ServedDevice45);
+            this.DeviceTab4.Controls.Add(this.ServedDevice46);
+            this.DeviceTab4.Controls.Add(this.ServedDevice47);
+            this.DeviceTab4.Controls.Add(this.ServedDevice48);
+            this.DeviceTab4.Controls.Add(this.ServedDevice49);
+            this.DeviceTab4.Location = new System.Drawing.Point(4, 22);
+            this.DeviceTab4.Name = "DeviceTab4";
+            this.DeviceTab4.Size = new System.Drawing.Size(1004, 323);
+            this.DeviceTab4.TabIndex = 4;
+            this.DeviceTab4.Text = "Devices 40 to 49";
+            // 
+            // label42
+            // 
+            this.label42.AutoSize = true;
+            this.label42.Location = new System.Drawing.Point(928, 8);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(40, 13);
+            this.label42.TabIndex = 79;
+            this.label42.Text = "Enable";
+            // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(899, 24);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(97, 13);
+            this.label43.TabIndex = 78;
+            this.label43.Text = "Concurrent Access";
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.Location = new System.Drawing.Point(56, 24);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(68, 13);
+            this.label44.TabIndex = 63;
+            this.label44.Text = "Device Type";
+            // 
+            // label45
+            // 
+            this.label45.AutoSize = true;
+            this.label45.Location = new System.Drawing.Point(426, 24);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(41, 13);
+            this.label45.TabIndex = 65;
+            this.label45.Text = "Device";
+            // 
+            // label46
+            // 
+            this.label46.AutoSize = true;
+            this.label46.Location = new System.Drawing.Point(648, 24);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(89, 13);
+            this.label46.TabIndex = 77;
+            this.label46.Text = "Configure Device";
+            // 
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(187, 24);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(81, 13);
+            this.label47.TabIndex = 66;
+            this.label47.Text = "Device Number";
+            // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.Location = new System.Drawing.Point(844, 24);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(29, 13);
+            this.label48.TabIndex = 76;
+            this.label48.Text = "True";
+            // 
+            // label49
+            // 
+            this.label49.AutoSize = true;
+            this.label49.Location = new System.Drawing.Point(784, 24);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(32, 13);
+            this.label49.TabIndex = 75;
+            this.label49.Text = "False";
+            // 
+            // label50
+            // 
+            this.label50.AutoSize = true;
+            this.label50.Location = new System.Drawing.Point(764, 8);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(131, 13);
+            this.label50.TabIndex = 74;
+            this.label50.Text = "Allow Connected to be set";
+            // 
             // ServedDevice40
             // 
             this.ServedDevice40.AllowConcurrentAccess = false;
@@ -2636,6 +1714,115 @@
             this.ServedDevice49.ProgID = "";
             this.ServedDevice49.Size = new System.Drawing.Size(960, 22);
             this.ServedDevice49.TabIndex = 73;
+            // 
+            // DeviceTab5
+            // 
+            this.DeviceTab5.BackColor = System.Drawing.SystemColors.Control;
+            this.DeviceTab5.Controls.Add(this.label51);
+            this.DeviceTab5.Controls.Add(this.label52);
+            this.DeviceTab5.Controls.Add(this.label53);
+            this.DeviceTab5.Controls.Add(this.label54);
+            this.DeviceTab5.Controls.Add(this.label55);
+            this.DeviceTab5.Controls.Add(this.label56);
+            this.DeviceTab5.Controls.Add(this.label57);
+            this.DeviceTab5.Controls.Add(this.label58);
+            this.DeviceTab5.Controls.Add(this.label59);
+            this.DeviceTab5.Controls.Add(this.ServedDevice50);
+            this.DeviceTab5.Controls.Add(this.ServedDevice51);
+            this.DeviceTab5.Controls.Add(this.ServedDevice52);
+            this.DeviceTab5.Controls.Add(this.ServedDevice53);
+            this.DeviceTab5.Controls.Add(this.ServedDevice54);
+            this.DeviceTab5.Controls.Add(this.ServedDevice55);
+            this.DeviceTab5.Controls.Add(this.ServedDevice56);
+            this.DeviceTab5.Controls.Add(this.ServedDevice57);
+            this.DeviceTab5.Controls.Add(this.ServedDevice58);
+            this.DeviceTab5.Controls.Add(this.ServedDevice59);
+            this.DeviceTab5.Location = new System.Drawing.Point(4, 22);
+            this.DeviceTab5.Name = "DeviceTab5";
+            this.DeviceTab5.Size = new System.Drawing.Size(1004, 323);
+            this.DeviceTab5.TabIndex = 5;
+            this.DeviceTab5.Text = "Devices 50 to 59";
+            // 
+            // label51
+            // 
+            this.label51.AutoSize = true;
+            this.label51.Location = new System.Drawing.Point(928, 8);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(40, 13);
+            this.label51.TabIndex = 79;
+            this.label51.Text = "Enable";
+            // 
+            // label52
+            // 
+            this.label52.AutoSize = true;
+            this.label52.Location = new System.Drawing.Point(899, 24);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(97, 13);
+            this.label52.TabIndex = 78;
+            this.label52.Text = "Concurrent Access";
+            // 
+            // label53
+            // 
+            this.label53.AutoSize = true;
+            this.label53.Location = new System.Drawing.Point(56, 24);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(68, 13);
+            this.label53.TabIndex = 63;
+            this.label53.Text = "Device Type";
+            // 
+            // label54
+            // 
+            this.label54.AutoSize = true;
+            this.label54.Location = new System.Drawing.Point(426, 24);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(41, 13);
+            this.label54.TabIndex = 65;
+            this.label54.Text = "Device";
+            // 
+            // label55
+            // 
+            this.label55.AutoSize = true;
+            this.label55.Location = new System.Drawing.Point(648, 24);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(89, 13);
+            this.label55.TabIndex = 77;
+            this.label55.Text = "Configure Device";
+            // 
+            // label56
+            // 
+            this.label56.AutoSize = true;
+            this.label56.Location = new System.Drawing.Point(187, 24);
+            this.label56.Name = "label56";
+            this.label56.Size = new System.Drawing.Size(81, 13);
+            this.label56.TabIndex = 66;
+            this.label56.Text = "Device Number";
+            // 
+            // label57
+            // 
+            this.label57.AutoSize = true;
+            this.label57.Location = new System.Drawing.Point(844, 24);
+            this.label57.Name = "label57";
+            this.label57.Size = new System.Drawing.Size(29, 13);
+            this.label57.TabIndex = 76;
+            this.label57.Text = "True";
+            // 
+            // label58
+            // 
+            this.label58.AutoSize = true;
+            this.label58.Location = new System.Drawing.Point(784, 24);
+            this.label58.Name = "label58";
+            this.label58.Size = new System.Drawing.Size(32, 13);
+            this.label58.TabIndex = 75;
+            this.label58.Text = "False";
+            // 
+            // label59
+            // 
+            this.label59.AutoSize = true;
+            this.label59.Location = new System.Drawing.Point(764, 8);
+            this.label59.Name = "label59";
+            this.label59.Size = new System.Drawing.Size(131, 13);
+            this.label59.TabIndex = 74;
+            this.label59.Text = "Allow Connected to be set";
             // 
             // ServedDevice50
             // 
@@ -2787,6 +1974,115 @@
             this.ServedDevice59.Size = new System.Drawing.Size(960, 22);
             this.ServedDevice59.TabIndex = 73;
             // 
+            // DeviceTab6
+            // 
+            this.DeviceTab6.BackColor = System.Drawing.SystemColors.Control;
+            this.DeviceTab6.Controls.Add(this.label60);
+            this.DeviceTab6.Controls.Add(this.label61);
+            this.DeviceTab6.Controls.Add(this.label62);
+            this.DeviceTab6.Controls.Add(this.label63);
+            this.DeviceTab6.Controls.Add(this.label64);
+            this.DeviceTab6.Controls.Add(this.label65);
+            this.DeviceTab6.Controls.Add(this.label66);
+            this.DeviceTab6.Controls.Add(this.label67);
+            this.DeviceTab6.Controls.Add(this.label68);
+            this.DeviceTab6.Controls.Add(this.ServedDevice60);
+            this.DeviceTab6.Controls.Add(this.ServedDevice61);
+            this.DeviceTab6.Controls.Add(this.ServedDevice62);
+            this.DeviceTab6.Controls.Add(this.ServedDevice63);
+            this.DeviceTab6.Controls.Add(this.ServedDevice64);
+            this.DeviceTab6.Controls.Add(this.ServedDevice65);
+            this.DeviceTab6.Controls.Add(this.ServedDevice66);
+            this.DeviceTab6.Controls.Add(this.ServedDevice67);
+            this.DeviceTab6.Controls.Add(this.ServedDevice68);
+            this.DeviceTab6.Controls.Add(this.ServedDevice69);
+            this.DeviceTab6.Location = new System.Drawing.Point(4, 22);
+            this.DeviceTab6.Name = "DeviceTab6";
+            this.DeviceTab6.Size = new System.Drawing.Size(1004, 323);
+            this.DeviceTab6.TabIndex = 6;
+            this.DeviceTab6.Text = "Devices 60 to 69";
+            // 
+            // label60
+            // 
+            this.label60.AutoSize = true;
+            this.label60.Location = new System.Drawing.Point(928, 8);
+            this.label60.Name = "label60";
+            this.label60.Size = new System.Drawing.Size(40, 13);
+            this.label60.TabIndex = 79;
+            this.label60.Text = "Enable";
+            // 
+            // label61
+            // 
+            this.label61.AutoSize = true;
+            this.label61.Location = new System.Drawing.Point(899, 24);
+            this.label61.Name = "label61";
+            this.label61.Size = new System.Drawing.Size(97, 13);
+            this.label61.TabIndex = 78;
+            this.label61.Text = "Concurrent Access";
+            // 
+            // label62
+            // 
+            this.label62.AutoSize = true;
+            this.label62.Location = new System.Drawing.Point(56, 24);
+            this.label62.Name = "label62";
+            this.label62.Size = new System.Drawing.Size(68, 13);
+            this.label62.TabIndex = 63;
+            this.label62.Text = "Device Type";
+            // 
+            // label63
+            // 
+            this.label63.AutoSize = true;
+            this.label63.Location = new System.Drawing.Point(426, 24);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(41, 13);
+            this.label63.TabIndex = 65;
+            this.label63.Text = "Device";
+            // 
+            // label64
+            // 
+            this.label64.AutoSize = true;
+            this.label64.Location = new System.Drawing.Point(648, 24);
+            this.label64.Name = "label64";
+            this.label64.Size = new System.Drawing.Size(89, 13);
+            this.label64.TabIndex = 77;
+            this.label64.Text = "Configure Device";
+            // 
+            // label65
+            // 
+            this.label65.AutoSize = true;
+            this.label65.Location = new System.Drawing.Point(187, 24);
+            this.label65.Name = "label65";
+            this.label65.Size = new System.Drawing.Size(81, 13);
+            this.label65.TabIndex = 66;
+            this.label65.Text = "Device Number";
+            // 
+            // label66
+            // 
+            this.label66.AutoSize = true;
+            this.label66.Location = new System.Drawing.Point(844, 24);
+            this.label66.Name = "label66";
+            this.label66.Size = new System.Drawing.Size(29, 13);
+            this.label66.TabIndex = 76;
+            this.label66.Text = "True";
+            // 
+            // label67
+            // 
+            this.label67.AutoSize = true;
+            this.label67.Location = new System.Drawing.Point(784, 24);
+            this.label67.Name = "label67";
+            this.label67.Size = new System.Drawing.Size(32, 13);
+            this.label67.TabIndex = 75;
+            this.label67.Text = "False";
+            // 
+            // label68
+            // 
+            this.label68.AutoSize = true;
+            this.label68.Location = new System.Drawing.Point(764, 8);
+            this.label68.Name = "label68";
+            this.label68.Size = new System.Drawing.Size(131, 13);
+            this.label68.TabIndex = 74;
+            this.label68.Text = "Allow Connected to be set";
+            // 
             // ServedDevice60
             // 
             this.ServedDevice60.AllowConcurrentAccess = false;
@@ -2936,6 +2232,115 @@
             this.ServedDevice69.ProgID = "";
             this.ServedDevice69.Size = new System.Drawing.Size(960, 22);
             this.ServedDevice69.TabIndex = 73;
+            // 
+            // DeviceTab7
+            // 
+            this.DeviceTab7.BackColor = System.Drawing.SystemColors.Control;
+            this.DeviceTab7.Controls.Add(this.label69);
+            this.DeviceTab7.Controls.Add(this.label70);
+            this.DeviceTab7.Controls.Add(this.label71);
+            this.DeviceTab7.Controls.Add(this.label72);
+            this.DeviceTab7.Controls.Add(this.label73);
+            this.DeviceTab7.Controls.Add(this.label74);
+            this.DeviceTab7.Controls.Add(this.label75);
+            this.DeviceTab7.Controls.Add(this.label76);
+            this.DeviceTab7.Controls.Add(this.label77);
+            this.DeviceTab7.Controls.Add(this.ServedDevice70);
+            this.DeviceTab7.Controls.Add(this.ServedDevice71);
+            this.DeviceTab7.Controls.Add(this.ServedDevice72);
+            this.DeviceTab7.Controls.Add(this.ServedDevice73);
+            this.DeviceTab7.Controls.Add(this.ServedDevice74);
+            this.DeviceTab7.Controls.Add(this.ServedDevice75);
+            this.DeviceTab7.Controls.Add(this.ServedDevice76);
+            this.DeviceTab7.Controls.Add(this.ServedDevice77);
+            this.DeviceTab7.Controls.Add(this.ServedDevice78);
+            this.DeviceTab7.Controls.Add(this.ServedDevice79);
+            this.DeviceTab7.Location = new System.Drawing.Point(4, 22);
+            this.DeviceTab7.Name = "DeviceTab7";
+            this.DeviceTab7.Size = new System.Drawing.Size(1004, 323);
+            this.DeviceTab7.TabIndex = 7;
+            this.DeviceTab7.Text = "Devices 70 to 79";
+            // 
+            // label69
+            // 
+            this.label69.AutoSize = true;
+            this.label69.Location = new System.Drawing.Point(928, 8);
+            this.label69.Name = "label69";
+            this.label69.Size = new System.Drawing.Size(40, 13);
+            this.label69.TabIndex = 79;
+            this.label69.Text = "Enable";
+            // 
+            // label70
+            // 
+            this.label70.AutoSize = true;
+            this.label70.Location = new System.Drawing.Point(899, 24);
+            this.label70.Name = "label70";
+            this.label70.Size = new System.Drawing.Size(97, 13);
+            this.label70.TabIndex = 78;
+            this.label70.Text = "Concurrent Access";
+            // 
+            // label71
+            // 
+            this.label71.AutoSize = true;
+            this.label71.Location = new System.Drawing.Point(56, 24);
+            this.label71.Name = "label71";
+            this.label71.Size = new System.Drawing.Size(68, 13);
+            this.label71.TabIndex = 63;
+            this.label71.Text = "Device Type";
+            // 
+            // label72
+            // 
+            this.label72.AutoSize = true;
+            this.label72.Location = new System.Drawing.Point(426, 24);
+            this.label72.Name = "label72";
+            this.label72.Size = new System.Drawing.Size(41, 13);
+            this.label72.TabIndex = 65;
+            this.label72.Text = "Device";
+            // 
+            // label73
+            // 
+            this.label73.AutoSize = true;
+            this.label73.Location = new System.Drawing.Point(648, 24);
+            this.label73.Name = "label73";
+            this.label73.Size = new System.Drawing.Size(89, 13);
+            this.label73.TabIndex = 77;
+            this.label73.Text = "Configure Device";
+            // 
+            // label74
+            // 
+            this.label74.AutoSize = true;
+            this.label74.Location = new System.Drawing.Point(187, 24);
+            this.label74.Name = "label74";
+            this.label74.Size = new System.Drawing.Size(81, 13);
+            this.label74.TabIndex = 66;
+            this.label74.Text = "Device Number";
+            // 
+            // label75
+            // 
+            this.label75.AutoSize = true;
+            this.label75.Location = new System.Drawing.Point(844, 24);
+            this.label75.Name = "label75";
+            this.label75.Size = new System.Drawing.Size(29, 13);
+            this.label75.TabIndex = 76;
+            this.label75.Text = "True";
+            // 
+            // label76
+            // 
+            this.label76.AutoSize = true;
+            this.label76.Location = new System.Drawing.Point(784, 24);
+            this.label76.Name = "label76";
+            this.label76.Size = new System.Drawing.Size(32, 13);
+            this.label76.TabIndex = 75;
+            this.label76.Text = "False";
+            // 
+            // label77
+            // 
+            this.label77.AutoSize = true;
+            this.label77.Location = new System.Drawing.Point(764, 8);
+            this.label77.Name = "label77";
+            this.label77.Size = new System.Drawing.Size(131, 13);
+            this.label77.TabIndex = 74;
+            this.label77.Text = "Allow Connected to be set";
             // 
             // ServedDevice70
             // 
@@ -3087,6 +2492,115 @@
             this.ServedDevice79.Size = new System.Drawing.Size(960, 22);
             this.ServedDevice79.TabIndex = 73;
             // 
+            // DeviceTab8
+            // 
+            this.DeviceTab8.BackColor = System.Drawing.SystemColors.Control;
+            this.DeviceTab8.Controls.Add(this.label78);
+            this.DeviceTab8.Controls.Add(this.label79);
+            this.DeviceTab8.Controls.Add(this.label80);
+            this.DeviceTab8.Controls.Add(this.label81);
+            this.DeviceTab8.Controls.Add(this.label82);
+            this.DeviceTab8.Controls.Add(this.label83);
+            this.DeviceTab8.Controls.Add(this.label84);
+            this.DeviceTab8.Controls.Add(this.label85);
+            this.DeviceTab8.Controls.Add(this.label86);
+            this.DeviceTab8.Controls.Add(this.ServedDevice80);
+            this.DeviceTab8.Controls.Add(this.ServedDevice81);
+            this.DeviceTab8.Controls.Add(this.ServedDevice82);
+            this.DeviceTab8.Controls.Add(this.ServedDevice83);
+            this.DeviceTab8.Controls.Add(this.ServedDevice84);
+            this.DeviceTab8.Controls.Add(this.ServedDevice85);
+            this.DeviceTab8.Controls.Add(this.ServedDevice86);
+            this.DeviceTab8.Controls.Add(this.ServedDevice87);
+            this.DeviceTab8.Controls.Add(this.ServedDevice88);
+            this.DeviceTab8.Controls.Add(this.ServedDevice89);
+            this.DeviceTab8.Location = new System.Drawing.Point(4, 22);
+            this.DeviceTab8.Name = "DeviceTab8";
+            this.DeviceTab8.Size = new System.Drawing.Size(1004, 323);
+            this.DeviceTab8.TabIndex = 8;
+            this.DeviceTab8.Text = "Devices 80 to 89";
+            // 
+            // label78
+            // 
+            this.label78.AutoSize = true;
+            this.label78.Location = new System.Drawing.Point(928, 8);
+            this.label78.Name = "label78";
+            this.label78.Size = new System.Drawing.Size(40, 13);
+            this.label78.TabIndex = 79;
+            this.label78.Text = "Enable";
+            // 
+            // label79
+            // 
+            this.label79.AutoSize = true;
+            this.label79.Location = new System.Drawing.Point(899, 24);
+            this.label79.Name = "label79";
+            this.label79.Size = new System.Drawing.Size(97, 13);
+            this.label79.TabIndex = 78;
+            this.label79.Text = "Concurrent Access";
+            // 
+            // label80
+            // 
+            this.label80.AutoSize = true;
+            this.label80.Location = new System.Drawing.Point(56, 24);
+            this.label80.Name = "label80";
+            this.label80.Size = new System.Drawing.Size(68, 13);
+            this.label80.TabIndex = 63;
+            this.label80.Text = "Device Type";
+            // 
+            // label81
+            // 
+            this.label81.AutoSize = true;
+            this.label81.Location = new System.Drawing.Point(426, 24);
+            this.label81.Name = "label81";
+            this.label81.Size = new System.Drawing.Size(41, 13);
+            this.label81.TabIndex = 65;
+            this.label81.Text = "Device";
+            // 
+            // label82
+            // 
+            this.label82.AutoSize = true;
+            this.label82.Location = new System.Drawing.Point(648, 24);
+            this.label82.Name = "label82";
+            this.label82.Size = new System.Drawing.Size(89, 13);
+            this.label82.TabIndex = 77;
+            this.label82.Text = "Configure Device";
+            // 
+            // label83
+            // 
+            this.label83.AutoSize = true;
+            this.label83.Location = new System.Drawing.Point(187, 24);
+            this.label83.Name = "label83";
+            this.label83.Size = new System.Drawing.Size(81, 13);
+            this.label83.TabIndex = 66;
+            this.label83.Text = "Device Number";
+            // 
+            // label84
+            // 
+            this.label84.AutoSize = true;
+            this.label84.Location = new System.Drawing.Point(844, 24);
+            this.label84.Name = "label84";
+            this.label84.Size = new System.Drawing.Size(29, 13);
+            this.label84.TabIndex = 76;
+            this.label84.Text = "True";
+            // 
+            // label85
+            // 
+            this.label85.AutoSize = true;
+            this.label85.Location = new System.Drawing.Point(784, 24);
+            this.label85.Name = "label85";
+            this.label85.Size = new System.Drawing.Size(32, 13);
+            this.label85.TabIndex = 75;
+            this.label85.Text = "False";
+            // 
+            // label86
+            // 
+            this.label86.AutoSize = true;
+            this.label86.Location = new System.Drawing.Point(764, 8);
+            this.label86.Name = "label86";
+            this.label86.Size = new System.Drawing.Size(131, 13);
+            this.label86.TabIndex = 74;
+            this.label86.Text = "Allow Connected to be set";
+            // 
             // ServedDevice80
             // 
             this.ServedDevice80.AllowConcurrentAccess = false;
@@ -3236,6 +2750,115 @@
             this.ServedDevice89.ProgID = "";
             this.ServedDevice89.Size = new System.Drawing.Size(960, 22);
             this.ServedDevice89.TabIndex = 73;
+            // 
+            // DeviceTab9
+            // 
+            this.DeviceTab9.BackColor = System.Drawing.SystemColors.Control;
+            this.DeviceTab9.Controls.Add(this.label87);
+            this.DeviceTab9.Controls.Add(this.label88);
+            this.DeviceTab9.Controls.Add(this.label89);
+            this.DeviceTab9.Controls.Add(this.label90);
+            this.DeviceTab9.Controls.Add(this.label91);
+            this.DeviceTab9.Controls.Add(this.label92);
+            this.DeviceTab9.Controls.Add(this.label93);
+            this.DeviceTab9.Controls.Add(this.label94);
+            this.DeviceTab9.Controls.Add(this.label95);
+            this.DeviceTab9.Controls.Add(this.ServedDevice90);
+            this.DeviceTab9.Controls.Add(this.ServedDevice91);
+            this.DeviceTab9.Controls.Add(this.ServedDevice92);
+            this.DeviceTab9.Controls.Add(this.ServedDevice93);
+            this.DeviceTab9.Controls.Add(this.ServedDevice94);
+            this.DeviceTab9.Controls.Add(this.ServedDevice95);
+            this.DeviceTab9.Controls.Add(this.ServedDevice96);
+            this.DeviceTab9.Controls.Add(this.ServedDevice97);
+            this.DeviceTab9.Controls.Add(this.ServedDevice98);
+            this.DeviceTab9.Controls.Add(this.ServedDevice99);
+            this.DeviceTab9.Location = new System.Drawing.Point(4, 22);
+            this.DeviceTab9.Name = "DeviceTab9";
+            this.DeviceTab9.Size = new System.Drawing.Size(1004, 323);
+            this.DeviceTab9.TabIndex = 9;
+            this.DeviceTab9.Text = "Devices 90 to 99";
+            // 
+            // label87
+            // 
+            this.label87.AutoSize = true;
+            this.label87.Location = new System.Drawing.Point(928, 8);
+            this.label87.Name = "label87";
+            this.label87.Size = new System.Drawing.Size(40, 13);
+            this.label87.TabIndex = 79;
+            this.label87.Text = "Enable";
+            // 
+            // label88
+            // 
+            this.label88.AutoSize = true;
+            this.label88.Location = new System.Drawing.Point(899, 24);
+            this.label88.Name = "label88";
+            this.label88.Size = new System.Drawing.Size(97, 13);
+            this.label88.TabIndex = 78;
+            this.label88.Text = "Concurrent Access";
+            // 
+            // label89
+            // 
+            this.label89.AutoSize = true;
+            this.label89.Location = new System.Drawing.Point(56, 24);
+            this.label89.Name = "label89";
+            this.label89.Size = new System.Drawing.Size(68, 13);
+            this.label89.TabIndex = 63;
+            this.label89.Text = "Device Type";
+            // 
+            // label90
+            // 
+            this.label90.AutoSize = true;
+            this.label90.Location = new System.Drawing.Point(426, 24);
+            this.label90.Name = "label90";
+            this.label90.Size = new System.Drawing.Size(41, 13);
+            this.label90.TabIndex = 65;
+            this.label90.Text = "Device";
+            // 
+            // label91
+            // 
+            this.label91.AutoSize = true;
+            this.label91.Location = new System.Drawing.Point(648, 24);
+            this.label91.Name = "label91";
+            this.label91.Size = new System.Drawing.Size(89, 13);
+            this.label91.TabIndex = 77;
+            this.label91.Text = "Configure Device";
+            // 
+            // label92
+            // 
+            this.label92.AutoSize = true;
+            this.label92.Location = new System.Drawing.Point(187, 24);
+            this.label92.Name = "label92";
+            this.label92.Size = new System.Drawing.Size(81, 13);
+            this.label92.TabIndex = 66;
+            this.label92.Text = "Device Number";
+            // 
+            // label93
+            // 
+            this.label93.AutoSize = true;
+            this.label93.Location = new System.Drawing.Point(844, 24);
+            this.label93.Name = "label93";
+            this.label93.Size = new System.Drawing.Size(29, 13);
+            this.label93.TabIndex = 76;
+            this.label93.Text = "True";
+            // 
+            // label94
+            // 
+            this.label94.AutoSize = true;
+            this.label94.Location = new System.Drawing.Point(784, 24);
+            this.label94.Name = "label94";
+            this.label94.Size = new System.Drawing.Size(32, 13);
+            this.label94.TabIndex = 75;
+            this.label94.Text = "False";
+            // 
+            // label95
+            // 
+            this.label95.AutoSize = true;
+            this.label95.Location = new System.Drawing.Point(764, 8);
+            this.label95.Name = "label95";
+            this.label95.Size = new System.Drawing.Size(131, 13);
+            this.label95.TabIndex = 74;
+            this.label95.Text = "Allow Connected to be set";
             // 
             // ServedDevice90
             // 
@@ -3387,6 +3010,532 @@
             this.ServedDevice99.Size = new System.Drawing.Size(960, 22);
             this.ServedDevice99.TabIndex = 73;
             // 
+            // LblDevicesNotDisconnoected
+            // 
+            this.LblDevicesNotDisconnoected.AutoSize = true;
+            this.LblDevicesNotDisconnoected.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LblDevicesNotDisconnoected.ForeColor = System.Drawing.Color.Red;
+            this.LblDevicesNotDisconnoected.Location = new System.Drawing.Point(571, 358);
+            this.LblDevicesNotDisconnoected.Name = "LblDevicesNotDisconnoected";
+            this.LblDevicesNotDisconnoected.Size = new System.Drawing.Size(257, 26);
+            this.LblDevicesNotDisconnoected.TabIndex = 58;
+            this.LblDevicesNotDisconnoected.Text = "Devices are Connected\r\nConfiguration requires that devices are Disconnected";
+            this.LblDevicesNotDisconnoected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // ServerConfigurationTab
+            // 
+            this.ServerConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
+            this.ServerConfigurationTab.Controls.Add(this.textBox1);
+            this.ServerConfigurationTab.Controls.Add(this.GrpIpVersionSelector);
+            this.ServerConfigurationTab.Controls.Add(this.label96);
+            this.ServerConfigurationTab.Controls.Add(this.NumMaxDevices);
+            this.ServerConfigurationTab.Controls.Add(this.label13);
+            this.ServerConfigurationTab.Controls.Add(this.NumDiscoveryPort);
+            this.ServerConfigurationTab.Controls.Add(this.ChkEnableDiscovery);
+            this.ServerConfigurationTab.Controls.Add(this.label10);
+            this.ServerConfigurationTab.Controls.Add(this.addressList);
+            this.ServerConfigurationTab.Controls.Add(this.TxtRemoteServerLocation);
+            this.ServerConfigurationTab.Controls.Add(this.numPort);
+            this.ServerConfigurationTab.Controls.Add(this.label8);
+            this.ServerConfigurationTab.Controls.Add(this.label7);
+            this.ServerConfigurationTab.Controls.Add(this.chkManagementInterfaceEnabled);
+            this.ServerConfigurationTab.Controls.Add(this.ChkIncludeDriverExceptionsInJsonResponses);
+            this.ServerConfigurationTab.Controls.Add(this.chkAutoConnect);
+            this.ServerConfigurationTab.Controls.Add(this.ChkRunDriversInSeparateThreadss);
+            this.ServerConfigurationTab.Controls.Add(this.ChkStartWithApiEnabled);
+            this.ServerConfigurationTab.Location = new System.Drawing.Point(4, 22);
+            this.ServerConfigurationTab.Margin = new System.Windows.Forms.Padding(0);
+            this.ServerConfigurationTab.Name = "ServerConfigurationTab";
+            this.ServerConfigurationTab.Padding = new System.Windows.Forms.Padding(3);
+            this.ServerConfigurationTab.Size = new System.Drawing.Size(1026, 394);
+            this.ServerConfigurationTab.TabIndex = 1;
+            this.ServerConfigurationTab.Text = "Server Configuration";
+            // 
+            // textBox1
+            // 
+            this.textBox1.BackColor = System.Drawing.Color.Yellow;
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.textBox1.Location = new System.Drawing.Point(19, 36);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(5);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(231, 165);
+            this.textBox1.TabIndex = 51;
+            this.textBox1.Text = resources.GetString("textBox1.Text");
+            // 
+            // GrpIpVersionSelector
+            // 
+            this.GrpIpVersionSelector.Controls.Add(this.RadIpV4AndV6);
+            this.GrpIpVersionSelector.Controls.Add(this.RadIpV6);
+            this.GrpIpVersionSelector.Controls.Add(this.RadIpV4);
+            this.GrpIpVersionSelector.Location = new System.Drawing.Point(841, 93);
+            this.GrpIpVersionSelector.Name = "GrpIpVersionSelector";
+            this.GrpIpVersionSelector.Size = new System.Drawing.Size(133, 103);
+            this.GrpIpVersionSelector.TabIndex = 50;
+            this.GrpIpVersionSelector.TabStop = false;
+            this.GrpIpVersionSelector.Text = "Supported IP Version(s)";
+            // 
+            // RadIpV4AndV6
+            // 
+            this.RadIpV4AndV6.AutoSize = true;
+            this.RadIpV4AndV6.Location = new System.Drawing.Point(6, 75);
+            this.RadIpV4AndV6.Name = "RadIpV4AndV6";
+            this.RadIpV4AndV6.Size = new System.Drawing.Size(88, 17);
+            this.RadIpV4AndV6.TabIndex = 2;
+            this.RadIpV4AndV6.TabStop = true;
+            this.RadIpV4AndV6.Text = "IP V4 and V6";
+            this.RadIpV4AndV6.UseVisualStyleBackColor = true;
+            this.RadIpV4AndV6.CheckedChanged += new System.EventHandler(this.RadIpV4AndV6_CheckedChanged);
+            // 
+            // RadIpV6
+            // 
+            this.RadIpV6.AutoSize = true;
+            this.RadIpV6.Location = new System.Drawing.Point(6, 49);
+            this.RadIpV6.Name = "RadIpV6";
+            this.RadIpV6.Size = new System.Drawing.Size(75, 17);
+            this.RadIpV6.TabIndex = 1;
+            this.RadIpV6.TabStop = true;
+            this.RadIpV6.Text = "IP V6 Only";
+            this.RadIpV6.UseVisualStyleBackColor = true;
+            this.RadIpV6.CheckedChanged += new System.EventHandler(this.RadIpV6_CheckedChanged);
+            // 
+            // RadIpV4
+            // 
+            this.RadIpV4.AutoSize = true;
+            this.RadIpV4.Location = new System.Drawing.Point(6, 23);
+            this.RadIpV4.Name = "RadIpV4";
+            this.RadIpV4.Size = new System.Drawing.Size(75, 17);
+            this.RadIpV4.TabIndex = 0;
+            this.RadIpV4.TabStop = true;
+            this.RadIpV4.Text = "IP V4 Only";
+            this.RadIpV4.UseVisualStyleBackColor = true;
+            this.RadIpV4.CheckedChanged += new System.EventHandler(this.RadIpV4_CheckedChanged);
+            // 
+            // label96
+            // 
+            this.label96.AutoSize = true;
+            this.label96.Location = new System.Drawing.Point(396, 336);
+            this.label96.Name = "label96";
+            this.label96.Size = new System.Drawing.Size(274, 13);
+            this.label96.TabIndex = 49;
+            this.label96.Text = "Maximum number of served devices (in increments of 10)";
+            // 
+            // NumMaxDevices
+            // 
+            this.NumMaxDevices.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.NumMaxDevices.Location = new System.Drawing.Point(270, 334);
+            this.NumMaxDevices.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.NumMaxDevices.Name = "NumMaxDevices";
+            this.NumMaxDevices.ReadOnly = true;
+            this.NumMaxDevices.Size = new System.Drawing.Size(120, 20);
+            this.NumMaxDevices.TabIndex = 48;
+            this.NumMaxDevices.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.NumMaxDevices.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(604, 170);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(192, 13);
+            this.label13.TabIndex = 47;
+            this.label13.Text = "Discovery Listener Port (Default 32227)";
+            // 
+            // NumDiscoveryPort
+            // 
+            this.NumDiscoveryPort.Location = new System.Drawing.Point(511, 168);
+            this.NumDiscoveryPort.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.NumDiscoveryPort.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.NumDiscoveryPort.Name = "NumDiscoveryPort";
+            this.NumDiscoveryPort.Size = new System.Drawing.Size(87, 20);
+            this.NumDiscoveryPort.TabIndex = 46;
+            this.NumDiscoveryPort.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // ChkEnableDiscovery
+            // 
+            this.ChkEnableDiscovery.AutoSize = true;
+            this.ChkEnableDiscovery.Location = new System.Drawing.Point(483, 256);
+            this.ChkEnableDiscovery.Name = "ChkEnableDiscovery";
+            this.ChkEnableDiscovery.Size = new System.Drawing.Size(276, 17);
+            this.ChkEnableDiscovery.TabIndex = 45;
+            this.ChkEnableDiscovery.Text = "Enable Alpaca Discovery and Management Interface";
+            this.ChkEnableDiscovery.UseVisualStyleBackColor = true;
+            this.ChkEnableDiscovery.CheckedChanged += new System.EventHandler(this.ChkEnableDiscovery_CheckedChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(604, 68);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(82, 13);
+            this.label10.TabIndex = 44;
+            this.label10.Text = "Server Location";
+            // 
+            // addressList
+            // 
+            this.addressList.FormattingEnabled = true;
+            this.addressList.Location = new System.Drawing.Point(270, 115);
+            this.addressList.Name = "addressList";
+            this.addressList.Size = new System.Drawing.Size(328, 21);
+            this.addressList.TabIndex = 39;
+            // 
+            // TxtRemoteServerLocation
+            // 
+            this.TxtRemoteServerLocation.Location = new System.Drawing.Point(270, 65);
+            this.TxtRemoteServerLocation.Name = "TxtRemoteServerLocation";
+            this.TxtRemoteServerLocation.Size = new System.Drawing.Size(328, 20);
+            this.TxtRemoteServerLocation.TabIndex = 43;
+            // 
+            // numPort
+            // 
+            this.numPort.Location = new System.Drawing.Point(511, 142);
+            this.numPort.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.numPort.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numPort.Name = "numPort";
+            this.numPort.Size = new System.Drawing.Size(87, 20);
+            this.numPort.TabIndex = 40;
+            this.numPort.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(604, 144);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(73, 13);
+            this.label8.TabIndex = 42;
+            this.label8.Text = "Server IP Port";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(604, 118);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(91, 13);
+            this.label7.TabIndex = 41;
+            this.label7.Text = "Server IP address";
+            // 
+            // LoggingConfigurationTab
+            // 
+            this.LoggingConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
+            this.LoggingConfigurationTab.Controls.Add(this.groupBox3);
+            this.LoggingConfigurationTab.Controls.Add(this.groupBox2);
+            this.LoggingConfigurationTab.Controls.Add(this.groupBox1);
+            this.LoggingConfigurationTab.Location = new System.Drawing.Point(4, 22);
+            this.LoggingConfigurationTab.Name = "LoggingConfigurationTab";
+            this.LoggingConfigurationTab.Padding = new System.Windows.Forms.Padding(3);
+            this.LoggingConfigurationTab.Size = new System.Drawing.Size(1026, 394);
+            this.LoggingConfigurationTab.TabIndex = 4;
+            this.LoggingConfigurationTab.Text = "Logging Configuration";
+            // 
+            // LblLogRolloverTime
+            // 
+            this.LblLogRolloverTime.AutoSize = true;
+            this.LblLogRolloverTime.Location = new System.Drawing.Point(80, 45);
+            this.LblLogRolloverTime.Name = "LblLogRolloverTime";
+            this.LblLogRolloverTime.Size = new System.Drawing.Size(137, 13);
+            this.LblLogRolloverTime.TabIndex = 68;
+            this.LblLogRolloverTime.Text = "Log rollover time (local time)";
+            // 
+            // ChkRollOverLogs
+            // 
+            this.ChkRollOverLogs.AutoSize = true;
+            this.ChkRollOverLogs.Location = new System.Drawing.Point(6, 19);
+            this.ChkRollOverLogs.Name = "ChkRollOverLogs";
+            this.ChkRollOverLogs.Size = new System.Drawing.Size(194, 17);
+            this.ChkRollOverLogs.TabIndex = 67;
+            this.ChkRollOverLogs.Text = "Make logs roll over at specified time";
+            this.ChkRollOverLogs.UseVisualStyleBackColor = true;
+            this.ChkRollOverLogs.CheckedChanged += new System.EventHandler(this.ChkRollOverLogs_CheckedChanged);
+            // 
+            // DateTimeLogRolloverTime
+            // 
+            this.DateTimeLogRolloverTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
+            this.DateTimeLogRolloverTime.Location = new System.Drawing.Point(6, 42);
+            this.DateTimeLogRolloverTime.Name = "DateTimeLogRolloverTime";
+            this.DateTimeLogRolloverTime.ShowUpDown = true;
+            this.DateTimeLogRolloverTime.Size = new System.Drawing.Size(68, 20);
+            this.DateTimeLogRolloverTime.TabIndex = 66;
+            // 
+            // label99
+            // 
+            this.label99.AutoSize = true;
+            this.label99.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.label99.Location = new System.Drawing.Point(87, 39);
+            this.label99.Name = "label99";
+            this.label99.Size = new System.Drawing.Size(132, 13);
+            this.label99.TabIndex = 65;
+            this.label99.Text = "Remote Server is restarted";
+            // 
+            // label98
+            // 
+            this.label98.AutoSize = true;
+            this.label98.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.label98.Location = new System.Drawing.Point(87, 26);
+            this.label98.Name = "label98";
+            this.label98.Size = new System.Drawing.Size(167, 13);
+            this.label98.TabIndex = 64;
+            this.label98.Text = "Change only takes effect after the";
+            // 
+            // BtnSelectLogFileFolder
+            // 
+            this.BtnSelectLogFileFolder.Location = new System.Drawing.Point(6, 19);
+            this.BtnSelectLogFileFolder.Name = "BtnSelectLogFileFolder";
+            this.BtnSelectLogFileFolder.Size = new System.Drawing.Size(75, 40);
+            this.BtnSelectLogFileFolder.TabIndex = 63;
+            this.BtnSelectLogFileFolder.Text = "Set Log File Base Folder";
+            this.BtnSelectLogFileFolder.UseVisualStyleBackColor = true;
+            this.BtnSelectLogFileFolder.Click += new System.EventHandler(this.BtnSelectLogFileFolder_Click);
+            // 
+            // ChkLogClientIPAddress
+            // 
+            this.ChkLogClientIPAddress.AutoSize = true;
+            this.ChkLogClientIPAddress.Location = new System.Drawing.Point(6, 88);
+            this.ChkLogClientIPAddress.Name = "ChkLogClientIPAddress";
+            this.ChkLogClientIPAddress.Size = new System.Drawing.Size(134, 17);
+            this.ChkLogClientIPAddress.TabIndex = 62;
+            this.ChkLogClientIPAddress.Text = "Log Client\'s IP Address";
+            this.ChkLogClientIPAddress.UseVisualStyleBackColor = true;
+            // 
+            // chkTrace
+            // 
+            this.chkTrace.AutoSize = true;
+            this.chkTrace.Location = new System.Drawing.Point(6, 19);
+            this.chkTrace.Name = "chkTrace";
+            this.chkTrace.Size = new System.Drawing.Size(96, 17);
+            this.chkTrace.TabIndex = 60;
+            this.chkTrace.Text = "Write Log Files";
+            this.chkTrace.UseVisualStyleBackColor = true;
+            // 
+            // chkDebugTrace
+            // 
+            this.chkDebugTrace.AutoSize = true;
+            this.chkDebugTrace.Location = new System.Drawing.Point(6, 42);
+            this.chkDebugTrace.Name = "chkDebugTrace";
+            this.chkDebugTrace.Size = new System.Drawing.Size(135, 17);
+            this.chkDebugTrace.TabIndex = 61;
+            this.chkDebugTrace.Text = "Enable Debug Logging";
+            this.chkDebugTrace.UseVisualStyleBackColor = true;
+            // 
+            // chkAccessLog
+            // 
+            this.chkAccessLog.AutoSize = true;
+            this.chkAccessLog.Location = new System.Drawing.Point(6, 65);
+            this.chkAccessLog.Name = "chkAccessLog";
+            this.chkAccessLog.Size = new System.Drawing.Size(118, 17);
+            this.chkAccessLog.TabIndex = 59;
+            this.chkAccessLog.Text = "Enable Access Log";
+            this.chkAccessLog.UseVisualStyleBackColor = true;
+            // 
+            // CorsConfigurationTab
+            // 
+            this.CorsConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
+            this.CorsConfigurationTab.Controls.Add(this.ChkCorsSupportCredentials);
+            this.CorsConfigurationTab.Controls.Add(this.LabMaxAge);
+            this.CorsConfigurationTab.Controls.Add(this.NumCorsMaxAge);
+            this.CorsConfigurationTab.Controls.Add(this.ChkEnableCors);
+            this.CorsConfigurationTab.Controls.Add(this.label14);
+            this.CorsConfigurationTab.Controls.Add(this.LabHelp2);
+            this.CorsConfigurationTab.Controls.Add(this.LabHelp1);
+            this.CorsConfigurationTab.Controls.Add(this.DataGridCorsOrigins);
+            this.CorsConfigurationTab.Location = new System.Drawing.Point(4, 22);
+            this.CorsConfigurationTab.Name = "CorsConfigurationTab";
+            this.CorsConfigurationTab.Padding = new System.Windows.Forms.Padding(3);
+            this.CorsConfigurationTab.Size = new System.Drawing.Size(1026, 394);
+            this.CorsConfigurationTab.TabIndex = 2;
+            this.CorsConfigurationTab.Text = "CORS Configuration";
+            // 
+            // ChkCorsSupportCredentials
+            // 
+            this.ChkCorsSupportCredentials.AutoSize = true;
+            this.ChkCorsSupportCredentials.Location = new System.Drawing.Point(827, 166);
+            this.ChkCorsSupportCredentials.Name = "ChkCorsSupportCredentials";
+            this.ChkCorsSupportCredentials.Size = new System.Drawing.Size(118, 17);
+            this.ChkCorsSupportCredentials.TabIndex = 10;
+            this.ChkCorsSupportCredentials.Text = "Support Credentials";
+            this.ChkCorsSupportCredentials.UseVisualStyleBackColor = true;
+            // 
+            // LabMaxAge
+            // 
+            this.LabMaxAge.AutoSize = true;
+            this.LabMaxAge.Location = new System.Drawing.Point(495, 286);
+            this.LabMaxAge.Name = "LabMaxAge";
+            this.LabMaxAge.Size = new System.Drawing.Size(169, 13);
+            this.LabMaxAge.TabIndex = 9;
+            this.LabMaxAge.Text = "CORS Max Age Header (seconds)";
+            // 
+            // NumCorsMaxAge
+            // 
+            this.NumCorsMaxAge.Increment = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.NumCorsMaxAge.Location = new System.Drawing.Point(369, 284);
+            this.NumCorsMaxAge.Maximum = new decimal(new int[] {
+            100000000,
+            0,
+            0,
+            0});
+            this.NumCorsMaxAge.Name = "NumCorsMaxAge";
+            this.NumCorsMaxAge.Size = new System.Drawing.Size(120, 20);
+            this.NumCorsMaxAge.TabIndex = 8;
+            this.NumCorsMaxAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.NumCorsMaxAge.Value = new decimal(new int[] {
+            3600,
+            0,
+            0,
+            0});
+            // 
+            // ChkEnableCors
+            // 
+            this.ChkEnableCors.AutoSize = true;
+            this.ChkEnableCors.Location = new System.Drawing.Point(827, 142);
+            this.ChkEnableCors.Name = "ChkEnableCors";
+            this.ChkEnableCors.Size = new System.Drawing.Size(132, 17);
+            this.ChkEnableCors.TabIndex = 7;
+            this.ChkEnableCors.Text = "Enable CORS Support";
+            this.ChkEnableCors.UseVisualStyleBackColor = true;
+            // 
+            // label14
+            // 
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(52, 18);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(921, 23);
+            this.label14.TabIndex = 6;
+            this.label14.Text = "CORS support is not required by most users. It only needs to be enabled when ASCO" +
+    "M Remote is used within a cross site scripting environment.";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // LabHelp2
+            // 
+            this.LabHelp2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabHelp2.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.LabHelp2.Location = new System.Drawing.Point(55, 340);
+            this.LabHelp2.Name = "LabHelp2";
+            this.LabHelp2.Size = new System.Drawing.Size(918, 20);
+            this.LabHelp2.TabIndex = 5;
+            this.LabHelp2.Text = " If a CORS request comes from an origin that is not in this list, the returned Ac" +
+    "cess-Control-Allow-Origin header will contain the first entry in this table.";
+            this.LabHelp2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // LabHelp1
+            // 
+            this.LabHelp1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabHelp1.ForeColor = System.Drawing.SystemColors.Highlight;
+            this.LabHelp1.Location = new System.Drawing.Point(49, 320);
+            this.LabHelp1.Name = "LabHelp1";
+            this.LabHelp1.Size = new System.Drawing.Size(924, 20);
+            this.LabHelp1.TabIndex = 2;
+            this.LabHelp1.Text = "The default origin * indicates that all hosts are permitted to access the Remote " +
+    "Server";
+            this.LabHelp1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // DataGridCorsOrigins
+            // 
+            this.DataGridCorsOrigins.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DataGridCorsOrigins.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.DataGridCorsOrigins.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DataGridCorsOrigins.EnableHeadersVisualStyles = false;
+            this.DataGridCorsOrigins.Location = new System.Drawing.Point(219, 50);
+            this.DataGridCorsOrigins.Name = "DataGridCorsOrigins";
+            this.DataGridCorsOrigins.Size = new System.Drawing.Size(586, 217);
+            this.DataGridCorsOrigins.TabIndex = 0;
+            // 
+            // ChkUseUtcTime
+            // 
+            this.ChkUseUtcTime.AutoSize = true;
+            this.ChkUseUtcTime.Location = new System.Drawing.Point(6, 111);
+            this.ChkUseUtcTime.Name = "ChkUseUtcTime";
+            this.ChkUseUtcTime.Size = new System.Drawing.Size(125, 17);
+            this.ChkUseUtcTime.TabIndex = 69;
+            this.ChkUseUtcTime.Text = "Use UTC time in logs";
+            this.ChkUseUtcTime.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.ChkRollOverLogs);
+            this.groupBox1.Controls.Add(this.DateTimeLogRolloverTime);
+            this.groupBox1.Controls.Add(this.LblLogRolloverTime);
+            this.groupBox1.Location = new System.Drawing.Point(379, 185);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(261, 74);
+            this.groupBox1.TabIndex = 70;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Log Roll-over";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.BtnSelectLogFileFolder);
+            this.groupBox2.Controls.Add(this.label98);
+            this.groupBox2.Controls.Add(this.label99);
+            this.groupBox2.Location = new System.Drawing.Point(379, 279);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(261, 74);
+            this.groupBox2.TabIndex = 71;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Log File Location";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.chkTrace);
+            this.groupBox3.Controls.Add(this.chkAccessLog);
+            this.groupBox3.Controls.Add(this.chkDebugTrace);
+            this.groupBox3.Controls.Add(this.ChkUseUtcTime);
+            this.groupBox3.Controls.Add(this.ChkLogClientIPAddress);
+            this.groupBox3.Location = new System.Drawing.Point(379, 32);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(261, 135);
+            this.groupBox3.TabIndex = 72;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Logging Configuration";
+            // 
             // SetupForm
             // 
             this.AcceptButton = this.BtnCancel;
@@ -3434,10 +3583,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.NumMaxDevices)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumDiscoveryPort)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).EndInit();
+            this.LoggingConfigurationTab.ResumeLayout(false);
             this.CorsConfigurationTab.ResumeLayout(false);
             this.CorsConfigurationTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumCorsMaxAge)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridCorsOrigins)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -3446,14 +3602,10 @@
         private System.Windows.Forms.Button BtnCancel;
         private System.Windows.Forms.Button BtnOK;
         private System.Windows.Forms.CheckBox chkAutoConnect;
-        private System.Windows.Forms.CheckBox chkTrace;
-        private System.Windows.Forms.CheckBox chkDebugTrace;
-        private System.Windows.Forms.CheckBox chkAccessLog;
         private System.Windows.Forms.CheckBox chkManagementInterfaceEnabled;
         private System.Windows.Forms.ErrorProvider errorProvider1;
         private System.Windows.Forms.CheckBox ChkStartWithApiEnabled;
         private System.Windows.Forms.CheckBox ChkRunDriversInSeparateThreadss;
-        private System.Windows.Forms.CheckBox ChkLogClientIPAddress;
         private System.Windows.Forms.CheckBox ChkIncludeDriverExceptionsInJsonResponses;
         private System.Windows.Forms.TabPage ServerConfigurationTab;
         private System.Windows.Forms.Label label10;
@@ -3684,5 +3836,22 @@
         private System.Windows.Forms.RadioButton RadIpV4AndV6;
         private System.Windows.Forms.RadioButton RadIpV6;
         private System.Windows.Forms.RadioButton RadIpV4;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.FolderBrowserDialog DlgSetLogFolderPath;
+        private System.Windows.Forms.TabPage LoggingConfigurationTab;
+        private System.Windows.Forms.CheckBox ChkRollOverLogs;
+        private System.Windows.Forms.DateTimePicker DateTimeLogRolloverTime;
+        private System.Windows.Forms.Label label99;
+        private System.Windows.Forms.Label label98;
+        private System.Windows.Forms.Button BtnSelectLogFileFolder;
+        private System.Windows.Forms.CheckBox ChkLogClientIPAddress;
+        private System.Windows.Forms.CheckBox chkTrace;
+        private System.Windows.Forms.CheckBox chkDebugTrace;
+        private System.Windows.Forms.CheckBox chkAccessLog;
+        private System.Windows.Forms.Label LblLogRolloverTime;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.CheckBox ChkUseUtcTime;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }

@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ASCOM.Remote</RootNamespace>
     <AssemblyName>ASCOM.RemoteClientLocalServer</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
@@ -235,6 +235,7 @@
     <Content Include="ReadMe.htm" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="LocalServer.snk" />
   </ItemGroup>
   <ItemGroup>
