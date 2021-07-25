@@ -65,18 +65,18 @@ Name: "{commoncf}\ASCOM\Uninstall\Remote"
 
 [Files]
 ; LOCAL SERVER FILES
-Source: "..\Remote Client Local Server\bin\{#BuildType}\{#RemoteClientLocalServerName}.exe"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Remote Client Local Server\bin\{#BuildType}\{#RemoteClientLocalServerName}.pdb"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+;Source: "..\Remote Client Local Server\bin\{#BuildType}\{#RemoteClientLocalServerName}.exe"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+;Source: "..\Remote Client Local Server\bin\{#BuildType}\{#RemoteClientLocalServerName}.pdb"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
 
 ; DYNAMIC CLIENT GENERATOR
-Source: "..\ASCOM.DynamicRemoteClients\bin\{#BuildType}\{#DynamicRemoteClientsName}.exe"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\ASCOM.DynamicRemoteClients\bin\{#BuildType}\{#DynamicRemoteClientsName}.pdb"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+;Source: "..\ASCOM.DynamicRemoteClients\bin\{#BuildType}\{#DynamicRemoteClientsName}.exe"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+;Source: "..\ASCOM.DynamicRemoteClients\bin\{#BuildType}\{#DynamicRemoteClientsName}.pdb"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
 
 ; LOCAL SERVER AND DRIVER SUPPORT FILES
-Source: "..\Remote Client Device Base Classes\bin\{#BuildType}\{#RemoteClientBaseClassesName}.dll"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Remote Client Device Base Classes\bin\{#BuildType}\{#RemoteClientBaseClassesName}.pdb"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Remote Client Local Server\bin\{#BuildType}\RestSharp.dll"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
-Source: "..\Remote Client Local Server\bin\{#BuildType}\Newtonsoft.Json.dll"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+;Source: "..\Remote Client Device Base Classes\bin\{#BuildType}\{#RemoteClientBaseClassesName}.dll"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+;Source: "..\Remote Client Device Base Classes\bin\{#BuildType}\{#RemoteClientBaseClassesName}.pdb"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+;Source: "..\Remote Client Local Server\bin\{#BuildType}\RestSharp.dll"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+;Source: "..\Remote Client Local Server\bin\{#BuildType}\Newtonsoft.Json.dll"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
 
 ; REMOTE SERVER FILES
 Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
@@ -91,14 +91,14 @@ Source: "..\Remote Server\ascomicon.ico"; DestDir: "{#RemoteServerDirectory}"; F
 Source: "..\Remote Server\bin\{#BuildType}\Newtonsoft.Json.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
 
 ; SET NETWORK PERMISSIONS FILES
-Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ClientComponents ServerComponents
-Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ClientComponents ServerComponents
+Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents 
+Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
 
 ; SET NETWORK PERMISSIONS SUPPORT FILES
-Source: "..\SetNetworkPermissions\bin\{#BuildType}\WindowsFirewallHelper.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ClientComponents ServerComponents
-Source: "..\SetNetworkPermissions\bin\{#BuildType}\CommandLine.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ClientComponents ServerComponents
+Source: "..\SetNetworkPermissions\bin\{#BuildType}\WindowsFirewallHelper.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\SetNetworkPermissions\bin\{#BuildType}\CommandLine.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
 ; The following file is required on installations where only .NET 4.6 is installed. This is because the netstandard.dll is only loaded into the GAC in .NET version 4.7 and later
-Source: "..\SetNetworkPermissions\bin\{#BuildType}\netstandard.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ClientComponents ServerComponents; Check: not IsDotNet4Point7Installed
+Source: "..\SetNetworkPermissions\bin\{#BuildType}\netstandard.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents; Check: not IsDotNet4Point7Installed
 
 ; DOCUMENTATION
 Source: "..\Documentation\{#ASCOMRemoteDocumentationFileName}"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
@@ -110,23 +110,23 @@ Source: "ASCOM.ico"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
 ;Source: "..\Web Content\index.html"; DestDir: "{commonpf}\ASCOM\RemoteServer"; Components: WebContent
 
 [Run]
-Filename: "{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"; Parameters: "/regserver"; Components: ClientComponents
-Filename: "{#RemoteClientDirectory}\{#DynamicRemoteClientsName}.exe"; Parameters: "/installersetup"; Components: ClientComponents
-Filename: "{#RemoteServerDirectory}\{#SetNetworkPermissionsName}.exe"; Parameters: "--localserverpath ""{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"""; Components: ClientComponents; Flags: runhidden
+;Filename: "{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"; Parameters: "/regserver"; Components: ClientComponents
+;Filename: "{#RemoteClientDirectory}\{#DynamicRemoteClientsName}.exe"; Parameters: "/installersetup"; Components: ClientComponents
+;Filename: "{#RemoteServerDirectory}\{#SetNetworkPermissionsName}.exe"; Parameters: "--localserverpath ""{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"""; Components: ClientComponents; Flags: runhidden
 
 [UninstallRun]
-Filename: "{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"; Parameters: "/unregserver"; Components: ClientComponents
+;Filename: "{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"; Parameters: "/unregserver"; Components: ClientComponents
 
 [Registry]
 
 [Icons]
 Name: "{group}\ASCOM Remote Documentation"; Filename: "{#RemoteServerDirectory}\{#ASCOMRemoteDocumentationFileName}";
 Name: "{group}\Remote Server"; Filename: "{#RemoteServerDirectory}\{#RemoteServerName}.exe"; Components: ServerComponents
-Name: "{group}\Remote Client Configuration"; Filename: "{#RemoteClientDirectory}\{#DynamicRemoteClientsName}.exe"; Components: ClientComponents
+;Name: "{group}\Remote Client Configuration"; Filename: "{#RemoteClientDirectory}\{#DynamicRemoteClientsName}.exe"; Components: ClientComponents
 
 [Components]
 Name: "ServerComponents"; Description: "Remote Server"; Flags: disablenouninstallwarning
-Name: "ClientComponents"; Description: "Remote Clients"; Flags: disablenouninstallwarning
+;Name: "ClientComponents"; Description: "Remote Clients"; Flags: disablenouninstallwarning
 
 [Types]
 Name: "Custom"; Description: "Custom"; Flags: iscustom
@@ -147,12 +147,9 @@ begin
   { Create the pages }
 
   LightMsgPage := CreateOutputMsgPage(wpWelcome,
-    'ASCOM Remote Clients - Please Note', 'Remote clients have been superseded in Platform 6.5',
-    'In Platform 6.5, Alpaca devices that support discovery will appear automatically in the Chooser device list.'#13#13 +
-    'When a new Alpaca device is selected, the Chooser will create a driver from information provided by the device and this can be used in ASCOM client programs in the normal way.'#13#13 +
-    'If required, drivers can be configured manually through the Chooser in a similar fashion to the original Remote Client drivers.'#13#13 +
-    'We recommend that you migrate from Remote Clients to Chooser''s Dynamic Clients because these are more capable e.g. they will re-discover known Alpaca devices if their IP addresses change.'#13#13 + 
-    'The original Remote Clients will not be developed further and do not contain support for CoverCalibrator devices.');
+    'ASCOM Remote Clients - Please Note', 'The Remote clients have been superseded in Platform 6.5',
+    'The Remote Clients are no longer included in this installer, please use the Dynamic Clients in Platform 6.5 instead.' #13#13 +
+    'Dynamic clients can be created through the Platform 6.5 Chooser.');
 end;
 
 //
