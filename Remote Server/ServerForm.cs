@@ -33,6 +33,9 @@ namespace ASCOM.Remote
     {
         #region Constants and Enums
 
+        // Testing Constants - NEVER TO BE USED IN PRODUCTION!
+        private const bool FORCE_JSON_RESPONSE_TO_LOWER_CASE_TESTING_ONLY = false;
+
         // NOTE - Setup page HTML is set in the ReturnHTMLPageOrImage  method
 
         private const string SERVER_TRACELOGGER_NAME = "RemoteServer";
@@ -6020,6 +6023,12 @@ namespace ASCOM.Remote
 
         private void SendResponseValueToClient(RequestData requestData, Exception ex, string jsonResponse)
         {
+            if (FORCE_JSON_RESPONSE_TO_LOWER_CASE_TESTING_ONLY & jsonResponse.Length < 1000)
+            {
+                jsonResponse = jsonResponse.ToLowerInvariant();
+                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "TESTING - JSON RESPONCE FORCED TO LOWER CASE");
+            }
+
             if (ex == null) // Command ran successfully so return the JSON encoded result
             {
                 LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("OK - no exception. Thread: {0}, Json: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), (jsonResponse.Length < 1000) ? jsonResponse : jsonResponse.Substring(0, 1000)));
