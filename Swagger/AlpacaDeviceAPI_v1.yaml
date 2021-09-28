@@ -7406,7 +7406,7 @@ paths:
   '/telescope/{device_number}/declinationrate':
     get:
       summary: Returns the telescope's declination tracking rate.
-      description: 'The declination tracking rate (arcseconds per second, default = 0.0)'
+      description: 'The declination tracking rate (arcseconds per SI second, default = 0.0). Please note that rightascensionrate units are arcseconds per sidereal second.'
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -7436,7 +7436,7 @@ paths:
                 description: Error message describing why the command cannot be processed
     put:
       summary: Sets the telescope's declination tracking rate.
-      description: Sets the declination tracking rate (arcseconds per second)
+      description: 'Sets the declination tracking rate (arcseconds per SI second). Please note that rightascensionrate units are arcseconds per sidereal second.'
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -7868,7 +7868,7 @@ paths:
   '/telescope/{device_number}/rightascensionrate':
     get:
       summary: Returns the telescope's right ascension tracking rate.
-      description: 'The right ascension tracking rate (arcseconds per second, default = 0.0)'
+      description: 'The right ascension tracking rate (arcseconds per sidereal second, default = 0.0). Please note that the declinationrate units are arcseconds per SI second.'
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -7898,7 +7898,7 @@ paths:
                 description: Error message describing why the command cannot be processed
     put:
       summary: Sets the telescope's right ascension tracking rate.
-      description: Sets the right ascension tracking rate (arcseconds per second)
+      description: 'Sets the right ascension tracking rate (arcseconds per sidereal second). Please note that the declinationrate units are arcseconds per SI second.'
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
