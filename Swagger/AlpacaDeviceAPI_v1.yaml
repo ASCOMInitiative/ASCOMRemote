@@ -7469,7 +7469,7 @@ paths:
               type: object
               properties:
                 DeclinationRate:
-                  description: Declination tracking rate (arcseconds per second)
+                  description: Declination tracking rate (arcseconds per SI second). Please note that rightascensionrate units are arcseconds per sidereal second.
                   type: number
                   format: double
                 ClientID:
@@ -7931,7 +7931,7 @@ paths:
               type: object
               properties:
                 RightAscensionRate:
-                  description: Right ascension tracking rate (arcseconds per second)
+                  description: Right ascension tracking rate (arcseconds per sideral second). Please note that the declinationrate units are arcseconds per SI second.
                   type: number
                   format: double
                 ClientID:
