@@ -2011,7 +2011,7 @@ namespace ASCOM.Remote
                                     string value = ""; // Initialise a variable to hold the value
                                     if (keyValuePair.Length > 1) // The key does have a value
                                     {
-                                        value = HttpUtility.UrlDecode(keyValuePair[1].Trim()); // Extract the value so long as one exists
+                                        value = keyValuePair[1].Trim(); // Extract the value so long as one exists
                                     }
                                     else // The key does not have a value
                                     {
@@ -5969,25 +5969,25 @@ namespace ASCOM.Remote
             {
                 case "Single":
                     float singleValue;
-                    if (!float.TryParse(parameterStringValue, NumberStyles.Number, CultureInfo.InvariantCulture, out singleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a floating point value");
+                    if (!float.TryParse(parameterStringValue, NumberStyles.Number | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out singleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a floating point value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, singleValue.ToString()));
                     return (T)(object)singleValue;
 
                 case "Double":
                     double doubleValue;
-                    if (!double.TryParse(parameterStringValue, NumberStyles.Number, CultureInfo.InvariantCulture, out doubleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a floating point value");
+                    if (!double.TryParse(parameterStringValue, NumberStyles.Number | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out doubleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a floating point value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, doubleValue.ToString()));
                     return (T)(object)doubleValue;
 
                 case "Int16":
                     short shortValue;
-                    if (!short.TryParse(parameterStringValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out shortValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to an Int16 value");
+                    if (!short.TryParse(parameterStringValue, NumberStyles.Integer | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out shortValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to an Int16 value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, shortValue.ToString()));
                     return (T)(object)shortValue;
 
                 case "Int32":
                     int intValue;
-                    if (!int.TryParse(parameterStringValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out intValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to an Int32 value");
+                    if (!int.TryParse(parameterStringValue, NumberStyles.Integer | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out intValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to an Int32 value");
                     LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, intValue.ToString()));
                     return (T)(object)intValue;
 
