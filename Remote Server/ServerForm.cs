@@ -2011,7 +2011,7 @@ namespace ASCOM.Remote
                                     string value = ""; // Initialise a variable to hold the value
                                     if (keyValuePair.Length > 1) // The key does have a value
                                     {
-                                        value = keyValuePair[1].Trim(); // Extract the value so long as one exists
+                                        value = value = HttpUtility.UrlDecode(keyValuePair[1].Trim()); // Extract the value so long as one exists 
                                     }
                                     else // The key does not have a value
                                     {
