@@ -10,7 +10,6 @@ using WindowsFirewallHelper;
 
 using ASCOM.Utilities;
 using System.Net;
-using System.Net.Sockets;
 using System.Runtime.ExceptionServices;
 using System.Reflection;
 
@@ -36,8 +35,10 @@ namespace ASCOM.Remote
 
             try
             {
-                TL = new TraceLogger("", "SetNetworkPermissions");
-                TL.Enabled = true;
+                TL = new TraceLogger("", "SetNetworkPermissions")
+                {
+                    Enabled = true
+                };
 
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
                 TL.LogMessage("SetNetworkPermissions", string.Format("Version {0}, Run on {1}", version.ToString(), DateTime.Now.ToString("dddd d MMMM yyyy HH:mm:ss")));
@@ -104,7 +105,7 @@ namespace ASCOM.Remote
         {
             foreach (Error err in errs)
             {
-                TL.LogMessage("HandleParseError", $"Error stopped processing: {err.StopsProcessing}, {err.ToString()}");
+                TL.LogMessage("HandleParseError", $"Error stopped processing: {err.StopsProcessing}, {err}");
             }
         }
 
@@ -426,8 +427,10 @@ namespace ASCOM.Remote
             };
 
             TL.LogMessage("SendNetshCommand", "Creating netsh process");
-            Process process = new Process();
-            process.StartInfo = psi;
+            Process process = new Process
+            {
+                StartInfo = psi
+            };
             process.OutputDataReceived += (sender, args) => TL.LogMessage("SetAcl", string.Format("NetSh output: {0}", args.Data));
 
             TL.LogMessage("SendNetshCommand", "Starting process");
