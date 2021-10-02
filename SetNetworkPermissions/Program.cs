@@ -12,6 +12,8 @@ using ASCOM.Utilities;
 using System.Net;
 using System.Runtime.ExceptionServices;
 using System.Reflection;
+using WindowsFirewallHelper.Collections;
+using WindowsFirewallHelper.FirewallRules;
 
 namespace ASCOM.Remote
 {
@@ -114,20 +116,21 @@ namespace ASCOM.Remote
             try // Make sure that we still try and set the firewall rules even if we bomb out trying to get information on the firewall configuration
             {
                 TL.LogMessage("QueryFireWall", string.Format("Firewall version: {0}", FirewallManager.Version.ToString())); // Log the firewall version in use
-                foreach (IProfile profile in FirewallManager.Instance.Profiles)
+                foreach (IFirewallProfile profile in FirewallManager.Instance.Profiles)
                 {
                     TL.LogMessage("QueryFireWall", string.Format("Found current firewall profile {0}, enabled: {1}", profile.Type.ToString(), profile.IsActive));
                 }
 
-                IFirewall[] thirdPartyFirewalls = FirewallManager.ThirdPartyFirewalls;
-                TL.LogMessage("QueryFireWall", string.Format("number of third party firewalls: {0}", thirdPartyFirewalls.Length));
-                foreach (IFirewall firewall in thirdPartyFirewalls)
+                COMTypeResolver cOMTypeResolver = new COMTypeResolver();
+                IFirewallProductsCollection thirdPartyFirewalls = FirewallManager.GetRegisteredProducts(cOMTypeResolver);
+                TL.LogMessage("QueryFireWall", string.Format("number of third party firewalls: {0}", thirdPartyFirewalls.Count));
+                foreach (FirewallProduct firewall in thirdPartyFirewalls)
                 {
-                    TL.LogMessage("QueryFireWall", string.Format("Found third party firewall: {0}", firewall.Name));
-                    foreach (IProfile profile in firewall.Profiles)
-                    {
-                        TL.LogMessage("QueryFireWall", string.Format("Found third party firewall profile {0}, enabled: {1}", profile.Type.ToString(), profile.IsActive));
-                    }
+                    TL.LogMessage("QueryFireWall", $"Found third party firewall: {firewall.Name} - {firewall.FriendlyName}");
+                    //foreach (IFirewallProfile profile in firewall.)
+                    //{
+                    //    TL.LogMessage("QueryFireWall", string.Format("Found third party firewall profile {0}, enabled: {1}", profile.Type.ToString(), profile.IsActive));
+                    //}
                 }
             }
             catch (Exception ex)
@@ -147,44 +150,43 @@ namespace ASCOM.Remote
                         TL.LogMessage("SetFireWallOutboundRule", string.Format("Supplied path: {0}, full path: {1}", applicationPath, applicationPathFull));
 
                         // Now clear up previous instances of this rule
-                        IEnumerable<IRule> query = FirewallManager.Instance.Rules.Where(ruleName => ruleName.Name.ToUpperInvariant().StartsWith(LOCAL_SERVER_OUTBOUND_RULE_NAME.ToUpperInvariant()));
-                        List<IRule> queryCopy = query.ToList();
-                        foreach (IRule existingRule in queryCopy)
+                        IEnumerable<IFirewallRule> query = FirewallManager.Instance.Rules.Where(ruleName => ruleName.Name.ToUpperInvariant().StartsWith(LOCAL_SERVER_OUTBOUND_RULE_NAME.ToUpperInvariant()));
+                        List<IFirewallRule> queryCopy = query.ToList();
+                        foreach (IFirewallRule existingRule in queryCopy)
                         {
                             TL.LogMessage("SetFireWallOutboundRule", string.Format("Found rule: {0}", existingRule.Name));
                             FirewallManager.Instance.Rules.Remove(existingRule); // Delete the rule
                             TL.LogMessage("SetFireWallOutboundRule", string.Format("Deleted rule: {0}", existingRule.Name));
                         }
 
-                        IRule rule = FirewallManager.Instance.CreateApplicationRule(FirewallManager.Instance.GetProfile().Type, LOCAL_SERVER_OUTBOUND_RULE_NAME, FirewallAction.Allow, applicationPathFull);
+                        IFirewallRule rule = FirewallManager.Instance.CreateApplicationRule(FirewallManager.Instance.GetProfile(FirewallProfiles.Domain | FirewallProfiles.Private | FirewallProfiles.Public).Type, LOCAL_SERVER_OUTBOUND_RULE_NAME, FirewallAction.Allow, applicationPathFull);
                         rule.Direction = FirewallDirection.Outbound;
-                        rule.Profiles = FirewallProfiles.Domain | FirewallProfiles.Private | FirewallProfiles.Public;
 
                         // Add the group name to the outbound rule
-                        if (rule is WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRule)
+                        if (rule is FirewallWASRule) //Rules.StandardRule)
                         {
                             TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a standard rule");
-                            ((WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRule)rule).Grouping = GROUP_NAME;
+                            ((FirewallWASRule)rule).Grouping = GROUP_NAME;
                             TL.LogMessage("SetHttpSysFireWallRule", $"Group name set to: {GROUP_NAME}");
                         }
                         else
                         {
                             TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is not a standard rule");
                         }
-                        if (rule is WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin7)
+                        if (rule is FirewallWASRuleWin7)
                         {
                             TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a WIN7 rule");
-                            ((WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin7)rule).Grouping = GROUP_NAME;
+                            ((FirewallWASRuleWin7)rule).Grouping = GROUP_NAME;
                             TL.LogMessage("SetHttpSysFireWallRule", $"Group name set to: {GROUP_NAME}");
                         }
                         else
                         {
                             TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is not a WIN7 rule");
                         }
-                        if (rule is WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin8)
+                        if (rule is FirewallWASRuleWin8)
                         {
                             TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a WIN8 rule");
-                            ((WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin8)rule).Grouping = GROUP_NAME;
+                            ((FirewallWASRuleWin8)rule).Grouping = GROUP_NAME;
                             TL.LogMessage("SetHttpSysFireWallRule", $"Group name set to: {GROUP_NAME}");
                         }
                         else
@@ -222,20 +224,21 @@ namespace ASCOM.Remote
             try // Make sure that we still try and set the firewall rules even if we bomb out trying to get information on the firewall configuration
             {
                 TL.LogMessage("QueryFireWall", string.Format("Firewall version: {0}", FirewallManager.Version.ToString())); // Log the firewall version in use
-                foreach (IProfile profile in FirewallManager.Instance.Profiles)
+                foreach (IFirewallProfile profile in FirewallManager.Instance.Profiles)
                 {
                     TL.LogMessage("QueryFireWall", string.Format("Found current firewall profile {0}, enabled: {1}", profile.Type.ToString(), profile.IsActive));
                 }
 
-                IFirewall[] thirdPartyFirewalls = FirewallManager.ThirdPartyFirewalls;
-                TL.LogMessage("QueryFireWall", string.Format("number of third party firewalls: {0}", thirdPartyFirewalls.Length));
-                foreach (IFirewall firewall in thirdPartyFirewalls)
+                COMTypeResolver cOMTypeResolver = new COMTypeResolver();
+                IFirewallProductsCollection thirdPartyFirewalls = FirewallManager.GetRegisteredProducts(cOMTypeResolver);
+                TL.LogMessage("QueryFireWall", string.Format("number of third party firewalls: {0}", thirdPartyFirewalls.Count));
+                foreach (FirewallProduct firewall in thirdPartyFirewalls)
                 {
-                    TL.LogMessage("QueryFireWall", string.Format("Found third party firewall: {0}", firewall.Name));
-                    foreach (IProfile profile in firewall.Profiles)
-                    {
-                        TL.LogMessage("QueryFireWall", string.Format("Found third party firewall profile {0}, enabled: {1}", profile.Type.ToString(), profile.IsActive));
-                    }
+                    TL.LogMessage("QueryFireWall", $"Found third party firewall: {firewall.Name} - {firewall.FriendlyName}");
+                    //foreach (IFirewallProfile profile in firewall.Profiles)
+                    //{
+                    //    TL.LogMessage("QueryFireWall", string.Format("Found third party firewall profile {0}, enabled: {1}", profile.Type.ToString(), profile.IsActive));
+                    //}
                 }
             }
             catch (Exception ex)
@@ -253,9 +256,9 @@ namespace ASCOM.Remote
                     if (ushort.TryParse(portNumberString, out ushort portNumber)) // Make sure the supplied port number is a valid value before processing it
                     {
                         // Clear up redundant firewall rules left over from previous versions (ASCOM Remote Server - Inbound and Outbound)
-                        IEnumerable<IRule> queryRedundant = FirewallManager.Instance.Rules.Where(ruleName => ruleName.Name.ToUpperInvariant().StartsWith(REMOTE_SERVER_RULE_NAME_BASE.ToUpperInvariant()));
-                        List<IRule> queryRedundantCopy = queryRedundant.ToList();
-                        foreach (IRule existingRule in queryRedundantCopy)
+                        IEnumerable<IFirewallRule> queryRedundant = FirewallManager.Instance.Rules.Where(ruleName => ruleName.Name.ToUpperInvariant().StartsWith(REMOTE_SERVER_RULE_NAME_BASE.ToUpperInvariant()));
+                        List<IFirewallRule> queryRedundantCopy = queryRedundant.ToList();
+                        foreach (IFirewallRule existingRule in queryRedundantCopy)
                         {
                             TL.LogMessage("SetHttpSysFireWallRule", string.Format("Found redundant rule: {0}", existingRule.Name));
                             FirewallManager.Instance.Rules.Remove(existingRule); // Delete the rule
@@ -263,61 +266,18 @@ namespace ASCOM.Remote
                         }
 
                         // Check whether the specified file exists and if so delete it
-                        IEnumerable<IRule> query = FirewallManager.Instance.Rules.Where(ruleName => ruleName.Name.ToUpperInvariant().Equals(HTTP_DOT_SYS_INBOUND_RULE_NAME.ToUpperInvariant()));
-                        List<IRule> queryCopy = query.ToList();
-                        foreach (IRule existingRule in queryCopy)
+                        IEnumerable<IFirewallRule> query = FirewallManager.Instance.Rules.Where(ruleName => ruleName.Name.ToUpperInvariant().Equals(HTTP_DOT_SYS_INBOUND_RULE_NAME.ToUpperInvariant()));
+                        List<IFirewallRule> queryCopy = query.ToList();
+                        foreach (IFirewallRule existingRule in queryCopy)
                         {
                             TL.LogMessage("SetHttpSysFireWallRule", string.Format("Found rule: {0}", existingRule.Name));
                             FirewallManager.Instance.Rules.Remove(existingRule); // Delete the rule
                             TL.LogMessage("SetHttpSysFireWallRule", string.Format("Deleted rule: {0}", existingRule.Name));
                         }
 
-                        IRule rule = FirewallManager.Instance.CreateApplicationRule(FirewallManager.Instance.GetProfile().Type, HTTP_DOT_SYS_INBOUND_RULE_NAME, FirewallAction.Allow, "SYSTEM");
-                        rule.Direction = FirewallDirection.Inbound;
-                        rule.Profiles = FirewallProfiles.Domain | FirewallProfiles.Private | FirewallProfiles.Public;
-                        rule.LocalPorts = new ushort[1] { portNumber }; // Create an array containing the port number
-                        TL.LogMessage("SetHttpSysFireWallRule", "Successfully created inbound rule");
-
-
-                        // Add edge traversal permission to the inbound rule so that the rule will apply to packets delivered in encapsulated transmission formats such as VPNs
-                        if (rule is WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRule)
-                        {
-                            TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a standard rule");
-                            ((WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRule)rule).EdgeTraversal = true;
-                            ((WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRule)rule).Grouping = GROUP_NAME;
-                            TL.LogMessage("SetHttpSysFireWallRule", $"Edge traversal set {true}, Group name set to: {GROUP_NAME}");
-                        }
-                        else
-                        {
-                            TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is not a standard rule");
-                        }
-                        if (rule is WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin7)
-                        {
-                            TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a WIN7 rule");
-                            ((WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin7)rule).EdgeTraversalOptions = WindowsFirewallHelper.FirewallAPIv2.EdgeTraversalAction.Allow;
-                            ((WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin7)rule).Grouping = GROUP_NAME;
-                            TL.LogMessage("SetHttpSysFireWallRule", $"Edge traversal set {true}, Group name set to: {GROUP_NAME}");
-                        }
-                        else
-                        {
-                            TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is not a WIN7 rule");
-                        }
-                        if (rule is WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin8)
-                        {
-                            TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a WIN8 rule");
-                            ((WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin8)rule).EdgeTraversalOptions = WindowsFirewallHelper.FirewallAPIv2.EdgeTraversalAction.Allow;
-                            ((WindowsFirewallHelper.FirewallAPIv2.Rules.StandardRuleWin8)rule).Grouping = GROUP_NAME;
-                            TL.LogMessage("SetHttpSysFireWallRule", $"Edge traversal set {true}, Group name set to: {GROUP_NAME}");
-                        }
-                        else
-                        {
-                            TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is not a WIN8 rule");
-                        }
-
-                        TL.LogMessage("SetHttpSysFireWallRule", "Successfully created inbound firewall rule");
-
-                        FirewallManager.Instance.Rules.Add(rule);
-                        TL.LogMessage("SetHttpSysFireWallRule", $"Successfully added inbound rule for HTTP.SYS permitting listening on port {portNumber}");
+                        SetHttpRule(FirewallProfiles.Private, portNumber);
+                        SetHttpRule(FirewallProfiles.Public, portNumber);
+                        SetHttpRule(FirewallProfiles.Domain, portNumber);
                     }
                     else
                     {
@@ -339,7 +299,60 @@ namespace ASCOM.Remote
             }
 
         }
+        private static void SetHttpRule(FirewallProfiles firewallProfile, ushort portNumber)
+        {
+            IFirewallRule rule = FirewallManager.Instance.CreateApplicationRule(
+                FirewallManager.Instance.GetProfile(firewallProfile).Type,
+                HTTP_DOT_SYS_INBOUND_RULE_NAME,
+                FirewallAction.Allow,
+                "SYSTEM");
+            rule.Direction = FirewallDirection.Inbound;
+            rule.Protocol = FirewallProtocol.TCP;
+            rule.LocalPorts = new ushort[1] { portNumber }; // Create an array containing the port number
+            TL.LogMessage("SetHttpSysFireWallRule", "Successfully created inbound rule");
 
+
+            // Add edge traversal permission to the inbound rule so that the rule will apply to packets delivered in encapsulated transmission formats such as VPNs
+            if (rule is FirewallWASRule)
+            {
+                TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a standard rule");
+                ((FirewallWASRule)rule).EdgeTraversal = true;
+                ((FirewallWASRule)rule).Grouping = GROUP_NAME;
+                TL.LogMessage("SetHttpSysFireWallRule", $"Edge traversal set {true}, Group name set to: {GROUP_NAME}");
+            }
+            else
+            {
+                TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is not a standard rule");
+            }
+            if (rule is FirewallWASRuleWin7)
+            {
+                TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a WIN7 rule");
+                ((FirewallWASRuleWin7)rule).EdgeTraversalOptions = EdgeTraversalAction.Allow;
+                ((FirewallWASRuleWin7)rule).Grouping = GROUP_NAME;
+                TL.LogMessage("SetHttpSysFireWallRule", $"Edge traversal set {true}, Group name set to: {GROUP_NAME}");
+            }
+            else
+            {
+                TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is not a WIN7 rule");
+            }
+            if (rule is FirewallWASRuleWin8)
+            {
+                TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a WIN8 rule");
+                ((FirewallWASRuleWin8)rule).EdgeTraversalOptions = EdgeTraversalAction.Allow;
+                ((FirewallWASRuleWin8)rule).Grouping = GROUP_NAME;
+                TL.LogMessage("SetHttpSysFireWallRule", $"Edge traversal set {true}, Group name set to: {GROUP_NAME}");
+            }
+            else
+            {
+                TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is not a WIN8 rule");
+            }
+
+            TL.LogMessage("SetHttpSysFireWallRule", "Successfully created inbound firewall rule");
+
+            FirewallManager.Instance.Rules.Add(rule);
+            TL.LogMessage("SetHttpSysFireWallRule", $"Successfully added inbound rule for HTTP.SYS permitting listening on port {portNumber} for {firewallProfile}");
+            TL.BlankLine();
+        }
         private static void SetAcl(string uri, string userName)
         {
             try
@@ -350,7 +363,6 @@ namespace ASCOM.Remote
                 // Parse out the port number and resource value
                 int doubleSlashIndex = uri.IndexOf("//");
                 int colonIndex;
-
 
                 if (uri.Contains("[")) // The URI contains an IPv6 address
                 {
@@ -364,49 +376,54 @@ namespace ASCOM.Remote
                 string portAndUri = uri.Substring(colonIndex + 1);
                 TL.LogMessage("SetAcl", $"Colon index: {colonIndex}, Port and URI: {portAndUri}");
 
-
+                string netshCommand = "";
                 foreach (IPAddress ipAddress in HostPc.IpV4Addresses)
                 {
                     TL.LogMessage("SetAcl", $"Found IP Network Address: {ipAddress}");
 
-                    string removeCommand = $@"http delete urlacl url=http://{ipAddress}:{portAndUri}";
-                    TL.LogMessage("SetAcl", $"Sending UrlAcl Delete command to NetSh: {removeCommand}");
+                    netshCommand += $@"http delete urlacl url=http://{ipAddress}:{portAndUri}" + "\r\n";
+                    TL.LogMessage("SetAcl", $"Sending UrlAcl Delete command to NetSh: {netshCommand}");
 
-                    // Remove the URL ACL if it exists
-                    SendNetshCommand(removeCommand);
-                    TL.BlankLine();
                 }
 
+                // Remove the URL ACL if it exists
+                SendNetshCommand(netshCommand);
+                TL.BlankLine();
+
+                netshCommand = "";
                 foreach (IPAddress ipAddress in HostPc.IpV6Addresses)
                 {
                     TL.LogMessage("SetAcl", $"Found IP Network Address: {ipAddress}");
 
-                    string removeCommand = $@"http delete urlacl url=http://[{ipAddress}]:{portAndUri}";
-                    TL.LogMessage("SetAcl", $"Sending UrlAcl Delete command to NetSh: {removeCommand}");
+                    netshCommand += $@"http delete urlacl url=http://[{ipAddress}]:{portAndUri}" + "\r\n";
+                    TL.LogMessage("SetAcl", $"Sending UrlAcl Delete command to NetSh: {netshCommand}");
 
-                    // Remove the URL ACL if it exists
-                    SendNetshCommand(removeCommand);
-                    TL.BlankLine();
                 }
 
+                // Remove the URL ACL if it exists
+                SendNetshCommand(netshCommand);
+                TL.BlankLine();
+
+                netshCommand = "";
                 // Remove localhost entry if present
-                string localHostCommand = $@"http delete urlacl url=http://127.0.0.1:{portAndUri}";
+                string localHostCommand = $@"http delete urlacl url=http://127.0.0.1:{portAndUri}" + "\r\n";
                 TL.LogMessage("SetAcl", $"Sending UrlAcl Delete command to NetSh: {localHostCommand}");
-                SendNetshCommand(localHostCommand);
+                netshCommand += localHostCommand;
 
                 // Remove + wild card entry if present
-                string plusCommand = $@"http delete urlacl url=http://+:{portAndUri}";
+                string plusCommand = $@"http delete urlacl url=http://+:{portAndUri}" + "\r\n";
                 TL.LogMessage("SetAcl", $"Sending UrlAcl Delete command to NetSh: {plusCommand}");
-                SendNetshCommand(plusCommand);
+                netshCommand += plusCommand;
 
                 // Remove * wild card entry if present
-                string starCommand = $@"http delete urlacl url=http://*:{portAndUri}";
+                string starCommand = $@"http delete urlacl url=http://*:{portAndUri}" + "\r\n";
                 TL.LogMessage("SetAcl", $"Sending UrlAcl Delete command to NetSh: {starCommand}");
-                SendNetshCommand(starCommand);
+                netshCommand += starCommand;
 
                 // Now send the new UrlAcl
                 TL.LogMessage("SetAcl", $"Sending new UrlAcl command to NetSh: {command}");
-                SendNetshCommand(command);
+                netshCommand += command + "\r\n";
+                SendNetshCommand(netshCommand);
 
             }
             catch (Exception ex)
