@@ -387,10 +387,10 @@ namespace ASCOM.Remote
                 }
 
                 // Remove the URL ACL if it exists
-                SendNetshCommand(netshCommand);
+                //SendNetshCommand(netshCommand);
                 TL.BlankLine();
 
-                netshCommand = "";
+                //netshCommand = "";
                 foreach (IPAddress ipAddress in HostPc.IpV6Addresses)
                 {
                     TL.LogMessage("SetAcl", $"Found IP Network Address: {ipAddress}");
@@ -401,10 +401,10 @@ namespace ASCOM.Remote
                 }
 
                 // Remove the URL ACL if it exists
-                SendNetshCommand(netshCommand);
+                //SendNetshCommand(netshCommand);
                 TL.BlankLine();
 
-                netshCommand = "";
+                //netshCommand = "";
                 // Remove localhost entry if present
                 string localHostCommand = $@"http delete urlacl url=http://127.0.0.1:{portAndUri}" + "\r\n";
                 TL.LogMessage("SetAcl", $"Sending UrlAcl Delete command to NetSh: {localHostCommand}");
@@ -423,6 +423,7 @@ namespace ASCOM.Remote
                 // Now send the new UrlAcl
                 TL.LogMessage("SetAcl", $"Sending new UrlAcl command to NetSh: {command}");
                 netshCommand += command + "\r\n";
+                TL.LogMessage("SetAcl", $"NetSh command length: {netshCommand.Length} NetSh Command: {netshCommand}");
                 SendNetshCommand(netshCommand);
 
             }
