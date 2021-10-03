@@ -20,7 +20,7 @@
 
 [Setup]
 AppID={{0ee690ae-7927-4ee7-b851-f5877c077ff5}
-#define MyAppVer GetFileVersion("..\Remote Server\bin\Release\ASCOM.RemoteServer.exe") ; define variable
+#define MyAppVer GetVersionNumbersString("..\Remote Server\bin\Release\ASCOM.RemoteServer.exe") ; define variable
 
 AppName=ASCOM Remote
 AppCopyright=Copyright © 2021 ASCOM Initiative
@@ -36,7 +36,7 @@ DefaultGroupName="ASCOM Remote"
 DisableDirPage=yes
 DisableProgramGroupPage=no
 ; Must be at least Windows 7 SP1 or later to run
-MinVersion=6.1.7601 
+MinVersion=6.1SP1
 OutputDir="Build"
 #emit "OutputBaseFilename=ASCOMRemote(" + MyAppVer +")setup"
 PrivilegesRequired=admin
@@ -59,9 +59,6 @@ SignTool = SignASCOMRemote
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
-
-[Dirs]
-Name: "{commoncf}\ASCOM\Uninstall\Remote"
 
 [Files]
 ; LOCAL SERVER FILES
