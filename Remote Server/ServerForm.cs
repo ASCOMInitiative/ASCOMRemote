@@ -25,6 +25,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using System.Security.Principal;
+using Newtonsoft.Json.Linq;
 
 namespace ASCOM.Remote
 {
@@ -185,6 +186,18 @@ namespace ASCOM.Remote
         // Run driver in separate thread constants
         internal const int DESTROY_DRIVER = int.MinValue;
         internal const int ASYNC_WAIT_LOOP_TIME = 20; // Number of milliseconds to wait for work before timing out and going round the wait loop to run Application.DoEvents()
+
+        // GetBase64Image constants
+        private const string BASE64RESPONSE_COMMAND_NAME = "GetBase64Image";
+        private const int BASE64RESPONSE_VERSION_NUMBER = 1;
+        private const int BASE64RESPONSE_VERSION_POSITION = 0;
+        private const int BASE64RESPONSE_OUTPUTTYPE_POSITION = 4;
+        private const int BASE64RESPONSE_TRANSMISSIONTYPE_POSITION = 8;
+        private const int BASE64RESPONSE_RANK_POSITION = 12;
+        private const int BASE64RESPONSE_DIMENSION0_POSITION = 16;
+        private const int BASE64RESPONSE_DIMENSION1_POSITION = 20;
+        private const int BASE64RESPONSE_DIMENSION2_POSITION = 24;
+        private const int BASE64RESPONSE_DATA_POSITION = 48;
 
         #endregion
 
@@ -4113,12 +4126,32 @@ namespace ASCOM.Remote
             string parameters;
             bool raw;
             Exception exReturn = null;
+            Stopwatch sw = new Stopwatch();
+            string responseJson = "";
+            Stopwatch swOverall = new Stopwatch();
+            swOverall.Start();
 
             try
             {
                 switch (deviceType + "." + requestData.Elements[URL_ELEMENT_METHOD])
                 {
                     // COMMON METHODS
+                    case "*.action":
+                        command = GetParameter<string>(requestData, SharedConstants.ACTION_COMMAND_PARAMETER_NAME);
+                        parameters = GetParameter<string>(requestData, SharedConstants.ACTION_PARAMETERS_PARAMETER_NAME);
+
+                        // Handle the special GetBase64Image Action that only applies to the Remote Server when handling Camera devices, otherwise pass to the device
+                        if ((requestData.Elements[URL_ELEMENT_DEVICE_TYPE] == "camera") & (command.ToLowerInvariant() == BASE64RESPONSE_COMMAND_NAME.ToLowerInvariant()))
+                        {
+                            // Get the base64 encoded image
+                            deviceResponse = GetBase64Image(requestData);
+                        }
+                        else // Process driver commands
+                        {
+                            deviceResponse = device.Action(command, parameters);
+                        }
+                        break;
+
                     case "*.description":
                         deviceResponse = device.Description; break;
                     case "*.driverinfo":
@@ -4132,11 +4165,7 @@ namespace ASCOM.Remote
                         raw = GetParameter<bool>(requestData, SharedConstants.RAW_PARAMETER_NAME);
                         deviceResponse = device.CommandString(command, raw);
                         break;
-                    case "*.action":
-                        command = GetParameter<string>(requestData, SharedConstants.ACTION_COMMAND_PARAMETER_NAME);
-                        parameters = GetParameter<string>(requestData, SharedConstants.ACTION_PARAMETERS_PARAMETER_NAME);
-                        deviceResponse = device.Action(command, parameters);
-                        break;
+
                     // CAMERA
                     case "camera.lastexposurestarttime":
                         deviceResponse = device.LastExposureStartTime; break;
@@ -4164,14 +4193,183 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
+            sw.Restart();
             StringResponse responseClass = new StringResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
-            string responseJson = JsonConvert.SerializeObject(responseClass);
+
+            responseJson = JsonConvert.SerializeObject(responseClass);
+            //responseJson = string.Format("{{\"ClientTransactionID\":36,\"ServerTransactionID\":36,\"ErrorNumber\":0,\"ErrorMessage\":\"\",\"Value\":\"{0}\"}}", deviceResponse);
+
+            LogMessage1(requestData, "ReturnString", $"Serialise string time: {sw.ElapsedMilliseconds}ms.");
+            sw.Restart();
             SendResponseValueToClient(requestData, exReturn, responseJson);
+            LogMessage1(requestData, "ReturnString", $"Transmission time to client: {sw.ElapsedMilliseconds}ms. Overall time: {swOverall.ElapsedMilliseconds}ms.");
+
         }
+
+        private static string GetBase64Image(RequestData requestData)
+        {
+            Stopwatch sw = new Stopwatch();
+            Stopwatch swOverall = new Stopwatch();
+
+            string deviceResponse;
+            // Process the Remote Server's internal base64 image array command
+            Array imageArray = null;
+            byte[] imageArrayBytes = new byte[0];
+            int imageArrayElementSize = 0;
+            string imageArrayElementTypeName;
+            SharedConstants.ImageArrayElementTypes intendedElementType = SharedConstants.ImageArrayElementTypes.Unknown;
+            SharedConstants.ImageArrayElementTypes transmissionElementType = SharedConstants.ImageArrayElementTypes.Unknown;
+            string imageArrayTypeName = "";
+
+            swOverall.Start();
+            sw.Start();
+
+            imageArray = (Array)ActiveObjects[requestData.DeviceKey].DeviceObject.ImageArray;       //.LastImageArray;
+            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"TIME TO GET IMAGE ARRAY: {sw.ElapsedMilliseconds}ms.");
+
+            // Throw an exception if no image is available
+            if (imageArray is null) throw new ASCOM.InvalidOperationException("No image is available.");
+
+            // Set the array type
+            imageArrayTypeName = imageArray.GetType().Name;
+            imageArrayElementTypeName = imageArray.GetType().GetElementType().Name;
+
+            // Set the element type of the intended array and default the transmission element type to be the same as the intended type
+            switch (imageArrayElementTypeName)
+            {
+                case "Byte":
+                    intendedElementType = SharedConstants.ImageArrayElementTypes.Byte;
+                    transmissionElementType = SharedConstants.ImageArrayElementTypes.Byte;
+                    break;
+
+                case "Int16":
+                    intendedElementType = SharedConstants.ImageArrayElementTypes.Int16;
+                    transmissionElementType = SharedConstants.ImageArrayElementTypes.Int16;
+                    break;
+
+                case "Int32":
+                    intendedElementType = SharedConstants.ImageArrayElementTypes.Int32;
+                    transmissionElementType = SharedConstants.ImageArrayElementTypes.Int32;
+                    break;
+
+                case "Int64":
+                    intendedElementType = SharedConstants.ImageArrayElementTypes.Int64;
+                    transmissionElementType = SharedConstants.ImageArrayElementTypes.Int64;
+                    break;
+
+                default:
+                    throw new InvalidValueException("GetBase64Image: Received an unsupported return array type: " + imageArrayTypeName + ", with elements of type: " + imageArrayElementTypeName);
+            }
+            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Received array of Rank {imageArray.Rank} of Length {imageArray.Length:n0} and type {imageArray.GetType().Name}, Element type: {imageArrayElementTypeName}, Enum type: {intendedElementType}");
+
+            // Special handling for Int32 arrays - see if we can convert them to Int16 arrays
+            if (imageArrayElementTypeName == typeof(Int32).Name)
+            {
+                // Attempt to convert Int32 arrays to Int16 arrays.
+                // An OverflowException will be thrown if any element can not be converted. If this happens we catch the exception and abandon the conversion so that the original Int32 array will be used
+                try
+                {
+                    switch (imageArray.Rank)
+                    {
+                        case 2:
+                            short[,] short2dArray = new short[imageArray.GetUpperBound(0) + 1, imageArray.GetUpperBound(1) + 1];
+                            int[,] int2dArray = (int[,])imageArray;
+                            sw.Restart();
+                            Parallel.For(0, imageArray.GetLength(0) - 1, (i) =>
+                            {
+                                Parallel.For(0, imageArray.GetLength(1) - 1, (j) =>
+                                {
+                                    short2dArray[i, j] = Convert.ToInt16(int2dArray[i, j]);
+                                });
+                            });
+                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"CONVERTED 2D INT32 ARRAY TO INT16 ARRAY - Time: {sw.ElapsedMilliseconds}ms, Input length: {imageArray.Length}, Output length: {short2dArray.Length}");
+
+                            imageArray = short2dArray;
+                            transmissionElementType = SharedConstants.ImageArrayElementTypes.Int16; // Flag that we are transmitting the array in Int16 format
+                            break;
+
+                        case 3:
+                            sw.Restart();
+                            short[,,] short3dArray = new short[imageArray.GetUpperBound(0) + 1, imageArray.GetUpperBound(1) + 1, imageArray.GetUpperBound(2) + 1];
+                            int[,,] int3dArray = (int[,,])imageArray;
+                            Parallel.For(0, imageArray.GetLength(2) - 1, (k) =>
+                            {
+                                Parallel.For(0, imageArray.GetLength(1) - 1, (j) =>
+                                {
+                                    Parallel.For(0, imageArray.GetLength(0) - 1, (i) =>
+                                    {
+                                        short3dArray[i, j, k] = Convert.ToInt16(int3dArray[i, j, k]);
+                                    });
+                                });
+                            });
+                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"CONVERTED 3D INT32 ARRAY TO INT16 ARRAY - Time: {sw.ElapsedMilliseconds}ms, Input length: {imageArray.Length}, Output length: {short3dArray.Length}");
+
+                            imageArray = short3dArray;
+                            transmissionElementType = SharedConstants.ImageArrayElementTypes.Int16; // Flag that we are transmitting the array in Int16 format
+                            break;
+
+                        default:
+                            throw new InvalidOperationException($"GetBase64Image - The camera returned an array of rank: {imageArray.Rank}, which is not supported.");
+                    }
+
+                    // Update the image array type and element type names
+                    imageArrayTypeName = imageArray.GetType().Name;
+                    imageArrayElementTypeName = imageArray.GetType().GetElementType().Name;
+                }
+                catch (OverflowException) // Other exceptions will go back to the client.
+                {
+                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Overflow exception when trying to convert the Int32 array to Int16, abandoning conversion and using original Int32 array.");
+                }
+            }
+            sw.Restart();
+            // Now process the array. Either the array from the camera or the conversion to use smaller elements
+            imageArrayElementSize = GetManagedSize(imageArray.GetType().GetElementType()); // Find the size of each array element from the array element type
+            imageArrayBytes = new byte[imageArray.Length * imageArrayElementSize + BASE64RESPONSE_DATA_POSITION]; // Size the byte array as the product of the element size and the number of elements and add space for the metadata
+
+            // Set the response version number to 1
+            int responseVersionNumber = BASE64RESPONSE_VERSION_NUMBER;
+            BitConverter.GetBytes(responseVersionNumber).CopyTo(imageArrayBytes, BASE64RESPONSE_VERSION_POSITION);
+
+            // Set the Output array element type in the imageArrayBytes byte array
+            BitConverter.GetBytes((int)intendedElementType).CopyTo(imageArrayBytes, BASE64RESPONSE_OUTPUTTYPE_POSITION);
+
+            // Set the transmission array element type in the imageArrayBytes byte array
+            BitConverter.GetBytes((int)transmissionElementType).CopyTo(imageArrayBytes, BASE64RESPONSE_TRANSMISSIONTYPE_POSITION);
+
+            // Set the array rank in the imageArrayBytes byte array
+            BitConverter.GetBytes(imageArray.Rank).CopyTo(imageArrayBytes, BASE64RESPONSE_RANK_POSITION);
+
+            // Set the array dimension 0 size in the imageArrayBytes byte array
+            BitConverter.GetBytes(imageArray.GetLength(0)).CopyTo(imageArrayBytes, BASE64RESPONSE_DIMENSION0_POSITION);
+
+            // Set the array dimension 1 size in the imageArrayBytes byte array
+            BitConverter.GetBytes(imageArray.GetLength(1)).CopyTo(imageArrayBytes, BASE64RESPONSE_DIMENSION1_POSITION);
+
+            // Set the array dimension 2 size in the imageArrayBytes byte array
+            if (imageArray.Rank > 2)
+            {
+                BitConverter.GetBytes(imageArray.GetLength(2)).CopyTo(imageArrayBytes, BASE64RESPONSE_DIMENSION2_POSITION);
+            }
+
+            // Copy the image array to the response byte array
+            if (imageArray != null)
+            {
+                Buffer.BlockCopy(imageArray, 0, imageArrayBytes, BASE64RESPONSE_DATA_POSITION, imageArray.Length * imageArrayElementSize);
+            }
+            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"TIME TO COPY ARRAY TO BYTEARRAY: {sw.ElapsedMilliseconds}ms."); sw.Restart();
+
+            deviceResponse = Convert.ToBase64String(imageArrayBytes, 0, imageArrayBytes.Length, Base64FormattingOptions.None);
+            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"TIME TO CONVERT TOBASE64STRING: {sw.ElapsedMilliseconds}ms. String length: {deviceResponse.Length}"); sw.Restart();
+            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"OVERALL GETBASE64IMAGE PROCESSING TIME: {swOverall.ElapsedMilliseconds}ms.");
+
+            imageArrayBytes = null;
+            return deviceResponse;
+        }
+
         private void ReturnShortIndexedString(RequestData requestData)
         {
             string deviceResponse = "";
@@ -4265,7 +4463,13 @@ namespace ASCOM.Remote
                             responseList.Add(action);
                         }
 
+                        // Add the GetBase64Image command to the list since we will handle this
+                        if (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] == "camera")
+                        {
+                            responseList.Add(BASE64RESPONSE_COMMAND_NAME);
+                        }
                         break;
+
                     case "camera.gains":
                         deviceResponse = (ArrayList)device.Gains;
                         foreach (string gain in deviceResponse)
@@ -4273,6 +4477,7 @@ namespace ASCOM.Remote
                             responseList.Add(gain);
                         }
                         break;
+
                     case "camera.readoutmodes":
                         deviceResponse = (ArrayList)device.ReadoutModes;
                         foreach (string mode in deviceResponse)
@@ -4280,6 +4485,7 @@ namespace ASCOM.Remote
                             responseList.Add(mode);
                         }
                         break;
+
                     case "camera.offsets":
                         deviceResponse = (ArrayList)device.Offsets;
                         foreach (string offset in deviceResponse)
@@ -5385,7 +5591,7 @@ namespace ASCOM.Remote
                                             ClientTransactionID = requestData.ClientTransactionID,
                                             ServerTransactionID = requestData.ServerTransactionID,
                                             Rank = deviceResponse.Rank,
-                                            Type = (int)SharedConstants.ImageArrayElementTypes.Int,
+                                            Type = (int)SharedConstants.ImageArrayElementTypes.Int32,
                                             Dimension0Length = deviceResponse.GetLength(0)
                                         };
                                         if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
@@ -5407,7 +5613,7 @@ namespace ASCOM.Remote
                                             ClientTransactionID = requestData.ClientTransactionID,
                                             ServerTransactionID = requestData.ServerTransactionID,
                                             Rank = deviceResponse.Rank,
-                                            Type = (int)SharedConstants.ImageArrayElementTypes.Int,
+                                            Type = (int)SharedConstants.ImageArrayElementTypes.Int32,
                                             Dimension0Length = deviceResponse.GetLength(0)
                                         };
                                         if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
