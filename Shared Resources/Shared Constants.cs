@@ -119,19 +119,19 @@ namespace ASCOM.Remote
             Int16 = 1,
             Int32 = 2,
             Double = 3,
-            Float = 4,
+            Single = 4,
             Byte = 5,
             Int64 = 6
         }
 
-        // Enum used by the remote client to indicate what type of image array transfer should be used
+        // Enum used by the remote client to indicate what type of Alpaca image array transfer should be used
         public enum ImageArrayTransferType
         {
             JSON = 0,
             Base64HandOff = 1,
         }
 
-        // Enum used by the remote client to indicate what type of compression should be used in responses
+        // Enum used by the remote client to indicate what type of compression should be used in Alpaca responses
         public enum ImageArrayCompression
         {
             None = 0,
