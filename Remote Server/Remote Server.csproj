@@ -30,7 +30,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -245,8 +245,8 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ASCOM.Alpaca.Components">
-      <Version>1.0.0-alpha23ze</Version>
+    <PackageReference Include="ASCOM.Common.Components">
+      <Version>1.0.0-alpha24e</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>

@@ -15,7 +15,7 @@
 #define public RemoteClientBaseClassesName "ASCOM.RemoteClientBaseClasses" ; Remote client support DLL name
 #define public ASCOMRemoteDocumentationFileName "ASCOM Remote Installation and Configuration.pdf"; ASCOM Remote documentation file
 
-; Specifiy debug or release build;#define public BuildType "Debug" ; Type of build - Release or Debug
+; Specifiy debug or release build;define public BuildType "Debug" ; Type of build - Release or Debug
 #define public BuildType "Release" ; Type of build - Release or Debug
 
 [Setup]
@@ -86,6 +86,7 @@ Source: "..\Remote Server\ascomicon.ico"; DestDir: "{#RemoteServerDirectory}"; F
 
 ; REMOTE SERVER SUPPORT FILES
 Source: "..\Remote Server\bin\{#BuildType}\Newtonsoft.Json.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\Remote Server\bin\{#BuildType}\ASCOM.Common.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
 
 ; SET NETWORK PERMISSIONS FILES
 Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents 

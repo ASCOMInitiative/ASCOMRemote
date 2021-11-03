@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 using ASCOM.Common.Alpaca;
+using ASCOM.Common.Helpers;
 using ASCOM.DeviceInterface;
 using ASCOM.Utilities;
 using Newtonsoft.Json;
@@ -2959,6 +2960,7 @@ namespace ASCOM.Remote
                                             case "ispulseguiding":
                                             case "canfastreadout":
                                             case "fastreadout":
+                                            case "canimagearraybytes": // Remote server extension method
                                                 ReturnBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             // DOUBLE Get Values
                                             case "ccdtemperature":
@@ -3906,6 +3908,10 @@ namespace ASCOM.Remote
                     case "camera.fastreadout":
                         deviceResponse = device.FastReadout; break;
 
+                    // ASCOM Remote extension method indicating that the image array can be downloaded as a byte array to improve performance
+                    case "camera.canimagearraybytes":
+                        deviceResponse = true; break;
+
                     #endregion
 
                     #region Dome Methods
@@ -4236,12 +4242,15 @@ namespace ASCOM.Remote
             // Convert the supplied array to a byte[]
             imageArrayBytes = imageArray.ToByteArray(1, 0, "");
             imageArray = null;
+            GC.Collect();
 
             deviceResponse = Convert.ToBase64String(imageArrayBytes, 0, imageArrayBytes.Length, Base64FormattingOptions.None);
             LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"TIME TO CONVERT TOBASE64STRING: {sw.ElapsedMilliseconds}ms. String length: {deviceResponse.Length}"); sw.Restart();
             LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"OVERALL GETBASE64IMAGE PROCESSING TIME: {swOverall.ElapsedMilliseconds}ms.");
 
             imageArrayBytes = null;
+            GC.Collect();
+
             return deviceResponse;
         }
 
@@ -4250,12 +4259,8 @@ namespace ASCOM.Remote
             Stopwatch sw = new Stopwatch();
             Stopwatch swOverall = new Stopwatch();
 
-            HttpStatusCode httpStatusCode;
-            string httpStatusMessage;
-            string httpContentType;
-
-            Array imageArray = null;
-            byte[] imageArrayBytes = new byte[0];
+            Array imageArray;
+            byte[] imageArrayBytes;
 
             swOverall.Start();
             sw.Start();
@@ -4274,24 +4279,19 @@ namespace ASCOM.Remote
                 LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"OVERALL IMAGEARRAYBYTES PROCESSING TIME: {sw.ElapsedMilliseconds}ms.");
                 sw.Restart();
 
-                httpStatusCode = HttpStatusCode.OK;
-                httpStatusMessage = $"OK";
-                httpContentType = "application/octet-stream";
             }
             catch (Exception ex)
             {
-                imageArrayBytes = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+                // Set the error number to a non-zero value and add the error message as the data payload.
+                imageArrayBytes = AlpacaTools.ErrorMessageToByteArray(1, ExceptionHelpers.ErrorCodeFromException(ex), ex.Message);
                 LogException1(requestData, "Exception creating image byte array", ex.ToString());
-                httpStatusCode = HttpStatusCode.InternalServerError;
-                httpStatusMessage = $"Exception creating image byte array: {ex.Message}";
-                httpContentType = "text/plain";
             }
 
             try
             {
-                requestData.Response.ContentType = httpContentType;
-                requestData.Response.StatusCode = (int)httpStatusCode; // Set the response status and status code
-                requestData.Response.StatusDescription = httpStatusMessage;
+                requestData.Response.ContentType = "application/octet-stream";
+                requestData.Response.StatusCode = (int)HttpStatusCode.OK; // Set the response status and status code
+                requestData.Response.StatusDescription = $"OK";
 
                 // Condition requestData.Element so that the logging lines below will work correctly
                 if (requestData.Elements == null) requestData.Elements = new string[5] { "", "", "", "", "SendResponseToClient" };
@@ -4324,8 +4324,9 @@ namespace ASCOM.Remote
                 LogException1(requestData, "ListenerException", string.Format("Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
             }
 
+            // Force release of the large byte array
             imageArrayBytes = null;
-
+            GC.Collect();
         }
 
         private void ReturnShortIndexedString(RequestData requestData)
@@ -4425,7 +4426,6 @@ namespace ASCOM.Remote
                         if (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] == "camera")
                         {
                             responseList.Add(BASE64RESPONSE_COMMAND_NAME);
-                            responseList.Add("ImageArrayBytes");
                         }
                         break;
 
