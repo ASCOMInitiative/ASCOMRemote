@@ -2960,7 +2960,6 @@ namespace ASCOM.Remote
                                             case "ispulseguiding":
                                             case "canfastreadout":
                                             case "fastreadout":
-                                            case "canimagearraybytes": // Remote server extension method
                                                 ReturnBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             // DOUBLE Get Values
                                             case "ccdtemperature":
@@ -3907,10 +3906,6 @@ namespace ASCOM.Remote
                         deviceResponse = device.CanFastReadout; break;
                     case "camera.fastreadout":
                         deviceResponse = device.FastReadout; break;
-
-                    // ASCOM Remote extension method indicating that the image array can be downloaded as a byte array to improve performance
-                    case "camera.canimagearraybytes":
-                        deviceResponse = true; break;
 
                     #endregion
 
