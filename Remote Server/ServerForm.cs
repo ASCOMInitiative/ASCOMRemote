@@ -4273,6 +4273,9 @@ namespace ASCOM.Remote
                 // Convert the supplied array to a byte[]
                 imageArrayBytes = imageArray.ToByteArray(1, 0, "");
                 imageArray = null;
+                
+                // Force a garbage collection of large objects to free memory
+                GC.Collect(2, GCCollectionMode.Forced, true);
 
                 ArrayMetadataV1 arrayMetadataV1 = imageArrayBytes.GetMetadataV1();
                 LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Converted byte array - Version: {arrayMetadataV1.MetadataVersion}, Image element type: {arrayMetadataV1.ImageElementType}, Transmission element type: {arrayMetadataV1.TransmissionElementType}, Rank: {arrayMetadataV1.Rank}, Dimension 0: {arrayMetadataV1.Dimension0}, Dimension 1: {arrayMetadataV1.Dimension1}, Dimension 2: {arrayMetadataV1.Dimension2}");
@@ -5508,6 +5511,7 @@ namespace ASCOM.Remote
             // These flags indicate whether the client supports optimised, faster transfer modes for camera image data
             SharedConstants.ImageArrayCompression compressionType = SharedConstants.ImageArrayCompression.None; // Flag to indicate what type of compression the client supports - initialised to indicate a default of no compression
             bool base64HandoffRequested = false; // Flag to indicate whether the client supports base64 serialisation
+            bool imageBytesRequested = false; // Flag to indicate whether the client requests that the image be transferred as a byte array
 
             Stopwatch sw = new Stopwatch(); // Create a stopwatch to time the process
 
@@ -5534,7 +5538,16 @@ namespace ASCOM.Remote
                             if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Base64 encoding supported - Header {SharedConstants.BASE64_HANDOFF_SUPPORTED} = {requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_SUPPORTED]}");
                         }
 
+                        // Determine whether the client request that the image be returned as a byte array
+                        if (requestData.Request.Headers[SharedConstants.ACCEPT_HEADER_NAME].ToLowerInvariant().Contains(SharedConstants.IMAGE_BYTES_MIME_TYPE)) // Client supports image bytes transfer
+                        {
+                            imageBytesRequested = true;
+                            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Image bytes requested - Received header {requestData.Request.Headers[SharedConstants.ACCEPT_HEADER_NAME]}");
+                        }
+
+                        // Get the image array from the device
                         deviceResponse = device.ImageArray;
+
                         if (deviceResponse != null)
                         {
                             LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("ImageArray Rank: {0}, Length: {1:n0}", deviceResponse.Rank, deviceResponse.Length));
@@ -5542,7 +5555,20 @@ namespace ASCOM.Remote
                             switch (deviceResponse.Rank)
                             {
                                 case 2:
-                                    if (base64HandoffRequested) // Handle base64 hand-off processing
+                                    // TEST CODE REMOVE BEFORE RELEASE
+                                    // imageBytesRequested = false;
+                                    // base64HandoffRequested = false;
+                                    // TEST CODE REMOVE BEFORE RELEASE
+
+                                    // Prefer the ImageBytes mechanic if requested because it is fastest
+                                    if (imageBytesRequested)
+                                    {
+                                        ReturnImageBytes(requestData, ref deviceResponse);
+                                        return;
+                                    }
+
+                                    // Fall back to base64-handoff if requested
+                                    else if (base64HandoffRequested)
                                     {
                                         LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
                                         responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
@@ -5557,14 +5583,25 @@ namespace ASCOM.Remote
                                         if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
                                         LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
                                     }
-                                    else // Normal JSON encoding of the array elements
+
+                                    // Finally fall back to JSON encoding of the array elements
+                                    else
                                     {
                                         responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
                                         responseClass.Value = (int[,])deviceResponse;
                                     }
                                     break;
+
                                 case 3:
-                                    if (base64HandoffRequested) // Handle base64 hand-off processing
+                                    // Prefer the ImageBytes mechanic if requested because it is fastest
+                                    if (imageBytesRequested)
+                                    {
+                                        ReturnImageBytes(requestData, ref deviceResponse);
+                                        return;
+                                    }
+
+                                    // Fall back to base64-handoff if requested
+                                    else if (base64HandoffRequested)
                                     {
                                         LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
                                         responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
@@ -5579,7 +5616,9 @@ namespace ASCOM.Remote
                                         if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
                                         LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
                                     }
-                                    else // Normal JSON encoding of the array elements
+
+                                    // Finally fall back to JSON encoding of the array elements
+                                    else
                                     {
                                         responseClass = new IntArray3DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID);
                                         responseClass.Value = (int[,,])deviceResponse;
@@ -5782,6 +5821,82 @@ namespace ASCOM.Remote
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
 
             GC.Collect();
+        }
+
+        private static void ReturnImageBytes(RequestData requestData, ref Array deviceResponse)
+        {
+            Stopwatch sw = new Stopwatch();
+            Stopwatch swOverall = new Stopwatch();
+
+            byte[] imageArrayBytes;
+
+            swOverall.Start();
+            sw.Start();
+
+            try
+            {
+                // Convert the supplied array to a byte[]
+                imageArrayBytes = deviceResponse.ToByteArray(1, 0, "");
+                deviceResponse = null;
+
+                // Force a garbage collection of large objects to free memory
+                GC.Collect(2, GCCollectionMode.Forced, true);
+
+                ArrayMetadataV1 arrayMetadataV1 = imageArrayBytes.GetMetadataV1();
+                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Converted byte array - Version: {arrayMetadataV1.MetadataVersion}, Image element type: {arrayMetadataV1.ImageElementType}, Transmission element type: {arrayMetadataV1.TransmissionElementType}, Rank: {arrayMetadataV1.Rank}, Dimension 0: {arrayMetadataV1.Dimension0}, Dimension 1: {arrayMetadataV1.Dimension1}, Dimension 2: {arrayMetadataV1.Dimension2}");
+                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"OVERALL IMAGEARRAYBYTES PROCESSING TIME: {sw.ElapsedMilliseconds}ms.");
+                sw.Restart();
+
+            }
+            catch (Exception ex)
+            {
+                // Set the error number to a non-zero value and add the error message as the data payload.
+                imageArrayBytes = AlpacaTools.ErrorMessageToByteArray(1, ExceptionHelpers.ErrorCodeFromException(ex), ex.Message);
+                LogException1(requestData, "Exception creating image byte array", ex.ToString());
+            }
+
+            try
+            {
+                requestData.Response.ContentType = SharedConstants.IMAGE_BYTES_MIME_TYPE;
+                requestData.Response.StatusCode = (int)HttpStatusCode.OK; // Set the response status and status code
+                requestData.Response.StatusDescription = $"OK";
+
+                // Condition requestData.Element so that the logging lines below will work correctly
+                if (requestData.Elements == null) requestData.Elements = new string[5] { "", "", "", "", "SendResponseToClient" };
+                if (requestData.Elements.Length < 5)
+                {
+                    string[] elements = requestData.Elements;
+                    Array.Resize<string>(ref elements, 5);
+                    elements[3] = "";
+                    elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND];
+                    requestData.Elements = elements;
+                }
+
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Before setting response bytes - Length: {0:n0}, Response is null: {1}", imageArrayBytes.Length, requestData.Response == null));
+                requestData.Response.ContentLength64 = imageArrayBytes.Length;
+
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
+                requestData.Response.OutputStream.Write(imageArrayBytes, 0, imageArrayBytes.Length);
+
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "After writing bytes to output stream");
+                requestData.Response.OutputStream.Close();
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "After closing output stream");
+                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"IMAGEARRAYBYTES TRANSMISSION TIME: {sw.ElapsedMilliseconds}ms.");
+                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"IMAGEARRAYBYTES OVERALL TIME: {swOverall.ElapsedMilliseconds}ms.");
+
+            }
+            catch (HttpListenerException ex) // Deal with communications errors here but allow any other errors to go through and be picked up by the main error handler
+            {
+                LogException1(requestData, "ListenerException", string.Format("Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
+            }
+
+            // Force release of the large byte array
+            imageArrayBytes = null;
+
+            // Force a garbage collection of large objects to free memory
+            GC.Collect(2, GCCollectionMode.Forced, true);
+
+            return;
         }
 
         private void ReturnCanMoveAxis(RequestData requestData)

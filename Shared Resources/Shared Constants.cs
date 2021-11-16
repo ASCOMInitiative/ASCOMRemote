@@ -149,6 +149,10 @@ namespace ASCOM.Remote
         public const string BASE64_HANDOFF_SUPPORTED = "true"; // Value of HTTP header to indicate support for binary serialised image array data
         public const string BASE64_HANDOFF_FILE_DOWNLOAD_URI_EXTENSION = "base64"; // Addition to the ImageArray and ImageArrayVariant method names from which base64 serialised image files can be downloaded
 
+        // Image bytes constants
+        public const string ACCEPT_HEADER_NAME = "Accept"; // Name of HTTP header used to affirm ImageBytes support for image array data
+        public const string IMAGE_BYTES_MIME_TYPE = "application/imagebytes";
+
         // Registry key where the Web Server configuration will be stored
         public const RegistryHive ASCOM_REMOTE_CONFIGURATION_HIVE = RegistryHive.CurrentUser;
         public const string ASCOM_REMOTE_CONFIGURATION_KEY = @"Software\ASCOM Remote";
