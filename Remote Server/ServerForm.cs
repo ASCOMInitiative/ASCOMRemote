@@ -5810,8 +5810,17 @@ namespace ASCOM.Remote
                 ForceGarbageCollection();
 
                 ArrayMetadataV1 arrayMetadataV1 = imageArrayBytes.GetMetadataV1();
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Converted byte array - Version: {arrayMetadataV1.MetadataVersion}, Image element type: {arrayMetadataV1.ImageElementType}, Transmission element type: {arrayMetadataV1.TransmissionElementType}, Rank: {arrayMetadataV1.Rank}, Dimension 1: {arrayMetadataV1.Dimension1}, Dimension 2: {arrayMetadataV1.Dimension2}, Dimension 3: {arrayMetadataV1.Dimension3}");
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"OVERALL IMAGEARRAYBYTES PROCESSING TIME: {sw.ElapsedMilliseconds}ms.");
+                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Converted byte array - Netadata version: {arrayMetadataV1.MetadataVersion}, " +
+                    $"Error number: {arrayMetadataV1.ErrorNumber}, " +
+                    $"Client transaction ID: {arrayMetadataV1.ClientTransactionID}, " +
+                    $"Server transaction ID: {arrayMetadataV1.ServerTransactionID}, " +
+                    $"Image element type: {arrayMetadataV1.ImageElementType}, " +
+                    $"Transmission element type: {arrayMetadataV1.TransmissionElementType}, " +
+                    $"Rank: {arrayMetadataV1.Rank}, " +
+                    $"Dimension 1: {arrayMetadataV1.Dimension1}, " +
+                    $"Dimension 2: {arrayMetadataV1.Dimension2}, " +
+                    $"Dimension 3: {arrayMetadataV1.Dimension3}");
+                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"OVERALL IMAGEARRAYBYTES PROCESSING TIME: {sw.ElapsedMilliseconds}ms for client transaction ID: {requestData.ClientIpAddress}.");
                 sw.Restart();
 
             }
