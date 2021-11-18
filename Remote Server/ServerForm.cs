@@ -188,18 +188,6 @@ namespace ASCOM.Remote
         internal const int DESTROY_DRIVER = int.MinValue;
         internal const int ASYNC_WAIT_LOOP_TIME = 20; // Number of milliseconds to wait for work before timing out and going round the wait loop to run Application.DoEvents()
 
-        // GetBase64Image constants
-        private const string BASE64RESPONSE_COMMAND_NAME = "GetBase64Image";
-        private const int BASE64RESPONSE_VERSION_NUMBER = 1;
-        private const int BASE64RESPONSE_VERSION_POSITION = 0;
-        private const int BASE64RESPONSE_OUTPUTTYPE_POSITION = 4;
-        private const int BASE64RESPONSE_TRANSMISSIONTYPE_POSITION = 8;
-        private const int BASE64RESPONSE_RANK_POSITION = 12;
-        private const int BASE64RESPONSE_DIMENSION0_POSITION = 16;
-        private const int BASE64RESPONSE_DIMENSION1_POSITION = 20;
-        private const int BASE64RESPONSE_DIMENSION2_POSITION = 24;
-        private const int BASE64RESPONSE_DATA_POSITION = 48;
-
         #endregion
 
         #region Application Global Variables
@@ -283,8 +271,10 @@ namespace ASCOM.Remote
         #endregion
 
         #region Private Variables
+
         private static readonly object logLockObject = new object(); // Lock object to ensure that midnight log change overs happen smoothly
         private static TraceLoggerPlus TL; // Variable to hold the trace logger
+
         #endregion
 
         #region Delegates for Form callbacks
@@ -333,6 +323,7 @@ namespace ASCOM.Remote
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
                 LogMessage(0, 0, 0, "New", $"Remote Server Version {version}, Started on {DateTime.Now.ToString("dddd d MMMM yyyy HH: mm:ss")}");
                 LogMessage(0, 0, 0, "New", $"Running as user {WindowsIdentity.GetCurrent().Name}");
+                LogMessage(0, 0, 0, "New", $"Running as a {(Environment.Is64BitProcess ? "64" : "32")}bit application on a {(Environment.Is64BitOperatingSystem ? "64" : "32")}bit OS.");
 
                 AccessLog = new TraceLoggerPlus("", TraceFolder, ACCESSLOG_TRACELOGGER_NAME, AccessLogEnabled)
                 {
@@ -379,7 +370,7 @@ namespace ASCOM.Remote
 
         private void ServerForm_Load(object sender, EventArgs e)
         {
-            this.Text = "ASCOM Remote Server - v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            this.Text = $"ASCOM Remote Server - v{Assembly.GetExecutingAssembly().GetName().Version} - {(Environment.Is64BitProcess ? "64" : "32")}bit mode.";
             if (StartWithDevicesConnected)
             {
                 ConnectDevices();
@@ -1450,6 +1441,18 @@ namespace ASCOM.Remote
 
             var func = (Func<uint>)method.CreateDelegate(typeof(Func<uint>));
             return checked((int)func());
+        }
+
+        /// <summary>
+        /// Forces a long lived item (generation 2) and a large item (generation 3) garbage collection and waits for completion.
+        /// </summary>
+        /// <returns>The time taken by the garbage collection in milli-seconds.</returns>
+        public static double ForceGarbageCollection()
+        {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            GC.Collect(2, GCCollectionMode.Forced, true);
+            return sw.Elapsed.TotalMilliseconds;
         }
 
         #endregion
@@ -4143,16 +4146,7 @@ namespace ASCOM.Remote
                         command = GetParameter<string>(requestData, SharedConstants.ACTION_COMMAND_PARAMETER_NAME);
                         parameters = GetParameter<string>(requestData, SharedConstants.ACTION_PARAMETERS_PARAMETER_NAME);
 
-                        // Handle the special GetBase64Image Action that only applies to the Remote Server when handling Camera devices, otherwise pass to the device
-                        if ((requestData.Elements[URL_ELEMENT_DEVICE_TYPE] == "camera") & (command.ToLowerInvariant() == BASE64RESPONSE_COMMAND_NAME.ToLowerInvariant()))
-                        {
-                            // Get the base64 encoded image
-                            deviceResponse = GetBase64ImageString(requestData);
-                        }
-                        else // Process driver commands
-                        {
-                            deviceResponse = device.Action(command, parameters);
-                        }
+                        deviceResponse = device.Action(command, parameters);
                         break;
 
                     case "*.description":
@@ -4213,42 +4207,6 @@ namespace ASCOM.Remote
 
         }
 
-        /// <summary>
-        /// Return an ImageArray as a base64 encoded string
-        /// </summary>
-        /// <param name="requestData"></param>
-        /// <returns></returns>
-        private static string GetBase64ImageString(RequestData requestData)
-        {
-            Stopwatch sw = new Stopwatch();
-            Stopwatch swOverall = new Stopwatch();
-
-            string deviceResponse;
-            // Process the Remote Server's internal base64 image array command
-            Array imageArray;
-            byte[] imageArrayBytes;
-
-            swOverall.Start();
-            sw.Start();
-
-            imageArray = (Array)ActiveObjects[requestData.DeviceKey].DeviceObject.ImageArray;       //.LastImageArray;
-            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"TIME TO GET IMAGE ARRAY: {sw.ElapsedMilliseconds}ms.");
-
-            // Convert the supplied array to a byte[]
-            imageArrayBytes = imageArray.ToByteArray(1, 0, "");
-            imageArray = null;
-            GC.Collect();
-
-            deviceResponse = Convert.ToBase64String(imageArrayBytes, 0, imageArrayBytes.Length, Base64FormattingOptions.None);
-            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"TIME TO CONVERT TOBASE64STRING: {sw.ElapsedMilliseconds}ms. String length: {deviceResponse.Length}"); sw.Restart();
-            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"OVERALL GETBASE64IMAGE PROCESSING TIME: {swOverall.ElapsedMilliseconds}ms.");
-
-            imageArrayBytes = null;
-            GC.Collect();
-
-            return deviceResponse;
-        }
-
         private static void ReturnImageArrayBytes(RequestData requestData)
         {
             Stopwatch sw = new Stopwatch();
@@ -4262,26 +4220,43 @@ namespace ASCOM.Remote
 
             try
             {
+#if IMAGEARRAYTEST
+                int numX = (int)ActiveObjects[requestData.DeviceKey].DeviceObject.NumX;
+                int numY = (int)ActiveObjects[requestData.DeviceKey].DeviceObject.NumY;
+                int[,] returnArray = new int[numX, numY];
+
+                for (int i = 0; i < numX; i++)
+                {
+                    for (int j = 0; j < numY; j++)
+                    {
+                        returnArray[i, j] = i + j;
+                    }
+                }
+                imageArray = returnArray;
+                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"***** TEST IMAGE RETURNED INSTEAD OF CAMERA IMAGE *****.");
+#else
                 imageArray = (Array)ActiveObjects[requestData.DeviceKey].DeviceObject.ImageArray;       //.LastImageArray;
+#endif
                 LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"TIME TO GET IMAGE ARRAY: {sw.ElapsedMilliseconds}ms.");
 
                 // Convert the supplied array to a byte[]
-                imageArrayBytes = imageArray.ToByteArray(1, 0, "");
+                sw.Restart();
+                imageArrayBytes = imageArray.ToByteArray(1, requestData.ClientTransactionID, requestData.ServerTransactionID, 0, "");
+                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"TIME TO CONVERT MAGE ARRAY TO BYTE[]: {sw.ElapsedMilliseconds}ms.");
                 imageArray = null;
-                
+
                 // Force a garbage collection of large objects to free memory
                 GC.Collect(2, GCCollectionMode.Forced, true);
 
                 ArrayMetadataV1 arrayMetadataV1 = imageArrayBytes.GetMetadataV1();
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Converted byte array - Version: {arrayMetadataV1.MetadataVersion}, Image element type: {arrayMetadataV1.ImageElementType}, Transmission element type: {arrayMetadataV1.TransmissionElementType}, Rank: {arrayMetadataV1.Rank}, Dimension 0: {arrayMetadataV1.Dimension0}, Dimension 1: {arrayMetadataV1.Dimension1}, Dimension 2: {arrayMetadataV1.Dimension2}");
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"OVERALL IMAGEARRAYBYTES PROCESSING TIME: {sw.ElapsedMilliseconds}ms.");
+                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Converted byte array - Version: {arrayMetadataV1.MetadataVersion}, Image element type: {arrayMetadataV1.ImageElementType}, Transmission element type: {arrayMetadataV1.TransmissionElementType}, Rank: {arrayMetadataV1.Rank}, Dimension 1: {arrayMetadataV1.Dimension1}, Dimension 2: {arrayMetadataV1.Dimension2}, Dimension 3: {arrayMetadataV1.Dimension3}");
                 sw.Restart();
 
             }
             catch (Exception ex)
             {
                 // Set the error number to a non-zero value and add the error message as the data payload.
-                imageArrayBytes = AlpacaTools.ErrorMessageToByteArray(1, ExceptionHelpers.ErrorCodeFromException(ex), ex.Message);
+                imageArrayBytes = AlpacaTools.ErrorMessageToByteArray(1, requestData.ClientTransactionID, requestData.ServerTransactionID, ExceptionHelpers.ErrorCodeFromException(ex), ex.Message);
                 LogException1(requestData, "Exception creating image byte array", ex.ToString());
             }
 
@@ -4418,12 +4393,6 @@ namespace ASCOM.Remote
                         foreach (string action in deviceResponse)
                         {
                             responseList.Add(action);
-                        }
-
-                        // Add the GetBase64Image command to the list since we will handle this
-                        if (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] == "camera")
-                        {
-                            responseList.Add(BASE64RESPONSE_COMMAND_NAME);
                         }
                         break;
 
@@ -5402,7 +5371,8 @@ namespace ASCOM.Remote
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
             imageArrayBytes = null;
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
-            GC.Collect();
+            double duration = ForceGarbageCollection();
+            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Garbage collection time: {duration}ms.");
 
             byte[] bytesToSend = Encoding.ASCII.GetBytes(base64String); // Convert the message to be returned into UTF8 bytes that can be sent over the wire
             long timeToConvertBase64StringToByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
@@ -5626,6 +5596,7 @@ namespace ASCOM.Remote
                         }
                         ActiveObjects[requestData.DeviceKey].LastImageArray = deviceResponse;
                         break;
+
                     case "imagearrayvariant":
                         deviceResponse = device.ImageArrayVariant;
                         string arrayType = deviceResponse.GetType().Name;
@@ -5687,6 +5658,7 @@ namespace ASCOM.Remote
                         }
                         //ActiveObjects[requestData.DeviceKey].LastImageArrayVariant = deviceResponse;
                         break;
+
                     default:
                         LogMessage1(requestData, "ReturnImageArray", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
                         throw new InvalidValueException("ReturnImageArray - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
@@ -5831,14 +5803,14 @@ namespace ASCOM.Remote
             try
             {
                 // Convert the supplied array to a byte[]
-                imageArrayBytes = deviceResponse.ToByteArray(1, 0, "");
+                imageArrayBytes = deviceResponse.ToByteArray(1, requestData.ClientTransactionID, requestData.ServerTransactionID, 0, "");
                 deviceResponse = null;
 
                 // Force a garbage collection of large objects to free memory
-                GC.Collect(2, GCCollectionMode.Forced, true);
+                ForceGarbageCollection();
 
                 ArrayMetadataV1 arrayMetadataV1 = imageArrayBytes.GetMetadataV1();
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Converted byte array - Version: {arrayMetadataV1.MetadataVersion}, Image element type: {arrayMetadataV1.ImageElementType}, Transmission element type: {arrayMetadataV1.TransmissionElementType}, Rank: {arrayMetadataV1.Rank}, Dimension 0: {arrayMetadataV1.Dimension0}, Dimension 1: {arrayMetadataV1.Dimension1}, Dimension 2: {arrayMetadataV1.Dimension2}");
+                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Converted byte array - Version: {arrayMetadataV1.MetadataVersion}, Image element type: {arrayMetadataV1.ImageElementType}, Transmission element type: {arrayMetadataV1.TransmissionElementType}, Rank: {arrayMetadataV1.Rank}, Dimension 1: {arrayMetadataV1.Dimension1}, Dimension 2: {arrayMetadataV1.Dimension2}, Dimension 3: {arrayMetadataV1.Dimension3}");
                 LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"OVERALL IMAGEARRAYBYTES PROCESSING TIME: {sw.ElapsedMilliseconds}ms.");
                 sw.Restart();
 
@@ -5846,7 +5818,7 @@ namespace ASCOM.Remote
             catch (Exception ex)
             {
                 // Set the error number to a non-zero value and add the error message as the data payload.
-                imageArrayBytes = AlpacaTools.ErrorMessageToByteArray(1, ExceptionHelpers.ErrorCodeFromException(ex), ex.Message);
+                imageArrayBytes = AlpacaTools.ErrorMessageToByteArray(1, requestData.ClientTransactionID, requestData.ServerTransactionID, ExceptionHelpers.ErrorCodeFromException(ex), ex.Message);
                 LogException1(requestData, "Exception creating image byte array", ex.ToString());
             }
 
@@ -5889,8 +5861,7 @@ namespace ASCOM.Remote
             imageArrayBytes = null;
 
             // Force a garbage collection of large objects to free memory
-            GC.Collect(2, GCCollectionMode.Forced, true);
-
+            ForceGarbageCollection();
             return;
         }
 
