@@ -246,7 +246,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ASCOM.Common.Components">
-      <Version>1.0.0-alpha26</Version>
+      <Version>1.0.0-alpha28</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
