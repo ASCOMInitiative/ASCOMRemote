@@ -106,7 +106,7 @@ Filename: "{#RemoteClientDirectory}\{#DynamicRemoteClientsName}.exe"; Parameters
 Filename: "{#RemoteServerDirectory}\{#SetNetworkPermissionsName}.exe"; Parameters: "--localserverpath ""{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"""; Components: ClientComponents; Flags: runhidden
 
 [UninstallRun]
-Filename: "{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"; Parameters: "/unregserver"; Components: ClientComponents; Flags: runhidden
+Filename: "{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"; Parameters: "/unregserver"; Components: ClientComponents; Flags: runhidden; RunOnceId: "UnregisterClients"
 
 [Registry]
 
@@ -117,7 +117,7 @@ Name: "{group}\Remote Client Configuration"; Filename: "{#RemoteClientDirectory}
 
 [Components]
 Name: "ServerComponents"; Description: "Remote Server"; Flags: disablenouninstallwarning
-Name: "ClientComponents"; Description: "Remote Clients (Please use Platform 6.5 Dynamic Clients instead)"; Flags: disablenouninstallwarning
+Name: "ClientComponents"; Description: "Remote Clients (Please use the Platform Dynamic Clients instead)"; Flags: disablenouninstallwarning
 
 [Types]
 Name: "Custom"; Description: "Custom"; Flags: iscustom
@@ -127,8 +127,8 @@ Name: "..\BuildRemote.cmd"; Flags: cmdprompt
 
 [Code]
 const
-   REQUIRED_PLATFORM_VERSION = 6.5;    // Set this to the minimum required ASCOM Platform version for this application
-   REQUIRED_DOTNET_VERSION = 'v4.8';  // Set this to the minimum required Microsoft .NET Framework version for this application
+   REQUIRED_PLATFORM_VERSION = 6.5; // Set this to the minimum required ASCOM Platform version for this application
+   REQUIRED_DOTNET_VERSION = 'v4.8';   // Set this to the minimum required Microsoft .NET Framework version for this application
 
 var
   LightMsgPage: TOutputMsgWizardPage;
@@ -138,16 +138,16 @@ begin
   { Create the pages }
 
   LightMsgPage := CreateOutputMsgPage(wpWelcome,
-   'ASCOM Remote Clients - Please Note', 'The Remote Clients have been superseded in Platform 6.5',
+   'ASCOM Remote Clients - Please Note', 'The Remote Clients were superseded in Platform 6.5',
    'The Remote Clients in this installer can be uninstalled but can no longer be selected for installation.' #13#13 +
-   'In place of Remote Clients, please use Dynamic Clients that can be created through the Platform 6.5 Chooser.' #13#13 + 
+   'In place of Remote Clients, please use Dynamic Clients that can be created through the Platform Chooser.' #13#13 + 
    'Any Remote Clients you have created will continue to function but do not support the new interfaces and features introduced in Platform 6.5.');
 end;
 
 //
 // Function to return the ASCOM Platform's version number as a double.
 //
-function PlatformVersion(): Double;
+function PlatformVersion(): Extended;
 var
    PlatVerString : String;
 begin
@@ -261,7 +261,7 @@ begin
          if PlatformVersionNumber = 0.0 then
          MsgBox('The ASCOM Platform is not installed.' #13#13 'Please install Platform ' + Format('%3.1f', [REQUIRED_PLATFORM_VERSION]) + ' or later from http://www.ascom-standards.org', mbCriticalError, MB_OK)
       else 
-         MsgBox('ASCOM Platform ' + Format('%3.1f', [REQUIRED_PLATFORM_VERSION]) + ' or later is required, but Platform '+ Format('%3.1f', [PlatformVersionNumber]) + ' is installed.' #13#13 'Please install the latest Platform before continuing; you will find it at http://www.ascom-standards.org', mbCriticalError, MB_OK);
+         MsgBox('This version of ASCOM Remote requires ASCOM Platform ' + Format('%3.1f', [REQUIRED_PLATFORM_VERSION]) + ' or later, but Platform '+ Format('%3.1f', [PlatformVersionNumber]) + ' is installed.' #13#13 'Please install the latest Platform before continuing; you will find it at https://www.ascom-standards.org', mbCriticalError, MB_OK);
 end;
 
 // Code to enable the installer to uninstall previous versions of itself when a new version is installed
