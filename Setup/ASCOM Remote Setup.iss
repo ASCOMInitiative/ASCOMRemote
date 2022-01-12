@@ -15,7 +15,7 @@
 #define public RemoteClientBaseClassesName "ASCOM.RemoteClientBaseClasses" ; Remote client support DLL name
 #define public ASCOMRemoteDocumentationFileName "ASCOM Remote Installation and Configuration.pdf"; ASCOM Remote documentation file
 
-; Specifiy debug or release build;#define public BuildType "Debug" ; Type of build - Release or Debug
+; Specifiy debug or release build;define public BuildType "Debug" ; Type of build - Release or Debug
 #define public BuildType "Release" ; Type of build - Release or Debug
 
 [Setup]
@@ -62,18 +62,18 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 ; LOCAL SERVER FILES
-;Source: "..\Remote Client Local Server\bin\{#BuildType}\{#RemoteClientLocalServerName}.exe"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
-;Source: "..\Remote Client Local Server\bin\{#BuildType}\{#RemoteClientLocalServerName}.pdb"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Local Server\bin\{#BuildType}\{#RemoteClientLocalServerName}.exe"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Local Server\bin\{#BuildType}\{#RemoteClientLocalServerName}.pdb"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
 
 ; DYNAMIC CLIENT GENERATOR
-;Source: "..\ASCOM.DynamicRemoteClients\bin\{#BuildType}\{#DynamicRemoteClientsName}.exe"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
-;Source: "..\ASCOM.DynamicRemoteClients\bin\{#BuildType}\{#DynamicRemoteClientsName}.pdb"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\ASCOM.DynamicRemoteClients\bin\{#BuildType}\{#DynamicRemoteClientsName}.exe"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\ASCOM.DynamicRemoteClients\bin\{#BuildType}\{#DynamicRemoteClientsName}.pdb"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
 
 ; LOCAL SERVER AND DRIVER SUPPORT FILES
-;Source: "..\Remote Client Device Base Classes\bin\{#BuildType}\{#RemoteClientBaseClassesName}.dll"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
-;Source: "..\Remote Client Device Base Classes\bin\{#BuildType}\{#RemoteClientBaseClassesName}.pdb"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
-;Source: "..\Remote Client Local Server\bin\{#BuildType}\RestSharp.dll"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
-;Source: "..\Remote Client Local Server\bin\{#BuildType}\Newtonsoft.Json.dll"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Device Base Classes\bin\{#BuildType}\{#RemoteClientBaseClassesName}.dll"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Device Base Classes\bin\{#BuildType}\{#RemoteClientBaseClassesName}.pdb"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Local Server\bin\{#BuildType}\RestSharp.dll"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
+Source: "..\Remote Client Local Server\bin\{#BuildType}\Newtonsoft.Json.dll"; DestDir: "{#RemoteClientDirectory}"; Flags: ignoreversion; Components: ClientComponents
 
 ; REMOTE SERVER FILES
 Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
@@ -81,21 +81,18 @@ Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.exe.config"; Dest
 Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
 Source: "..\Remote Server\ASCOMAlpacaMidRes.jpg"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
 Source: "..\Remote Server\ascomicon.ico"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-; Source: "..\Remote Server\bin\{#BuildType}\{#ASCOMStandardName}.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-; Source: "..\Remote Server\bin\{#BuildType}\{#ASCOMStandardName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
 
 ; REMOTE SERVER SUPPORT FILES
 Source: "..\Remote Server\bin\{#BuildType}\Newtonsoft.Json.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\Remote Server\bin\{#BuildType}\ASCOM.Common.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
 
 ; SET NETWORK PERMISSIONS FILES
-Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents 
-Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ClientComponents ServerComponents 
+Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ClientComponents ServerComponents
 
 ; SET NETWORK PERMISSIONS SUPPORT FILES
-Source: "..\SetNetworkPermissions\bin\{#BuildType}\WindowsFirewallHelper.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-Source: "..\SetNetworkPermissions\bin\{#BuildType}\CommandLine.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-; The following file is required on installations where only .NET 4.6 is installed. This is because the netstandard.dll is only loaded into the GAC in .NET version 4.7 and later
-Source: "..\SetNetworkPermissions\bin\{#BuildType}\netstandard.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents; Check: not IsDotNet4Point7Installed
+Source: "..\SetNetworkPermissions\bin\{#BuildType}\WindowsFirewallHelper.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ClientComponents ServerComponents
+Source: "..\SetNetworkPermissions\bin\{#BuildType}\CommandLine.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ClientComponents ServerComponents
 
 ; DOCUMENTATION
 Source: "..\Documentation\{#ASCOMRemoteDocumentationFileName}"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
@@ -103,27 +100,24 @@ Source: "..\Documentation\{#ASCOMRemoteDocumentationFileName}"; DestDir: "{#Remo
 ; INSTALLER SUPPORT FILES
 Source: "ASCOM.ico"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
 
-; WEB CONTENT
-;Source: "..\Web Content\index.html"; DestDir: "{commonpf}\ASCOM\RemoteServer"; Components: WebContent
-
 [Run]
-;Filename: "{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"; Parameters: "/regserver"; Components: ClientComponents
-;Filename: "{#RemoteClientDirectory}\{#DynamicRemoteClientsName}.exe"; Parameters: "/installersetup"; Components: ClientComponents
-;Filename: "{#RemoteServerDirectory}\{#SetNetworkPermissionsName}.exe"; Parameters: "--localserverpath ""{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"""; Components: ClientComponents; Flags: runhidden
+Filename: "{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"; Parameters: "/regserver"; Components: ClientComponents; Flags: runhidden
+Filename: "{#RemoteClientDirectory}\{#DynamicRemoteClientsName}.exe"; Parameters: "/installersetup"; Components: ClientComponents; Flags: runhidden
+Filename: "{#RemoteServerDirectory}\{#SetNetworkPermissionsName}.exe"; Parameters: "--localserverpath ""{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"""; Components: ClientComponents; Flags: runhidden
 
 [UninstallRun]
-;Filename: "{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"; Parameters: "/unregserver"; Components: ClientComponents
+Filename: "{#RemoteClientDirectory}\{#RemoteClientLocalServerName}.exe"; Parameters: "/unregserver"; Components: ClientComponents; Flags: runhidden; RunOnceId: "UnregisterClients"
 
 [Registry]
 
 [Icons]
 Name: "{group}\ASCOM Remote Documentation"; Filename: "{#RemoteServerDirectory}\{#ASCOMRemoteDocumentationFileName}";
 Name: "{group}\Remote Server"; Filename: "{#RemoteServerDirectory}\{#RemoteServerName}.exe"; Components: ServerComponents
-;Name: "{group}\Remote Client Configuration"; Filename: "{#RemoteClientDirectory}\{#DynamicRemoteClientsName}.exe"; Components: ClientComponents
+Name: "{group}\Remote Client Configuration"; Filename: "{#RemoteClientDirectory}\{#DynamicRemoteClientsName}.exe"; Components: ClientComponents
 
 [Components]
 Name: "ServerComponents"; Description: "Remote Server"; Flags: disablenouninstallwarning
-;Name: "ClientComponents"; Description: "Remote Clients"; Flags: disablenouninstallwarning
+Name: "ClientComponents"; Description: "Remote Clients (Please use the Platform Dynamic Clients instead)"; Flags: disablenouninstallwarning
 
 [Types]
 Name: "Custom"; Description: "Custom"; Flags: iscustom
@@ -133,8 +127,8 @@ Name: "..\BuildRemote.cmd"; Flags: cmdprompt
 
 [Code]
 const
-   REQUIRED_PLATFORM_VERSION = 6.5;    // Set this to the minimum required ASCOM Platform version for this application
-   REQUIRED_DOTNET_VERSION = 'v4.8';  // Set this to the minimum required Microsoft .NET Framework version for this application
+   REQUIRED_PLATFORM_VERSION = 6.5; // Set this to the minimum required ASCOM Platform version for this application
+   REQUIRED_DOTNET_VERSION = 'v4.8';   // Set this to the minimum required Microsoft .NET Framework version for this application
 
 var
   LightMsgPage: TOutputMsgWizardPage;
@@ -144,15 +138,16 @@ begin
   { Create the pages }
 
   LightMsgPage := CreateOutputMsgPage(wpWelcome,
-    'ASCOM Remote Clients - Please Note', 'The Remote clients have been superseded in Platform 6.5',
-    'The Remote Clients are no longer included in this installer, please use the Dynamic Clients in Platform 6.5 instead.' #13#13 +
-    'Dynamic clients can be created through the Platform 6.5 Chooser.');
+   'ASCOM Remote Clients - Please Note', 'The Remote Clients were superseded in Platform 6.5',
+   'The Remote Clients in this installer can be uninstalled but can no longer be selected for installation.' #13#13 +
+   'In place of Remote Clients, please use Dynamic Clients that can be created through the Platform Chooser.' #13#13 + 
+   'Any Remote Clients you have created will continue to function but do not support the new interfaces and features introduced in Platform 6.5.');
 end;
 
 //
 // Function to return the ASCOM Platform's version number as a double.
 //
-function PlatformVersion(): Double;
+function PlatformVersion(): Extended;
 var
    PlatVerString : String;
 begin
@@ -266,7 +261,7 @@ begin
          if PlatformVersionNumber = 0.0 then
          MsgBox('The ASCOM Platform is not installed.' #13#13 'Please install Platform ' + Format('%3.1f', [REQUIRED_PLATFORM_VERSION]) + ' or later from http://www.ascom-standards.org', mbCriticalError, MB_OK)
       else 
-         MsgBox('ASCOM Platform ' + Format('%3.1f', [REQUIRED_PLATFORM_VERSION]) + ' or later is required, but Platform '+ Format('%3.1f', [PlatformVersionNumber]) + ' is installed.' #13#13 'Please install the latest Platform before continuing; you will find it at http://www.ascom-standards.org', mbCriticalError, MB_OK);
+         MsgBox('This version of ASCOM Remote requires ASCOM Platform ' + Format('%3.1f', [REQUIRED_PLATFORM_VERSION]) + ' or later, but Platform '+ Format('%3.1f', [PlatformVersionNumber]) + ' is installed.' #13#13 'Please install the latest Platform before continuing; you will find it at https://www.ascom-standards.org', mbCriticalError, MB_OK);
 end;
 
 // Code to enable the installer to uninstall previous versions of itself when a new version is installed
@@ -293,8 +288,8 @@ procedure CurPageChanged(CurPageID: Integer);
 begin
   if CurPageID = wpSelectComponents then
     begin
-      //WizardForm.ComponentsList.Checked[2] := False;
-      //WizardForm.ComponentsList.ItemEnabled[2] := False;
+      //WizardForm.ComponentsList.Checked[1] := False;
+      if not WizardForm.ComponentsList.Checked[1] then WizardForm.ComponentsList.ItemEnabled[1] := False;
     end;
 end;
 

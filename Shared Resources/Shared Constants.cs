@@ -97,8 +97,8 @@ namespace ASCOM.Remote
         public const string PORTNUMBER_PROFILENAME = "Port Number"; public const decimal PORTNUMBER_DEFAULT = 11111;
         public const string REMOTE_DEVICE_NUMBER_PROFILENAME = "Remote Device Number"; public const decimal REMOTE_DEVICE_NUMBER_DEFAULT = 0;
         public const string SERVICE_TYPE_PROFILENAME = "Service Type"; public const string SERVICE_TYPE_DEFAULT = "http";
-        public const string ESTABLISH_CONNECTION_TIMEOUT_PROFILENAME = "Establish Connection Timeout"; public const int  ESTABLISH_CONNECTION_TIMEOUT_DEFAULT = 10;
-        public const string STANDARD_SERVER_RESPONSE_TIMEOUT_PROFILENAME = "Standard Server Response Timeout"; public const int  STANDARD_SERVER_RESPONSE_TIMEOUT_DEFAULT = 10;
+        public const string ESTABLISH_CONNECTION_TIMEOUT_PROFILENAME = "Establish Connection Timeout"; public const int ESTABLISH_CONNECTION_TIMEOUT_DEFAULT = 10;
+        public const string STANDARD_SERVER_RESPONSE_TIMEOUT_PROFILENAME = "Standard Server Response Timeout"; public const int STANDARD_SERVER_RESPONSE_TIMEOUT_DEFAULT = 10;
         public const string LONG_SERVER_RESPONSE_TIMEOUT_PROFILENAME = "Long Server Response Timeout"; public const int LONG_SERVER_RESPONSE_TIMEOUT_DEFAULT = 120;
         public const string USERNAME_PROFILENAME = "User Name"; public const string USERNAME_DEFAULT = "";
         public const string PASSWORD_PROFILENAME = "Password"; public const string PASSWORD_DEFAULT = "";
@@ -116,19 +116,22 @@ namespace ASCOM.Remote
         public enum ImageArrayElementTypes
         {
             Unknown = 0,
-            Short = 1,
-            Int = 2,
-            Double = 3
+            Int16 = 1,
+            Int32 = 2,
+            Double = 3,
+            Single = 4,
+            Byte = 5,
+            Int64 = 6
         }
 
-        // Enum used by the remote client to indicate what type of image array transfer should be used
+        // Enum used by the remote client to indicate what type of Alpaca image array transfer should be used
         public enum ImageArrayTransferType
         {
             JSON = 0,
             Base64HandOff = 1,
         }
 
-        // Enum used by the remote client to indicate what type of compression should be used in responses
+        // Enum used by the remote client to indicate what type of compression should be used in Alpaca responses
         public enum ImageArrayCompression
         {
             None = 0,
@@ -146,6 +149,10 @@ namespace ASCOM.Remote
         public const string BASE64_HANDOFF_SUPPORTED = "true"; // Value of HTTP header to indicate support for binary serialised image array data
         public const string BASE64_HANDOFF_FILE_DOWNLOAD_URI_EXTENSION = "base64"; // Addition to the ImageArray and ImageArrayVariant method names from which base64 serialised image files can be downloaded
 
+        // Image bytes constants
+        public const string ACCEPT_HEADER_NAME = "Accept"; // Name of HTTP header used to affirm ImageBytes support for image array data
+        public const string IMAGE_BYTES_MIME_TYPE = "application/imagebytes";
+
         // Registry key where the Web Server configuration will be stored
         public const RegistryHive ASCOM_REMOTE_CONFIGURATION_HIVE = RegistryHive.CurrentUser;
         public const string ASCOM_REMOTE_CONFIGURATION_KEY = @"Software\ASCOM Remote";
@@ -160,7 +167,7 @@ namespace ASCOM.Remote
         // Alpaca discovery constants
         public const string ALPACA_DISCOVERY_BROADCAST_ID = "alpacadiscovery";
         public const int ALPACA_DISCOVERY_PORT = 32227;
-        public const string ALPACA_DISCOVERY_RESPONSE_STRING= "alpacaport";
+        public const string ALPACA_DISCOVERY_RESPONSE_STRING = "alpacaport";
         public const string ALPACA_DISCOVERY_MULTICAST_GROUP = "ff12::a1:9aca";
 
     }

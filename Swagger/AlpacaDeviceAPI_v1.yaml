@@ -1701,7 +1701,7 @@ paths:
         Since 32bit integers are always returned by this call, the returned JSON Type value (0 = Unknown, 1 = short(16bit), 2 = int(32bit), 3 = Double) is always 2. The number of planes is given in the returned Rank value.
         
         
-        When de-serialising to an object it helps enormously to know the array Rank beforehand so that the correct data class can be used. This can be achieved through a regular expression or by direct parsing of the returned JSON string to extract the Type and Rank values before de-serialising.
+        When de-serialising to an object it is essential to know the array Rank beforehand so that the correct data class can be used. This can be achieved through a regular expression or by direct parsing of the returned JSON string to extract the Type and Rank values before de-serialising.
         
         
         This regular expression accomplishes the extraction into two named groups Type and Rank, which can then be used to select the correct de-serialisation data class:
@@ -1711,7 +1711,12 @@ paths:
         
         
         When the SensorType is Monochrome, RGGB, CMYG, CMYG2 or LRGB, the serialised JSON array should have 2 dimensions. For example, the returned array should appear as below if NumX = 7, NumY = 5 
-        and Pxy represents the pixel value at the zero based position x across and y down the image with the origin in the top left corner of the image. Please note that this is "column-major" order.
+        and Pxy represents the pixel value at the zero based position x across and y down the image with the origin in the top left corner of the image.  
+        
+        
+        Please note that this is "column-major" order (column changes most rapidly)
+        from the image's row and column perspective, while, from the array's perspective, serialisation is actually effected in "row-major" order (rightmost index changes most rapidly). 
+        This unintuitive outcome arises because the ASCOM Camera Interface specification defines the image column dimension as the rightmost array dimension.
         
         
         [
@@ -1741,8 +1746,8 @@ paths:
         ]
         
         
-        When the SensorType is Color, the serialised JSON array should have 3 dimensions. For example, the returned array should appear as below if NumX = 7, NumY = 5 
-        and Rxy, Gxy and Bxy represent the red, green and blue pixel values at the zero based position x across and y down the image with the origin in the top left corner of the image. Please note that this is "column-major" order.
+        When the SensorType is Color, the serialised JSON array will have 3 dimensions. For example, the returned array should appear as below if NumX = 7, NumY = 5 
+        and Rxy, Gxy and Bxy represent the red, green and blue pixel values at the zero based position x across and y down the image with the origin in the top left corner of the image.  Please see note above regarding element ordering.
         
         
         [
@@ -1770,6 +1775,14 @@ paths:
 
 
         ]
+        
+        
+        __`Performance`__
+
+        
+        Returning an image from an Alpaca device as a JSON array is very inefficient and can result in delays of 30 or more seconds while client and device process and send the huge JSON string over the network. 
+        A new, much faster mechanic called ImageBytes - [Alpaca ImageBytes Concepts and Implementation](https://www.ascom-standards.org/Developer/AlpacaImageBytes.pdf) has been developed that sends data as a binary byte stream and can offer a 10 to 20 fold reduction in transfer time. 
+        It is strongly recommended that Alpaca Cameras implement the ImageBytes mechanic as well as the JSON mechanic.
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1829,7 +1842,12 @@ paths:
         
         
         When the SensorType is Monochrome, RGGB, CMYG, CMYG2 or LRGB, the serialised JSON array should have 2 dimensions. For example, the returned array should appear as below if NumX = 7, NumY = 5 
-        and Pxy represents the pixel value at the zero based position x across and y down the image with the origin in the top left corner of the image. Please note that this is "column-major" order.
+        and Pxy represents the pixel value at the zero based position x across and y down the image with the origin in the top left corner of the image.  
+        
+        
+        Please note that this is "column-major" order (column changes most rapidly)
+        from the image's row and column perspective, while, from the array's perspective, serialisation is actually effected in "row-major" order (rightmost index changes most rapidly). 
+        This unintuitive outcome arises because the ASCOM Camera Interface specification defines the image column dimension as the rightmost array dimension.
         
         
         [
@@ -1860,7 +1878,7 @@ paths:
         
         
         When the SensorType is Color, the serialised JSON array should have 3 dimensions. For example, the returned array should appear as below if NumX = 7, NumY = 5 
-        and Rxy, Gxy and Bxy represent the red, green and blue pixel values at the zero based position x across and y down the image with the origin in the top left corner of the image. Please note that this is "column-major" order.
+        and Rxy, Gxy and Bxy represent the red, green and blue pixel values at the zero based position x across and y down the image with the origin in the top left corner of the image.  Please see note above regarding element ordering.
         
         
         [
@@ -1888,6 +1906,14 @@ paths:
 
 
         ]
+        
+        
+        __`Performance`__
+
+        
+        Returning an image from an Alpaca device as a JSON array is very inefficient and can result in delays of 30 or more seconds while client and device process and send the huge JSON string over the network. 
+        A new, much faster mechanic called ImageBytes - [Alpaca ImageBytes Concepts and Implementation](https://www.ascom-standards.org/Developer/AlpacaImageBytes.pdf) has been developed that sends data as a binary byte stream and can offer a 10 to 20 fold reduction in transfer time. 
+        It is strongly recommended that Alpaca Cameras implement the ImageBytes mechanic as well as the JSON mechanic.
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'

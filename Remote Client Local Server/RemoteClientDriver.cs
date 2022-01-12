@@ -866,7 +866,7 @@ namespace ASCOM.Remote
                                     // Now create and populate an appropriate array to return to the client that mirrors the array type returned by the device
                                     switch (arrayType) // Handle the different array return types
                                     {
-                                        case SharedConstants.ImageArrayElementTypes.Int:
+                                        case SharedConstants.ImageArrayElementTypes.Int32:
                                             switch (base64HandOffresponse.Rank)
                                             {
                                                 case 2:
@@ -883,7 +883,7 @@ namespace ASCOM.Remote
                                             Buffer.BlockCopy(base64ArrayByteArray, 0, remoteArray, 0, base64ArrayByteArray.Length); // Copy the array bytes to the response array that will return to the client
                                             break;
 
-                                        case SharedConstants.ImageArrayElementTypes.Short:
+                                        case SharedConstants.ImageArrayElementTypes.Int16:
                                             switch (base64HandOffresponse.Rank)
                                             {
                                                 case 2:
@@ -947,7 +947,7 @@ namespace ASCOM.Remote
                                 sw.Restart(); // Clear and start the stopwatch
                                 switch (arrayType) // Handle the different return types that may come from ImageArrayVariant
                                 {
-                                    case SharedConstants.ImageArrayElementTypes.Int:
+                                    case SharedConstants.ImageArrayElementTypes.Int32:
                                         switch (arrayRank)
                                         {
                                             case 2:
@@ -971,7 +971,7 @@ namespace ASCOM.Remote
                                         }
                                         break;
 
-                                    case SharedConstants.ImageArrayElementTypes.Short:
+                                    case SharedConstants.ImageArrayElementTypes.Int16:
                                         switch (arrayRank)
                                         {
                                             case 2:
