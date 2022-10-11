@@ -3519,7 +3519,7 @@ paths:
                   type: integer
                   format: uint32
               required:
-                - Position
+                - Brightness
   '/covercalibrator/{device_number}/closecover':
     put:
       summary: Initiates cover closing 
