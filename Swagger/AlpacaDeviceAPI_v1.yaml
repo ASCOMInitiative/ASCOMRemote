@@ -10126,7 +10126,7 @@ components:
           driveLunar = 1 - Lunar tracking rate (14.685 arcseconds per second).  
           driveSolar = 2 - Solar tracking rate (15.0 arcseconds per second).  
           driveKing = 3 - King tracking rate (15.0369 arcseconds per second).  
-      type: number
+      type: integer
       format: int32
       minimum: 0
       maximum: 3
