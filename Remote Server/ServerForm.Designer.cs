@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ServerForm));
             this.BtnSetup = new System.Windows.Forms.Button();
             this.BtnConnectDevices = new System.Windows.Forms.Button();
@@ -43,6 +44,18 @@
             this.LblRESTStatus = new System.Windows.Forms.Label();
             this.BtnStartRESTServer = new System.Windows.Forms.Button();
             this.BtnStopRESTServer = new System.Windows.Forms.Button();
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.systemTrayMenuItems = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.Title = new System.Windows.Forms.ToolStripMenuItem();
+            this.TitleSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.NumberOfDevices = new System.Windows.Forms.ToolStripMenuItem();
+            this.IpV4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.IpV6 = new System.Windows.Forms.ToolStripMenuItem();
+            this.IpAddress = new System.Windows.Forms.ToolStripMenuItem();
+            this.Port = new System.Windows.Forms.ToolStripMenuItem();
+            this.ActionSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.Exit = new System.Windows.Forms.ToolStripMenuItem();
+            this.systemTrayMenuItems.SuspendLayout();
             this.SuspendLayout();
             // 
             // BtnSetup
@@ -191,6 +204,88 @@
             this.BtnStopRESTServer.UseVisualStyleBackColor = true;
             this.BtnStopRESTServer.Click += new System.EventHandler(this.BtnStopRESTServer_Click);
             // 
+            // notifyIcon
+            // 
+            this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.notifyIcon.BalloonTipText = "Double click to restore ASCOM Remote";
+            this.notifyIcon.BalloonTipTitle = "ASCOM Remote";
+            this.notifyIcon.ContextMenuStrip = this.systemTrayMenuItems;
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Text = "ASCOM Remote";
+            // 
+            // systemTrayMenuItems
+            // 
+            this.systemTrayMenuItems.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.Title,
+            this.TitleSeparator,
+            this.NumberOfDevices,
+            this.IpV4,
+            this.IpV6,
+            this.IpAddress,
+            this.Port,
+            this.ActionSeparator,
+            this.Exit});
+            this.systemTrayMenuItems.Name = "systemTrayMenuItems";
+            this.systemTrayMenuItems.Size = new System.Drawing.Size(206, 192);
+            // 
+            // Title
+            // 
+            this.Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.Title.Name = "Title";
+            this.Title.Size = new System.Drawing.Size(205, 22);
+            this.Title.Text = "ASCOM Remote Server";
+            // 
+            // TitleSeparator
+            // 
+            this.TitleSeparator.Name = "TitleSeparator";
+            this.TitleSeparator.Size = new System.Drawing.Size(202, 6);
+            // 
+            // NumberOfDevices
+            // 
+            this.NumberOfDevices.Enabled = false;
+            this.NumberOfDevices.Name = "NumberOfDevices";
+            this.NumberOfDevices.Size = new System.Drawing.Size(205, 22);
+            this.NumberOfDevices.Text = "Number of devices: 0";
+            // 
+            // IpV4
+            // 
+            this.IpV4.Enabled = false;
+            this.IpV4.Name = "IpV4";
+            this.IpV4.Size = new System.Drawing.Size(205, 22);
+            this.IpV4.Text = "IP v4 enabled: False";
+            // 
+            // IpV6
+            // 
+            this.IpV6.Enabled = false;
+            this.IpV6.Name = "IpV6";
+            this.IpV6.Size = new System.Drawing.Size(205, 22);
+            this.IpV6.Text = "IP v6 enabled: False";
+            // 
+            // IpAddress
+            // 
+            this.IpAddress.Enabled = false;
+            this.IpAddress.Name = "IpAddress";
+            this.IpAddress.Size = new System.Drawing.Size(205, 22);
+            // 
+            // Port
+            // 
+            this.Port.Enabled = false;
+            this.Port.Name = "Port";
+            this.Port.Size = new System.Drawing.Size(205, 22);
+            this.Port.Text = "toolStripMenuItem2";
+            // 
+            // ActionSeparator
+            // 
+            this.ActionSeparator.Name = "ActionSeparator";
+            this.ActionSeparator.Size = new System.Drawing.Size(202, 6);
+            // 
+            // Exit
+            // 
+            this.Exit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.Exit.Name = "Exit";
+            this.Exit.Size = new System.Drawing.Size(205, 22);
+            this.Exit.Text = "Exit";
+            // 
             // ServerForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -214,6 +309,7 @@
             this.Name = "ServerForm";
             this.Text = "ASCOM Remote Server";
             this.Load += new System.EventHandler(this.ServerForm_Load);
+            this.systemTrayMenuItems.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -235,6 +331,17 @@
         private System.Windows.Forms.Label LblRESTStatus;
         private System.Windows.Forms.Button BtnStartRESTServer;
         private System.Windows.Forms.Button BtnStopRESTServer;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
+        private System.Windows.Forms.ContextMenuStrip systemTrayMenuItems;
+        private System.Windows.Forms.ToolStripMenuItem NumberOfDevices;
+        private System.Windows.Forms.ToolStripMenuItem IpV4;
+        private System.Windows.Forms.ToolStripMenuItem IpV6;
+        private System.Windows.Forms.ToolStripSeparator ActionSeparator;
+        private System.Windows.Forms.ToolStripMenuItem Exit;
+        private System.Windows.Forms.ToolStripMenuItem Title;
+        private System.Windows.Forms.ToolStripSeparator TitleSeparator;
+        private System.Windows.Forms.ToolStripMenuItem IpAddress;
+        private System.Windows.Forms.ToolStripMenuItem Port;
     }
 }
 
