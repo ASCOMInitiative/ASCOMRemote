@@ -3519,7 +3519,7 @@ paths:
                   type: integer
                   format: uint32
               required:
-                - Position
+                - Brightness
   '/covercalibrator/{device_number}/closecover':
     put:
       summary: Initiates cover closing 
@@ -3686,7 +3686,7 @@ paths:
                 description: Error message describing why the command cannot be processed
   '/dome/{device_number}/atpark':
     get:
-      summary: Indicates whether the telescope is at the park position
+      summary: Indicates whether the dome is at the park position
       description: >-
         True if the dome is in the programmed park position. Set only following
         a Park() operation and reset with any slew operation.
@@ -9093,7 +9093,7 @@ paths:
               properties:
                 Axis:
                   description: >-
-                    The axis about which rate information is desired. 0 = axisPrimary, 1 = axisSecondary, 2 = axisTertiary.
+                    The axis about which movement should occur. 0 = axisPrimary, 1 = axisSecondary, 2 = axisTertiary.
                   type: integer
                   default: 0
                   minimum: 0
