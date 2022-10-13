@@ -147,6 +147,12 @@ namespace ASCOM.Remote
         internal const string ROLLOVER_LOGS_ENABLED_PROFILENAME = "Rollover Logs Enabled"; public const bool ROLLOVER_LOGS_ENABLED_DEFAULT = false;
         internal const string ROLLOVER_TIME_PROFILENAME = "Rollover Time"; public static DateTime ROLLOVER_TIME_DEFAULT = DateTime.Now.Date; // Default value can't be const because it's a date-time type
         internal const string USE_UTC_TIME_IN_LOGS_PROFILENAME = "Use UTC Time In Logs"; public const bool USE_UTC_TIME_IN_LOGS_ENABLED_DEFAULT = false;
+        internal const string MINIMISE_TO_SYSTEM_TRAY_PROFILENAME = "Minimise To System Tray"; public const bool MINIMISE_TO_SYSTEM_TRAY_DEFAULT = false;
+        internal const string CONFIRM_EXIT_PROFILENAME = "Confirm Exit"; public const bool CONFIRM_EXIT_DEFAULT = false;
+
+        // Minimise behaviour strings
+        internal const string MINIMISE_TO_SYSTEM_TRAY_TEXT = "Minimise to system tray";
+        internal const string MINIMISE_TO_TASK_BAR_TEXT = "Minimise to task bar";
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -252,6 +258,8 @@ namespace ASCOM.Remote
         internal static bool RolloverLogsEnabled;
         internal static DateTime RolloverTime;
         internal static bool UseUtcTimeInLogs;
+        internal static bool MinimiseToSystemTray;
+        internal static bool ConfirmExit;
 
         #endregion
 
@@ -274,6 +282,7 @@ namespace ASCOM.Remote
 
         private static readonly object logLockObject = new object(); // Lock object to ensure that midnight log change overs happen smoothly
         private static TraceLoggerPlus TL; // Variable to hold the trace logger
+        private static FormWindowState formWindowState; // Holds the server form window state in use before the application is minimised to the system tray so that this state can be restored when required
 
         #endregion
 
@@ -344,6 +353,10 @@ namespace ASCOM.Remote
                 this.MinimumSize = new Size(FORM_MINIMUM_WIDTH, FORM_MINIMUM_HEIGHT); // Set the form's minimum size
                 this.FormClosed += Form1_FormClosed;
                 this.Resize += ServerForm_Resize;
+                notifyIcon.MouseDoubleClick += NotifyIcon_MouseDoubleClick;
+                notifyIcon.Click += NotifyIcon_Click;
+                systemTrayMenuItems.Items["exit"].Click += SystemTrayCloseServer_Click;
+                systemTrayMenuItems.Items["Title"].Click += SystemTrayTitle_Click; ;
                 ServerForm_Resize(this, new EventArgs()); // Move controls to their correct positions
 
                 // Check whether this device already has an Alpaca unique ID, if not, create one
@@ -387,6 +400,9 @@ namespace ASCOM.Remote
                 this.WindowState = FormWindowState.Minimized;
                 this.Show();
                 this.WindowState = FormWindowState.Normal;
+
+                // Ensure that the system tray icon is not visible when the application starts
+                notifyIcon.Visible = false;
             }
             catch (Exception ex)
             {
@@ -414,6 +430,24 @@ namespace ASCOM.Remote
         #endregion
 
         #region Utility methods
+
+        private void CloseServer()
+        {
+            // Check whether the server is configured to ask for shutdown confirmation
+            if (ConfirmExit) // Confirmation is required
+            {
+                // Ask the user whether they want to close the remote server
+                DialogResult result = MessageBox.Show("Are you sure you want to close the Remote Server?", "ASCOM Remote Server", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+
+                // An OK result means the user wants to shut down the Remote Server so close the server form, otherwise do nothing
+                if (result == DialogResult.OK)
+                    this.Close();
+            }
+            else // No confirmation is required so go ahead and shut down the application.
+            {
+                this.Close();
+            }
+        }
 
         private uint GetServerTransactionID()
         {
@@ -1498,6 +1532,8 @@ namespace ASCOM.Remote
                 RolloverLogsEnabled = driverProfile.GetValue<bool>(ROLLOVER_LOGS_ENABLED_PROFILENAME, string.Empty, ROLLOVER_LOGS_ENABLED_DEFAULT);
                 RolloverTime = driverProfile.GetValue<DateTime>(ROLLOVER_TIME_PROFILENAME, string.Empty, ROLLOVER_TIME_DEFAULT);
                 UseUtcTimeInLogs = driverProfile.GetValue<bool>(USE_UTC_TIME_IN_LOGS_PROFILENAME, string.Empty, USE_UTC_TIME_IN_LOGS_ENABLED_DEFAULT);
+                MinimiseToSystemTray = driverProfile.GetValue<bool>(MINIMISE_TO_SYSTEM_TRAY_PROFILENAME, string.Empty, MINIMISE_TO_SYSTEM_TRAY_DEFAULT);
+                ConfirmExit = driverProfile.GetValue<bool>(CONFIRM_EXIT_PROFILENAME, string.Empty, CONFIRM_EXIT_DEFAULT);
 
                 // Set the next log roll-over time using the persisted roll-over time value
                 SetNextRolloverTime();
@@ -1614,8 +1650,10 @@ namespace ASCOM.Remote
                 driverProfile.SetValueInvariant<bool>(ROLLOVER_LOGS_ENABLED_PROFILENAME, string.Empty, RolloverLogsEnabled);
                 driverProfile.SetValueInvariant<DateTime>(ROLLOVER_TIME_PROFILENAME, string.Empty, RolloverTime);
                 driverProfile.SetValueInvariant<bool>(USE_UTC_TIME_IN_LOGS_PROFILENAME, string.Empty, UseUtcTimeInLogs);
+                driverProfile.SetValueInvariant<bool>(MINIMISE_TO_SYSTEM_TRAY_PROFILENAME, string.Empty, MinimiseToSystemTray);
+                driverProfile.SetValueInvariant<bool>(CONFIRM_EXIT_PROFILENAME, string.Empty, ConfirmExit);
 
-                // Update the next rollover time in case the time has changed
+                // Update the next roll-over time in case the time has changed
                 //TL.LogMessage("WriteProfile", $"NextRolloverTime Before: {NextRolloverTime}");
                 SetNextRolloverTime();
                 //TL.LogMessage("WriteProfile", $"NextRolloverTime After: {NextRolloverTime}");
@@ -1653,6 +1691,26 @@ namespace ASCOM.Remote
         #endregion
 
         #region Form Event handlers
+
+        /// <summary>
+        /// Handle a click to the system tray context menu title
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SystemTrayTitle_Click(object sender, EventArgs e)
+        {
+            RestoreForm();
+        }
+
+        /// <summary>
+        /// Handle click on the system tray exit menu item
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SystemTrayCloseServer_Click(object sender, EventArgs e)
+        {
+            CloseServer();
+        }
 
         private void BtnSetup_Click(object sender, EventArgs e)
         {
@@ -1707,9 +1765,14 @@ namespace ASCOM.Remote
             }
         }
 
+        /// <summary>
+        /// Handle server form exit button click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnExit_Click(object sender, EventArgs e)
         {
-            this.Close();
+            CloseServer();
         }
 
         private void BtnConnectDevices_Click(object sender, EventArgs e)
@@ -1751,7 +1814,7 @@ namespace ASCOM.Remote
         {
             Form form = (Form)sender; // Get the supplied control as a Form
 
-            if (WindowState != FormWindowState.Minimized) // No need to change anything if the window is minimised
+            if (WindowState != FormWindowState.Minimized) // Window is visible so update control positions
             {
                 int formWidth = form.Width;
                 int controlLeftPosition = formWidth - CONTROL_LEFT_OFFSET;
@@ -1814,7 +1877,54 @@ namespace ASCOM.Remote
 
                 // Control Group 6 - Exit button
                 BtnExit.Location = new Point(controlCentrePosition, BtnSetup.Top + controlSpacing + 2);
+
+                formWindowState = this.WindowState; // Save the current form state for restoration later
             }
+            else // WIndow is minimised so minimise to system tray if configured to do so
+            {
+                // Test whether the application should minimise to the task bar or to the system tray
+                if (MinimiseToSystemTray) // Minimise to system tray
+                {
+                    Hide(); // Hide the application
+                    notifyIcon.Visible = true; // Make the system tray icon visible
+                }
+                else // Minimise to task bar
+                {
+                    // This is normal application behaviour so no action required
+                }
+            }
+        }
+
+        /// <summary>
+        /// Event handler for a double click on the system tray icon that appears when the application is minimised to the system tray
+        /// </summary>
+        /// <param name="sender">Notifying object</param>
+        /// <param name="e">Event arguments</param>
+        private void NotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            RestoreForm();
+        }
+        private void RestoreForm()
+        {
+            Show(); // Show the form
+            this.WindowState = formWindowState; // Restore to the window state in use before the application was minimised
+            notifyIcon.Visible = false; // Hide the system tray icon
+            //this.BringToFront();
+        }
+
+
+        /// <summary>
+        /// System tray icon single so update context menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NotifyIcon_Click(object sender, EventArgs e)
+        {
+            systemTrayMenuItems.Items["NumberOfDevices"].Text = $"Number of devices: {ConfiguredDevices.Count}";
+            systemTrayMenuItems.Items["Ipv4"].Text = $"IP v4 enabled: {IpV4Enabled}";
+            systemTrayMenuItems.Items["IPv6"].Text = $"IP v6 enabled: {IpV6Enabled}";
+            systemTrayMenuItems.Items["IPAddress"].Text = $"IP Address: {(ServerIPAddressString == "+" ? "All IP addresses" : ServerIPAddressString)}";
+            systemTrayMenuItems.Items["Port"].Text = $"Listening on port: {ServerPortNumber}";
         }
 
         #endregion
@@ -2101,7 +2211,7 @@ namespace ASCOM.Remote
 
                 if (ScreenLogRequests) // Incoming requests are logged to the screen
                 {
-                    if (LogClientIPAddress) LogToScreen($"{clientIpAddress} { request.HttpMethod} {request.Url.AbsolutePath}"); // Include the client IP address if required
+                    if (LogClientIPAddress) LogToScreen($"{clientIpAddress} {request.HttpMethod} {request.Url.AbsolutePath}"); // Include the client IP address if required
                     else LogToScreen($"{request.HttpMethod} {request.Url.AbsolutePath}"); // Otherwise log the request without client IP address
                 }
                 requestData.ClientIpAddress = clientIpAddress;
@@ -2197,7 +2307,7 @@ namespace ASCOM.Remote
                         if (request.HttpMethod.ToUpperInvariant() == "OPTIONS") // This is a CORS pre-flight request so we need to set some specific headers
                         {
                             // Set the Access-Control-Allow-Methods and Access-Control-Max-Age headers
-                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS method found - This is a CORS PRE_FLIGHT request: {CORS_ALLOWED_METHODS_HEADER} = {CORS_ALLOWED_METHODS}, {CORS_MAX_AGE_HEADER} = { CorsMaxAge}");
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS method found - This is a CORS PRE_FLIGHT request: {CORS_ALLOWED_METHODS_HEADER} = {CORS_ALLOWED_METHODS}, {CORS_MAX_AGE_HEADER} = {CorsMaxAge}");
                             response.Headers.Add(CORS_ALLOWED_METHODS_HEADER, CORS_ALLOWED_METHODS);
                             response.Headers.Add(CORS_MAX_AGE_HEADER, CorsMaxAge.ToString());
                             ReturnEmpty200Success(requestData);

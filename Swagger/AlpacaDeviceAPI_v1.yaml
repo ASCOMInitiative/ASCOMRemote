@@ -2227,7 +2227,7 @@ paths:
           $ref: '#/components/responses/500'
   '/dome/{device_number}/atpark':
     get:
-      summary: Indicates whether the telescope is at the park position
+      summary: Indicates whether the dome is at the park position
       description: >-
         True if the dome is in the programmed park position. Set only following
         a Park() operation and reset with any slew operation.
