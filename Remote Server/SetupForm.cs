@@ -112,6 +112,7 @@ namespace ASCOM.Remote
                 SetRolloverTimeControlState();
                 ChkUseUtcTime.Checked = ServerForm.UseUtcTimeInLogs;
                 chkConfirmExit.Checked = ServerForm.ConfirmExit;
+                chkStartMinimised.Checked = ServerForm.StartMinimised;
 
                 // Initialise the application minimise options combo box
                 cmbMinimiseOptions.Items.AddRange(new object[] { ServerForm.MINIMISE_TO_SYSTEM_TRAY_TEXT, ServerForm.MINIMISE_TO_TASK_BAR_TEXT });
@@ -566,6 +567,7 @@ namespace ASCOM.Remote
                 ServerForm.RolloverTime = DateTimeLogRolloverTime.Value;
                 ServerForm.UseUtcTimeInLogs = ChkUseUtcTime.Checked;
                 ServerForm.ConfirmExit=chkConfirmExit.Checked;
+                ServerForm.StartMinimised=chkStartMinimised.Checked;
 
                 // Update the minimise to system tray value
                 ServerForm.MinimiseToSystemTray = (string)cmbMinimiseOptions.SelectedItem == ServerForm.MINIMISE_TO_SYSTEM_TRAY_TEXT; // Expression evaluates to True if minimise to tray is selected, otherwise false
