@@ -111,6 +111,14 @@ namespace ASCOM.Remote
                 DateTimeLogRolloverTime.Value = ServerForm.RolloverTime;
                 SetRolloverTimeControlState();
                 ChkUseUtcTime.Checked = ServerForm.UseUtcTimeInLogs;
+                chkConfirmExit.Checked = ServerForm.ConfirmExit;
+
+                // Initialise the application minimise options combo box
+                cmbMinimiseOptions.Items.AddRange(new object[] { ServerForm.MINIMISE_TO_SYSTEM_TRAY_TEXT, ServerForm.MINIMISE_TO_TASK_BAR_TEXT });
+                if (ServerForm.MinimiseToSystemTray)
+                    cmbMinimiseOptions.SelectedItem = ServerForm.MINIMISE_TO_SYSTEM_TRAY_TEXT;
+                else
+                    cmbMinimiseOptions.SelectedItem = ServerForm.MINIMISE_TO_TASK_BAR_TEXT;
 
                 // Set the IP v4 / v6 radio boxes
                 if (ServerForm.IpV4Enabled & ServerForm.IpV6Enabled) // Both IPv4 and v6 are enabled so set the "both" button
@@ -242,7 +250,7 @@ namespace ASCOM.Remote
 
                 RecalculateDeviceNumbers();
 
-                // Add this event handler after the initial value has been set so that this doesn't trigger an even
+                // Add this event handler after the initial value has been set so that this doesn't trigger an event
                 this.NumMaxDevices.ValueChanged += new System.EventHandler(this.NumMaxDevices_ValueChanged);
 
             }
@@ -557,6 +565,10 @@ namespace ASCOM.Remote
                 ServerForm.RolloverLogsEnabled = ChkRollOverLogs.Checked;
                 ServerForm.RolloverTime = DateTimeLogRolloverTime.Value;
                 ServerForm.UseUtcTimeInLogs = ChkUseUtcTime.Checked;
+                ServerForm.ConfirmExit=chkConfirmExit.Checked;
+
+                // Update the minimise to system tray value
+                ServerForm.MinimiseToSystemTray = (string)cmbMinimiseOptions.SelectedItem == ServerForm.MINIMISE_TO_SYSTEM_TRAY_TEXT; // Expression evaluates to True if minimise to tray is selected, otherwise false
 
                 // Set the IP v4 and v6 variables as necessary
                 if (RadIpV4.Checked) // The IPv4 radio button is checked so set the IP v4 and IP v6 variables accordingly
