@@ -15,8 +15,8 @@
 #define public RemoteClientBaseClassesName "ASCOM.RemoteClientBaseClasses" ; Remote client support DLL name
 #define public ASCOMRemoteDocumentationFileName "ASCOM Remote Installation and Configuration.pdf"; ASCOM Remote documentation file
 
-; Specifiy debug or release build#define public BuildType "Debug" ; Type of build - Release or Debug
-;define public BuildType "Release" ; Type of build - Release or Debug
+; Specifiy debug or release build;#define public BuildType "Debug" ; Type of build - Release or Debug
+#define public BuildType "Release" ; Type of build - Release or Debug
 
 [Setup]
 AppID={{0ee690ae-7927-4ee7-b851-f5877c077ff5}
