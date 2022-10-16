@@ -77,6 +77,9 @@ namespace ASCOM.Remote
             corsPermittedOriginsCopy = ServerForm.CorsPermittedOrigins.ToListStringValue();
             bindingSource.DataSource = corsPermittedOriginsCopy;
             DataGridCorsOrigins.DataSource = bindingSource;
+
+            // Add a handler for changes in the minimisation behaviour combo box
+            cmbMinimiseOptions.SelectedIndexChanged += CmbMinimiseOptions_SelectedIndexChanged;
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -115,11 +118,17 @@ namespace ASCOM.Remote
                 chkStartMinimised.Checked = ServerForm.StartMinimised;
 
                 // Initialise the application minimise options combo box
-                cmbMinimiseOptions.Items.AddRange(new object[] { ServerForm.MINIMISE_TO_SYSTEM_TRAY_TEXT, ServerForm.MINIMISE_TO_TASK_BAR_TEXT });
-                if (ServerForm.MinimiseToSystemTray)
-                    cmbMinimiseOptions.SelectedItem = ServerForm.MINIMISE_TO_SYSTEM_TRAY_TEXT;
-                else
-                    cmbMinimiseOptions.SelectedItem = ServerForm.MINIMISE_TO_TASK_BAR_TEXT;
+                cmbMinimiseOptions.Items.AddRange(new object[] { ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY, ServerForm.MINIMISE_TO_TASK_BAR_KEY });
+                if (ServerForm.MinimiseToSystemTray) // Minimise to system tray
+                {
+                    cmbMinimiseOptions.SelectedItem = ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY;
+                    lblMinimisationBehaviour.Text = ServerForm.MINIMISE_TO_SYSTEM_TRAY_DESCRIPTION;
+                }
+                else // Minimise to task bar
+                {
+                    cmbMinimiseOptions.SelectedItem = ServerForm.MINIMISE_TO_TASK_BAR_KEY;
+                    lblMinimisationBehaviour.Text = ServerForm.MINIMISE_TO_TASK_BAR_DESCRIPTION;
+                }
 
                 // Set the IP v4 / v6 radio boxes
                 if (ServerForm.IpV4Enabled & ServerForm.IpV6Enabled) // Both IPv4 and v6 are enabled so set the "both" button
@@ -566,11 +575,11 @@ namespace ASCOM.Remote
                 ServerForm.RolloverLogsEnabled = ChkRollOverLogs.Checked;
                 ServerForm.RolloverTime = DateTimeLogRolloverTime.Value;
                 ServerForm.UseUtcTimeInLogs = ChkUseUtcTime.Checked;
-                ServerForm.ConfirmExit=chkConfirmExit.Checked;
-                ServerForm.StartMinimised=chkStartMinimised.Checked;
+                ServerForm.ConfirmExit = chkConfirmExit.Checked;
+                ServerForm.StartMinimised = chkStartMinimised.Checked;
 
                 // Update the minimise to system tray value
-                ServerForm.MinimiseToSystemTray = (string)cmbMinimiseOptions.SelectedItem == ServerForm.MINIMISE_TO_SYSTEM_TRAY_TEXT; // Expression evaluates to True if minimise to tray is selected, otherwise false
+                ServerForm.MinimiseToSystemTray = (string)cmbMinimiseOptions.SelectedItem == ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY; // Expression evaluates to True if minimise to tray is selected, otherwise false
 
                 // Set the IP v4 and v6 variables as necessary
                 if (RadIpV4.Checked) // The IPv4 radio button is checked so set the IP v4 and IP v6 variables accordingly
@@ -673,6 +682,24 @@ namespace ASCOM.Remote
         private void ChkRollOverLogs_CheckedChanged(object sender, EventArgs e)
         {
             SetRolloverTimeControlState();
+        }
+
+        /// <summary>
+        /// Handler for changes in the minimisation combo box selected item
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CmbMinimiseOptions_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Determine what to do based on the new selected item
+            if (cmbMinimiseOptions.SelectedItem.ToString() == ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY) // Minimise to system tray has been selected
+            {
+                lblMinimisationBehaviour.Text = ServerForm.MINIMISE_TO_SYSTEM_TRAY_DESCRIPTION; // Update the option description with the minimise to system tray description
+            }
+            else // Minimise to task bar has been selected
+            {
+                lblMinimisationBehaviour.Text = ServerForm.MINIMISE_TO_TASK_BAR_DESCRIPTION; // Update the option description with the minimise to task bar description 
+            }
         }
 
         #endregion

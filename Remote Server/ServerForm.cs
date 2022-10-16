@@ -152,9 +152,10 @@ namespace ASCOM.Remote
         internal const string MINIMISE_ON_START_PROFILENAME = "Minimise On Start"; public const bool MINIMISE_ON_START_DEFAULT = false;
 
         // Minimise behaviour strings
-        internal const string MINIMISE_TO_SYSTEM_TRAY_TEXT = "Minimise to system tray";
-        internal const string MINIMISE_TO_TASK_BAR_TEXT = "Minimise to task bar";
-        internal const string MINIMISE_START_MINIMISED_TEXT = "Start minimised";
+        internal const string MINIMISE_TO_SYSTEM_TRAY_KEY = "Minimise to system tray";
+        internal const string MINIMISE_TO_SYSTEM_TRAY_DESCRIPTION = "Service like behaviour - Minimises to the system tray and is hidden from ALT/TAB when minimised.";
+        internal const string MINIMISE_TO_TASK_BAR_KEY = "Minimise to task bar";
+        internal const string MINIMISE_TO_TASK_BAR_DESCRIPTION = "Normal application behaviour - Minimises to the task bar and can be restored using ALT/TAB.";
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -415,6 +416,7 @@ namespace ASCOM.Remote
 
                     // Ensure that the system tray icon is not visible when the application starts
                     notifyIcon.Visible = false;
+                    this.BringToFront();
                 }
             }
             catch (Exception ex)
@@ -449,10 +451,16 @@ namespace ASCOM.Remote
         /// </summary>
         private void RestoreForm()
         {
-            Show(); // Show the form
-            this.WindowState = formWindowState; // Restore to the window state in use before the application was minimised
-            notifyIcon.Visible = false; // Hide the system tray icon
-            //this.BringToFront();
+            // Show the form
+            this.Show();
+
+            // Restore to the window state in use before the application was minimised
+            this.WindowState = formWindowState;
+
+            // Hide the system tray icon
+            notifyIcon.Visible = false;
+            
+            this.BringToFront();
         }
 
         private uint GetServerTransactionID()
@@ -1890,19 +1898,39 @@ namespace ASCOM.Remote
                 // Control Group 6 - Exit button
                 BtnExit.Location = new Point(controlCentrePosition, BtnSetup.Top + controlSpacing + 2);
 
-                formWindowState = this.WindowState; // Save the current form state for restoration later
+                // Save the current form state so it can be restored after the application is next minimised
+                formWindowState = this.WindowState;
+
+                // Show the application in the task bar
+                this.ShowInTaskbar = true;
+
+                // Show the form in ALT/TAB
+                this.FormBorderStyle = FormBorderStyle.Sizable;
             }
             else // WIndow is minimised so minimise to system tray if configured to do so
             {
                 // Test whether the application should minimise to the task bar or to the system tray
                 if (MinimiseToSystemTray) // Minimise to system tray
                 {
-                    Hide(); // Hide the application
-                    notifyIcon.Visible = true; // Make the system tray icon visible
+                    // Hide the application
+                    this.Hide();
+
+                    // Hide the application from the task bar
+                    this.ShowInTaskbar = false;
+
+                    // Hide the form from ALT/TAB
+                    this.FormBorderStyle = FormBorderStyle.SizableToolWindow;
+
+                    // Make the system tray icon visible
+                    notifyIcon.Visible = true;
                 }
                 else // Minimise to task bar
                 {
-                    // This is normal application behaviour so no action required
+                    // Show the application in the task bar
+                    this.ShowInTaskbar = true;
+
+                    // Show the form in ALT/TAB
+                    this.FormBorderStyle = FormBorderStyle.Sizable;
                 }
             }
         }
