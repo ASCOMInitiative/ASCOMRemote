@@ -149,10 +149,13 @@ namespace ASCOM.Remote
         internal const string USE_UTC_TIME_IN_LOGS_PROFILENAME = "Use UTC Time In Logs"; public const bool USE_UTC_TIME_IN_LOGS_ENABLED_DEFAULT = false;
         internal const string MINIMISE_TO_SYSTEM_TRAY_PROFILENAME = "Minimise To System Tray"; public const bool MINIMISE_TO_SYSTEM_TRAY_DEFAULT = false;
         internal const string CONFIRM_EXIT_PROFILENAME = "Confirm Exit"; public const bool CONFIRM_EXIT_DEFAULT = false;
+        internal const string MINIMISE_ON_START_PROFILENAME = "Minimise On Start"; public const bool MINIMISE_ON_START_DEFAULT = false;
 
         // Minimise behaviour strings
-        internal const string MINIMISE_TO_SYSTEM_TRAY_TEXT = "Minimise to system tray";
-        internal const string MINIMISE_TO_TASK_BAR_TEXT = "Minimise to task bar";
+        internal const string MINIMISE_TO_SYSTEM_TRAY_KEY = "Minimise to system tray";
+        internal const string MINIMISE_TO_SYSTEM_TRAY_DESCRIPTION = "Service like behaviour - Minimises to the system tray and is hidden from ALT/TAB when minimised.";
+        internal const string MINIMISE_TO_TASK_BAR_KEY = "Minimise to task bar";
+        internal const string MINIMISE_TO_TASK_BAR_DESCRIPTION = "Normal application behaviour - Minimises to the task bar and can be restored using ALT/TAB.";
 
         //Device profile persistence constants
         internal const string DEVICE_SUBFOLDER_NAME = "Device";
@@ -260,6 +263,7 @@ namespace ASCOM.Remote
         internal static bool UseUtcTimeInLogs;
         internal static bool MinimiseToSystemTray;
         internal static bool ConfirmExit;
+        internal static bool StartMinimised;
 
         #endregion
 
@@ -355,8 +359,10 @@ namespace ASCOM.Remote
                 this.Resize += ServerForm_Resize;
                 notifyIcon.MouseDoubleClick += NotifyIcon_MouseDoubleClick;
                 notifyIcon.Click += NotifyIcon_Click;
-                systemTrayMenuItems.Items["exit"].Click += SystemTrayCloseServer_Click;
-                systemTrayMenuItems.Items["Title"].Click += SystemTrayTitle_Click; ;
+                systemTrayMenuItems.Items["Exit"].Click += SystemTrayCloseServer_Click;
+                systemTrayMenuItems.Items["Title"].Click += SystemTrayTitle_Click;
+
+                this.FormClosing += ServerForm_FormClosing;
                 ServerForm_Resize(this, new EventArgs()); // Move controls to their correct positions
 
                 // Check whether this device already has an Alpaca unique ID, if not, create one
@@ -396,13 +402,22 @@ namespace ASCOM.Remote
 
             try
             {
-                // Bring this form to the front of the screen
-                this.WindowState = FormWindowState.Minimized;
-                this.Show();
-                this.WindowState = FormWindowState.Normal;
+                // Start minimised or bring for to the top of the Z order
+                if (StartMinimised) // Start minimised
+                {
+                    this.WindowState = FormWindowState.Minimized;
+                }
+                else // Start normally
+                {
+                    // Bring this form to the front of the screen
+                    this.WindowState = FormWindowState.Minimized;
+                    this.Show();
+                    this.WindowState = FormWindowState.Normal;
 
-                // Ensure that the system tray icon is not visible when the application starts
-                notifyIcon.Visible = false;
+                    // Ensure that the system tray icon is not visible when the application starts
+                    notifyIcon.Visible = false;
+                    this.BringToFront();
+                }
             }
             catch (Exception ex)
             {
@@ -431,22 +446,21 @@ namespace ASCOM.Remote
 
         #region Utility methods
 
-        private void CloseServer()
+        /// <summary>
+        /// Restore the server form when minimised
+        /// </summary>
+        private void RestoreForm()
         {
-            // Check whether the server is configured to ask for shutdown confirmation
-            if (ConfirmExit) // Confirmation is required
-            {
-                // Ask the user whether they want to close the remote server
-                DialogResult result = MessageBox.Show("Are you sure you want to close the Remote Server?", "ASCOM Remote Server", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            // Show the form
+            this.Show();
 
-                // An OK result means the user wants to shut down the Remote Server so close the server form, otherwise do nothing
-                if (result == DialogResult.OK)
-                    this.Close();
-            }
-            else // No confirmation is required so go ahead and shut down the application.
-            {
-                this.Close();
-            }
+            // Restore to the window state in use before the application was minimised
+            this.WindowState = formWindowState;
+
+            // Hide the system tray icon
+            notifyIcon.Visible = false;
+            
+            this.BringToFront();
         }
 
         private uint GetServerTransactionID()
@@ -1534,6 +1548,7 @@ namespace ASCOM.Remote
                 UseUtcTimeInLogs = driverProfile.GetValue<bool>(USE_UTC_TIME_IN_LOGS_PROFILENAME, string.Empty, USE_UTC_TIME_IN_LOGS_ENABLED_DEFAULT);
                 MinimiseToSystemTray = driverProfile.GetValue<bool>(MINIMISE_TO_SYSTEM_TRAY_PROFILENAME, string.Empty, MINIMISE_TO_SYSTEM_TRAY_DEFAULT);
                 ConfirmExit = driverProfile.GetValue<bool>(CONFIRM_EXIT_PROFILENAME, string.Empty, CONFIRM_EXIT_DEFAULT);
+                StartMinimised = driverProfile.GetValue<bool>(MINIMISE_ON_START_PROFILENAME, string.Empty, MINIMISE_ON_START_DEFAULT);
 
                 // Set the next log roll-over time using the persisted roll-over time value
                 SetNextRolloverTime();
@@ -1652,6 +1667,7 @@ namespace ASCOM.Remote
                 driverProfile.SetValueInvariant<bool>(USE_UTC_TIME_IN_LOGS_PROFILENAME, string.Empty, UseUtcTimeInLogs);
                 driverProfile.SetValueInvariant<bool>(MINIMISE_TO_SYSTEM_TRAY_PROFILENAME, string.Empty, MinimiseToSystemTray);
                 driverProfile.SetValueInvariant<bool>(CONFIRM_EXIT_PROFILENAME, string.Empty, ConfirmExit);
+                driverProfile.SetValueInvariant<bool>(MINIMISE_ON_START_PROFILENAME, string.Empty, StartMinimised);
 
                 // Update the next roll-over time in case the time has changed
                 //TL.LogMessage("WriteProfile", $"NextRolloverTime Before: {NextRolloverTime}");
@@ -1691,26 +1707,6 @@ namespace ASCOM.Remote
         #endregion
 
         #region Form Event handlers
-
-        /// <summary>
-        /// Handle a click to the system tray context menu title
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SystemTrayTitle_Click(object sender, EventArgs e)
-        {
-            RestoreForm();
-        }
-
-        /// <summary>
-        /// Handle click on the system tray exit menu item
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SystemTrayCloseServer_Click(object sender, EventArgs e)
-        {
-            CloseServer();
-        }
 
         private void BtnSetup_Click(object sender, EventArgs e)
         {
@@ -1772,7 +1768,7 @@ namespace ASCOM.Remote
         /// <param name="e"></param>
         private void BtnExit_Click(object sender, EventArgs e)
         {
-            CloseServer();
+            this.Close(); // CloseServer();
         }
 
         private void BtnConnectDevices_Click(object sender, EventArgs e)
@@ -1802,6 +1798,30 @@ namespace ASCOM.Remote
             ScreenLogRequests = chkLogRequests.Checked;
             ScreenLogResponses = chkLogResponses.Checked;
             WriteProfile();
+        }
+
+        /// <summary>
+        /// Handle the form closing event, cancelling the close if the user says "no" whenasked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ServerForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Check whether the server is configured to ask for shutdown confirmation
+            if (ConfirmExit) // Confirmation is required
+            {
+                // Ask the user whether they want to close the remote server
+                DialogResult result = MessageBox.Show("Are you sure you want to close the Remote Server?", "ASCOM Remote Server", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+
+                // An OK result means the user wants to shut down the Remote Server so allow the form to close, otherwise cancel the close.
+                if (result != DialogResult.OK)
+                    e.Cancel = true;
+            }
+            else // No confirmation is required so go ahead and let the application shut down.
+            {
+                // No action required
+            }
+
         }
 
         /// <summary>
@@ -1878,19 +1898,39 @@ namespace ASCOM.Remote
                 // Control Group 6 - Exit button
                 BtnExit.Location = new Point(controlCentrePosition, BtnSetup.Top + controlSpacing + 2);
 
-                formWindowState = this.WindowState; // Save the current form state for restoration later
+                // Save the current form state so it can be restored after the application is next minimised
+                formWindowState = this.WindowState;
+
+                // Show the application in the task bar
+                this.ShowInTaskbar = true;
+
+                // Show the form in ALT/TAB
+                this.FormBorderStyle = FormBorderStyle.Sizable;
             }
             else // WIndow is minimised so minimise to system tray if configured to do so
             {
                 // Test whether the application should minimise to the task bar or to the system tray
                 if (MinimiseToSystemTray) // Minimise to system tray
                 {
-                    Hide(); // Hide the application
-                    notifyIcon.Visible = true; // Make the system tray icon visible
+                    // Hide the application
+                    this.Hide();
+
+                    // Hide the application from the task bar
+                    this.ShowInTaskbar = false;
+
+                    // Hide the form from ALT/TAB
+                    this.FormBorderStyle = FormBorderStyle.SizableToolWindow;
+
+                    // Make the system tray icon visible
+                    notifyIcon.Visible = true;
                 }
                 else // Minimise to task bar
                 {
-                    // This is normal application behaviour so no action required
+                    // Show the application in the task bar
+                    this.ShowInTaskbar = true;
+
+                    // Show the form in ALT/TAB
+                    this.FormBorderStyle = FormBorderStyle.Sizable;
                 }
             }
         }
@@ -1904,14 +1944,26 @@ namespace ASCOM.Remote
         {
             RestoreForm();
         }
-        private void RestoreForm()
+
+        /// <summary>
+        /// Handle a click to the system tray context menu title
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SystemTrayTitle_Click(object sender, EventArgs e)
         {
-            Show(); // Show the form
-            this.WindowState = formWindowState; // Restore to the window state in use before the application was minimised
-            notifyIcon.Visible = false; // Hide the system tray icon
-            //this.BringToFront();
+            RestoreForm();
         }
 
+        /// <summary>
+        /// Handle click on the system tray exit menu item
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SystemTrayCloseServer_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
 
         /// <summary>
         /// System tray icon single so update context menu
