@@ -1002,13 +1002,15 @@ paths:
     get:
       summary: Returns an array of integers containing the exposure pixel values
       description: >
-        Returns an array of 32bit integers containing the pixel values from the last exposure. This call can return either a 2 dimension (monochrome images) or 3 dimension (colour or multi-plane images) array of size NumX \* NumY or NumX \* NumY \* NumPlanes. Where applicable, the size of NumPlanes has to be determined by inspection of the returned Array.
+        Returns an array of 32bit integers containing the pixel values from the last exposure. This call can return either a 2 dimension (monochrome images) or 3 dimension (colour or multi-plane images) array 
+        of size NumX \* NumY or NumX \* NumY \* NumPlanes. Where applicable, the size of NumPlanes has to be determined by inspection of the returned Array.
 
 
         Since 32bit integers are always returned by this call, the returned JSON Type value (0 = Unknown, 1 = short(16bit), 2 = int(32bit), 3 = Double) is always 2. The number of planes is given in the returned Rank value.
 
 
-        When de-serialising to an object it is essential to know the array Rank beforehand so that the correct data class can be used. This can be achieved through a regular expression or by direct parsing of the returned JSON string to extract the Type and Rank values before de-serialising.
+        When de-serialising to an object it is essential to know the array Rank beforehand so that the correct data class can be used. This can be achieved through a regular expression or by direct parsing 
+        of the returned JSON string to extract the Type and Rank values before de-serialising.
 
 
         This regular expression accomplishes the extraction into two named groups Type and Rank, which can then be used to select the correct de-serialisation data class:
@@ -1108,7 +1110,7 @@ paths:
       summary: Returns an array of int containing the exposure pixel values
       description: >
         Returns an array containing the pixel values from the last exposure.
-        This call can return either a 2 dimension (monochrome images) or 3
+        This call can return either a 2 dimension (monochrome images) or a 3
         dimension (colour or multi-plane images) array of size NumX \* NumY  or
         NumX \* NumY \* NumPlanes. Where applicable, the size of NumPlanes has
         to be determined by inspection of the returned Array.
@@ -1117,8 +1119,7 @@ paths:
         This call can return values as short(16bit) integers, int(32bit)
         integers or double floating point values. The nature of the returned
         values is given in the Type parameter: 0 = Unknown, 1 = short(16bit), 2
-        = int(32bit), 3 = Double. The number of planes is given in the returned
-        Rank value.
+        = int(32bit), 3 = Double. The number of dimensions is given in the returned Rank value.
 
 
         When deserialising to an object it helps enormously to know the Type and
@@ -1215,7 +1216,7 @@ paths:
         - Camera Specific Methods
       responses:
         '200':
-          $ref: '#/components/responses/ImageArrayResponse'
+          $ref: '#/components/responses/ImageArrayVariantResponse'
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -5791,6 +5792,37 @@ components:
                     type: integer
                     format: int32
                     description: >-
+                      Must always be 2 representing a 32bit integer.
+                    minimum: 2
+                    maximum: 2
+                  Rank:
+                    type: integer
+                    format: int32
+                    description: >-
+                      The array's rank, will be 2 (single plane image (monochrome)) or 3
+                      (multi-plane image).
+                    minimum: 2
+                    maximum: 3
+                  Value:
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: integer
+                        format: int32
+                        description: Integer pixel values
+    ImageArrayVariantResponse:
+      description: Transaction complete or exception.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/AlpacaResponse'
+              - properties:
+                  Type:
+                    type: integer
+                    format: int32
+                    description: >-
                       0 = Unknown, 1 = Short(int16), 2 = Integer (int32), 3 = Double (Double
                       precision real number).
                     minimum: 0
@@ -5801,13 +5833,15 @@ components:
                     description: >-
                       The array's rank, will be 2 (single plane image (monochrome)) or 3
                       (multi-plane image).
+                    minimum: 2
+                    maximum: 3
                   Value:
                     type: array
                     items:
                       type: array
                       items:
                         type: number
-                        description: Returned integer or double value
+                        description: Integer or double pixel values
     BoolResponse:
       description: Transaction complete or exception.
       content:
