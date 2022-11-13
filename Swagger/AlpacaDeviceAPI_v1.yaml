@@ -1483,7 +1483,7 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                offset:
+                Offset:
                   description: Index of the current camera offset in the offsets string array.
                   type: integer
                   format: int32
