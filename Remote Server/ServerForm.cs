@@ -82,9 +82,9 @@ namespace ASCOM.Remote
         private const string CORRECT_SERVER_FORMAT_STRING_PLAIN = "Required format is: server/vx/configuration | profile | concurrency where x is the one based API version number. " +
             "The server and command fields must be in lower case."; // PLain text error message when an unknown server command is received.
 
-        private const string UNRECOGNISED_URI_MESSAGE_HTML = "You have reached the <i><b>ASCOM Remote Server</b></i> API portal but your url did not start with /api, /management, /server or /setup (must be lower case) <p><b>Available devices:</b></p>";
+        private const string UNRECOGNISED_URI_MESSAGE_HTML = "You have reached the <i><b>ASCOM Remote Server</b></i> API portal but your URL did not start with /api, /management, /server or /setup (must be lower case) <p><b>Available devices:</b></p>";
 
-        private const string UNRECOGNISED_URI_MESSAGE_PLAIN = "You have reached the ASCOM Remote Server API portal but your url did not start with /api, /management, /server or /setup (must be lower case) Available devices: \r\n";
+        private const string UNRECOGNISED_URI_MESSAGE_PLAIN = "You have reached the ASCOM Remote Server API portal but your URL did not start with /api, /management, /server or /setup (must be lower case) Available devices: \r\n";
 
         private const string GET_UNKNOWN_METHOD_MESSAGE = "GET - Unknown device method: ";
         private const string PUT_UNKNOWN_METHOD_MESSAGE = "PUT - Unknown device method: ";
@@ -113,7 +113,7 @@ namespace ASCOM.Remote
         internal const int URL_ELEMENT_DEVICE_TYPE = 2;
         internal const int URL_ELEMENT_DEVICE_NUMBER = 3;
         internal const int URL_ELEMENT_METHOD = 4;
-        internal const int URL_ELEMENT_SERVER_COMMAND = 2; // For /server/ type uris
+        internal const int URL_ELEMENT_SERVER_COMMAND = 2; // For /server/ type URIs
 
         // Device server profile persistence constants
         internal const string SERVER_LOG_FOLDER_PROFILENAME = "Server Log Folder"; // No default value constant because the default Documents folder has to be calculated dynamically at run time
@@ -145,7 +145,7 @@ namespace ASCOM.Remote
         internal const string IPV4_ENABLED_PROFILENAME = "IP v4 Enabled"; public const bool IPV4_ENABLED_DEFAULT = true;
         internal const string IPV6_ENABLED_PROFILENAME = "IP v6 Enabled"; public const bool IPV6_ENABLED_DEFAULT = false;
         internal const string ROLLOVER_LOGS_ENABLED_PROFILENAME = "Rollover Logs Enabled"; public const bool ROLLOVER_LOGS_ENABLED_DEFAULT = false;
-        internal const string ROLLOVER_TIME_PROFILENAME = "Rollover Time"; public static DateTime ROLLOVER_TIME_DEFAULT = DateTime.Now.Date; // Default value can't be const because it's a date-time type
+        internal const string ROLLOVER_TIME_PROFILENAME = "Rollover Time"; public static DateTime ROLLOVER_TIME_DEFAULT = DateTime.Now.Date; // Default value can't be constant because it's a date-time type
         internal const string USE_UTC_TIME_IN_LOGS_PROFILENAME = "Use UTC Time In Logs"; public const bool USE_UTC_TIME_IN_LOGS_ENABLED_DEFAULT = false;
         internal const string MINIMISE_TO_SYSTEM_TRAY_PROFILENAME = "Minimise To System Tray"; public const bool MINIMISE_TO_SYSTEM_TRAY_DEFAULT = false;
         internal const string CONFIRM_EXIT_PROFILENAME = "Confirm Exit"; public const bool CONFIRM_EXIT_DEFAULT = false;
@@ -228,6 +228,8 @@ namespace ASCOM.Remote
         // Variable to hold the last log time so that old logs are closed and new logs are started when we move to a new day
         internal static DateTime NextTraceLogRolloverTime = DateTime.Now; // Initialise to now to ensure that the roll-over code works correctly
         internal static DateTime NextAccessLogRolloverTime = DateTime.Now; // Initialise to now to ensure that the roll-over code works correctly
+        private static readonly object traceLoggerRolloverLockObject = new object ();
+        private static readonly object accessLogRolloverLockObject = new object();
 
         internal static ConcurrentDictionary<string, ConfiguredDevice> ConfiguredDevices;
         internal static ConcurrentDictionary<string, ActiveObject> ActiveObjects;
@@ -459,7 +461,7 @@ namespace ASCOM.Remote
 
             // Hide the system tray icon
             notifyIcon.Visible = false;
-            
+
             this.BringToFront();
         }
 
@@ -547,7 +549,7 @@ namespace ASCOM.Remote
                                         string setNetworkPermissionsPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + SharedConstants.SET_NETWORK_PERMISSIONS_EXE_PATH;
                                         LogMessage(0, 0, 0, "StartRESTServer", string.Format("SetNetworkPermissionspath: {0}", setNetworkPermissionsPath));
 
-                                        // Check that the SetNetworkPermissions exe exists
+                                        // Check that the SetNetworkPermissions EXE exists
                                         if (File.Exists(setNetworkPermissionsPath)) // SetNetworkPermissions exists
                                         {
                                             string args = $"--{SharedConstants.ENABLE_API_URI_COMMAND_NAME} {apiOperatingUri} " +
@@ -1130,7 +1132,7 @@ namespace ASCOM.Remote
                             RemainingObjectCount = DestroyDriver(activeObject.Key);
                         }
                     }
-                    catch (KeyNotFoundException) { } // Ignore key not found exceptions, they are expected for unconfigured devices
+                    catch (KeyNotFoundException) { } // Ignore key not found exceptions, they are expected for un-configured devices
 
                     catch (Exception ex)
                     {
@@ -1257,23 +1259,26 @@ namespace ASCOM.Remote
 
                 if (now > NextTraceLogRolloverTime) // We have moved into the next log period so close the current log and start another
                 {
-                    // Close the current logger
-                    TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "EndOfDay", "Closing this log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
-                    TL.Enabled = false;
-                    TL.Dispose();
-                    TL = null;
-
-                    // Start a new logger
-                    TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME)
+                    lock (traceLoggerRolloverLockObject)
                     {
-                        LogFilePath = TraceFolder,
-                        Enabled = true, // Enable the trace logger
-                        IpAddressTraceState = LogClientIPAddress // Set the current state of the "include client IP address in trace lines" flag
-                    };
+                        // Close the current logger
+                        TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "EndOfDay", "Closing this log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+                        TL.Enabled = false;
+                        TL.Dispose();
+                        TL = null;
 
-                    TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+                        // Start a new logger
+                        TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME)
+                        {
+                            LogFilePath = TraceFolder,
+                            Enabled = true, // Enable the trace logger
+                            IpAddressTraceState = LogClientIPAddress // Set the current state of the "include client IP address in trace lines" flag
+                        };
 
-                    NextTraceLogRolloverTime = NextTraceLogRolloverTime.AddDays(1.0); // Update the next roll-over time so that it can be tested on the next logging call
+                        TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+
+                        NextTraceLogRolloverTime = NextTraceLogRolloverTime.AddDays(1.0); // Update the next roll-over time so that it can be tested on the next logging call
+                    }
                 }
             }
         }
@@ -1480,7 +1485,7 @@ namespace ASCOM.Remote
         public static int GetManagedSize(Type type)
         {
             // all this just to invoke one op code with no arguments!
-            var method = new DynamicMethod("GetManagedSizeImpl", typeof(uint), new Type[0]); //, typeof(TypeExtensions), false);
+            var method = new DynamicMethod("GetManagedSizeImpl", typeof(uint), new Type[0]);
 
             ILGenerator gen = method.GetILGenerator();
 
@@ -1607,7 +1612,7 @@ namespace ASCOM.Remote
             else // Today's roll-time is earlier than now so we must set the next roll-time to tomorrow's roll-time
             {
                 NextTraceLogRolloverTime = todaysRolloverTime.AddDays(1.0);
-                NextAccessLogRolloverTime = todaysRolloverTime;
+                NextAccessLogRolloverTime = todaysRolloverTime.AddDays(1.0);
             }
         }
 
@@ -1801,7 +1806,7 @@ namespace ASCOM.Remote
         }
 
         /// <summary>
-        /// Handle the form closing event, cancelling the close if the user says "no" whenasked
+        /// Handle the form closing event, cancelling the close if the user says "no" when asked
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -2238,23 +2243,26 @@ namespace ASCOM.Remote
 
                     if (now > NextAccessLogRolloverTime) // We have moved into the next log period so close the current log and start another
                     {
-                        // Close the current logger
-                        AccessLog.LogMessage(clientID, clientTransactionID, serverTransactionID, "EndOfDay", "Closing this log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
-                        AccessLog.Enabled = false;
-                        AccessLog.Dispose();
-                        AccessLog = null;
-
-                        // Start a new logger
-                        AccessLog = new TraceLoggerPlus("", ACCESSLOG_TRACELOGGER_NAME)
+                        lock (accessLogRolloverLockObject)
                         {
-                            LogFilePath = TraceFolder,
-                            Enabled = true, // Enable the trace logger
-                            IpAddressTraceState = LogClientIPAddress // Set the current state of the "include client IP address in trace lines" flag
-                        };
+                            // Close the current logger
+                            AccessLog.LogMessage(clientID, clientTransactionID, serverTransactionID, "EndOfDay", "Closing this log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+                            AccessLog.Enabled = false;
+                            AccessLog.Dispose();
+                            AccessLog = null;
 
-                        AccessLog.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+                            // Start a new logger
+                            AccessLog = new TraceLoggerPlus("", ACCESSLOG_TRACELOGGER_NAME)
+                            {
+                                LogFilePath = TraceFolder,
+                                Enabled = true, // Enable the trace logger
+                                IpAddressTraceState = LogClientIPAddress // Set the current state of the "include client IP address in trace lines" flag
+                            };
 
-                        NextAccessLogRolloverTime = NextTraceLogRolloverTime.AddDays(1.0); // Update the next roll-over time so that it can be tested on the next logging call
+                            AccessLog.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
+
+                            NextAccessLogRolloverTime = NextTraceLogRolloverTime.AddDays(1.0); // Update the next roll-over time so that it can be tested on the next logging call
+                        }
                     }
 
                     //Write the access log entry
@@ -2602,7 +2610,7 @@ namespace ASCOM.Remote
                                                             // Populate the list with configured devices
                                                             foreach (KeyValuePair<string, ConfiguredDevice> configuredDevice in ConfiguredDevices)
                                                             {
-                                                                if (configuredDevice.Value.DeviceType != SharedConstants.DEVICE_NOT_CONFIGURED) // Only include configured devices, ignoring unconfigured device slots
+                                                                if (configuredDevice.Value.DeviceType != SharedConstants.DEVICE_NOT_CONFIGURED) // Only include configured devices, ignoring un-configured device slots
                                                                 {
                                                                     AlpacaConfiguredDevice alpacaConfiguredDevice = new AlpacaConfiguredDevice(configuredDevice.Value.Description,
                                                                                                                                                configuredDevice.Value.DeviceType,
@@ -2611,6 +2619,8 @@ namespace ASCOM.Remote
                                                                     alpacaConfiguredDevices.Add(alpacaConfiguredDevice);
                                                                 }
                                                             }
+
+                                                            alpacaConfiguredDevices.Add(new AlpacaConfiguredDevice("Example non-standard device type for test purposes. This endpoint doesn't exist and cannot be accessed through HTTP.", "Management", 90, "4478abd9-80f4-47ca-a1f9-31d2de53a27f)"));
 
                                                             AlpacaConfiguredDevicesResponse alpacaConfigurationResponse = new AlpacaConfiguredDevicesResponse(clientTransactionID, serverTransactionID, alpacaConfiguredDevices)
                                                             {
@@ -4128,7 +4138,7 @@ namespace ASCOM.Remote
 
                     #endregion
 
-                    #region Safetymonitor Methods
+                    #region Safety monitor Methods
 
                     case "safetymonitor.issafe":
                         deviceResponse = device.IsSafe; break;
@@ -5213,7 +5223,7 @@ namespace ASCOM.Remote
             // Initialise a list to hold returned tracking rate values and add any tracking rate values that have been returned
             List<DriveRates> rates = new List<DriveRates>();
 
-            if (!(deviceResponse is null)) // Avoid processing a null return value because the foreach code will fail 
+            if (!(deviceResponse is null)) // Avoid processing a null return value because the for each code will fail 
             {
                 foreach (DriveRates rate in deviceResponse)
                 {
@@ -5936,7 +5946,7 @@ namespace ASCOM.Remote
                                             return;
                                         }
 
-                                        // Fall back to base64-handoff if requested
+                                        // Fall back to base64-hand-off if requested
                                         else if (base64HandoffRequested)
                                         {
                                             LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
@@ -6154,7 +6164,7 @@ namespace ASCOM.Remote
                 ForceGarbageCollection();
 
                 ArrayMetadataV1 arrayMetadataV1 = imageArrayBytes.GetMetadataV1();
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Converted byte array - Netadata version: {arrayMetadataV1.MetadataVersion}, " +
+                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Converted byte array - Metadata version: {arrayMetadataV1.MetadataVersion}, " +
                     $"Error number: {arrayMetadataV1.ErrorNumber}, " +
                     $"Client transaction ID: {arrayMetadataV1.ClientTransactionID}, " +
                     $"Server transaction ID: {arrayMetadataV1.ServerTransactionID}, " +
@@ -6306,7 +6316,7 @@ namespace ASCOM.Remote
             // Initialise a list to hold returned rate values and add any rate values that have been returned
             List<RateResponse> rateResponse = new List<RateResponse>();
 
-            if (!(deviceResponse is null)) // Avoid processing a null return value because the foreach code will fail 
+            if (!(deviceResponse is null)) // Avoid processing a null return value because the for each code will fail 
             {
                 foreach (dynamic r in deviceResponse)
                 {
@@ -6630,7 +6640,7 @@ namespace ASCOM.Remote
 
             if (ex == null) // Command ran successfully so return the JSON encoded result
             {
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("OK - no exception. Thread: {0}, Json: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), (jsonResponse.Length < 1000) ? jsonResponse : jsonResponse.Substring(0, 1000)));
+                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("OK - no exception. Thread: {0}, JSON: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), (jsonResponse.Length < 1000) ? jsonResponse : jsonResponse.Substring(0, 1000)));
                 if (ScreenLogResponses) LogToScreen(string.Format("  OK - JSON: {0}", jsonResponse));
                 TransmitResponse(requestData, "application/json; charset=utf-8", HttpStatusCode.OK, "200 OK", jsonResponse);
             }
