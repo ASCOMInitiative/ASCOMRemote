@@ -109,11 +109,11 @@ namespace ASCOM.Remote
 
         // Position of each element within the client's requested URI 
         internal const int URL_ELEMENT_API = 0; // For /api/ URIs
-        internal const int URL_ELEMENT_API_VERSION = 1;
-        internal const int URL_ELEMENT_DEVICE_TYPE = 2;
-        internal const int URL_ELEMENT_DEVICE_NUMBER = 3;
-        internal const int URL_ELEMENT_METHOD = 4;
-        internal const int URL_ELEMENT_SERVER_COMMAND = 2; // For /server/ type URIs
+        //internal const int SharedConstants.URL_ELEMENT_API_VERSION = 1;
+        //internal const int SharedConstants.URL_ELEMENT_DEVICE_TYPE = 2;
+        //internal const int SharedConstants.URL_ELEMENT_DEVICE_NUMBER = 3;
+        //internal const int SharedConstants.URL_ELEMENT_METHOD = 4;
+        //internal const int SharedConstants.URL_ELEMENT_SERVER_COMMAND = 2; // For /server/ type URIs
 
         // Device server profile persistence constants
         internal const string SERVER_LOG_FOLDER_PROFILENAME = "Server Log Folder"; // No default value constant because the default Documents folder has to be calculated dynamically at run time
@@ -228,7 +228,7 @@ namespace ASCOM.Remote
         // Variable to hold the last log time so that old logs are closed and new logs are started when we move to a new day
         internal static DateTime NextTraceLogRolloverTime = DateTime.Now; // Initialise to now to ensure that the roll-over code works correctly
         internal static DateTime NextAccessLogRolloverTime = DateTime.Now; // Initialise to now to ensure that the roll-over code works correctly
-        private static readonly object traceLoggerRolloverLockObject = new object ();
+        private static readonly object traceLoggerRolloverLockObject = new object();
         private static readonly object accessLogRolloverLockObject = new object();
 
         internal static ConcurrentDictionary<string, ConfiguredDevice> ConfiguredDevices;
@@ -2142,7 +2142,7 @@ namespace ASCOM.Remote
             {
                 IncrementConcurrencyCounter();
 
-                suppliedParameters = new NameValueCollection(); // Create a collection to hold the supplied parameters
+                suppliedParameters = new NameValueCollection(StringComparer.Ordinal); // Create a collection to hold the supplied parameters
                 request = context.Request;
                 response = context.Response;
                 serverTransactionID = GetServerTransactionID();
@@ -2280,11 +2280,21 @@ namespace ASCOM.Remote
                 string clientIDString = suppliedParameters[SharedConstants.CLIENTID_PARAMETER_NAME];
                 if (clientIDString != null) // Some value was supplied for this parameter
                 {
-                    // Parse the integer value out or throw a 400 error if the value is not an integer
-                    if (!uint.TryParse(clientIDString, out clientID))
+                    // Test whether something other than an empty string or white space was passed as the ClientId value
+                    if (!string.IsNullOrWhiteSpace(clientIDString)) // Not empty or white space
+                    {
+                        // Parse the integer value out or throw a 400 error if the value is not an unsigned integer
+                        if (!uint.TryParse(clientIDString, out clientID))
+                        {
+                            LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}, Concurrent requests: {3}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString(), numberOfConcurrentTransactions));
+                            Return400Error(requestData, "Client ID is not an unsigned integer: " + suppliedParameters[SharedConstants.CLIENTID_PARAMETER_NAME]);
+                            return;
+                        }
+                    }
+                    else // Empty or white space
                     {
                         LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}, Concurrent requests: {3}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString(), numberOfConcurrentTransactions));
-                        Return400Error(requestData, "Client ID is not an integer: " + suppliedParameters[SharedConstants.CLIENTID_PARAMETER_NAME]);
+                        Return400Error(requestData, "Client ID is empty or white space");
                         return;
                     }
                 }
@@ -2294,11 +2304,21 @@ namespace ASCOM.Remote
                 string clientTransactionIDString = suppliedParameters[SharedConstants.CLIENTTRANSACTION_PARAMETER_NAME];
                 if (clientTransactionIDString != null) // Some value was supplied for this parameter
                 {
-                    // Parse the integer value out or throw a 400 error if the value is not an integer
-                    if (!uint.TryParse(clientTransactionIDString, out clientTransactionID))
+                    // Test whether something other than an empty string or white space was passed as the ClientId value
+                    if (!string.IsNullOrWhiteSpace(clientTransactionIDString)) // Not empty or white space
                     {
-                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString()));
-                        Return400Error(requestData, "Client transaction ID is not an integer: " + suppliedParameters[SharedConstants.CLIENTTRANSACTION_PARAMETER_NAME]);
+                        // Parse the integer value out or throw a 400 error if the value is not an unsigned integer
+                        if (!uint.TryParse(clientTransactionIDString, out clientTransactionID))
+                        {
+                            LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Thread.CurrentThread.ManagedThreadId.ToString()}, Concurrent requests: {numberOfConcurrentTransactions}");
+                            Return400Error(requestData, "Client transaction ID is not an unsigned integer: " + suppliedParameters[SharedConstants.CLIENTTRANSACTION_PARAMETER_NAME]);
+                            return;
+                        }
+                    }
+                    else // Empty or white space
+                    {
+                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Thread.CurrentThread.ManagedThreadId.ToString()}, Concurrent requests: {numberOfConcurrentTransactions}");
+                        Return400Error(requestData, "Client Transaction ID is empty or white space");
                         return;
                     }
                 }
@@ -2421,12 +2441,12 @@ namespace ASCOM.Remote
                             elements[i] = elements[i].Trim();
                         } // Clean the supplied parameters
 
-                        switch (elements[URL_ELEMENT_API_VERSION]) // Process each API version as necessary (at 8/8/17 only V1 is implemented)
+                        switch (elements[SharedConstants.URL_ELEMENT_API_VERSION]) // Process each API version as necessary (at 8/8/17 only V1 is implemented)
                         {
                             case SharedConstants.API_VERSION_V1: // OK so we have a V1 request
-                                if ((ServerDeviceNumbers.Contains(elements[URL_ELEMENT_DEVICE_NUMBER])) & (elements[URL_ELEMENT_DEVICE_NUMBER] != "")) // OK so we have a valid device number
+                                if ((ServerDeviceNumbers.Contains(elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER])) & (elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER] != "")) // OK so we have a valid device number
                                 {
-                                    string deviceKey = string.Format("{0}/{1}", elements[URL_ELEMENT_DEVICE_TYPE], elements[URL_ELEMENT_DEVICE_NUMBER]); // Create the device key from the supplied device type and device number parameters
+                                    string deviceKey = string.Format("{0}/{1}", elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER]); // Create the device key from the supplied device type and device number parameters
 
                                     requestData.DeviceKey = deviceKey; // Save the device key for use throughout the remainder of the application
 
@@ -2440,11 +2460,11 @@ namespace ASCOM.Remote
                                             if (!ActiveObjects[deviceKey].AllowConcurrentAccess) // Concurrent processing is not permitted so wait for the synchronisation lock
                                             {
                                                 Monitor.Enter(ActiveObjects[deviceKey].CommandLock);
-                                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock acquired for device {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock acquired for device {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
                                             }  // Concurrent processing is not enabled 
                                             else
                                             {
-                                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock required for {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock required for {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
                                             } // Concurrent processing is enabled
 
                                             // Process the command within a try block so that "finally" can be used to release the Monitor synchronisation object if it was set because the device can only handle one command at a time
@@ -2456,7 +2476,7 @@ namespace ASCOM.Remote
                                                 // This mechanic leaves the form message loop running so that concurrent commands to the driver can be processed even if an earlier slow running command has not completed.
                                                 if (RunDriversOnSeparateThreads) // Each driver is running in its own Form with its own message loop
                                                 {
-                                                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ProcessRequestAsync - Sending command to {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"ProcessRequestAsync - Sending command to {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
                                                     DriverCommandDelegate driverCommandDelegate = new DriverCommandDelegate(ActiveObjects[deviceKey].DriverHostForm.DriverCommand); // Create a delegate for this request
 
                                                     Thread driverThread = (Thread)ActiveObjects[deviceKey].DriverHostForm.Invoke(driverCommandDelegate, requestData); // Send the command to the host form, which will return a thread where the command is running
@@ -2465,11 +2485,11 @@ namespace ASCOM.Remote
                                                     {
                                                         int threadId = driverThread.ManagedThreadId; // Get the thread ID for reporting purposes
                                                         driverThread.Join(); // Wait for the worker thread to complete. By using Thread.Join other COM requests can be processed
-                                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ProcessRequestAsync - Command completed for {deviceKey} using WORKER thread {threadId} on REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"ProcessRequestAsync - Command completed for {deviceKey} using WORKER thread {threadId} on REST thread {Thread.CurrentThread.ManagedThreadId}");
                                                     } // A thread was returned by the driver host form
                                                     else // No thread was returned because of a catastrophic failure in the host form
                                                     {
-                                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"ProcessRequestAsync - No thread returned from DriverCommand for {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"ProcessRequestAsync - No thread returned from DriverCommand for {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
                                                     } // No thread was returned by the driver host for so log the error
                                                 } // Drivers are running on separate threads with independent forms and message queues
                                                 else // Driver is running on the UI thread so just process the command
@@ -2482,11 +2502,11 @@ namespace ASCOM.Remote
                                                 if (!ActiveObjects[deviceKey].AllowConcurrentAccess)
                                                 {
                                                     Monitor.Exit(ActiveObjects[deviceKey].CommandLock); // Release the command lock object if a lock was used
-                                                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock released for device {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock released for device {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
                                                 } // Concurrent access is not enabled so release the synchronisation lock obtained earlier
                                                 else // Specified is configured but threw an error when created or when Connected was set True so return the error message
                                                 {
-                                                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock to release for {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock to release for {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
                                                 } // Concurrent operation is permitted so just log progress
                                             }
                                         } // The device did initialise OK
@@ -2502,12 +2522,12 @@ namespace ASCOM.Remote
                                 } // We have a valid device number
                                 else
                                 {
-                                    Return400Error(requestData, "Unsupported or invalid integer device number: " + elements[URL_ELEMENT_DEVICE_NUMBER] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                    Return400Error(requestData, "Unsupported or invalid integer device number: " + elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                 } // Invalid device number provided so return a 400 error
                                 break;
 
                             default: // Handle invalid API version numbers
-                                Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                Return400Error(requestData, "Unsupported API version: " + elements[SharedConstants.URL_ELEMENT_API_VERSION] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                 break;
                         } // Process using the correct API version
 
@@ -2525,7 +2545,7 @@ namespace ASCOM.Remote
                     string[] elements = request.Url.AbsolutePath.Trim(FORWARD_SLASH).Split(FORWARD_SLASH);
 
                     // Handle the api versions command here because it does not fall into the normal management command format
-                    if (elements[URL_ELEMENT_API_VERSION].Trim() == SharedConstants.ALPACA_DEVICE_MANAGEMENT_APIVERSIONS) // Handle the api versions command to return a list of supported api versions
+                    if (elements[SharedConstants.URL_ELEMENT_API_VERSION].Trim() == SharedConstants.ALPACA_DEVICE_MANAGEMENT_APIVERSIONS) // Handle the api versions command to return a list of supported api versions
                     {
                         // Return the array of supported version numbers
                         IntArray1DResponse intArrayResponseClass = new IntArray1DResponse(clientTransactionID, serverTransactionID, SharedConstants.MANAGEMENT_SUPPORTED_INTERFACE_VERSIONS)
@@ -2540,8 +2560,8 @@ namespace ASCOM.Remote
                             // We have an array of less than 5 elements, now resize it to 5 elements so that we can add the command into the equivalent position that it occupies for a "device API" call.
                             // This is necessary so that the logging commands will work for both device API and MANAGEMENT commands
                             Array.Resize<string>(ref elements, 5);
-                            elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
-                            elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_API_VERSION]; // Copy the command name to the device method field
+                            elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER] = "0";
+                            elements[SharedConstants.URL_ELEMENT_METHOD] = elements[SharedConstants.URL_ELEMENT_API_VERSION]; // Copy the command name to the device method field
                             requestData.Elements = elements;
                         }
 
@@ -2566,33 +2586,37 @@ namespace ASCOM.Remote
                             // We have an array of size 3, now resize it to 5 elements so that we can add the command into the equivalent position that it occupies for a "device API" call.
                             // This is necessary so that the logging commands will work for both device API and MANAGEMENT commands
                             Array.Resize<string>(ref elements, 5);
-                            elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
-                            elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND]; // Copy the command name to the device method field
+                            elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER] = "0";
+                            elements[SharedConstants.URL_ELEMENT_METHOD] = elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND]; // Copy the command name to the device method field
                             requestData.Elements = elements;
 
                             // Only permit processing if access has been granted through the setup dialogue
                             if (ManagementInterfaceEnabled | AlpacaDiscoveryEnabled)
                             {
-                                switch (elements[URL_ELEMENT_API_VERSION])
+                                switch (elements[SharedConstants.URL_ELEMENT_API_VERSION])
                                 {
                                     case SharedConstants.API_VERSION_V1: // OK so we have a V1 request
                                         try // Confirm that the command requested is available on this server
                                         {
-                                            string commandName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(elements[URL_ELEMENT_SERVER_COMMAND].ToLowerInvariant()); // Capitalise the first letter of the command
+                                            string commandName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND].ToLowerInvariant()); // Capitalise the first letter of the command
 
                                             switch (request.HttpMethod.ToUpperInvariant())
                                             {
                                                 case "GET": // Read methods
-                                                    switch (elements[URL_ELEMENT_SERVER_COMMAND])
+                                                    switch (elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND])
                                                     {
                                                         // Alpaca device management interface standard responses
 
                                                         case SharedConstants.ALPACA_DEVICE_MANAGEMENT_DESCRIPTION:
                                                             // Create the remote server description and return it to the client in the proscribed format
+                                                            // AlpacaDeviceDescription remoteServerDescription = new AlpacaDeviceDescription(SharedConstants.ALPACA_DEVICE_MANAGEMENT_SERVERNAME,
+                                                            //                                                                            SharedConstants.ALPACA_DEVICE_MANAGEMENT_MANUFACTURER,
+                                                            //                                                                           Assembly.GetEntryAssembly().GetName().Version.ToString(),
+                                                            //                                                                          RemoteServerLocation);
                                                             AlpacaDeviceDescription remoteServerDescription = new AlpacaDeviceDescription(SharedConstants.ALPACA_DEVICE_MANAGEMENT_SERVERNAME,
                                                                                                                                           SharedConstants.ALPACA_DEVICE_MANAGEMENT_MANUFACTURER,
                                                                                                                                           Assembly.GetEntryAssembly().GetName().Version.ToString(),
-                                                                                                                                          RemoteServerLocation);
+                                                                                                                                          "");
 
                                                             AlpacaDescriptionResponse descriptionResponse = new AlpacaDescriptionResponse(clientTransactionID, serverTransactionID, remoteServerDescription)
                                                             {
@@ -2620,7 +2644,7 @@ namespace ASCOM.Remote
                                                                 }
                                                             }
 
-                                                            alpacaConfiguredDevices.Add(new AlpacaConfiguredDevice("Example non-standard device type for test purposes. This endpoint doesn't exist and cannot be accessed through HTTP.", "Management", 90, "4478abd9-80f4-47ca-a1f9-31d2de53a27f)"));
+                                                            //alpacaConfiguredDevices.Add(new AlpacaConfiguredDevice("Example non-standard device type for test purposes. This endpoint doesn't exist and cannot be accessed through HTTP.", "Management", 90, "4478abd9-80f4-47ca-a1f9-31d2de53a27f)"));
 
                                                             AlpacaConfiguredDevicesResponse alpacaConfigurationResponse = new AlpacaConfiguredDevicesResponse(clientTransactionID, serverTransactionID, alpacaConfiguredDevices)
                                                             {
@@ -2633,16 +2657,16 @@ namespace ASCOM.Remote
                                                             break;
 
                                                         default:
-                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
+                                                            Return400Error(requestData, "Unsupported Command: " + elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                             break;
                                                     }
                                                     break;
                                                 case "PUT": // Write or action methods
-                                                    switch (elements[URL_ELEMENT_SERVER_COMMAND])
+                                                    switch (elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND])
                                                     {
                                                         // No commands yet so return a default command not supported to everything
                                                         default:
-                                                            Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
+                                                            Return400Error(requestData, "Unsupported Command: " + elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                             break;
                                                     }
                                                     break;
@@ -2653,12 +2677,12 @@ namespace ASCOM.Remote
                                         }
                                         catch (Exception ex)
                                         {
-                                            Return400Error(requestData, string.Format("Exception processing {0} command \r\n {1}", elements[URL_ELEMENT_SERVER_COMMAND], ex.ToString()));
+                                            Return400Error(requestData, string.Format("Exception processing {0} command \r\n {1}", elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND], ex.ToString()));
                                         }
 
                                         break; // End of valid api version numbers
                                     default:
-                                        Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
+                                        Return400Error(requestData, "Unsupported API version: " + elements[SharedConstants.URL_ELEMENT_API_VERSION] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                         break;
                                 }
                             }
@@ -2686,8 +2710,8 @@ namespace ASCOM.Remote
                                 Array.Resize<string>(ref elements, 5);
                                 elements[1] = SETUP_DEFAULT_INDEX_PAGE_NAME;
                                 elements[2] = "";
-                                elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
-                                elements[URL_ELEMENT_METHOD] = SETUP_DEFAULT_INDEX_PAGE_NAME; // Copy the command name to the device method field
+                                elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER] = "0";
+                                elements[SharedConstants.URL_ELEMENT_METHOD] = SETUP_DEFAULT_INDEX_PAGE_NAME; // Copy the command name to the device method field
                                 requestData.Elements = elements;
                                 ReturnHTMLPageOrImage(requestData, SETUP_DEFAULT_INDEX_PAGE_NAME);
                                 break;
@@ -2696,8 +2720,8 @@ namespace ASCOM.Remote
                             {
                                 Array.Resize<string>(ref elements, 5);
                                 elements[2] = "";
-                                elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
-                                elements[URL_ELEMENT_METHOD] = elements[1]; // Copy the command name to the device method field
+                                elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER] = "0";
+                                elements[SharedConstants.URL_ELEMENT_METHOD] = elements[1]; // Copy the command name to the device method field
                                 requestData.Elements = elements;
                                 ReturnHTMLPageOrImage(requestData, elements[1]);
                                 break;
@@ -2771,24 +2795,24 @@ namespace ASCOM.Remote
                         // We have an array of size 3, now resize it to 5 elements so that we can add the command into the equivalent position that it occupies for a "device API" call.
                         // This is necessary so that the logging commands will work for both device API and MANAGEMENT commands
                         Array.Resize<string>(ref elements, 5);
-                        elements[URL_ELEMENT_DEVICE_NUMBER] = "0";
-                        elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND]; // Copy the command name to the device method field
+                        elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER] = "0";
+                        elements[SharedConstants.URL_ELEMENT_METHOD] = elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND]; // Copy the command name to the device method field
                         requestData.Elements = elements;
 
                         // Only permit processing if access has been granted through the setup dialogue either to the management interface alone or if discovery is enabled
                         if (ManagementInterfaceEnabled | AlpacaDiscoveryEnabled)
                         {
-                            switch (elements[URL_ELEMENT_API_VERSION])
+                            switch (elements[SharedConstants.URL_ELEMENT_API_VERSION])
                             {
                                 case SharedConstants.API_VERSION_V1: // OK so we have a V1 request
                                     try // Confirm that the command requested is available on this server
                                     {
-                                        string commandName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(elements[URL_ELEMENT_SERVER_COMMAND].ToLowerInvariant()); // Capitalise the first letter of the command
+                                        string commandName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND].ToLowerInvariant()); // Capitalise the first letter of the command
 
                                         switch (request.HttpMethod.ToUpperInvariant())
                                         {
                                             case "GET": // Read methods
-                                                switch (elements[URL_ELEMENT_SERVER_COMMAND])
+                                                switch (elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND])
                                                 {
                                                     // INT Get Values
                                                     case SharedConstants.REMOTE_SERVER_MANGEMENT_GET_CONCURRENT_CALLS:
@@ -2831,7 +2855,7 @@ namespace ASCOM.Remote
                                                         }
                                                         catch (Exception ex)
                                                         {
-                                                            Return500Error(requestData, "Unexpected exception in command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + ex.ToString());
+                                                            Return500Error(requestData, "Unexpected exception in command: " + elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND] + " " + ex.ToString());
                                                         }
                                                         break;
 
@@ -2847,12 +2871,12 @@ namespace ASCOM.Remote
                                                         break;
 
                                                     default:
-                                                        Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
+                                                        Return400Error(requestData, "Unsupported Command: " + elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                         break;
                                                 }
                                                 break;
                                             case "PUT": // Write or action methods
-                                                switch (elements[URL_ELEMENT_SERVER_COMMAND])
+                                                switch (elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND])
                                                 {
                                                     // MANGEMENT_API_ENABLED removed because it won't work if the management api is disabled
                                                     case SharedConstants.REMOTE_SERVER_MANGEMENT_SHUTDOWN_SERVER:
@@ -2896,12 +2920,12 @@ namespace ASCOM.Remote
                                                     case SharedConstants.REMOTE_SERVER_MANGEMENT_GET_CONFIGURATION:
                                                         lock (managementCommandLock) // Make sure that this command can only run one at a time!
                                                         {
-                                                            Return400Error(requestData, "Command not implemented: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
+                                                            Return400Error(requestData, "Command not implemented: " + elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                         }
                                                         break;
 
                                                     default:
-                                                        Return400Error(requestData, "Unsupported Command: " + elements[URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
+                                                        Return400Error(requestData, "Unsupported Command: " + elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                                         break;
                                                 }
                                                 break;
@@ -2912,12 +2936,12 @@ namespace ASCOM.Remote
                                     }
                                     catch (Exception ex)
                                     {
-                                        Return400Error(requestData, string.Format("Exception processing {0} command \r\n {1}", elements[URL_ELEMENT_SERVER_COMMAND], ex.ToString()));
+                                        Return400Error(requestData, string.Format("Exception processing {0} command \r\n {1}", elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND], ex.ToString()));
                                     }
 
                                     break; // End of valid api version numbers
                                 default:
-                                    Return400Error(requestData, "Unsupported API version: " + elements[URL_ELEMENT_API_VERSION] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
+                                    Return400Error(requestData, "Unsupported API version: " + elements[SharedConstants.URL_ELEMENT_API_VERSION] + " " + HTMLOrPlainText(requestData, CORRECT_SERVER_FORMAT_STRING_HTML, CORRECT_SERVER_FORMAT_STRING_PLAIN));
                                     break;
                             }
                         }
@@ -2966,12 +2990,12 @@ namespace ASCOM.Remote
                 allowConcurrentAccess = ActiveObjects[requestData.DeviceKey].AllowConcurrentAccess;
 
                 // Log a message showing the thread number on which we are running
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Processing driver command on WORKER thread {Thread.CurrentThread.ManagedThreadId}");
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Processing driver command on WORKER thread {Thread.CurrentThread.ManagedThreadId}");
 
                 switch (requestData.Request.HttpMethod.ToUpperInvariant()) // Handle GET and PUT requestData.Requests
                 {
                     case "GET": // Read and return data methods
-                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                         {
                             #region Common methods
                             // Common methods are indicated in ReturnXXX methods by having the device type parameter set to "*" rather than the name of one of the ASCOM device types
@@ -2998,11 +3022,11 @@ namespace ASCOM.Remote
                                 break;
                             #endregion
                             default: // Not a common method so check for device specific methods
-                                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE])
+                                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE])
                                 {
                                     case "telescope": // OK so we have a Telescope requestData.Request
                                         #region Telescope
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             #region Properties
                                             // BOOL Get Values
@@ -3028,11 +3052,11 @@ namespace ASCOM.Remote
                                             case "tracking":
                                             case "doesrefraction":
                                             case "slewing":
-                                                ReturnBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                ReturnBool(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
                                             // SHORT Get Values
                                             case "slewsettletime":
-                                                ReturnShort(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                ReturnShort(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
                                             //DOUBLE Get Values
                                             case "altitude":
@@ -3088,14 +3112,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "camera":
                                         #region Camera
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             // SHORT Get Values
                                             case "binx":
@@ -3109,7 +3133,7 @@ namespace ASCOM.Remote
                                             case "gainmin":
                                             case "percentcompleted":
                                             case "readoutmode":
-                                                ReturnShort(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                ReturnShort(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             // INT Get Values
                                             case "cameraxsize":
                                             case "cameraysize":
@@ -3135,7 +3159,7 @@ namespace ASCOM.Remote
                                             case "ispulseguiding":
                                             case "canfastreadout":
                                             case "fastreadout":
-                                                ReturnBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                ReturnBool(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             // DOUBLE Get Values
                                             case "ccdtemperature":
                                             case "coolerpower":
@@ -3154,7 +3178,7 @@ namespace ASCOM.Remote
                                             //STRING Get Values
                                             case "lastexposurestarttime":
                                             case "sensorname":
-                                                ReturnString(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                ReturnString(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             //CAMERSTATES Get Values
                                             case "camerastate":
                                                 ReturnCameraStates(requestData); break;
@@ -3170,21 +3194,21 @@ namespace ASCOM.Remote
                                             case "gains":
                                             case "readoutmodes":
                                             case "offsets":
-                                                ReturnStringList(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                ReturnStringList(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             //SENSORTYPE Get Values
                                             case "sensortype":
                                                 ReturnSensorType(requestData); break;
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "covercalibrator":
                                         #region CoverCalibrator
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             #region CoverCalibrator Properties
                                             // INT Get Values
@@ -3202,14 +3226,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "dome":
                                         #region Dome
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             // BOOL Get Values
                                             case "athome":
@@ -3224,7 +3248,7 @@ namespace ASCOM.Remote
                                             case "cansyncazimuth":
                                             case "slaved":
                                             case "slewing":
-                                                ReturnBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                ReturnBool(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             // DOUBLE Get Values
                                             case "altitude":
                                             case "azimuth":
@@ -3234,14 +3258,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "filterwheel":
                                         #region Filter Wheel
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             // INT ARRAY Get Values
                                             case "focusoffsets":
@@ -3249,7 +3273,7 @@ namespace ASCOM.Remote
 
                                             // SHORT Get Values
                                             case "position":
-                                                ReturnShort(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                ReturnShort(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
                                             //STRING ARRAY Get Values
                                             case "names":
@@ -3257,14 +3281,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "focuser":
                                         #region Focuser
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             #region Focuser Properties
                                             // BOOL Get Values
@@ -3273,7 +3297,7 @@ namespace ASCOM.Remote
                                             case "tempcompavailable":
                                             case "tempcomp":
                                             case "link":
-                                                ReturnBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                ReturnBool(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
                                             // INT Get Values
                                             case "maxincrement":
@@ -3290,14 +3314,14 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "observingconditions":
                                         #region ObservingConditions
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             // DOUBLE Get Values
                                             case "averageperiod":
@@ -3318,24 +3342,24 @@ namespace ASCOM.Remote
                                                 ReturnDouble(requestData); break;
                                             // STRING Get Values
                                             case "sensordescription":
-                                                ReturnString(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                ReturnString(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "rotator":
                                         #region Rotator
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             // BOOL Get Values
                                             case "canreverse":
                                             case "ismoving":
                                             case "reverse":
-                                                ReturnBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                ReturnBool(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
                                             //FLOAT Get Values
                                             case "position":
@@ -3346,29 +3370,29 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "safetymonitor":
                                         #region SafetyMonitor
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             // BOOL Get Values
                                             case "issafe":
-                                                ReturnBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                ReturnBool(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "switch":
                                         #region Switch
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             // BOOL Get Values
                                             case "canwrite":
@@ -3376,7 +3400,7 @@ namespace ASCOM.Remote
                                                 ReturnShortIndexedBool(requestData); break;
                                             // SHORT Get Values
                                             case "maxswitch":
-                                                ReturnShort(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                ReturnShort(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             // DOUBLE Get Values
                                             case "getswitchvalue":
                                             case "maxswitchvalue":
@@ -3390,21 +3414,21 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, GET_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
 
                                     default:// End of valid device types
-                                        Return400Error(requestData, "Unsupported Device Type: " + requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                        Return400Error(requestData, "Unsupported Device Type: " + requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                         break;
                                 }
                                 break;
                         }
                         break;
                     case "PUT": // Write or action methods
-                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                         {
                             #region Common methods
                             // Process common methods shared by all drivers
@@ -3425,17 +3449,17 @@ namespace ASCOM.Remote
                                 break;
                             #endregion
                             default:
-                                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE])
+                                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE])
                                 {
                                     case "telescope": // OK so we have a Telescope requestData.Request
                                         #region Telescope
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             #region Telescope Properties
                                             //BOOL Set values
                                             case "tracking":
                                             case "doesrefraction":
-                                                WriteBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                WriteBool(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
                                             //SHORT Set Values
                                             case "slewsettletime":
@@ -3480,27 +3504,27 @@ namespace ASCOM.Remote
                                             case "synctocoordinates":
                                             case "moveaxis":
                                             case "pulseguide":
-                                                CallMethod(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData);
+                                                CallMethod(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData);
                                                 break;
                                             #endregion
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "camera":
                                         #region Camera
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             // METHODS
                                             case "abortexposure":
                                             case "pulseguide":
                                             case "startexposure":
                                             case "stopexposure":
-                                                CallMethod(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                CallMethod(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             //SHORT Set values
                                             case "binx":
                                             case "biny":
@@ -3521,18 +3545,18 @@ namespace ASCOM.Remote
                                             //BOOL Set values
                                             case "cooleron":
                                             case "fastreadout":
-                                                WriteBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                WriteBool(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
                                     #endregion
                                     case "covercalibrator":
                                         #region CoverCalibrator
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             #region CoverCalibrator Methods
                                             // METHODS
@@ -3541,20 +3565,20 @@ namespace ASCOM.Remote
                                             case "closecover":
                                             case "haltcover":
                                             case "opencover":
-                                                CallMethod(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData);
+                                                CallMethod(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData);
                                                 break;
                                             #endregion
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "dome":
                                         #region Dome
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             // METHODS
                                             case "abortslew":
@@ -3566,21 +3590,21 @@ namespace ASCOM.Remote
                                             case "slewtoaltitude":
                                             case "slewtoazimuth":
                                             case "synctoazimuth":
-                                                CallMethod(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                CallMethod(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             //BOOL Set values
                                             case "slaved":
-                                                WriteBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                WriteBool(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
                                     #endregion
                                     case "filterwheel":
                                         #region Filter Wheel
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             //SHORT Set values
                                             case "position":
@@ -3588,58 +3612,58 @@ namespace ASCOM.Remote
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
                                     #endregion
                                     case "focuser":
                                         #region Focuser
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             #region Focuser Properties
                                             //BOOL Set values
                                             case "tempcomp":
                                             case "link":
-                                                WriteBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                WriteBool(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             #endregion
 
                                             #region Focuser Methods
                                             // METHODS
                                             case "halt":
                                             case "move":
-                                                CallMethod(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData);
+                                                CallMethod(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData);
                                                 break;
                                             #endregion
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break;
                                     #endregion
                                     case "observingconditions":
                                         #region ObservingConditions
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             // METHODS
                                             case "refresh":
-                                                CallMethod(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                CallMethod(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             //DOUBLE Set values
                                             case "averageperiod":
                                                 WriteDouble(requestData); break;
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
                                     #endregion
                                     case "rotator":
                                         #region Rotator
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             // METHODS
                                             case "halt":
@@ -3647,38 +3671,38 @@ namespace ASCOM.Remote
                                             case "moveabsolute":
                                             case "sync":
                                             case "movemechanical":
-                                                CallMethod(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                CallMethod(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
                                             //BOOL Set values
                                             case "reverse":
-                                                WriteBool(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                WriteBool(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
                                     #endregion
                                     case "switch":
                                         #region Switch
-                                        switch (requestData.Elements[URL_ELEMENT_METHOD])
+                                        switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             // METHODS
                                             case "setswitchname":
                                             case "setswitch":
                                             case "setswitchvalue":
-                                                CallMethod(requestData.Elements[URL_ELEMENT_DEVICE_TYPE], requestData); break;
+                                                CallMethod(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
 
                                             //UNKNOWN METHOD CALL
                                             default:
-                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                                Return400Error(requestData, PUT_UNKNOWN_METHOD_MESSAGE + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                                 break;
                                         }
                                         break; // End of valid device types
                                     #endregion
 
                                     default:
-                                        Return400Error(requestData, "Unsupported Device Type: " + requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
+                                        Return400Error(requestData, "Unsupported Device Type: " + requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + " " + HTMLOrPlainText(requestData, CORRECT_API_FORMAT_STRING_HTML, CORRECT_API_FORMAT_STRING_PLAIN));
                                         break;
                                 }
                                 break;
@@ -3692,7 +3716,7 @@ namespace ASCOM.Remote
             catch (KeyNotFoundException ex)
             {
                 LogException1(requestData, "ProcessDriverCommand", ex.ToString());
-                Return400Error(requestData, $"The requested device \"{requestData.Elements[URL_ELEMENT_DEVICE_TYPE]} {requestData.Elements[URL_ELEMENT_DEVICE_NUMBER]}\" does not exist on this server. Supplied URI: {requestData.Request.Url.AbsolutePath}");
+                Return400Error(requestData, $"The requested device \"{requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE]} {requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER]}\" does not exist on this server. Supplied URI: {requestData.Request.Url.AbsolutePath}");
             }
         } // Driver request handler
 
@@ -3826,7 +3850,7 @@ namespace ASCOM.Remote
                                         "<h2 class=\"lightgreen\">Located at " + RemoteServerLocation + "</h2>" +
                                         "<br>";
 
-                            string deviceKey = $"{requestData.Elements[URL_ELEMENT_DEVICE_TYPE]}/{requestData.Elements[URL_ELEMENT_DEVICE_NUMBER]}"; // Create the device key from the supplied device type and device number parameters
+                            string deviceKey = $"{requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE]}/{requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER]}"; // Create the device key from the supplied device type and device number parameters
                             if (ActiveObjects.ContainsKey(deviceKey)) // The specified device does exist so return a "can't configure this" response
                             {
                                 // Get the configured device information for this device
@@ -3838,7 +3862,7 @@ namespace ASCOM.Remote
                             else // The specified device does not exist so return a message to that effect
                             {
                                 indexPage +=
-                                        $"<h3 class=\"red\">The specified device: \"{requestData.Elements[URL_ELEMENT_DEVICE_TYPE]} {requestData.Elements[URL_ELEMENT_DEVICE_NUMBER]}\" is not configured on this Remote Server</h3>";
+                                        $"<h3 class=\"red\">The specified device: \"{requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE]} {requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER]}\" is not configured on this Remote Server</h3>";
                             }
 
                             indexPage +=
@@ -3884,15 +3908,15 @@ namespace ASCOM.Remote
                     requestData.Response.StatusCode = (int)HttpStatusCode.OK; // Set the response status and status code
                     requestData.Response.StatusDescription = "200 - Success";
 
-                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Web - Before setting response bytes - Length: {0:n0}, Response is null: {1}", bytesToSend.Length, requestData.Response == null));
+                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Web - Before setting response bytes - Length: {0:n0}, Response is null: {1}", bytesToSend.Length, requestData.Response == null));
                     requestData.Response.ContentLength64 = bytesToSend.Length;
 
-                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Web - Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
+                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Web - Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
                     requestData.Response.OutputStream.Write(bytesToSend, 0, bytesToSend.Length);
 
-                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "Web - After writing bytes to output stream");
+                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Web - After writing bytes to output stream");
                     requestData.Response.OutputStream.Close();
-                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "Web - After closing output stream");
+                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Web - After closing output stream");
                 }
                 catch (HttpListenerException ex) // Deal with communications errors here but allow any other errors to go through and be picked up by the main error handler
                 {
@@ -3996,7 +4020,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (deviceType + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                switch (deviceType + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     #region Common methods
                     case "*.connected":
@@ -4146,8 +4170,8 @@ namespace ASCOM.Remote
                     #endregion
 
                     default:
-                        LogMessage1(requestData, "ReturnBool", "Unsupported method: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("ReturnBool - Unsupported method: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "ReturnBool", "Unsupported method: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnBool - Unsupported method: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             // Handle missing or invalid parameters
@@ -4179,7 +4203,7 @@ namespace ASCOM.Remote
             {
                 short index = GetParameter<short>(requestData, SharedConstants.ID_PARAMETER_NAME);
 
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     #region Switch Methods
 
@@ -4191,8 +4215,8 @@ namespace ASCOM.Remote
                     #endregion
 
                     default:
-                        LogMessage1(requestData, "ReturnShortIndexedBool", "Unsupported method: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("ReturnShortIndexedBool - Unsupported method: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "ReturnShortIndexedBool", "Unsupported method: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnShortIndexedBool - Unsupported method: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             // Handle missing or invalid parameters
@@ -4222,8 +4246,8 @@ namespace ASCOM.Remote
 
             try
             {
-                boolValue = GetParameter<bool>(requestData, requestData.Elements[URL_ELEMENT_METHOD]);
-                switch (deviceType + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                boolValue = GetParameter<bool>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                switch (deviceType + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // COMMON METHODS
                     case "*.connected":
@@ -4279,8 +4303,8 @@ namespace ASCOM.Remote
                         device.Reverse = boolValue; break;
 
                     default:
-                        LogMessage1(requestData, "WriteBool", "Unsupported method: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("WriteBool - Unsupported method: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "WriteBool", "Unsupported method: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("WriteBool - Unsupported method: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             // Handle missing or invalid parameters
@@ -4311,7 +4335,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (deviceType + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                switch (deviceType + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // COMMON METHODS
                     case "*.action":
@@ -4346,8 +4370,8 @@ namespace ASCOM.Remote
                         deviceResponse = device.SensorDescription(stringParamValue); break;
 
                     default:
-                        LogMessage1(requestData, "ReturnString", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("ReturnString - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "ReturnString", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnString - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             // Handle missing or invalid parameters
@@ -4405,23 +4429,23 @@ namespace ASCOM.Remote
                     }
                 }
                 imageArray = returnArray;
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"***** TEST IMAGE RETURNED INSTEAD OF CAMERA IMAGE *****.");
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"***** TEST IMAGE RETURNED INSTEAD OF CAMERA IMAGE *****.");
 #else
                 imageArray = (Array)ActiveObjects[requestData.DeviceKey].DeviceObject.ImageArray;       //.LastImageArray;
 #endif
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"TIME TO GET IMAGE ARRAY: {sw.ElapsedMilliseconds}ms.");
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"TIME TO GET IMAGE ARRAY: {sw.ElapsedMilliseconds}ms.");
 
                 // Convert the supplied array to a byte[]
                 sw.Restart();
                 imageArrayBytes = imageArray.ToByteArray(1, requestData.ClientTransactionID, requestData.ServerTransactionID, 0, "");
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"TIME TO CONVERT MAGE ARRAY TO BYTE[]: {sw.ElapsedMilliseconds}ms.");
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"TIME TO CONVERT MAGE ARRAY TO BYTE[]: {sw.ElapsedMilliseconds}ms.");
                 imageArray = null;
 
                 // Force a garbage collection of large objects to free memory
                 GC.Collect(2, GCCollectionMode.Forced, true);
 
                 ArrayMetadataV1 arrayMetadataV1 = imageArrayBytes.GetMetadataV1();
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Converted byte array - Version: {arrayMetadataV1.MetadataVersion}, Image element type: {arrayMetadataV1.ImageElementType}, Transmission element type: {arrayMetadataV1.TransmissionElementType}, Rank: {arrayMetadataV1.Rank}, Dimension 1: {arrayMetadataV1.Dimension1}, Dimension 2: {arrayMetadataV1.Dimension2}, Dimension 3: {arrayMetadataV1.Dimension3}");
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Converted byte array - Version: {arrayMetadataV1.MetadataVersion}, Image element type: {arrayMetadataV1.ImageElementType}, Transmission element type: {arrayMetadataV1.TransmissionElementType}, Rank: {arrayMetadataV1.Rank}, Dimension 1: {arrayMetadataV1.Dimension1}, Dimension 2: {arrayMetadataV1.Dimension2}, Dimension 3: {arrayMetadataV1.Dimension3}");
                 sw.Restart();
 
             }
@@ -4445,23 +4469,23 @@ namespace ASCOM.Remote
                     string[] elements = requestData.Elements;
                     Array.Resize<string>(ref elements, 5);
                     elements[3] = "";
-                    elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND];
+                    elements[SharedConstants.URL_ELEMENT_METHOD] = elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND];
                     requestData.Elements = elements;
                 }
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Completed Encoding.GetBytes, array length: {0:n0}", imageArrayBytes.Length));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Completed Encoding.GetBytes, array length: {0:n0}", imageArrayBytes.Length));
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Before setting response bytes - Length: {0:n0}, Response is null: {1}", imageArrayBytes.Length, requestData.Response == null));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Before setting response bytes - Length: {0:n0}, Response is null: {1}", imageArrayBytes.Length, requestData.Response == null));
                 requestData.Response.ContentLength64 = imageArrayBytes.Length;
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
                 requestData.Response.OutputStream.Write(imageArrayBytes, 0, imageArrayBytes.Length);
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "After writing bytes to output stream");
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "After writing bytes to output stream");
                 requestData.Response.OutputStream.Close();
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "After closing output stream");
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"IMAGEARRAYBYTES TRANSMISSION TIME: {sw.ElapsedMilliseconds}ms.");
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"IMAGEARRAYBYTES OVERALL TIME: {swOverall.ElapsedMilliseconds}ms.");
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "After closing output stream");
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"IMAGEARRAYBYTES TRANSMISSION TIME: {sw.ElapsedMilliseconds}ms.");
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"IMAGEARRAYBYTES OVERALL TIME: {swOverall.ElapsedMilliseconds}ms.");
 
             }
             catch (HttpListenerException ex) // Deal with communications errors here but allow any other errors to go through and be picked up by the main error handler
@@ -4483,7 +4507,7 @@ namespace ASCOM.Remote
             {
                 short index = GetParameter<short>(requestData, SharedConstants.ID_PARAMETER_NAME);
 
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     #region Switch Methods
 
@@ -4495,8 +4519,8 @@ namespace ASCOM.Remote
                     #endregion
 
                     default:
-                        LogMessage1(requestData, "ReturnShortIndexedString", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("ReturnShortIndexedString - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "ReturnShortIndexedString", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnShortIndexedString - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             // Handle missing or invalid parameters
@@ -4526,15 +4550,15 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // FILTER WHEEL
                     case "filterwheel.names":
                         deviceResponse = device.Names; break;
 
                     default:
-                        LogMessage1(requestData, "ReturnStringArray", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("ReturnStringArray - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "ReturnStringArray", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnStringArray - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             catch (Exception ex)
@@ -4558,7 +4582,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (deviceType + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                switch (deviceType + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     case "*.supportedactions":
                         deviceResponse = (ArrayList)device.SupportedActions;
@@ -4593,8 +4617,8 @@ namespace ASCOM.Remote
                         break;
 
                     default:
-                        LogMessage1(requestData, "ReturnStringList", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("ReturnStringList - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "ReturnStringList", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnStringList - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             catch (Exception ex)
@@ -4618,7 +4642,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // TELESCOPE
                     case "telescope.altitude":
@@ -4726,8 +4750,8 @@ namespace ASCOM.Remote
                         deviceResponse = device.TimeSinceLastUpdate(stringParamValue); break;
 
                     default:
-                        LogMessage1(requestData, "ReturnDouble", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("ReturnDouble - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "ReturnDouble", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnDouble - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             // Handle missing or invalid parameters
@@ -4759,7 +4783,7 @@ namespace ASCOM.Remote
             {
                 short index = GetParameter<short>(requestData, SharedConstants.ID_PARAMETER_NAME);
 
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     #region Switch Methods
 
@@ -4775,8 +4799,8 @@ namespace ASCOM.Remote
                     #endregion
 
                     default:
-                        LogMessage1(requestData, "ReturnShortIndexedDouble", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("ReturnShortIndexedDouble - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "ReturnShortIndexedDouble", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnShortIndexedDouble - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             // Handle missing or invalid parameters
@@ -4806,8 +4830,8 @@ namespace ASCOM.Remote
 
             try
             {
-                doubleValue = GetParameter<double>(requestData, requestData.Elements[URL_ELEMENT_METHOD]);
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                doubleValue = GetParameter<double>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // TELESCOPE
                     case "telescope.declinationrate":
@@ -4838,8 +4862,8 @@ namespace ASCOM.Remote
                         device.AveragePeriod = doubleValue; break;
 
                     default:
-                        LogMessage1(requestData, "WriteDouble", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("WriteDouble - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "WriteDouble", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("WriteDouble - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             // Handle missing or invalid parameters
@@ -4863,7 +4887,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // ROTATOR
                     case "rotator.position":
@@ -4876,8 +4900,8 @@ namespace ASCOM.Remote
                         deviceResponse = (double)device.MechanicalPosition; break;
 
                     default:
-                        LogMessage1(requestData, "ReturnFloat", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("ReturnFloat - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "ReturnFloat", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnFloat - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             catch (Exception ex)
@@ -4901,7 +4925,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (deviceType + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                switch (deviceType + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // COMMON METHODS
                     case "*.interfaceversion":
@@ -4940,8 +4964,8 @@ namespace ASCOM.Remote
                         deviceResponse = device.MaxSwitch; break;
 
                     default:
-                        LogMessage1(requestData, "ReturnShort", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("ReturnShort - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "ReturnShort", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnShort - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             catch (Exception ex)
@@ -4964,8 +4988,8 @@ namespace ASCOM.Remote
 
             try
             {
-                shortValue = GetParameter<short>(requestData, requestData.Elements[URL_ELEMENT_METHOD]);
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                shortValue = GetParameter<short>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // TELESCOPE
                     case "telescope.slewsettletime":
@@ -4985,8 +5009,8 @@ namespace ASCOM.Remote
                         device.ReadoutMode = shortValue; break;
 
                     default:
-                        LogMessage1(requestData, "WriteShort", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("WriteShort - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "WriteShort", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("WriteShort - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             // Handle missing or invalid parameters
@@ -5010,7 +5034,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // COVERCALIBRATOR
                     case "covercalibrator.brightness":
@@ -5047,8 +5071,8 @@ namespace ASCOM.Remote
                         deviceResponse = device.OffsetMax; break;
 
                     default:
-                        LogMessage1(requestData, "ReturnInt", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("ReturnInt - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "ReturnInt", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnInt - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             catch (Exception ex)
@@ -5071,15 +5095,15 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // FILTER WHEEL
                     case "filterwheel.focusoffsets":
                         deviceResponse = device.FocusOffsets; break;
 
                     default:
-                        LogMessage1(requestData, "ReturnIntArray", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("ReturnIntArray - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "ReturnIntArray", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnIntArray - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             catch (Exception ex)
@@ -5102,8 +5126,8 @@ namespace ASCOM.Remote
 
             try
             {
-                intValue = GetParameter<int>(requestData, requestData.Elements[URL_ELEMENT_METHOD]);
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                intValue = GetParameter<int>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // CAMERA
                     case "camera.numx":
@@ -5118,8 +5142,8 @@ namespace ASCOM.Remote
                         device.StartY = intValue; break;
 
                     default:
-                        LogMessage1(requestData, "WriteInt", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("WriteInt - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "WriteInt", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("WriteInt - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             // Handle missing or invalid parameters
@@ -5143,14 +5167,14 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     case "telescope.utcdate":
                         deviceResponse = device.UTCDate; break;
 
                     default:
-                        LogMessage1(requestData, "ReturnDateTime", "Unsupported method: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("ReturnDateTime - Unsupported method: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "ReturnDateTime", "Unsupported method: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnDateTime - Unsupported method: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             catch (Exception ex)
@@ -5174,16 +5198,16 @@ namespace ASCOM.Remote
 
             try
             {
-                dateTimeValue = GetParameter<DateTime>(requestData, SharedConstants.UTCDATE_PARAMETER_NAME);
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "Converted DateTime value (UTC): " + dateTimeValue.ToUniversalTime().ToString(SharedConstants.ISO8601_DATE_FORMAT_STRING));
-                switch (requestData.Elements[URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                dateTimeValue = GetParameter<DateTime>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Converted DateTime value (UTC): " + dateTimeValue.ToUniversalTime().ToString(SharedConstants.ISO8601_DATE_FORMAT_STRING));
+                switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     case "telescope.utcdate":
                         device.UTCDate = dateTimeValue.ToUniversalTime(); break;
 
                     default:
-                        LogMessage1(requestData, "WriteDateTime", "Unsupported method: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("WriteDateTime - Unsupported method: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "WriteDateTime", "Unsupported method: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("WriteDateTime - Unsupported method: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             // Handle missing or invalid parameters
@@ -5227,12 +5251,12 @@ namespace ASCOM.Remote
             {
                 foreach (DriveRates rate in deviceResponse)
                 {
-                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Rate = {0}", rate.ToString()));
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Rate = {0}", rate.ToString()));
                     rates.Add(rate);
                 }
             }
 
-            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Number of rates: {0}", rates.Count));
+            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Number of rates: {0}", rates.Count));
             responseClass.Value = rates;
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -5315,7 +5339,7 @@ namespace ASCOM.Remote
 
             try
             {
-                driveRateValue = (DriveRates)GetParameter<int>(requestData, requestData.Elements[URL_ELEMENT_METHOD]);
+                driveRateValue = (DriveRates)GetParameter<int>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 device.TrackingRate = driveRateValue;
             }
             // Handle missing or invalid parameters
@@ -5501,9 +5525,9 @@ namespace ASCOM.Remote
                 if (acceptEncoding[0].ToLowerInvariant().Contains("deflate")) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
                 if (acceptEncoding[0].ToLowerInvariant().Contains("gzip")) compressionType = SharedConstants.ImageArrayCompression.GZip;
             }
-            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Response compression type: {compressionType}");
+            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Response compression type: {compressionType}");
 
-            switch (requestData.Elements[URL_ELEMENT_METHOD])
+            switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
             {
                 case "imagearraybase64":
                     imageArray = (Array)ActiveObjects[requestData.DeviceKey].LastImageArray;
@@ -5544,7 +5568,7 @@ namespace ASCOM.Remote
             imageArrayBytes = null;
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
             double duration = ForceGarbageCollection();
-            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Garbage collection time: {duration}ms.");
+            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Garbage collection time: {duration}ms.");
 
             byte[] bytesToSend = Encoding.ASCII.GetBytes(base64String); // Convert the message to be returned into UTF8 bytes that can be sent over the wire
             long timeToConvertBase64StringToByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
@@ -5566,7 +5590,7 @@ namespace ASCOM.Remote
                     }
                     requestData.Response.AddHeader("Content-Encoding", "gzip");
                     bytesToSend = compressedDataStream.ToArray(); // Get the compressed bytes from the stream into a byte array
-                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Number of uncompressed bytes: {numberOfUncompressedBytes}, Number of compressed bytes: {bytesToSend.Length:n0}bytes.");
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Number of uncompressed bytes: {numberOfUncompressedBytes}, Number of compressed bytes: {bytesToSend.Length:n0}bytes.");
                 }
             }
             long timeToCompressResponse = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
@@ -5576,19 +5600,19 @@ namespace ASCOM.Remote
             {
                 if (requestData.Response.ProtocolVersion.CompareTo(new Version(1, 1)) >= 0) // Protocol is HTTP/1.1 or later
                 {
-                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"### Protocol is HTTP/1.1 or later - Setting response.SendChuncked = true");
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"### Protocol is HTTP/1.1 or later - Setting response.SendChuncked = true");
                     requestData.Response.SendChunked = true;
                 }
                 else // Protocol is HTTP/1.0
                 {
-                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"### Protocol is HTTP/1.0 - NOT setting chuncked transfer mode");
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"### Protocol is HTTP/1.0 - NOT setting chuncked transfer mode");
                 }
             }
             catch (Exception ex)
             {
                 // Something went wrong when evaluating the HTTP protocol version or when setting chunked transfer mode. This is not considered fatal here because
                 // we are able to use the request object "as-is" without changing it. If there is a significant issue, the request will fail later in the process and will be dealt with then.
-                LogException1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Exception while evaluating HTTP protocol version or setting chunked mode\r\n{ex}");
+                LogException1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Exception while evaluating HTTP protocol version or setting chunked mode\r\n{ex}");
             }
 
             requestData.Response.AddHeader(SharedConstants.BASE64_HANDOFF_HEADER, SharedConstants.BASE64_HANDOFF_SUPPORTED); // Add a header indicating that the content is base64 serialised 
@@ -5598,7 +5622,7 @@ namespace ASCOM.Remote
             requestData.Response.OutputStream.Close();
             long timeReturnDataToClient = sw.ElapsedMilliseconds - lastTime; // Record the duration
 
-            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"### Base64 response sent to client. " +
+            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"### Base64 response sent to client. " +
                 $"Image array element type: {imageArrayElementType}, " +
                 $"Image array element size: {imageArrayElementSize:n0}, " +
                 $"Image array bytes length: {imageArrayBytesLength:n0}, " +
@@ -5659,7 +5683,7 @@ namespace ASCOM.Remote
                 if (acceptEncoding[0].ToLowerInvariant().Contains("deflate")) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
                 if (acceptEncoding[0].ToLowerInvariant().Contains("gzip")) compressionType = SharedConstants.ImageArrayCompression.GZip;
             }
-            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Response compression type: {compressionType}");
+            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Response compression type: {compressionType}");
 
             try
             {
@@ -5668,12 +5692,12 @@ namespace ASCOM.Remote
                 {
                     base64HandoffRequested = true;
                     requestData.Response.AddHeader(SharedConstants.BASE64_HANDOFF_HEADER, SharedConstants.BASE64_HANDOFF_SUPPORTED); // Add a header indicating to the client that a binary formatted image is available for faster processing
-                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Base64 encoding supported - Header {SharedConstants.BASE64_HANDOFF_SUPPORTED} = {requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_SUPPORTED]}");
+                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Base64 encoding supported - Header {SharedConstants.BASE64_HANDOFF_SUPPORTED} = {requestData.Request.Headers[SharedConstants.BASE64_HANDOFF_SUPPORTED]}");
                 }
             }
             catch (Exception ex)
             {
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Exception testing for base64 hand-off header:\r\n{ex}");
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Exception testing for base64 hand-off header:\r\n{ex}");
             }
 
             try
@@ -5682,18 +5706,18 @@ namespace ASCOM.Remote
                 if (requestData.Request.Headers[SharedConstants.ACCEPT_HEADER_NAME].ToLowerInvariant().Contains(SharedConstants.IMAGE_BYTES_MIME_TYPE)) // Client supports image bytes transfer
                 {
                     imageBytesRequested = true;
-                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Image bytes requested - Received header {requestData.Request.Headers[SharedConstants.ACCEPT_HEADER_NAME]}");
+                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Image bytes requested - Received header {requestData.Request.Headers[SharedConstants.ACCEPT_HEADER_NAME]}");
                 }
             }
             catch (Exception ex)
             {
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Exception testing for image bytes header:\r\n{ex}");
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Exception testing for image bytes header:\r\n{ex}");
             }
 
             sw.Start(); // Start the timing stopwatch
             try
             {
-                switch (requestData.Elements[URL_ELEMENT_METHOD])
+                switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     case "imagearray":
                         // Get the image array from the device
@@ -5701,7 +5725,7 @@ namespace ASCOM.Remote
 
                         if (deviceResponse != null)
                         {
-                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("ImageArray Rank: {0}, Length: {1:n0}", deviceResponse.Rank, deviceResponse.Length));
+                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("ImageArray Rank: {0}, Length: {1:n0}", deviceResponse.Rank, deviceResponse.Length));
 
                             switch (deviceResponse.Rank)
                             {
@@ -5716,7 +5740,7 @@ namespace ASCOM.Remote
                                     // Fall back to base64-handoff if requested
                                     else if (base64HandoffRequested)
                                     {
-                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
                                         responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                         {
                                             ClientTransactionID = requestData.ClientTransactionID,
@@ -5727,7 +5751,7 @@ namespace ASCOM.Remote
                                         };
                                         if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                         if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
                                     }
 
                                     // Finally fall back to JSON encoding of the array elements
@@ -5749,7 +5773,7 @@ namespace ASCOM.Remote
                                     // Fall back to base64-handoff if requested
                                     else if (base64HandoffRequested)
                                     {
-                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
                                         responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                         {
                                             ClientTransactionID = requestData.ClientTransactionID,
@@ -5760,7 +5784,7 @@ namespace ASCOM.Remote
                                         };
                                         if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                         if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
                                     }
 
                                     // Finally fall back to JSON encoding of the array elements
@@ -5782,7 +5806,7 @@ namespace ASCOM.Remote
                         deviceResponse = device.ImageArrayVariant;
                         string arrayType = deviceResponse.GetType().Name;
                         string elementType = "";
-                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Received array of Rank {0} of Length {1:n0} and type {2}", deviceResponse.Rank, deviceResponse.Length, deviceResponse.GetType().Name));
+                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Received array of Rank {0} of Length {1:n0} and type {2}", deviceResponse.Rank, deviceResponse.Length, deviceResponse.GetType().Name));
 
                         switch (arrayType) // Process 2D and 3D variant arrays, all other types are unsupported
                         {
@@ -5795,7 +5819,7 @@ namespace ASCOM.Remote
                             default:
                                 throw new InvalidValueException("ReturnImageArray: Received an unsupported return array type: " + arrayType);
                         }
-                        LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Array elements are of type: {0}", elementType));
+                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Array elements are of type: {0}", elementType));
 
                         switch (deviceResponse.Rank)
                         {
@@ -5813,7 +5837,7 @@ namespace ASCOM.Remote
                                         // Fall back to base64-handoff if requested
                                         else if (base64HandoffRequested)
                                         {
-                                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
                                             responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                             {
                                                 ClientTransactionID = requestData.ClientTransactionID,
@@ -5824,7 +5848,7 @@ namespace ASCOM.Remote
                                             };
                                             if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                             if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
                                         }
 
                                         // Finally fall back to JSON encoding of the array elements
@@ -5845,7 +5869,7 @@ namespace ASCOM.Remote
                                         // Fall back to base64-handoff if requested
                                         else if (base64HandoffRequested)
                                         {
-                                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
                                             responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                             {
                                                 ClientTransactionID = requestData.ClientTransactionID,
@@ -5856,7 +5880,7 @@ namespace ASCOM.Remote
                                             };
                                             if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                             if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
                                         }
 
                                         // Finally fall back to JSON encoding of the array elements
@@ -5878,7 +5902,7 @@ namespace ASCOM.Remote
                                         // Fall back to base64-handoff if requested
                                         else if (base64HandoffRequested)
                                         {
-                                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
                                             responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                             {
                                                 ClientTransactionID = requestData.ClientTransactionID,
@@ -5889,7 +5913,7 @@ namespace ASCOM.Remote
                                             };
                                             if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                             if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
                                         }
 
                                         // Finally fall back to JSON encoding of the array elements
@@ -5917,7 +5941,7 @@ namespace ASCOM.Remote
                                         // Fall back to base64-handoff if requested
                                         else if (base64HandoffRequested)
                                         {
-                                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
                                             responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                             {
                                                 ClientTransactionID = requestData.ClientTransactionID,
@@ -5928,7 +5952,7 @@ namespace ASCOM.Remote
                                             };
                                             if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                             if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
                                         }
 
                                         // Finally fall back to JSON encoding of the array elements
@@ -5949,7 +5973,7 @@ namespace ASCOM.Remote
                                         // Fall back to base64-hand-off if requested
                                         else if (base64HandoffRequested)
                                         {
-                                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
                                             responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                             {
                                                 ClientTransactionID = requestData.ClientTransactionID,
@@ -5960,7 +5984,7 @@ namespace ASCOM.Remote
                                             };
                                             if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                             if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
                                         }
 
                                         // Finally fall back to JSON encoding of the array elements
@@ -5982,7 +6006,7 @@ namespace ASCOM.Remote
                                         // Fall back to base64-handoff if requested
                                         else if (base64HandoffRequested)
                                         {
-                                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
                                             responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                             {
                                                 ClientTransactionID = requestData.ClientTransactionID,
@@ -5993,7 +6017,7 @@ namespace ASCOM.Remote
                                             };
                                             if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                             if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
                                         }
 
                                         // Finally fall back to JSON encoding of the array elements
@@ -6014,8 +6038,8 @@ namespace ASCOM.Remote
                         break;
 
                     default:
-                        LogMessage1(requestData, "ReturnImageArray", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("ReturnImageArray - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "ReturnImageArray", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnImageArray - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             catch (Exception ex)
@@ -6055,7 +6079,7 @@ namespace ASCOM.Remote
                     requestData.Response.OutputStream.Close();
                     sw.Stop();
 
-                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Base64Encoded - Image array properties response sent to client - ImageArray Rank: {responseClass.Rank} Type: {responseClass.Type} - Driver response time: {timeDriver}ms, Overall response time: {sw.ElapsedMilliseconds}ms.");
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Base64Encoded - Image array properties response sent to client - ImageArray Rank: {responseClass.Rank} Type: {responseClass.Type} - Driver response time: {timeDriver}ms, Overall response time: {sw.ElapsedMilliseconds}ms.");
                 }
                 else
                 {
@@ -6099,7 +6123,7 @@ namespace ASCOM.Remote
                             requestData.Response.OutputStream.Close();
                             timeReturnDataToClient = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
-                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Response sent to client with compression type: {compressionType}. " +
+                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Response sent to client with compression type: {compressionType}. " +
                                 $"Driver image size: {responseJson.Length:n0}bytes, compressed: {compressedBytes.Length:n0}. " +
                                 $"Timings - Overall: {sw.ElapsedMilliseconds}, Driver: {timeDriver}, JSON serialisation: {timeJsonSerialisation}, Convert to JSON bytes: {timeJsonBytes}, " +
                                 $"Create compressed stream: {timeCreateCompressedStream} + Convert stream to array: {timeCreateCompressedByteArray}, Return data to client: {timeReturnDataToClient}");
@@ -6111,7 +6135,7 @@ namespace ASCOM.Remote
 
                             using (StreamWriter streamWriter1 = new StreamWriter(requestData.Response.OutputStream))
                             {
-                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"No compression - ReturnImageArray Before writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
+                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"No compression - ReturnImageArray Before writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
 
                                 using (JsonWriter writer = new JsonTextWriter(streamWriter1))
                                 {
@@ -6120,11 +6144,11 @@ namespace ASCOM.Remote
                             }
                             serializer1 = null;
 
-                            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"No compression - ReturnImageArray After writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
+                            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"No compression - ReturnImageArray After writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
                             requestData.Response.OutputStream.Close();
                             sw.Stop();
 
-                            LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"No compression - ReturnImageArray After closing output stream ({sw.ElapsedMilliseconds}ms.)");
+                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"No compression - ReturnImageArray After closing output stream ({sw.ElapsedMilliseconds}ms.)");
                             break;
                     }
                 }
@@ -6164,7 +6188,7 @@ namespace ASCOM.Remote
                 ForceGarbageCollection();
 
                 ArrayMetadataV1 arrayMetadataV1 = imageArrayBytes.GetMetadataV1();
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"Converted byte array - Metadata version: {arrayMetadataV1.MetadataVersion}, " +
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Converted byte array - Metadata version: {arrayMetadataV1.MetadataVersion}, " +
                     $"Error number: {arrayMetadataV1.ErrorNumber}, " +
                     $"Client transaction ID: {arrayMetadataV1.ClientTransactionID}, " +
                     $"Server transaction ID: {arrayMetadataV1.ServerTransactionID}, " +
@@ -6174,7 +6198,7 @@ namespace ASCOM.Remote
                     $"Dimension 1: {arrayMetadataV1.Dimension1}, " +
                     $"Dimension 2: {arrayMetadataV1.Dimension2}, " +
                     $"Dimension 3: {arrayMetadataV1.Dimension3}");
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"OVERALL IMAGEARRAYBYTES PROCESSING TIME: {sw.ElapsedMilliseconds}ms for client transaction ID: {requestData.ClientIpAddress}.");
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"OVERALL IMAGEARRAYBYTES PROCESSING TIME: {sw.ElapsedMilliseconds}ms for client transaction ID: {requestData.ClientIpAddress}.");
                 sw.Restart();
 
             }
@@ -6198,21 +6222,21 @@ namespace ASCOM.Remote
                     string[] elements = requestData.Elements;
                     Array.Resize<string>(ref elements, 5);
                     elements[3] = "";
-                    elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND];
+                    elements[SharedConstants.URL_ELEMENT_METHOD] = elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND];
                     requestData.Elements = elements;
                 }
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Before setting response bytes - Length: {0:n0}, Response is null: {1}", imageArrayBytes.Length, requestData.Response == null));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Before setting response bytes - Length: {0:n0}, Response is null: {1}", imageArrayBytes.Length, requestData.Response == null));
                 requestData.Response.ContentLength64 = imageArrayBytes.Length;
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
                 requestData.Response.OutputStream.Write(imageArrayBytes, 0, imageArrayBytes.Length);
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "After writing bytes to output stream");
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "After writing bytes to output stream");
                 requestData.Response.OutputStream.Close();
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "After closing output stream");
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"IMAGEARRAYBYTES TRANSMISSION TIME: {sw.ElapsedMilliseconds}ms.");
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], $"IMAGEARRAYBYTES OVERALL TIME: {swOverall.ElapsedMilliseconds}ms.");
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "After closing output stream");
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"IMAGEARRAYBYTES TRANSMISSION TIME: {sw.ElapsedMilliseconds}ms.");
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"IMAGEARRAYBYTES OVERALL TIME: {swOverall.ElapsedMilliseconds}ms.");
 
             }
             catch (HttpListenerException ex) // Deal with communications errors here but allow any other errors to go through and be picked up by the main error handler
@@ -6351,7 +6375,7 @@ namespace ASCOM.Remote
 
             try
             {
-                switch (deviceType + "." + requestData.Elements[URL_ELEMENT_METHOD])
+                switch (deviceType + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // COMMON METHODS
                     case "*.commandblind":
@@ -6376,7 +6400,7 @@ namespace ASCOM.Remote
 
                     //TELESCOPE
                     case "telescope.sideofpier":
-                        pierSideValue = (PierSide)GetParameter<int>(requestData, SharedConstants.SIDEOFPIER_PARAMETER_NAME);
+                        pierSideValue = (PierSide)GetParameter<int>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                         device.SideOfPier = pierSideValue;
                         break;
                     case "telescope.unpark":
@@ -6528,8 +6552,8 @@ namespace ASCOM.Remote
                         break;
 
                     default:
-                        LogMessage1(requestData, "CallMethod", "Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
-                        throw new InvalidValueException("CallMethod - Unsupported requestData.Elements[URL_ELEMENT_METHOD]: " + requestData.Elements[URL_ELEMENT_METHOD]);
+                        LogMessage1(requestData, "CallMethod", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("CallMethod - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
                 }
             }
             // Handle missing or invalid parameters
@@ -6553,24 +6577,24 @@ namespace ASCOM.Remote
             // Make sure a valid Parameter name was passed to us
             if (string.IsNullOrEmpty(ParameterName))
             {
-                string errorMessage = string.Format("GetParameter - ParameterName is null or empty, when retrieving an {0} value", typeof(T).Name);
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], errorMessage);
+                string errorMessage = $"GetParameter - ParameterName is null or empty, when retrieving an {typeof(T).Name} value";
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], errorMessage);
                 throw new InvalidParameterException(errorMessage);
             }
 
             // Check whether a string value of any kind was supplied as the parameter value
-            string parameterStringValue = requestData.SuppliedParameters[ParameterName];
+            string parameterStringValue = requestData.SuppliedParameters[ParameterName.ToMixedCase()];
             if (parameterStringValue == null)
             {
-                string errorMessage = string.Format("GetParameter - The mandatory parameter: {0} is missing or has a null value.", ParameterName);
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], errorMessage);
+                string errorMessage = $"GetParameter - The name of mandatory parameter: {ParameterName.ToMixedCase()} is incorrectly cased or incorrectly spelled.";
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], errorMessage);
                 throw new InvalidParameterException(errorMessage);
             }
 
             // Handle string values first because they don't need to be converted into another type 
             if (typeof(T) == typeof(string))
             {
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, parameterStringValue));
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, parameterStringValue));
                 return (T)(object)parameterStringValue;
             }
             // Convert the parameter value into the required type
@@ -6579,41 +6603,41 @@ namespace ASCOM.Remote
                 case "Single":
                     float singleValue;
                     if (!float.TryParse(parameterStringValue, NumberStyles.Number | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out singleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a floating point value");
-                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, singleValue.ToString()));
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, singleValue.ToString()));
                     return (T)(object)singleValue;
 
                 case "Double":
                     double doubleValue;
                     if (!double.TryParse(parameterStringValue, NumberStyles.Number | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out doubleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a floating point value");
-                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, doubleValue.ToString()));
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, doubleValue.ToString()));
                     return (T)(object)doubleValue;
 
                 case "Int16":
                     short shortValue;
                     if (!short.TryParse(parameterStringValue, NumberStyles.Integer | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out shortValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to an Int16 value");
-                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, shortValue.ToString()));
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, shortValue.ToString()));
                     return (T)(object)shortValue;
 
                 case "Int32":
                     int intValue;
                     if (!int.TryParse(parameterStringValue, NumberStyles.Integer | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out intValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to an Int32 value");
-                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, intValue.ToString()));
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, intValue.ToString()));
                     return (T)(object)intValue;
 
                 case "Boolean":
                     bool boolValue;
                     if (!bool.TryParse(parameterStringValue, out boolValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a boolean value");
-                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, boolValue.ToString()));
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, boolValue.ToString()));
                     return (T)(object)boolValue;
 
                 case "DateTime":
                     DateTime dateTimeValue;
                     if (!DateTime.TryParse(parameterStringValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTimeValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a DateTime value");
-                    LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, dateTimeValue.ToString()));
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, dateTimeValue.ToString()));
                     return (T)(object)dateTimeValue;
 
                 default:
-                    string errorMessage = $"Unsupported type: {typeof(T).Name} called by {requestData.Elements[URL_ELEMENT_METHOD]}";
+                    string errorMessage = $"Unsupported type: {typeof(T).Name} called by {requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]}";
                     LogMessage1(requestData, "GetParameter", errorMessage);
                     throw new InvalidParameterException(errorMessage);
             }
@@ -6635,12 +6659,12 @@ namespace ASCOM.Remote
             if (FORCE_JSON_RESPONSE_TO_LOWER_CASE_TESTING_ONLY & jsonResponse.Length < 1000)
             {
                 jsonResponse = jsonResponse.ToLowerInvariant();
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "TESTING - JSON RESPONCE FORCED TO LOWER CASE");
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "TESTING - JSON RESPONCE FORCED TO LOWER CASE");
             }
 
             if (ex == null) // Command ran successfully so return the JSON encoded result
             {
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("OK - no exception. Thread: {0}, JSON: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), (jsonResponse.Length < 1000) ? jsonResponse : jsonResponse.Substring(0, 1000)));
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("OK - no exception. Thread: {0}, JSON: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), (jsonResponse.Length < 1000) ? jsonResponse : jsonResponse.Substring(0, 1000)));
                 if (ScreenLogResponses) LogToScreen(string.Format("  OK - JSON: {0}", jsonResponse));
                 TransmitResponse(requestData, "application/json; charset=utf-8", HttpStatusCode.OK, "200 OK", jsonResponse);
             }
@@ -6657,10 +6681,10 @@ namespace ASCOM.Remote
                     TransmitResponse(requestData, "application/json; charset=utf-8", HttpStatusCode.OK, "200 OK", jsonResponse);
                 }
 
-                if (DebugTraceState) LogException1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "Exception: " + ex.ToString());
-                else LogException1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "Exception: " + ex.Message);
+                if (DebugTraceState) LogException1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Exception: " + ex.ToString());
+                else LogException1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Exception: " + ex.Message);
 
-                LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Thread: {0}, Json: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), jsonResponse));
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Thread: {0}, Json: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), jsonResponse));
             }
         }
 
@@ -6682,22 +6706,22 @@ namespace ASCOM.Remote
                     string[] elements = requestData.Elements;
                     Array.Resize<string>(ref elements, 5);
                     elements[3] = "";
-                    elements[URL_ELEMENT_METHOD] = elements[URL_ELEMENT_SERVER_COMMAND];
+                    elements[SharedConstants.URL_ELEMENT_METHOD] = elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND];
                     requestData.Elements = elements;
                 }
 
                 bytesToSend = Encoding.UTF8.GetBytes(messageToSend); // Convert the message to be returned into UTF8 bytes that can be sent over the wire
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Completed Encoding.GetBytes, array length: {0:n0}", bytesToSend.Length));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Completed Encoding.GetBytes, array length: {0:n0}", bytesToSend.Length));
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Before setting response bytes - Length: {0:n0}, Response is null: {1}", bytesToSend.Length, requestData.Response == null));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Before setting response bytes - Length: {0:n0}, Response is null: {1}", bytesToSend.Length, requestData.Response == null));
                 requestData.Response.ContentLength64 = bytesToSend.Length;
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], string.Format("Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
                 requestData.Response.OutputStream.Write(bytesToSend, 0, bytesToSend.Length);
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "After writing bytes to output stream");
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "After writing bytes to output stream");
                 requestData.Response.OutputStream.Close();
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[URL_ELEMENT_METHOD], "After closing output stream");
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "After closing output stream");
             }
             catch (HttpListenerException ex) // Deal with communications errors here but allow any other errors to go through and be picked up by the main error handler
             {

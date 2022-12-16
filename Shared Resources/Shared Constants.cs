@@ -12,6 +12,14 @@ namespace ASCOM.Remote
         public const int ALPACA_ERROR_CODE_BASE = 0x400; // Start of the Alpaca error code range 0x400 to 0xFFF
         public const int ALPACA_ERROR_CODE_MAX = 0xFFF; // End of Alpaca error code range 0x400 to 0xFFF
 
+        // Device API URL element positions /api/v1/telescope/0/method
+        public const int URL_ELEMENT_API = 0; // For /api/ URIs
+        public const int URL_ELEMENT_API_VERSION = 1;
+        public const int URL_ELEMENT_DEVICE_TYPE = 2;
+        public const int URL_ELEMENT_DEVICE_NUMBER = 3;
+        public const int URL_ELEMENT_METHOD = 4;
+        public const int URL_ELEMENT_SERVER_COMMAND = 2; // For /server/ type URIs
+
         // Regular expressions to validate IP addresses and host names
         public const string ValidIpAddressRegex = @"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
         public const string ValidHostnameRegex = @"^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$";
@@ -32,7 +40,7 @@ namespace ASCOM.Remote
         public const string LIGHT_PARAMETER_NAME = "Light";
         public const string ACTION_COMMAND_PARAMETER_NAME = "Action";
         public const string ACTION_PARAMETERS_PARAMETER_NAME = "Parameters";
-        public const string ID_PARAMETER_NAME = "ID";
+        public const string ID_PARAMETER_NAME = "Id";
         public const string STATE_PARAMETER_NAME = "State";
         public const string NAME_PARAMETER_NAME = "Name";
         public const string VALUE_PARAMETER_NAME = "Value";

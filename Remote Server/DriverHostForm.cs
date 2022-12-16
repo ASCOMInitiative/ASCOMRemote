@@ -77,11 +77,11 @@ namespace ASCOM.Remote
 
                 // Process the command on a separate thread allowing other requests to be handled concurrently through this thread, which is running the Windows message loop
                 Thread driverThread = new Thread(new ParameterizedThreadStart(ProcessCommand)); // Create a new thread on which to make the call to the COM driver
-                if (ServerForm.DebugTraceState) ServerForm.LogMessage1(requestData, requestData.Elements[ServerForm.URL_ELEMENT_METHOD], $"DriverCommand has received a command for {deviceKey} on FORM thread {Thread.CurrentThread.ManagedThreadId} Apartment state: {Thread.CurrentThread.GetApartmentState()} Is background: {Thread.CurrentThread.IsBackground} Is thread pool thread: {Thread.CurrentThread.IsThreadPoolThread}");
+                if (ServerForm.DebugTraceState) ServerForm.LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"DriverCommand has received a command for {deviceKey} on FORM thread {Thread.CurrentThread.ManagedThreadId} Apartment state: {Thread.CurrentThread.GetApartmentState()} Is background: {Thread.CurrentThread.IsBackground} Is thread pool thread: {Thread.CurrentThread.IsThreadPoolThread}");
 
                 driverThread.Start(requestData); // Start the thread supplying the request data to the method
 
-                if (ServerForm.DebugTraceState) ServerForm.LogMessage1(requestData, requestData.Elements[ServerForm.URL_ELEMENT_METHOD], $"DriverCommand has started the command for {deviceKey} on FORM thread { Thread.CurrentThread.ManagedThreadId}");
+                if (ServerForm.DebugTraceState) ServerForm.LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"DriverCommand has started the command for {deviceKey} on FORM thread { Thread.CurrentThread.ManagedThreadId}");
                 return driverThread; // Return the thread so that the calling method can wait for it to complete and so that this thread can start waiting for the next command
             }
             catch (Exception ex) // Something serious has gone wrong with the ASCOM Remote server itself so report this to the user
