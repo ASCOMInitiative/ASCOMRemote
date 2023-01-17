@@ -69,10 +69,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommandLineParser">
-      <Version>2.8.0</Version>
+      <Version>2.9.1</Version>
     </PackageReference>
     <PackageReference Include="WindowsFirewallHelper">
-      <Version>2.1.4.81</Version>
+      <Version>2.2.0.86</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
