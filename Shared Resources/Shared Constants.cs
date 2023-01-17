@@ -33,8 +33,8 @@ namespace ASCOM.Remote
         public const string RATE_PARAMETER_NAME = "Rate";
         public const string DIRECTION_PARAMETER_NAME = "Direction";
         public const string DURATION_PARAMETER_NAME = "Duration";
-        public const string CLIENTID_PARAMETER_NAME = "ClientID";
-        public const string CLIENTTRANSACTION_PARAMETER_NAME = "ClientTransactionID";
+        public const string CLIENT_ID_PARAMETER_NAME = "ClientID";
+        public const string CLIENT_TRANSACTION_ID_PARAMETER_NAME = "ClientTransactionID";
         public const string COMMAND_PARAMETER_NAME = "Command";
         public const string RAW_PARAMETER_NAME = "Raw";
         public const string LIGHT_PARAMETER_NAME = "Light";

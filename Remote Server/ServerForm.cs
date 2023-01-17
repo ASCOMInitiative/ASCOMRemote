@@ -2133,16 +2133,22 @@ namespace ASCOM.Remote
             uint clientID = 0;
             uint clientTransactionID = 0;
             uint serverTransactionID = 0;
-            NameValueCollection suppliedParameters;
+            NameValueCollection queryParameters;
+            NameValueCollection formParameters;
             HttpListenerRequest request;
             HttpListenerResponse response;
             RequestData requestData = new RequestData();
 
             try
             {
+                string clientIDString = null;
+                string clientTransactionIDString = null;
+
                 IncrementConcurrencyCounter();
 
-                suppliedParameters = new NameValueCollection(StringComparer.Ordinal); // Create a collection to hold the supplied parameters
+                queryParameters = new NameValueCollection(StringComparer.OrdinalIgnoreCase); // Create a case insensitive collection to hold the supplied query parameters
+                formParameters = new NameValueCollection(StringComparer.Ordinal); // Create a case sensitive collection to hold the supplied form parameters
+
                 request = context.Request;
                 response = context.Response;
                 serverTransactionID = GetServerTransactionID();
@@ -2155,34 +2161,39 @@ namespace ASCOM.Remote
                 // Log the request 
                 LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Protocol: HTTP/{request.ProtocolVersion}, Thread: {Thread.CurrentThread.ManagedThreadId}");
 
-                // Create a collection of supplied parameters: query variables in the URL string for HTTP GET requests and form parameters from the request body for HTTP PUT requests.
+                // Create collections of supplied query and form parameters.
 
                 switch (requestData.Request.HttpMethod.ToUpperInvariant())
                 {
                     // Process query parameters from an HTTP GET    
                     case "GET":
-                        suppliedParameters.Add(request.QueryString); // Add the query string parameters to the collection
+                        queryParameters.Add(request.QueryString); // Add the query string parameters to the collection
 
                         // List query string parameters
-                        foreach (string key in suppliedParameters)
+                        foreach (string key in queryParameters)
                         {
-                            LogMessage1(requestData, "Query Parameter", $"{key} = {suppliedParameters[key]}");
+                            LogMessage1(requestData, "Query Parameter", $"{key} = {queryParameters[key]}");
                         }
+
+                        // Extract the client ID and client transaction ID from the query parameters
+                        clientIDString = queryParameters[SharedConstants.CLIENT_ID_PARAMETER_NAME];
+                        clientTransactionIDString = queryParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME];
+
                         break;
 
                     // Process form parameters from an HTTP PUT
                     case "PUT":
                         if (request.HasEntityBody) // Add any parameters supplied in the form body
                         {
-                            string formParameters;
+                            string formParameterString;
                             using (var reader = new StreamReader(request.InputStream, request.ContentEncoding)) // Extract the aggregated parameter string from the form within the request
                             {
-                                formParameters = reader.ReadToEnd();
+                                formParameterString = reader.ReadToEnd();
                             }
-                            if (formParameters == null) formParameters = ""; // Handle the possibility that we get a null value instead of an empty string
+                            if (formParameterString == null) formParameterString = ""; // Handle the possibility that we get a null value instead of an empty string
 
-                            string[] rawParameters = formParameters.Split('&'); // Parse the aggregated parameter string into an array of key / value pair strings
-                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Form parameters string: '{formParameters}'Form parameters string length: {formParameters.Length}, Raw parameters array size: {rawParameters.Length}");
+                            string[] rawParameters = formParameterString.Split('&'); // Parse the aggregated parameter string into an array of key / value pair strings
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Form parameters string: '{formParameterString}'Form parameters string length: {formParameterString.Length}, Raw parameters array size: {rawParameters.Length}");
 
                             foreach (string parameter in rawParameters) // Parse each key / value pair string into its key and value and add these to the parameters collection
                             {
@@ -2203,7 +2214,7 @@ namespace ASCOM.Remote
                                     }
 
                                     // Add the parameter key and value to the parameter list
-                                    suppliedParameters.Add(key, value);
+                                    formParameters.Add(key, value);
 
                                     // Log the form parameter if debug tracing
                                     LogMessage1(requestData, "Form Parameter", $"{key} = {value}");
@@ -2214,15 +2225,54 @@ namespace ASCOM.Remote
                                 }
                             }
                         }
+
+                        // Extract the client IT and client transaction ID from the form parameters
+                        foreach (string keyName in formParameters)
+                        {
+                            // Test whether we have a client ID parameter
+                            if (keyName.ToUpperInvariant() == SharedConstants.CLIENT_ID_PARAMETER_NAME.ToUpperInvariant())
+                            {
+                                // Test whether it is correctly cased
+                                if (keyName == SharedConstants.CLIENT_ID_PARAMETER_NAME) // Cased correctly
+                                {
+                                    clientIDString = formParameters[SharedConstants.CLIENT_ID_PARAMETER_NAME];
+                                }
+                                else // Incorrectly cased so return a 400 error
+                                {
+                                    LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"The {SharedConstants.CLIENT_ID_PARAMETER_NAME} parameter is incorrectly cased: {keyName}");
+                                    Return400Error(requestData, $"The {SharedConstants.CLIENT_ID_PARAMETER_NAME} parameter is incorrectly cased: {keyName}");
+                                    return;
+                                }
+                            }
+
+                            // Test whether we have a client transaction ID parameter
+                            if (keyName.ToUpperInvariant() == SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME.ToUpperInvariant())
+                            {
+                                // Test whether it is correctly cased
+                                if (keyName == SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME) // Cased correctly
+                                {
+                                    clientTransactionIDString = formParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME];
+                                }
+                                else // Incorrectly cased so return a 400 error
+                                {
+                                    LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"The {SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME} parameter is incorrectly cased: {keyName}");
+                                    Return400Error(requestData, $"The {SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME} parameter is incorrectly cased: {keyName}");
+                                    return;
+                                }
+                            }
+                        }
                         break;
 
                     default:
-
-                        break;
+                        // Reject HTTP methods that are not GET or PUT
+                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"An unsupported HTTP method was used: {request.HttpMethod}");
+                        Return400Error(requestData, $"An unsupported HTTP method was used: {request.HttpMethod}");
+                        return;
                 }
 
-                // Add the query or body parameters to the request data
-                requestData.SuppliedParameters = suppliedParameters;
+                // Add the query and body parameters to the request data
+                requestData.QueryParameters = queryParameters;
+                requestData.FormParameters = formParameters;
 
                 // Extract the caller's IP address into hostIPAddress
                 string clientIpAddress;
@@ -2236,7 +2286,6 @@ namespace ASCOM.Remote
                 }
 
                 // Create an access log entry
-
                 if (AccessLog.Enabled) // We are logging so we have to close the current log and start a new one if we have moved to a new day
                 {
                     DateTime now = DateTime.Now;
@@ -2277,7 +2326,6 @@ namespace ASCOM.Remote
                 requestData.ClientIpAddress = clientIpAddress;
 
                 // Extract the client ID number from the supplied URI / Form, if present
-                string clientIDString = suppliedParameters[SharedConstants.CLIENTID_PARAMETER_NAME];
                 if (clientIDString != null) // Some value was supplied for this parameter
                 {
                     // Test whether something other than an empty string or white space was passed as the ClientId value
@@ -2287,7 +2335,7 @@ namespace ASCOM.Remote
                         if (!uint.TryParse(clientIDString, out clientID))
                         {
                             LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}, Concurrent requests: {3}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString(), numberOfConcurrentTransactions));
-                            Return400Error(requestData, "Client ID is not an unsigned integer: " + suppliedParameters[SharedConstants.CLIENTID_PARAMETER_NAME]);
+                            Return400Error(requestData, "Client ID is not an unsigned integer: " + queryParameters[SharedConstants.CLIENT_ID_PARAMETER_NAME]);
                             return;
                         }
                     }
@@ -2301,7 +2349,6 @@ namespace ASCOM.Remote
                 requestData.ClientID = clientID;
 
                 // Extract the client transaction ID from the supplied URI / Form, if present
-                string clientTransactionIDString = suppliedParameters[SharedConstants.CLIENTTRANSACTION_PARAMETER_NAME];
                 if (clientTransactionIDString != null) // Some value was supplied for this parameter
                 {
                     // Test whether something other than an empty string or white space was passed as the ClientId value
@@ -2311,7 +2358,7 @@ namespace ASCOM.Remote
                         if (!uint.TryParse(clientTransactionIDString, out clientTransactionID))
                         {
                             LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Thread.CurrentThread.ManagedThreadId.ToString()}, Concurrent requests: {numberOfConcurrentTransactions}");
-                            Return400Error(requestData, "Client transaction ID is not an unsigned integer: " + suppliedParameters[SharedConstants.CLIENTTRANSACTION_PARAMETER_NAME]);
+                            Return400Error(requestData, "Client transaction ID is not an unsigned integer: " + queryParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME]);
                             return;
                         }
                     }
@@ -2330,9 +2377,9 @@ namespace ASCOM.Remote
                     {
                         LogMessage1(requestData, "RequestReceived", string.Format("Header {0} = {1}", key, request.Headers[key]));
                     }
-                    foreach (string key in suppliedParameters.AllKeys)
+                    foreach (string key in queryParameters.AllKeys)
                     {
-                        LogMessage1(requestData, "RequestReceived", string.Format("Parameter {0} = {1}", key, suppliedParameters[key]));
+                        LogMessage1(requestData, "RequestReceived", string.Format("Parameter {0} = {1}", key, queryParameters[key]));
                     }
                 } // Log supplied parameters and headers
 
@@ -4246,7 +4293,7 @@ namespace ASCOM.Remote
 
             try
             {
-                boolValue = GetParameter<bool>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                boolValue = GetParameter<bool>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD].ToCorrectCase());
                 switch (deviceType + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // COMMON METHODS
@@ -4830,7 +4877,7 @@ namespace ASCOM.Remote
 
             try
             {
-                doubleValue = GetParameter<double>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                doubleValue = GetParameter<double>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD].ToCorrectCase());
                 switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // TELESCOPE
@@ -4988,7 +5035,7 @@ namespace ASCOM.Remote
 
             try
             {
-                shortValue = GetParameter<short>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                shortValue = GetParameter<short>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD].ToCorrectCase());
                 switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // TELESCOPE
@@ -5126,7 +5173,7 @@ namespace ASCOM.Remote
 
             try
             {
-                intValue = GetParameter<int>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                intValue = GetParameter<int>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD].ToCorrectCase());
                 switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     // CAMERA
@@ -5198,7 +5245,7 @@ namespace ASCOM.Remote
 
             try
             {
-                dateTimeValue = GetParameter<DateTime>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                dateTimeValue = GetParameter<DateTime>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD].ToCorrectCase());
                 LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Converted DateTime value (UTC): " + dateTimeValue.ToUniversalTime().ToString(SharedConstants.ISO8601_DATE_FORMAT_STRING));
                 switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
@@ -5231,7 +5278,7 @@ namespace ASCOM.Remote
 
             try
             {
-                deviceResponse = (System.Collections.IEnumerable)device.TrackingRates;
+                deviceResponse = (IEnumerable)device.TrackingRates;
             }
             catch (Exception ex)
             {
@@ -5339,7 +5386,7 @@ namespace ASCOM.Remote
 
             try
             {
-                driveRateValue = (DriveRates)GetParameter<int>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                driveRateValue = (DriveRates)GetParameter<int>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD].ToCorrectCase());
                 device.TrackingRate = driveRateValue;
             }
             // Handle missing or invalid parameters
@@ -6400,7 +6447,7 @@ namespace ASCOM.Remote
 
                     //TELESCOPE
                     case "telescope.sideofpier":
-                        pierSideValue = (PierSide)GetParameter<int>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        pierSideValue = (PierSide)GetParameter<int>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD].ToCorrectCase());
                         device.SideOfPier = pierSideValue;
                         break;
                     case "telescope.unpark":
@@ -6571,22 +6618,64 @@ namespace ASCOM.Remote
             SendEmptyResponseToClient(requestData, exReturn);
         }
 
-        private T GetParameter<T>(RequestData requestData, string ParameterName)
+        private T GetParameter<T>(RequestData requestData, string parameterName)
         {
+            // Debug logging
+            if (true)
+            {
+                if (requestData.QueryParameters.Count > 0)
+                {
+                    foreach (string key in requestData.QueryParameters)
+                    {
+                        try
+                        {
+                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"GetParameter - Found query parameter: {key} = '{requestData.QueryParameters[key]}'");
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    }
+                }
+
+                if (requestData.FormParameters.Count > 0)
+                {
+                    foreach (string key in requestData.FormParameters)
+                    {
+                        try
+                        {
+                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"GetParameter - Found form parameter: {key} = '{requestData.FormParameters[key]}'");
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    }
+                }
+            }
 
             // Make sure a valid Parameter name was passed to us
-            if (string.IsNullOrEmpty(ParameterName))
+            if (string.IsNullOrEmpty(parameterName))
             {
                 string errorMessage = $"GetParameter - ParameterName is null or empty, when retrieving an {typeof(T).Name} value";
                 LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], errorMessage);
                 throw new InvalidParameterException(errorMessage);
             }
 
+            string parameterStringValue;
+
+            // Extract the parameter string from the query or form parameter lists as appropriate
+            if (requestData.Request.HttpMethod.ToUpperInvariant() == "GET") // Check query parameters for GET operations
+            {
+                parameterStringValue = requestData.QueryParameters[parameterName];
+            }
+            else // Check form parameters for PUT operations
+            {
+                parameterStringValue = requestData.FormParameters[parameterName];
+            }
+
             // Check whether a string value of any kind was supplied as the parameter value
-            string parameterStringValue = requestData.SuppliedParameters[ParameterName.ToMixedCase()];
             if (parameterStringValue == null)
             {
-                string errorMessage = $"GetParameter - The name of mandatory parameter: {ParameterName.ToMixedCase()} is incorrectly cased or incorrectly spelled.";
+                string errorMessage = $"The name of mandatory parameter: {parameterName} is incorrectly cased or incorrectly spelled.";
                 LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], errorMessage);
                 throw new InvalidParameterException(errorMessage);
             }
@@ -6594,7 +6683,7 @@ namespace ASCOM.Remote
             // Handle string values first because they don't need to be converted into another type 
             if (typeof(T) == typeof(string))
             {
-                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, parameterStringValue));
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", parameterName, parameterStringValue));
                 return (T)(object)parameterStringValue;
             }
             // Convert the parameter value into the required type
@@ -6602,38 +6691,38 @@ namespace ASCOM.Remote
             {
                 case "Single":
                     float singleValue;
-                    if (!float.TryParse(parameterStringValue, NumberStyles.Number | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out singleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a floating point value");
-                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, singleValue.ToString()));
+                    if (!float.TryParse(parameterStringValue, NumberStyles.Number | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out singleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {parameterName} can not be converted to a floating point value");
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", parameterName, singleValue.ToString()));
                     return (T)(object)singleValue;
 
                 case "Double":
                     double doubleValue;
-                    if (!double.TryParse(parameterStringValue, NumberStyles.Number | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out doubleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a floating point value");
-                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, doubleValue.ToString()));
+                    if (!double.TryParse(parameterStringValue, NumberStyles.Number | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out doubleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {parameterName} can not be converted to a floating point value");
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", parameterName, doubleValue.ToString()));
                     return (T)(object)doubleValue;
 
                 case "Int16":
                     short shortValue;
-                    if (!short.TryParse(parameterStringValue, NumberStyles.Integer | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out shortValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to an Int16 value");
-                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, shortValue.ToString()));
+                    if (!short.TryParse(parameterStringValue, NumberStyles.Integer | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out shortValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {parameterName} can not be converted to an Int16 value");
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", parameterName, shortValue.ToString()));
                     return (T)(object)shortValue;
 
                 case "Int32":
                     int intValue;
-                    if (!int.TryParse(parameterStringValue, NumberStyles.Integer | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out intValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to an Int32 value");
-                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, intValue.ToString()));
+                    if (!int.TryParse(parameterStringValue, NumberStyles.Integer | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out intValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {parameterName} can not be converted to an Int32 value");
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", parameterName, intValue.ToString()));
                     return (T)(object)intValue;
 
                 case "Boolean":
                     bool boolValue;
-                    if (!bool.TryParse(parameterStringValue, out boolValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a boolean value");
-                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, boolValue.ToString()));
+                    if (!bool.TryParse(parameterStringValue, out boolValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {parameterName} can not be converted to a boolean value");
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", parameterName, boolValue.ToString()));
                     return (T)(object)boolValue;
 
                 case "DateTime":
                     DateTime dateTimeValue;
-                    if (!DateTime.TryParse(parameterStringValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTimeValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {ParameterName} can not be converted to a DateTime value");
-                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", ParameterName, dateTimeValue.ToString()));
+                    if (!DateTime.TryParse(parameterStringValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTimeValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {parameterName} can not be converted to a DateTime value");
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", parameterName, dateTimeValue.ToString()));
                     return (T)(object)dateTimeValue;
 
                 default:

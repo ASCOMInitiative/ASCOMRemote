@@ -15,7 +15,7 @@ namespace ASCOM.Remote
             ClientID = clientID;
             ClientTransactionID = clientTransactionID;
             ServerTransactionID = serverTransactionID;
-            SuppliedParameters = suppliedParameters;
+            QueryParameters = suppliedParameters;
             Request = request;
             Response = response;
             Elements = elements;
@@ -25,7 +25,8 @@ namespace ASCOM.Remote
         public uint ClientID { get; set; }
         public uint ClientTransactionID { get; set; }
         public uint ServerTransactionID { get; set; }
-        public NameValueCollection SuppliedParameters { get; set; }
+        public NameValueCollection FormParameters { get; set; }
+        public NameValueCollection QueryParameters { get; set; }
         public HttpListenerRequest Request { get; set; }
         public HttpListenerResponse Response { get; set; }
         public string[] Elements { get; set; }

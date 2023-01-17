@@ -80,7 +80,7 @@ namespace ASCOM.Remote
         /// <param name="deviceType">Optional device type to disambiguate method names that are used in more than 1 device type AND cased differently</param>
         /// <exception cref="KeyNotFoundException">When the required method name key has not yet been added to the lookup dictionary.</exception>
         /// <returns>The mixed case equivalent of the supplied method name</returns>
-        public static string ToMixedCase(this string methodName, string deviceType = null)
+        public static string ToCorrectCase(this string methodName, string deviceType = null)
         {
             string lookupKey = "ValueNotSet";
             // Look up the cased version of the method. If this fails a KeyNotFoiund exception will be thrown
@@ -93,7 +93,6 @@ namespace ASCOM.Remote
             {
                 return $"UnknownMethod:'{lookupKey}' - {ex.ToString()}";
             }
-
         }
 
         /// <summary>
