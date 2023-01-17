@@ -592,8 +592,8 @@ namespace ASCOM.Remote
 
                     // Add the transaction number and client ID parameters
                     uint transaction = TransactionNumber();
-                    request.AddParameter(SharedConstants.CLIENTTRANSACTION_PARAMETER_NAME, transaction.ToString());
-                    request.AddParameter(SharedConstants.CLIENTID_PARAMETER_NAME, clientNumber.ToString());
+                    request.AddParameter(SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME, transaction.ToString());
+                    request.AddParameter(SharedConstants.CLIENT_ID_PARAMETER_NAME, clientNumber.ToString());
 
                     // Add any supplied parameters to the request
                     foreach (KeyValuePair<string, string> parameter in Parameters)
