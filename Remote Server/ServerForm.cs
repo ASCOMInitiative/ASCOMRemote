@@ -2226,7 +2226,7 @@ namespace ASCOM.Remote
                             }
                         }
 
-                        // Extract the client IT and client transaction ID from the form parameters
+                        // Extract the client ID and client transaction ID from the form parameters
                         foreach (string keyName in formParameters)
                         {
                             // Test whether we have a client ID parameter
