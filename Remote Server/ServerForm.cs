@@ -2656,14 +2656,10 @@ namespace ASCOM.Remote
 
                                                         case SharedConstants.ALPACA_DEVICE_MANAGEMENT_DESCRIPTION:
                                                             // Create the remote server description and return it to the client in the proscribed format
-                                                            // AlpacaDeviceDescription remoteServerDescription = new AlpacaDeviceDescription(SharedConstants.ALPACA_DEVICE_MANAGEMENT_SERVERNAME,
-                                                            //                                                                            SharedConstants.ALPACA_DEVICE_MANAGEMENT_MANUFACTURER,
-                                                            //                                                                           Assembly.GetEntryAssembly().GetName().Version.ToString(),
-                                                            //                                                                          RemoteServerLocation);
                                                             AlpacaDeviceDescription remoteServerDescription = new AlpacaDeviceDescription(SharedConstants.ALPACA_DEVICE_MANAGEMENT_SERVERNAME,
                                                                                                                                           SharedConstants.ALPACA_DEVICE_MANAGEMENT_MANUFACTURER,
                                                                                                                                           Assembly.GetEntryAssembly().GetName().Version.ToString(),
-                                                                                                                                          "");
+                                                                                                                                          RemoteServerLocation);
 
                                                             AlpacaDescriptionResponse descriptionResponse = new AlpacaDescriptionResponse(clientTransactionID, serverTransactionID, remoteServerDescription)
                                                             {
