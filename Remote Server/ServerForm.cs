@@ -442,7 +442,7 @@ namespace ASCOM.Remote
                     LogToScreen(" ");
                     LogToScreen("***** ASCOM REMOTE IS RUNNING WITH ADMIN PRIVILEGE!");
                     LogToScreen(" ");
-                    LogToScreen("***** This increases the risk that malicious individuals can target you and cause havoc in your life.");
+                    LogToScreen("***** This increases the risk that malicious individuals will target you and cause havoc in your life.");
                     LogToScreen("***** There is no need to run ASCOM Remote with Admin privilege, the application is fully functional in normal user mode.");
                     LogToScreen("***** Please close the Remote Server and re-open it in normal user mode.");
                     LogToScreen(" ");
