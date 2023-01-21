@@ -425,6 +425,39 @@ namespace ASCOM.Remote
             {
                 LogException(0, 0, 0, "ServerForm.Load", $"Exception setting windows state: \r\n{ex} ");
             }
+
+            // Give warning message if running as ADMIN
+            using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+            {
+                // Determine whether the user is running as admin
+                WindowsPrincipal principal = new WindowsPrincipal(identity);
+                if (principal.IsInRole(WindowsBuiltInRole.Administrator))
+                {
+                    // Running as admin so show a warning message on the screen
+
+                    // Restore the form if minimised
+                    RestoreForm();
+
+                    // Display message
+                    LogToScreen(" ");
+                    LogToScreen("***** ASCOM REMOTE IS RUNNING WITH ADMIN PRIVILEGE!");
+                    LogToScreen(" ");
+                    LogToScreen("***** This increases the risk that malicious individuals can target you and cause havoc in your life.");
+                    LogToScreen("***** There is no need to run ASCOM Remote with Admin privilege, the application is fully functional in normal user mode.");
+                    LogToScreen("***** Please close the Remote Server and re-open it in normal user mode.");
+                    LogToScreen(" ");
+
+                    // Ask whether to close the application
+                    DialogResult choice = MessageBox.Show("Close ASCOM Remote because it is running as administrator.", "Threat Management", MessageBoxButtons.YesNo, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button1);
+
+                    // Action the user's choice if required
+                    if (choice == DialogResult.Yes)
+                    {
+                        // User selected close application so disconnect devices and stop the server
+                        Close();
+                    }
+                }
+            }
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
