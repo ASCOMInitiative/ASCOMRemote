@@ -107,19 +107,19 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Action:
-                  description: >-
-                    A well known name that represents the action to be carried
-                    out.
-                  type: string
-                Parameters:
-                  description: >-
-                    List of required parameters or an Empty String if none are
-                    required
-                  type: string
-              required:
-                - Action
-                - Parameters
+                    Action:
+                      description: >-
+                        A well known name that represents the action to be carried
+                        out.
+                      type: string
+                    Parameters:
+                      description: >-
+                        List of required parameters or an Empty String if none are
+                        required
+                      type: string
+                  required:
+                    - Action
+                    - Parameters
   '/{device_type}/{device_number}/commandblind':
     put:
       summary: Transmits an arbitrary string to the device
@@ -227,13 +227,13 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Connected:
-                  description: >-
-                    Set True to connect to the device hardware, set False to
-                    disconnect from the device hardware
-                  type: boolean
-              required:
-                - Connected
+                    Connected:
+                      description: >-
+                        Set True to connect to the device hardware, set False to
+                        disconnect from the device hardware
+                      type: boolean
+                  required:
+                    - Connected
   '/{device_type}/{device_number}/description':
     get:
       summary: Device description
@@ -417,13 +417,13 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                BinX:
-                  description: The X binning value
-                  type: integer
-                  format: int32
-                  default: 1
-              required:
-                - BinX
+                    BinX:
+                      description: The X binning value
+                      type: integer
+                      format: int32
+                      default: 1
+                  required:
+                    - BinX
   '/camera/{device_number}/biny':
     get:
       summary: Returns the binning factor for the Y axis.
@@ -462,13 +462,13 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                BinY:
-                  description: The Y binning value
-                  type: integer
-                  format: int32
-                  default: 1
-              required:
-                - BinY
+                    BinY:
+                      description: The Y binning value
+                      type: integer
+                      format: int32
+                      default: 1
+                  required:
+                    - BinY
   '/camera/{device_number}/camerastate':
     get:
       summary: Returns the camera operational state.
@@ -705,12 +705,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                CoolerOn:
-                  description: Cooler state
-                  type: boolean
-                  default: true
-              required:
-                - CoolerOn
+                    CoolerOn:
+                      description: Cooler state
+                      type: boolean
+                      default: true
+                  required:
+                    - CoolerOn
   '/camera/{device_number}/coolerpower':
     get:
       summary: Returns the present cooler power level
@@ -840,12 +840,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                FastReadout:
-                  description: True to enable fast readout mode
-                  type: boolean
-                  default: false
-              required:
-                - FastReadout
+                    FastReadout:
+                      description: True to enable fast readout mode
+                      type: boolean
+                      default: false
+                  required:
+                    - FastReadout
   '/camera/{device_number}/fullwellcapacity':
     get:
       summary: Reports the full well capacity of the camera
@@ -903,13 +903,13 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Gain:
-                  description: Index of the current camera gain in the Gains string array.
-                  type: integer
-                  format: int32
-                  default: 0
-              required:
-                - Gain
+                    Gain:
+                      description: Index of the current camera gain in the Gains string array.
+                      type: integer
+                      format: int32
+                      default: 0
+                  required:
+                    - Gain
   '/camera/{device_number}/gainmax':
     get:
       summary: Maximum Gain value of that this camera supports
@@ -1388,15 +1388,15 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                NumX:
-                  description: >-
+                    NumX:
+                      description: >-
                         Sets the subframe width, if binning is active, value is in binned
                         pixels.
-                  type: integer
-                  format: int32
-                  default: 0
-              required:
-                - NumX
+                      type: integer
+                      format: int32
+                      default: 0
+                  required:
+                    - NumX
   '/camera/{device_number}/numy':
     get:
       summary: Returns the current subframe height
@@ -1437,15 +1437,15 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                NumY:
-                  description: >-
+                    NumY:
+                      description: >-
                         Sets the subframe height, if binning is active, value is in binned
                         pixels.
-                  type: integer
-                  format: int32
-                  default: 0
-              required:
-                - NumY
+                      type: integer
+                      format: int32
+                      default: 0
+                  required:
+                    - NumY
   '/camera/{device_number}/offset':
     get:
       summary: Returns the camera's offset
@@ -1639,15 +1639,15 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                ReadoutMode:
-                  description: >-
+                    ReadoutMode:
+                      description: >-
                         Index into the ReadoutModes array of string readout mode names
                         indicating the camera's current readout mode.
-                  type: integer
-                  format: int32
-                  default: 0
-              required:
-                - ReadoutMode
+                      type: integer
+                      format: int32
+                      default: 0
+                  required:
+                    - ReadoutMode
   '/camera/{device_number}/readoutmodes':
     get:
       summary: List of available readout modes
@@ -1759,12 +1759,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                SetCCDTemperature:
-                  description: Temperature set point (degrees Celsius).
-                  type: number
-                  default: -10
-              required:
-                - SetCCDTemperature
+                    SetCCDTemperature:
+                      description: Temperature set point (degrees Celsius).
+                      type: number
+                      default: -10
+                  required:
+                    - SetCCDTemperature
   '/camera/{device_number}/startx':
     get:
       summary: Return the current subframe X axis start position
@@ -1805,13 +1805,13 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                StartX:
-                  description: The subframe X axis start position in binned pixels.
-                  type: integer
-                  format: int32
-                  default: 0
-              required:
-                - StartX
+                    StartX:
+                      description: The subframe X axis start position in binned pixels.
+                      type: integer
+                      format: int32
+                      default: 0
+                  required:
+                    - StartX
   '/camera/{device_number}/starty':
     get:
       summary: Return the current subframe Y axis start position
@@ -1852,13 +1852,13 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                StartY:
-                  description: The subframe Y axis start position in binned pixels.
-                  type: integer
-                  format: int32
-                  default: 0
-              required:
-                - StartY
+                    StartY:
+                      description: The subframe Y axis start position in binned pixels.
+                      type: integer
+                      format: int32
+                      default: 0
+                  required:
+                    - StartY
   '/camera/{device_number}/subexposureduration':
     get:
       summary: Camera's sub-exposure interval
@@ -1898,12 +1898,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                SubExposureDuration:
-                  description: The request sub exposure duration in seconds
-                  type: number
-                  default: 0
-              required:
-                - SubExposureDuration          
+                    SubExposureDuration:
+                      description: The request sub exposure duration in seconds
+                      type: number
+                      default: 0
+                  required:
+                    - SubExposureDuration
   '/camera/{device_number}/abortexposure':
     put:
       summary: Aborts the current exposure
@@ -1947,17 +1947,17 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Direction:
+                    Direction:
                       description: 'Direction of movement (0 = North, 1 = South, 2 = East, 3 = West)'
-                  type: integer
-                  format: int32
-                Duration:
-                  description: Duration of movement in milli-seconds
-                  type: integer
-                  format: int32
-              required:
-                - Direction
-                - Duration
+                      type: integer
+                      format: int32
+                    Duration:
+                      description: Duration of movement in milli-seconds
+                      type: integer
+                      format: int32
+                  required:
+                    - Direction
+                    - Duration
   '/camera/{device_number}/startexposure':
     put:
       summary: Starts an exposure
@@ -1982,15 +1982,15 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Duration:
-                  description: Duration of exposure in seconds
-                  type: number
-                Light:
-                  description: 'True if light frame, false if dark frame.'
-                  type: boolean
-              required:
-                - Duration
-                - Light
+                    Duration:
+                      description: Duration of exposure in seconds
+                      type: number
+                    Light:
+                      description: 'True if light frame, false if dark frame.'
+                      type: boolean
+                  required:
+                    - Duration
+                    - Light
   '/camera/{device_number}/stopexposure':
     put:
       summary: Stops the current exposure
@@ -2126,11 +2126,11 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Brightness:
+                    Brightness:
                       description: The required brightness in the range 0 to MaxBrightness
-                  type: integer
-                  format: int32
-              required:
+                      type: integer
+                      format: int32
+                  required:
                     - Brightness
   '/covercalibrator/{device_number}/closecover':
     put:
@@ -2459,12 +2459,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Slaved:
-                  description: 'True if telescope is slaved to dome, otherwise false'
-                  type: boolean
-                  default: false
-              required:
-                - Slaved
+                    Slaved:
+                      description: 'True if telescope is slaved to dome, otherwise false'
+                      type: boolean
+                      default: false
+                  required:
+                    - Slaved
   '/dome/{device_number}/slewing':
     get:
       summary: Indicates whether the any part of the dome is moving
@@ -2616,13 +2616,13 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Altitude:
-                  description: >-
+                    Altitude:
+                      description: >-
                         Target dome altitude (degrees, horizon zero and increasing positive to 90
                         zenith)
-                  type: number
-              required:
-                - Altitude
+                      type: number
+                  required:
+                    - Altitude
   '/dome/{device_number}/slewtoazimuth':
     put:
       summary: Slew the dome to the given azimuth position.
@@ -2729,12 +2729,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Position:
-                  description: The number of the filter wheel position to select
-                  type: integer
-                  format: int32
-              required:
-                - Position
+                    Position:
+                      description: The number of the filter wheel position to select
+                      type: integer
+                      format: int32
+                  required:
+                    - Position
   '/focuser/{device_number}/absolute':
     get:
       summary: Indicates whether the focuser is capable of absolute position.
@@ -2889,13 +2889,13 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                TempComp:
-                  description: >-
+                    TempComp:
+                      description: >-
                         Set true to enable the focuser's temperature compensation mode, otherwise
                         false for normal operation.
-                  type: boolean
-              required:
-                - TempComp
+                      type: boolean
+                  required:
+                    - TempComp
   '/focuser/{device_number}/tempcompavailable':
     get:
       summary: Indicates whether the focuser has temperature compensation.
@@ -2973,14 +2973,14 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Position:
-                  description: >-
+                    Position:
+                      description: >-
                         Step distance or absolute position, depending on the value of the Absolute
                         property
-                  type: integer
-                  format: int32
-              required:
-                - Position
+                      type: integer
+                      format: int32
+                  required:
+                    - Position
   '/observingconditions/{device_number}/averageperiod':
     get:
       summary: Returns the time period over which observations will be averaged
@@ -3019,12 +3019,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                AveragePeriod:
-                  description: Time period (hours) over which to average sensor readings
-                  type: number
-                  default: 0.15
-              required:
-                - AveragePeriod
+                    AveragePeriod:
+                      description: Time period (hours) over which to average sensor readings
+                      type: number
+                      default: 0.15
+                  required:
+                    - AveragePeriod
   '/observingconditions/{device_number}/cloudcover':
     get:
       summary: Returns the amount of sky obscured by cloud
@@ -3440,13 +3440,13 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Reverse:
-                  description: >-
+                    Reverse:
+                      description: >-
                         True if the rotation and angular direction must be reversed to match the
                         optical characteristcs
-                  type: boolean
-              required:
-                - Reverse
+                      type: boolean
+                  required:
+                    - Reverse
   '/rotator/{device_number}/stepsize':
     get:
       summary: Returns the minimum StepSize
@@ -3524,12 +3524,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Position:
-                  description: Relative position to move in degrees from current Position.
-                  type: number
-                  format: double
-              required:
-                - Position
+                    Position:
+                      description: Relative position to move in degrees from current Position.
+                      type: number
+                      format: double
+                  required:
+                    - Position
   '/rotator/{device_number}/moveabsolute':
     put:
       summary: Moves the rotator to a new absolute position.
@@ -3552,12 +3552,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Position:
-                  description: Absolute position in degrees.
-                  type: number
-                  format: double
-              required:
-                - Position
+                    Position:
+                      description: Absolute position in degrees.
+                      type: number
+                      format: double
+                  required:
+                    - Position
   '/rotator/{device_number}/movemechanical':
     put:
       summary: Moves the rotator to a new raw mechanical position.
@@ -3580,12 +3580,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Position:
-                  description: Absolute position in degrees.
-                  type: number
-                  format: double
-              required:
-                - Position
+                    Position:
+                      description: Absolute position in degrees.
+                      type: number
+                      format: double
+                  required:
+                    - Position
   '/rotator/{device_number}/sync':
     put:
       summary: Syncs the rotator to the specified position angle without moving it.
@@ -3608,12 +3608,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Position:
-                  description: Absolute position in degrees.
-                  type: number
-                  format: double
-              required:
-                - Position
+                    Position:
+                      description: Absolute position in degrees.
+                      type: number
+                      format: double
+                  required:
+                    - Position
   '/safetymonitor/{device_number}/issafe':
     get:
       summary: Indicates whether the monitored state is safe for use.
@@ -3817,16 +3817,16 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Id:
-                  description: The device number (0 to MaxSwitch - 1)
-                  type: integer
-                  format: int32
-                State:
-                  description: The required control state (True or False)
-                  type: boolean
-              required:
-                - Id
-                - State
+                    Id:
+                      description: The device number (0 to MaxSwitch - 1)
+                      type: integer
+                      format: int32
+                    State:
+                      description: The required control state (True or False)
+                      type: boolean
+                  required:
+                    - Id
+                    - State
   '/switch/{device_number}/setswitchname':
     put:
       summary: Sets a switch device name to the specified value
@@ -3849,15 +3849,15 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Id:
-                  description: The device number (0 to MaxSwitch - 1)
-                  type: integer
-                Name:
-                  description: The name of the device
-                  type: string
-              required:
-                - Id
-                - Name
+                    Id:
+                      description: The device number (0 to MaxSwitch - 1)
+                      type: integer
+                    Name:
+                      description: The name of the device
+                      type: string
+                  required:
+                    - Id
+                    - Name
   '/switch/{device_number}/setswitchvalue':
     put:
       summary: Sets a switch device value to the specified value
@@ -3880,16 +3880,16 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Id:
-                  description: The device number (0 to MaxSwitch - 1)
-                  type: integer
-                  format: int32
-                Value:
+                    Id:
+                      description: The device number (0 to MaxSwitch - 1)
+                      type: integer
+                      format: int32
+                    Value:
                       description: 'The value to be set, between MinSwitchValue and MaxSwitchValue'
-                  type: number
-              required:
-                - Id
-                - Value
+                      type: number
+                  required:
+                    - Id
+                    - Value
   '/switch/{device_number}/switchstep':
     get:
       summary: >-
@@ -4411,12 +4411,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                DeclinationRate:
-                  description: Declination tracking rate (arcseconds per SI second). Please note that rightascensionrate units are arcseconds per sidereal second.
-                  type: number
-                  format: double
-              required:
-                - DeclinationRate
+                    DeclinationRate:
+                      description: Declination tracking rate (arcseconds per SI second). Please note that rightascensionrate units are arcseconds per sidereal second.
+                      type: number
+                      format: double
+                  required:
+                    - DeclinationRate
   '/telescope/{device_number}/doesrefraction':
     get:
       summary: Indicates whether atmospheric refraction is applied to coordinates.
@@ -4459,13 +4459,13 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                DoesRefraction:
-                  description: >-
+                    DoesRefraction:
+                      description: >-
                         Set True to make the telescope or driver applie atmospheric refraction to
                         coordinates.
-                  type: boolean
-              required:
-                - DoesRefraction
+                      type: boolean
+                  required:
+                    - DoesRefraction
   '/telescope/{device_number}/equatorialsystem':
     get:
       summary: Returns the current equatorial coordinate system used by this telescope.
@@ -4544,12 +4544,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                GuideRateDeclination:
-                  description: Declination movement rate offset degrees/sec).
-                  type: number
-                  format: double
-              required:
-                - GuideRateDeclination
+                    GuideRateDeclination:
+                      description: Declination movement rate offset degrees/sec).
+                      type: number
+                      format: double
+                  required:
+                    - GuideRateDeclination
   '/telescope/{device_number}/guideraterightascension':
     get:
       summary: Returns the  current RightAscension rate offset for telescope guiding
@@ -4592,12 +4592,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                GuideRateRightAscension:
-                  description: RightAscension movement rate offset degrees/sec).
-                  type: number
-                  format: double
-              required:
-                - GuideRateRightAscension
+                    GuideRateRightAscension:
+                      description: RightAscension movement rate offset degrees/sec).
+                      type: number
+                      format: double
+                  required:
+                    - GuideRateRightAscension
   '/telescope/{device_number}/ispulseguiding':
     get:
       summary: >-
@@ -4677,12 +4677,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                RightAscensionRate:
-                  description: Right ascension tracking rate (arcseconds per sideral second). Please note that the declinationrate units are arcseconds per SI second.
-                  type: number
-                  format: double
-              required:
-                - RightAscensionRate
+                    RightAscensionRate:
+                      description: Right ascension tracking rate (arcseconds per sideral second). Please note that the declinationrate units are arcseconds per SI second.
+                      type: number
+                      format: double
+                  required:
+                    - RightAscensionRate
   '/telescope/{device_number}/sideofpier':
     get:
       summary: Returns the mount's pointing state.
@@ -4723,12 +4723,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                SideOfPier:
-                  description: New pointing state.
-                  type: integer
-                  format: int32
-              required:
-                - SideOfPier
+                    SideOfPier:
+                      description: New pointing state.
+                      type: integer
+                      format: int32
+                  required:
+                    - SideOfPier
   '/telescope/{device_number}/siderealtime':
     get:
       summary: Returns the local apparent sidereal time.
@@ -4790,12 +4790,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                SiteElevation:
-                  description: Elevation above mean sea level (metres).
-                  type: number
-                  format: double
-              required:
-                - SiteElevation
+                    SiteElevation:
+                      description: Elevation above mean sea level (metres).
+                      type: number
+                      format: double
+                  required:
+                    - SiteElevation
   '/telescope/{device_number}/sitelatitude':
     get:
       summary: Returns the observing site's latitude.
@@ -4836,12 +4836,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                SiteLatitude:
-                  description: Site latitude (degrees)
-                  type: number
-                  format: double
-              required:
-                - SiteLatitude
+                    SiteLatitude:
+                      description: Site latitude (degrees)
+                      type: number
+                      format: double
+                  required:
+                    - SiteLatitude
   '/telescope/{device_number}/sitelongitude':
     get:
       summary: Returns the observing site's longitude.
@@ -4882,12 +4882,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                SiteLongitude:
-                  description: 'Site longitude (degrees, positive East, WGS84)'
-                  type: number
-                  format: double
-              required:
-                - SiteLongitude
+                    SiteLongitude:
+                      description: 'Site longitude (degrees, positive East, WGS84)'
+                      type: number
+                      format: double
+                  required:
+                    - SiteLongitude
   '/telescope/{device_number}/slewing':
     get:
       summary: Indicates whether the telescope is currently slewing.
@@ -4946,12 +4946,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                SlewSettleTime:
-                  description: Settling time (integer sec.).
-                  type: integer
-                  format: int32
-              required:
-                - SlewSettleTime
+                    SlewSettleTime:
+                      description: Settling time (integer sec.).
+                      type: integer
+                      format: int32
+                  required:
+                    - SlewSettleTime
   '/telescope/{device_number}/targetdeclination':
     get:
       summary: Returns the current target declination.
@@ -4994,12 +4994,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                TargetDeclination:
-                  description: Target declination(degrees)
-                  type: number
-                  format: double
-              required:
-                - TargetDeclination
+                    TargetDeclination:
+                      description: Target declination(degrees)
+                      type: number
+                      format: double
+                  required:
+                    - TargetDeclination
   '/telescope/{device_number}/targetrightascension':
     get:
       summary: Returns the current target right ascension.
@@ -5042,12 +5042,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                TargetRightAscension:
-                  description: Target right ascension(hours)
-                  type: number
-                  format: double
-              required:
-                - TargetRightAscension
+                    TargetRightAscension:
+                      description: Target right ascension(hours)
+                      type: number
+                      format: double
+                  required:
+                    - TargetRightAscension
   '/telescope/{device_number}/tracking':
     get:
       summary: Indicates whether the telescope is tracking.
@@ -5086,11 +5086,11 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Tracking:
-                  description: Tracking enabled / disabled
-                  type: boolean
-              required:
-                - Tracking
+                    Tracking:
+                      description: Tracking enabled / disabled
+                      type: boolean
+                  required:
+                    - Tracking
   '/telescope/{device_number}/trackingrate':
     get:
       summary: Returns the current tracking rate.
@@ -5131,12 +5131,12 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                TrackingRate:
-                  description: New tracking rate
-                  type: integer
-                  format: int32
-              required:
-                - TrackingRate
+                    TrackingRate:
+                      description: New tracking rate
+                      type: integer
+                      format: int32
+                  required:
+                    - TrackingRate
   '/telescope/{device_number}/trackingrates':
     get:
       summary: Returns a collection of supported DriveRates values.
@@ -5204,11 +5204,11 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                UTCDate:
-                  description: UTC date/time in ISO 8601 format.
-                  type: string
-              required:
-                - UTCDate
+                    UTCDate:
+                      description: UTC date/time in ISO 8601 format.
+                      type: string
+                  required:
+                    - UTCDate
   '/telescope/{device_number}/abortslew':
     put:
       summary: Immediatley stops a slew in progress.
@@ -5329,21 +5329,21 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Axis:
-                  description: >-
+                    Axis:
+                      description: >-
                         The axis about which rate information is desired. 0 = axisPrimary, 1 =
                         axisSecondary, 2 = axisTertiary.
-                  type: integer
-                  default: 0
-                  minimum: 0
-                  maximum: 2
-                Rate:
-                  description: The rate of motion (deg/sec) about the specified axis
-                  type: number
-                  default: 0
-              required:
-                - Axis
-                - Rate
+                      type: integer
+                      default: 0
+                      minimum: 0
+                      maximum: 2
+                    Rate:
+                      description: The rate of motion (deg/sec) about the specified axis
+                      type: number
+                      default: 0
+                  required:
+                    - Axis
+                    - Rate
   '/telescope/{device_number}/park':
     put:
       summary: Park the mount
@@ -5387,21 +5387,21 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
-                Direction:
-                  description: >-
+                    Direction:
+                      description: >-
                         The direction in which the guide-rate motion is to be made. 0 =
                         guideNorth, 1 = guideSouth, 2 = guideEast, 3 = guideWest
-                  type: integer
-                  format: int32
-                  default: 0
-                Duration:
-                  description: The duration of the guide-rate motion (milliseconds)
-                  type: integer
-                  format: int32
-                  default: 5
-              required:
-                - Direction
-                - Duration
+                      type: integer
+                      format: int32
+                      default: 0
+                    Duration:
+                      description: The duration of the guide-rate motion (milliseconds)
+                      type: integer
+                      format: int32
+                      default: 5
+                  required:
+                    - Direction
+                    - Duration
   '/telescope/{device_number}/setpark':
     put:
       summary: Sets the telescope's park position
@@ -5711,17 +5711,17 @@ components:
             allOf:
               - $ref: '#/components/schemas/AlpacaRequest'
               - properties:
-              Command:
-                description: The literal command string to be transmitted.
-                type: string
-              Raw:
-                description: >-
+                  Command:
+                    description: The literal command string to be transmitted.
+                    type: string
+                  Raw:
+                    description: >-
                       If set to true the string is transmitted 'as-is', if set to false then
                       protocol framing characters may be added prior to transmission
-                type: string
-            required:
-              - Command
-              - Raw
+                    type: string
+                required:
+                  - Command
+                  - Raw
     putStandardClientParameters:
       content:
         application/x-www-form-urlencoded:
@@ -5734,13 +5734,13 @@ components:
             allOf:
               - $ref: '#/components/schemas/AlpacaRequest'
               - properties:
-              Azimuth:
-                description: >-
+                  Azimuth:
+                    description: >-
                       Target dome azimuth (degrees, North zero and increasing clockwise. i.e.,
                       90 East, 180 South, 270 West)
-                type: number
-            required:
-              - Azimuth
+                    type: number
+                required:
+                  - Azimuth
     putTelescope_devicenumber_slewtoaltaz:
       content:
         application/x-www-form-urlencoded:
@@ -5748,15 +5748,15 @@ components:
             allOf:
               - $ref: '#/components/schemas/AlpacaRequest'
               - properties:
-              Azimuth:
+                  Azimuth:
                     description: 'Azimuth coordinate (degrees, North-referenced, positive East/clockwise)'
-                type: number
-              Altitude:
-                description: 'Altitude coordinate (degrees, positive up)'
-                type: number
-            required:
-              - Azimuth
-              - Altitude
+                    type: number
+                  Altitude:
+                    description: 'Altitude coordinate (degrees, positive up)'
+                    type: number
+                required:
+                  - Azimuth
+                  - Altitude
     putTelescope_devicenumber_slewtocoordinates:
       content:
         application/x-www-form-urlencoded:
@@ -5764,15 +5764,15 @@ components:
             allOf:
               - $ref: '#/components/schemas/AlpacaRequest'
               - properties:
-              RightAscension:
-                description: Right Ascension coordinate (hours)
-                type: number
-              Declination:
-                description: Declination coordinate (degrees)
-                type: number
-            required:
-              - RightAscension
-              - Declination
+                  RightAscension:
+                    description: Right Ascension coordinate (hours)
+                    type: number
+                  Declination:
+                    description: Declination coordinate (degrees)
+                    type: number
+                required:
+                  - RightAscension
+                  - Declination
   responses:
     MethodResponse:
       description: Transaction complete or exception.
@@ -5788,11 +5788,10 @@ components:
             allOf:
               - $ref: '#/components/schemas/AlpacaResponse'
               - properties:
-        Type:
-          type: integer
-          format: int32
-          description: >-
-                      Must always be 2 representing a 32bit integer.
+                  Type:
+                    type: integer
+                    format: int32
+                    description: Must always be 2 representing a 32bit integer.
                     minimum: 2
                     maximum: 2
                   Rank:
@@ -5825,11 +5824,11 @@ components:
                     description: >-
                       0 = Unknown, 1 = Short(int16), 2 = Integer (int32), 3 = Double (Double
                       precision real number).
-          minimum: 0
-          maximum: 3
-        Rank:
-          type: integer
-          format: int32
+                    minimum: 0
+                    maximum: 3
+                  Rank:
+                    type: integer
+                    format: int32
                     description: >-
                       The array's rank, will be 2 (single plane image (monochrome)) or 3
                       (multi-plane image).
@@ -5950,7 +5949,7 @@ components:
       content:
         text/plain:
           schema:
-          type: string
+            type: string
             description: Error message describing why the command cannot be processed
     '500':
       description: 'Server internal error, check error message'
