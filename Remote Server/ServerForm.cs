@@ -36,7 +36,8 @@ namespace ASCOM.Remote
         #region Constants and Enums
 
         // Testing Constants - NEVER TO BE USED IN PRODUCTION!
-        private const bool FORCE_JSON_RESPONSE_TO_LOWER_CASE_TESTING_ONLY = false;
+        private bool FORCE_JSON_RESPONSE_TO_LOWER_CASE_TESTING_ONLY = false;
+        private bool FORCE_400_RESPONSE_FOR_INCORRECTLY_CASED_IDS = false;
 
         // NOTE - Setup page HTML is set in the ReturnHTMLPageOrImage  method
 
@@ -2211,7 +2212,6 @@ namespace ASCOM.Remote
                         // Extract the client ID and client transaction ID from the query parameters
                         clientIDString = queryParameters[SharedConstants.CLIENT_ID_PARAMETER_NAME];
                         clientTransactionIDString = queryParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME];
-
                         break;
 
                     // Process form parameters from an HTTP PUT
@@ -2228,7 +2228,8 @@ namespace ASCOM.Remote
                             string[] rawParameters = formParameterString.Split('&'); // Parse the aggregated parameter string into an array of key / value pair strings
                             if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Form parameters string: '{formParameterString}'Form parameters string length: {formParameterString.Length}, Raw parameters array size: {rawParameters.Length}");
 
-                            foreach (string parameter in rawParameters) // Parse each key / value pair string into its key and value and add these to the parameters collection
+                            // Parse each key / value pair string into its key and value and add these to the parameters collection
+                            foreach (string parameter in rawParameters)
                             {
                                 string[] keyValuePair = parameter.Split('=');
                                 if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Found form parameter string: '{parameter}' whose KeyValuePair array size is: {keyValuePair.Length}");
@@ -2257,44 +2258,54 @@ namespace ASCOM.Remote
                                     if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Ignoring parameter with no name");
                                 }
                             }
-                        }
 
-                        // Extract the client ID and client transaction ID from the form parameters
-                        foreach (string keyName in formParameters)
-                        {
-                            // Test whether we have a client ID parameter
-                            if (keyName.ToUpperInvariant() == SharedConstants.CLIENT_ID_PARAMETER_NAME.ToUpperInvariant())
-                            {
-                                // Test whether it is correctly cased
-                                if (keyName == SharedConstants.CLIENT_ID_PARAMETER_NAME) // Cased correctly
-                                {
-                                    clientIDString = formParameters[SharedConstants.CLIENT_ID_PARAMETER_NAME];
-                                }
-                                else // Incorrectly cased so return a 400 error
-                                {
-                                    LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"The {SharedConstants.CLIENT_ID_PARAMETER_NAME} parameter is incorrectly cased: {keyName}");
-                                    Return400Error(requestData, $"The {SharedConstants.CLIENT_ID_PARAMETER_NAME} parameter is incorrectly cased: {keyName}");
-                                    return;
-                                }
-                            }
+                            // Extract the client ID and client transaction ID from the form parameters
+                            //foreach (string keyName in formParameters)
+                            //{
+                            //    // Test whether we have a client ID parameter
+                            //    if (keyName == SharedConstants.CLIENT_ID_PARAMETER_NAME)
+                            //    {
+                            //        // Test whether it is correctly cased
+                            //        if (keyName == SharedConstants.CLIENT_ID_PARAMETER_NAME) // Cased correctly
+                            //        {
+                            //            clientIDString = formParameters[SharedConstants.CLIENT_ID_PARAMETER_NAME];
+                            //        }
+                            //        else // Incorrectly cased so return a 400 error
+                            //        {
+                            //            LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"The {SharedConstants.CLIENT_ID_PARAMETER_NAME} parameter is incorrectly cased: {keyName}");
+                            //            Return400Error(requestData, $"The {SharedConstants.CLIENT_ID_PARAMETER_NAME} parameter is incorrectly cased: {keyName}");
+                            //            return;
+                            //        }
+                            //    }
 
-                            // Test whether we have a client transaction ID parameter
-                            if (keyName.ToUpperInvariant() == SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME.ToUpperInvariant())
-                            {
-                                // Test whether it is correctly cased
-                                if (keyName == SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME) // Cased correctly
-                                {
-                                    clientTransactionIDString = formParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME];
-                                }
-                                else // Incorrectly cased so return a 400 error
-                                {
-                                    LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"The {SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME} parameter is incorrectly cased: {keyName}");
-                                    Return400Error(requestData, $"The {SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME} parameter is incorrectly cased: {keyName}");
-                                    return;
-                                }
-                            }
+                            //    // Test whether we have a client transaction ID parameter
+                            //    if (keyName == SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME)
+                            //    {
+                            //        // Test whether it is correctly cased
+                            //        if (keyName == SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME) // Cased correctly
+                            //        {
+                            //            clientTransactionIDString = formParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME];
+                            //        }
+                            //        else // Incorrectly cased so return a 400 error
+                            //        {
+                            //            LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"The {SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME} parameter is incorrectly cased: {keyName}");
+                            //            Return400Error(requestData, $"The {SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME} parameter is incorrectly cased: {keyName}");
+                            //            return;
+                            //        }
+                            //    }
+                            //}
+                            clientIDString = formParameters[SharedConstants.CLIENT_ID_PARAMETER_NAME];
+                            clientTransactionIDString = formParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME];
                         }
                         break;
+                    case "OPTIONS":
+                        // Set the Access-Control-Allow-Methods and Access-Control-Max-Age headers
+                        if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS method found - This is a CORS PRE_FLIGHT request: {CORS_ALLOWED_METHODS_HEADER} = {CORS_ALLOWED_METHODS}, {CORS_MAX_AGE_HEADER} = {CorsMaxAge}");
+                        response.Headers.Add(CORS_ALLOWED_METHODS_HEADER, CORS_ALLOWED_METHODS);
+                        response.Headers.Add(CORS_MAX_AGE_HEADER, CorsMaxAge.ToString());
+                        response.Headers.Add(CORS_ALLOW_ORIGIN_HEADER, "*");
+                        ReturnEmpty200Success(requestData);
+                        return; // Finish processing here so return and let the thread end
 
                     default:
                         // Reject HTTP methods that are not GET or PUT
@@ -2388,7 +2399,7 @@ namespace ASCOM.Remote
                     if (!string.IsNullOrWhiteSpace(clientTransactionIDString)) // Not empty or white space
                     {
                         // Parse the integer value out or throw a 400 error if the value is not an unsigned integer
-                        if (!uint.TryParse(clientTransactionIDString, out clientTransactionID))
+                        if (!UInt32.TryParse(clientTransactionIDString, out clientTransactionID))
                         {
                             LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Thread.CurrentThread.ManagedThreadId.ToString()}, Concurrent requests: {numberOfConcurrentTransactions}");
                             Return400Error(requestData, "Client transaction ID is not an unsigned integer: " + queryParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME]);
@@ -2464,19 +2475,6 @@ namespace ASCOM.Remote
                             response.Headers.Add(CORS_VARY_HEADER, CORS_ORIGIN_HEADER);
                         }
 
-                        if (request.HttpMethod.ToUpperInvariant() == "OPTIONS") // This is a CORS pre-flight request so we need to set some specific headers
-                        {
-                            // Set the Access-Control-Allow-Methods and Access-Control-Max-Age headers
-                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS method found - This is a CORS PRE_FLIGHT request: {CORS_ALLOWED_METHODS_HEADER} = {CORS_ALLOWED_METHODS}, {CORS_MAX_AGE_HEADER} = {CorsMaxAge}");
-                            response.Headers.Add(CORS_ALLOWED_METHODS_HEADER, CORS_ALLOWED_METHODS);
-                            response.Headers.Add(CORS_MAX_AGE_HEADER, CorsMaxAge.ToString());
-                            ReturnEmpty200Success(requestData);
-                            return; // Finish processing here so return and let the thread end
-                        }
-                        else // Log this as a CORS simple request and allow the request to move forward to be processed
-                        {
-                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "This is a CORS SIMPLE request");
-                        }
                     }
                     else // No or empty Origin header so log and process the request
                     {
