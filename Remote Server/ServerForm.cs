@@ -2298,14 +2298,6 @@ namespace ASCOM.Remote
                             clientTransactionIDString = formParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME];
                         }
                         break;
-                    case "OPTIONS":
-                        // Set the Access-Control-Allow-Methods and Access-Control-Max-Age headers
-                        if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS method found - This is a CORS PRE_FLIGHT request: {CORS_ALLOWED_METHODS_HEADER} = {CORS_ALLOWED_METHODS}, {CORS_MAX_AGE_HEADER} = {CorsMaxAge}");
-                        response.Headers.Add(CORS_ALLOWED_METHODS_HEADER, CORS_ALLOWED_METHODS);
-                        response.Headers.Add(CORS_MAX_AGE_HEADER, CorsMaxAge.ToString());
-                        response.Headers.Add(CORS_ALLOW_ORIGIN_HEADER, "*");
-                        ReturnEmpty200Success(requestData);
-                        return; // Finish processing here so return and let the thread end
 
                     default:
                         // Reject HTTP methods that are not GET or PUT
@@ -2475,6 +2467,19 @@ namespace ASCOM.Remote
                             response.Headers.Add(CORS_VARY_HEADER, CORS_ORIGIN_HEADER);
                         }
 
+                        if (request.HttpMethod.ToUpperInvariant() == "OPTIONS") // This is a CORS pre-flight request so we need to set some specific headers
+                        {
+                            // Set the Access-Control-Allow-Methods and Access-Control-Max-Age headers
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS method found - This is a CORS PRE_FLIGHT request: {CORS_ALLOWED_METHODS_HEADER} = {CORS_ALLOWED_METHODS}, {CORS_MAX_AGE_HEADER} = {CorsMaxAge}");
+                            response.Headers.Add(CORS_ALLOWED_METHODS_HEADER, CORS_ALLOWED_METHODS);
+                            response.Headers.Add(CORS_MAX_AGE_HEADER, CorsMaxAge.ToString());
+                            ReturnEmpty200Success(requestData);
+                            return; // Finish processing here so return and let the thread end
+                        }
+                        else // Log this as a CORS simple request and allow the request to move forward to be processed
+                        {
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "This is a CORS SIMPLE request");
+                        }
                     }
                     else // No or empty Origin header so log and process the request
                     {
