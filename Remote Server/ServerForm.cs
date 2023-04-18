@@ -36,8 +36,8 @@ namespace ASCOM.Remote
         #region Constants and Enums
 
         // Testing Constants - NEVER TO BE USED IN PRODUCTION!
-        private bool FORCE_JSON_RESPONSE_TO_LOWER_CASE_TESTING_ONLY = false;
-        private bool FORCE_400_RESPONSE_FOR_INCORRECTLY_CASED_IDS = false;
+        private readonly bool FORCE_JSON_RESPONSE_TO_LOWER_CASE_TESTING_ONLY = false;
+        private readonly bool FORCE_400_RESPONSE_FOR_INCORRECTLY_CASED_IDS = false;
 
         // NOTE - Setup page HTML is set in the ReturnHTMLPageOrImage  method
 
@@ -95,15 +95,20 @@ namespace ASCOM.Remote
         private const string X_FORWARDED_FOR = "X-Forwarded-For";
 
         // CORS header constants
+        private const string CORS_ALLOW_CREDENTIALS_HEADER = "Access-Control-Allow-Credentials";
+        private const string CORS_ALLOW_HEADERS_HEADER = "Access-Control-Allow-Headers";
+        private const string CORS_ALLOW_METHODS_HEADER = "Access-Control-Allow-Methods";
+        private const string CORS_ALLOW_ORIGIN_HEADER = "Access-Control-Allow-Origin";
+        private const string CORS_EXPOSE_HEADERS_HEADER = "Access-Control-Expose-Headers";
+        private const string CORS_MAX_AGE_HEADER = "Access-Control-Max-Age";
+        private const string CORS_REQUEST_HEADERS_HEADER = "Access-Control-Request-Headers";
+        private const string CORS_REQUEST_METHOD_HEADER = "Access-Control-Request-Method";
         private const string CORS_ORIGIN_HEADER = "Origin";
         private const string CORS_VARY_HEADER = "Vary";
-        private const string CORS_ALLOWED_METHODS_HEADER = "Access-Control-Allow-Methods";
-        private const string CORS_MAX_AGE_HEADER = "Access-Control-Max-Age";
-        private const string CORS_ALLOW_ORIGIN_HEADER = "Access-Control-Allow-Origin";
-        private const string CORS_ALLOW_CREDENTIALS_HEADER = "Access-Control-Allow-Credentials";
+        private const string CORS_DEFAULT_ALLOWED_HEADERS = "Origin, Authorization, Host, Connection, Accept, Accept-Encoding, Accept-Language, User-Agent";
 
         // CORS value constants
-        private const string CORS_ALLOWED_METHODS = "GET, PUT, OPTIONS";
+        private const string CORS_ALLOWED_METHODS = "GET, PUT";
         private const string CORS_PERMISSION_ALL_ORIGINS = "*";
         private const string CORS_PERMISSION_REFLECT_SUPPLIED_ORIGIN = "=";
         private const string CORS_ALLOW_CREDENTIALS = "true";
@@ -211,8 +216,8 @@ namespace ASCOM.Remote
         internal static TraceLoggerPlus AccessLog;
 
         // Lists to hold discovery UDP clients
-        private List<UdpClient> discoveryClientsIpV6 = new List<UdpClient>();
-        private List<UdpClient> discoveryClientsIpV4 = new List<UdpClient>();
+        private readonly List<UdpClient> discoveryClientsIpV6 = new List<UdpClient>();
+        private readonly List<UdpClient> discoveryClientsIpV4 = new List<UdpClient>();
         private int discoveryCount; // Unique number for each discovery packet received
 
         internal readonly object counterLock = new object();
@@ -337,7 +342,7 @@ namespace ASCOM.Remote
                 };
 
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
-                LogMessage(0, 0, 0, "New", $"Remote Server Version {version}, Started on {DateTime.Now.ToString("dddd d MMMM yyyy HH: mm:ss")}");
+                LogMessage(0, 0, 0, "New", $"Remote Server Version {version}, Started on {DateTime.Now:dddd d MMMM yyyy HH: mm:ss}");
                 LogMessage(0, 0, 0, "New", $"Running as user {WindowsIdentity.GetCurrent().Name}");
                 LogMessage(0, 0, 0, "New", $"Running as a {(Environment.Is64BitProcess ? "64" : "32")}bit application on a {(Environment.Is64BitOperatingSystem ? "64" : "32")}bit OS.");
 
@@ -2172,6 +2177,7 @@ namespace ASCOM.Remote
             HttpListenerRequest request;
             HttpListenerResponse response;
             RequestData requestData = new RequestData();
+            bool preFlightRequest = false; // Flag indicating whether this is a CORS pre-flight request 
 
             try
             {
@@ -2299,10 +2305,76 @@ namespace ASCOM.Remote
                         }
                         break;
 
+                    case "OPTIONS":
+                        queryParameters.Add(request.QueryString); // Add the query string parameters to the collection
+
+                        // List query string parameters
+                        foreach (string key in queryParameters)
+                        {
+                            LogMessage1(requestData, "OPTIONS Query Parameter", $"{key} = {queryParameters[key]}");
+                        }
+
+                        // Extract the client ID and client transaction ID from the query parameters
+                        clientIDString = queryParameters[SharedConstants.CLIENT_ID_PARAMETER_NAME];
+                        clientTransactionIDString = queryParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME];
+
+                        // Process form parameters if present
+                        if (request.HasEntityBody) // Add any parameters supplied in the form body
+                        {
+                            string formParameterString;
+                            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding)) // Extract the aggregated parameter string from the form within the request
+                            {
+                                formParameterString = reader.ReadToEnd();
+                            }
+
+                            // Handle the possibility that we get a null value instead of an empty string
+                            if (formParameterString == null) formParameterString = "";
+
+                            // Parse the aggregated parameter string into an array of key / value pair strings
+                            string[] rawParameters = formParameterString.Split('&');
+                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS Form parameters string: '{formParameterString}'Form parameters string length: {formParameterString.Length}, Raw parameters array size: {rawParameters.Length}");
+
+                            // Parse each key / value pair string into its key and value and add these to the parameters collection
+                            foreach (string parameter in rawParameters)
+                            {
+                                string[] keyValuePair = parameter.Split('=');
+                                if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS Found form parameter string: '{parameter}' whose KeyValuePair array size is: {keyValuePair.Length}");
+
+                                string key = keyValuePair[0].Trim(); // Extract the key value
+                                if (!string.IsNullOrEmpty(key)) // The key has a name so now extract the value
+                                {
+                                    string value = ""; // Initialise a variable to hold the value
+                                    if (keyValuePair.Length > 1) // The key does have a value
+                                    {
+                                        value = value = HttpUtility.UrlDecode(keyValuePair[1].Trim()); // Extract the value so long as one exists 
+                                    }
+                                    else // The key does not have a value
+                                    {
+                                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS No parameter value was found for parameter {parameter} - an empty string will be assumed.");
+                                    }
+
+                                    // Add the parameter key and value to the parameter list
+                                    formParameters.Add(key, value);
+
+                                    // Log the form parameter if debug tracing
+                                    LogMessage1(requestData, "OPTIONS Form Parameter", $"{key} = {value}");
+                                }
+                                else // The key is null or empty so ignore it
+                                {
+                                    if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS Ignoring parameter with no name");
+                                }
+
+                                // Clear any query parameters and use their form data counterparts if present
+                                clientIDString = formParameters[SharedConstants.CLIENT_ID_PARAMETER_NAME];
+                                clientTransactionIDString = formParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME];
+                            }
+                        }
+                        break;
+
                     default:
                         // Reject HTTP methods that are not GET or PUT
                         LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"An unsupported HTTP method was used: {request.HttpMethod}");
-                        Return400Error(requestData, $"An unsupported HTTP method was used: {request.HttpMethod}");
+                        Return400Error(requestData, $"An unsupported HTTP method was received: {request.HttpMethod}");
                         return;
                 }
 
@@ -2393,14 +2465,14 @@ namespace ASCOM.Remote
                         // Parse the integer value out or throw a 400 error if the value is not an unsigned integer
                         if (!UInt32.TryParse(clientTransactionIDString, out clientTransactionID))
                         {
-                            LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Thread.CurrentThread.ManagedThreadId.ToString()}, Concurrent requests: {numberOfConcurrentTransactions}");
+                            LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Thread.CurrentThread.ManagedThreadId}, Concurrent requests: {numberOfConcurrentTransactions}");
                             Return400Error(requestData, "Client transaction ID is not an unsigned integer: " + queryParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME]);
                             return;
                         }
                     }
                     else // Empty or white space
                     {
-                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Thread.CurrentThread.ManagedThreadId.ToString()}, Concurrent requests: {numberOfConcurrentTransactions}");
+                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Thread.CurrentThread.ManagedThreadId}, Concurrent requests: {numberOfConcurrentTransactions}");
                         Return400Error(requestData, "Client Transaction ID is empty or white space");
                         return;
                     }
@@ -2423,29 +2495,90 @@ namespace ASCOM.Remote
                 if (CorsSupportIsEnabled)
                 {
                     if (TL.DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "CORS support is enabled");
-                    if (!string.IsNullOrEmpty(request.Headers.Get(CORS_ORIGIN_HEADER)))
+
+                    // HANDLE CACHING RESPONSE - This tell's cache's not to return a cached responses 
+                    response.Headers.Add(CORS_VARY_HEADER, CORS_ORIGIN_HEADER);
+
+                    // Test whether there is an Origin header
+                    if (!string.IsNullOrEmpty(request.Headers.Get(CORS_ORIGIN_HEADER))) // There is an Origin header so this is a valid CORS request
                     {
-                        // CHECK CORS PERMISSIONS
-                        if (CorsPermittedOrigins.Contains(CORS_PERMISSION_ALL_ORIGINS)) // If the CORS origin wild-card value is configured return the wild card "permit all origins" permission
+                        // Test whether this is a pre-flight request
+                        if (request.HttpMethod.ToUpperInvariant() == "OPTIONS") // This is a pre-flight request
+                        {
+                            // Test whether an HTTP method has been supplied
+                            if (request.Headers[CORS_REQUEST_METHOD_HEADER] != null) // A method has been supplied, this is a CORS pre-flight request
+                            {
+                                // Set the pre-flight request flag
+                                preFlightRequest = true;
+
+                                // Validate the supplied HTTP method
+                                switch (request.Headers[CORS_REQUEST_METHOD_HEADER].ToUpperInvariant())
+                                {
+                                    // These are valid methods
+                                    case "GET":
+                                    case "PUT":
+                                        // Test whether the Access-Control-Request-Header is present
+                                        if (request.Headers[CORS_REQUEST_HEADERS_HEADER] != null) // A list of headers that will be included has been supplied
+                                        {
+                                            // Add the requested headers to the response as permitted headers
+                                            response.Headers.Add(CORS_ALLOW_HEADERS_HEADER, request.Headers[CORS_REQUEST_HEADERS_HEADER]);
+                                        }
+                                        else
+                                        {
+                                            // Add a standard list of permitted headers
+                                            response.Headers.Add(CORS_ALLOW_HEADERS_HEADER, CORS_DEFAULT_ALLOWED_HEADERS);
+                                        }
+
+                                        // Add the supported HTTP methods
+                                        response.Headers.Add(CORS_ALLOW_METHODS_HEADER, CORS_ALLOWED_METHODS);
+
+                                        // Add the CORS Max-Age header
+                                        response.Headers.Add(CORS_MAX_AGE_HEADER, CorsMaxAge.ToString());
+                                        break;
+
+                                    // All other values are invalid and should be rejected
+                                    default:
+                                        Return400Error(requestData, $"A CORS HTTP OPTIONS method was sent but the HTTP method {request.Headers[CORS_REQUEST_METHOD_HEADER]} specified in the {CORS_REQUEST_METHOD_HEADER} header is not supported. Supported values are: {CORS_ALLOWED_METHODS}.");
+                                        return;
+                                }
+                            }
+                            else // No method was supplied
+                            {
+                                Return400Error(requestData, $"The HTTP OPTIONS method was send but the CORS {CORS_REQUEST_METHOD_HEADER} header was not included.");
+                                return;
+                            }
+                        }
+                        else // Actual CORS request not a pre-flight request
+                        {
+                            response.Headers.Add(CORS_EXPOSE_HEADERS_HEADER, $"Server, Date");
+                        }
+
+                        // Set the Access-Control-Allow-Origin header if the client's origin is accepted
+
+                        // Test whether the CORS origin wild-card value is configured on the Remote Server 
+                        if (CorsPermittedOrigins.Contains(CORS_PERMISSION_ALL_ORIGINS)) // The * wild card value is configured
                         {
                             if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Permitted origins contains {CORS_PERMISSION_ALL_ORIGINS}, setting {CORS_ALLOW_ORIGIN_HEADER} = {CORS_PERMISSION_ALL_ORIGINS}");
                             response.Headers.Add(CORS_ALLOW_ORIGIN_HEADER, CORS_PERMISSION_ALL_ORIGINS);
                         }
-                        else if (CorsPermittedOrigins.Contains(CORS_PERMISSION_REFLECT_SUPPLIED_ORIGIN)) // Return the origin presented by the client
+                        // Test whether the reflect client's origin value is configured on the Remote Server
+                        else if (CorsPermittedOrigins.Contains(CORS_PERMISSION_REFLECT_SUPPLIED_ORIGIN)) // The "=" reflect client's origin value is configured
                         {
                             if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Permitted origins contains {CORS_PERMISSION_REFLECT_SUPPLIED_ORIGIN}, setting {CORS_ALLOW_ORIGIN_HEADER} = {request.Headers.Get(CORS_ORIGIN_HEADER)}");
                             response.Headers.Add(CORS_ALLOW_ORIGIN_HEADER, request.Headers.Get(CORS_ORIGIN_HEADER));
                         }
+                        // Test whether the supplied origin is in the list of permitted origins, ignoring "*" and "=" for obvious reasons
                         else if (
                             CorsPermittedOrigins.Contains(request.Headers.Get(CORS_ORIGIN_HEADER)) &&
                             ((request.Headers.Get(CORS_ORIGIN_HEADER) != CORS_PERMISSION_ALL_ORIGINS)) &&
                             ((request.Headers.Get(CORS_ORIGIN_HEADER) != CORS_PERMISSION_REFLECT_SUPPLIED_ORIGIN))
-                            ) // Check whether the supplied origin is in the list of permitted origins, ignoring "*" and "=" for obvious reasons
+                            ) // A match has been found so accept this request
                         {
                             if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Permitted origins contains {request.Headers.Get(CORS_ORIGIN_HEADER)}, setting {CORS_ALLOW_ORIGIN_HEADER} = {request.Headers.Get(CORS_ORIGIN_HEADER)}");
                             response.Headers.Add(CORS_ALLOW_ORIGIN_HEADER, request.Headers.Get(CORS_ORIGIN_HEADER));
                         }
-                        else // Reject the request if the origin is not permitted by the configured origins rules
+                        // No match has been found for the supplied Origin so the request will be rejected by not adding an Access-Control-Allow-Origin header
+                        else
                         {
                             if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Supplied origin \"{request.Headers.Get(CORS_ORIGIN_HEADER)}\" is not in the permitted list - setting {CORS_ALLOW_ORIGIN_HEADER} = {CorsPermittedOrigins[0]}");
                             ReturnEmpty200Success(requestData);
@@ -2460,25 +2593,19 @@ namespace ASCOM.Remote
                             response.Headers.Set(CORS_ALLOW_ORIGIN_HEADER, request.Headers.Get(CORS_ORIGIN_HEADER));
                         }
 
-                        // HANDLE CACHING RESPONSE
-                        if (response.Headers.Get(CORS_ALLOW_ORIGIN_HEADER) == CORS_PERMISSION_ALL_ORIGINS) // Add a Vary header to assist HTTP cache control if there could be different responses for different origins
+                        // Return a 200 response if this is a pre-flight request
+                        if (preFlightRequest)
                         {
-                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "All host wild-card is not  in effect, including a Vary header set to Origin");
-                            response.Headers.Add(CORS_VARY_HEADER, CORS_ORIGIN_HEADER);
-                        }
-
-                        if (request.HttpMethod.ToUpperInvariant() == "OPTIONS") // This is a CORS pre-flight request so we need to set some specific headers
-                        {
-                            // Set the Access-Control-Allow-Methods and Access-Control-Max-Age headers
-                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS method found - This is a CORS PRE_FLIGHT request: {CORS_ALLOWED_METHODS_HEADER} = {CORS_ALLOWED_METHODS}, {CORS_MAX_AGE_HEADER} = {CorsMaxAge}");
-                            response.Headers.Add(CORS_ALLOWED_METHODS_HEADER, CORS_ALLOWED_METHODS);
-                            response.Headers.Add(CORS_MAX_AGE_HEADER, CorsMaxAge.ToString());
+                            if (DebugTraceState)
+                            {
+                                LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"This is a CORS PRE_FLIGHT request");
+                                foreach (string headerName in response.Headers.AllKeys)
+                                {
+                                    LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Returning CORS header: {headerName} = {response.Headers[headerName]}");
+                                }
+                            }
                             ReturnEmpty200Success(requestData);
                             return; // Finish processing here so return and let the thread end
-                        }
-                        else // Log this as a CORS simple request and allow the request to move forward to be processed
-                        {
-                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "This is a CORS SIMPLE request");
                         }
                     }
                     else // No or empty Origin header so log and process the request
@@ -2489,7 +2616,6 @@ namespace ASCOM.Remote
                 else // CORS support is disabled
                 {
                     if (TL.DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, "CORS support is disabled");
-
                 }
 
                 if (request.Url.AbsolutePath.Trim().StartsWith(SharedConstants.API_URL_BASE)) // Process requests whose URIs start with /api
@@ -4408,7 +4534,7 @@ namespace ASCOM.Remote
             bool raw;
             Exception exReturn = null;
             Stopwatch sw = new Stopwatch();
-            string responseJson = "";
+            string responseJson;
             Stopwatch swOverall = new Stopwatch();
             swOverall.Start();
 
@@ -5591,7 +5717,7 @@ namespace ASCOM.Remote
             int imageArrayElementSize = 0;
             string imageArrayElementType;
             int imageArrayBytesLength = 0;
-            int base64StringLength = 0;
+            int base64StringLength;
 
             SharedConstants.ImageArrayCompression compressionType = SharedConstants.ImageArrayCompression.None; // Flag to indicate what type of compression the client supports - initialised to indicate a default of no compression
 

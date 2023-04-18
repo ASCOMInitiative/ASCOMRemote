@@ -195,6 +195,7 @@
     <Compile Include="DriverHostForm.Designer.cs">
       <DependentUpon>DriverHostForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HideTabControlBorders.cs" />
     <Compile Include="HostPc.cs" />
     <Compile Include="InvalidParameterException.cs" />
