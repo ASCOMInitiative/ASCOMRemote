@@ -5639,25 +5639,25 @@ components:
         maximum: 4294967295
     ClientIDQuery:
       name: ClientID
-      description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+      description: Client's unique ID. (1 to 4294967295). The client should choose a value at start-up, e.g. a random value between 1 and 65535, and send this on every transaction to associate entries in device logs with this particular client.  Zero is a reserved value that clients should not use.
       in: query
       required: false
       schema:
         type: integer
         format: uint32
         default: 1
-        minimum: 0
+        minimum: 1
         maximum: 4294967295
     ClientTransactionIDQuery:
       name: ClientTransactionID
-      description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+      description: Client's transaction ID. (1 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.  Zero is a reserved value that clients should not use.
       in: query
       required: false
       schema:
         type: integer
         format: uint32
         default: 1234
-        minimum: 0
+        minimum: 1
         maximum: 4294967295
     RightAscensionQuery:
       name: RightAscension
@@ -5849,9 +5849,9 @@ components:
             allOf:
               - $ref: '#/components/schemas/AlpacaResponse'
               - properties:
-        Value:
-          type: boolean
-          description: True or False value
+                  Value:
+                    type: boolean
+                    description: True or False value
     DoubleResponse:
       description: Transaction complete or exception.
       content:
@@ -5860,10 +5860,10 @@ components:
             allOf:
               - $ref: '#/components/schemas/AlpacaResponse'
               - properties:
-        Value:
-          type: number
-          format: double
-          description: Returned double value
+                  Value:
+                    type: number
+                    format: double
+                    description: Returned double value
     IntResponse:
       description: Transaction complete or exception.
       content:
@@ -5872,10 +5872,10 @@ components:
             allOf:
               - $ref: '#/components/schemas/AlpacaResponse'
               - properties:
-        Value:
-          type: integer
-          format: int32
-          description: Returned integer value
+                  Value:
+                    type: integer
+                    format: int32
+                    description: Returned integer value
     IntArrayResponse:
       description: Transaction complete or exception.
       content:
@@ -5884,12 +5884,12 @@ components:
             allOf:
               - $ref: '#/components/schemas/AlpacaResponse'
               - properties:
-        Value:
-          type: array
-          items:
-            type: integer
-            format: int32
-          description: Array of integer values.
+                  Value:
+                    type: array
+                    items:
+                      type: integer
+                      format: int32
+                    description: Array of integer values.
     StringResponse:
       description: Transaction complete or exception.
       content:
@@ -5898,9 +5898,9 @@ components:
             allOf:
               - $ref: '#/components/schemas/AlpacaResponse'
               - properties:
-        Value:
-          type: string
-          description: String response from the device.
+                  Value:
+                    type: string
+                    description: String response from the device.
     StringArrayResponse:
       description: Transaction complete or exception.
       content:
@@ -5909,11 +5909,11 @@ components:
             allOf:
               - $ref: '#/components/schemas/AlpacaResponse'
               - properties:
-        Value:
-          type: array
-          items:
-            type: string
-          description: Array of string values.
+                  Value:
+                    type: array
+                    items:
+                      type: string
+                    description: Array of string values.
     AxisRatesResponse:
       description: Transaction complete or exception.
       content:
@@ -5922,13 +5922,13 @@ components:
             allOf:
               - $ref: '#/components/schemas/AlpacaResponse'
               - properties:
-        Value:
-          description: Array of AxisRate objects
-          type: array
-          minItems: 0
-          uniqueItems: true
-          items:
-            $ref: '#/components/schemas/AxisRate'
+                  Value:
+                    description: Array of AxisRate objects
+                    type: array
+                    minItems: 0
+                    uniqueItems: true
+                    items:
+                      $ref: '#/components/schemas/AxisRate'
     DriveRatesResponse:
       description: Transaction complete or exception.
       content:
@@ -5945,14 +5945,14 @@ components:
                     items:
                       $ref: '#/components/schemas/DriveRate'
     '400':
-      description: 'Method or parameter value error, check error message'
+      description: 'The device did not understand which operation was being requested or insufficient information was given to complete the operation. Check the error message for detailed information.'
       content:
         text/plain:
           schema:
             type: string
             description: Error message describing why the command cannot be processed
     '500':
-      description: 'Server internal error, check error message'
+      description: 'Server internal error. Check the error message for detailed information.'
       content:
         text/plain:
           schema:
@@ -5982,35 +5982,42 @@ components:
       type: object
       properties:
         ClientID:
-          description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+          description: Client's unique ID. (1 to 4294967295). The client should choose a value at start-up, e.g. a random value between 1 and 65535, and send this on every transaction to associate entries in device logs with this particular client.  Zero is a reserved value that clients should not use.
           type: integer
           format: uint32
+          minimum: 1
+          maximum: 4294967295
         ClientTransactionID:
-          description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+          description: Client's transaction ID. (1 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.  Zero is a reserved value that clients should not use.
           type: integer
           format: uint32
+          minimum: 1
+          maximum: 4294967295
     AlpacaResponse:
       type: object
       properties:
         ClientTransactionID:
           type: integer
           format: uint32
-          description: Client's transaction ID (0 to 4294967295), as supplied by the client in the command request.
+          minimum: 0
+          maximum: 4294967295
+          description: Client's transaction ID (1 to 4294967295), as supplied by the client in the command request, or zero indicating that a valid value was not supplied.
         ServerTransactionID:
           type: integer
           format: uint32
-          description: Server's transaction ID (0 to 4294967295), should be unique for each client transaction so that log messages on the client can be associated with logs on the device.
+          minimum: 1
+          maximum: 4294967295
+          description: Server's transaction ID (1 to 4294967295), must be unique for each client transaction so that log messages on the client can be associated with logs on the device. The server should start this count at 1 and increment by one on each successive transaction. 
         ErrorNumber:
           type: integer
           format: int32
-          description: >- 
-            Zero for a successful transaction, or a non-zero integer (-2147483648 to 2147483647) if the device encountered an issue. Devices must use ASCOM reserved error numbers whenever appropriate so that clients can take informed actions. E.g. returning 0x401 (1025) to indicate that an invalid value was received (see Alpaca API definition and developer documentation for further information).
+          description: Zero for a successful transaction, or a non-zero integer (-2147483648 to 2147483647) if the device encountered an issue. Devices must use ASCOM reserved error numbers whenever appropriate so that clients can take informed actions. E.g. returning 0x401 (1025) to indicate that an invalid value was received (see Alpaca API definition and developer documentation for further information).
         ErrorMessage:
           type: string
           description: Empty string for a successful transaction, or a message describing the issue that was encountered. If an error message is returned, a non zero error number must also be returned.
     DriveRate:
       description: >-
-        DriveRate object corresponding to one of the standard drive rates  
+        DriveRate object corresponding to one of the standard drive rates
           driveSidereal =  0  - Sidereal tracking rate (15.041 arcseconds per second).  
           driveLunar = 1 - Lunar tracking rate (14.685 arcseconds per second).  
           driveSolar = 2 - Solar tracking rate (15.0 arcseconds per second).  
