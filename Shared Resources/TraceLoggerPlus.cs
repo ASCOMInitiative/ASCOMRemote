@@ -1,6 +1,4 @@
-﻿using ASCOM.Utilities;
-using ASCOM.Utilities.Exceptions;
-using ASCOM.Utilities.Interfaces;
+﻿using ASCOM.Common.Interfaces;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -474,6 +472,8 @@ namespace ASCOM.Remote
 
         public bool IpAddressTraceState { get; set; }
 
+        public LogLevel LoggingLevel => throw new System.NotImplementedException();
+
         public void LogMessage(uint instance, string prefix, string message)
         {
             LogMessage(prefix + " " + instance.ToString(), message);
@@ -532,41 +532,46 @@ namespace ASCOM.Remote
             }
         }
 
-        #region Used ITracelogger members
-
-        void ITraceLogger.LogMessage(string Identifier, string Message, bool HexDump)
+        public void SetMinimumLoggingLevel(LogLevel level)
         {
-            LogMessage(Identifier, Message);
+            throw new System.NotImplementedException();
         }
+
+        public void Log(LogLevel level, string message)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        #region Used ITracelogger members
 
         #endregion
 
         #region Unused ITraceLogger members
 
-        void ITraceLogger.LogStart(string Identifier, string Message)
-        {
-            throw new MethodNotImplementedException("LogStart(string Identifier, string Message)");
-        }
+        //void ITraceLogger.LogStart(string Identifier, string Message)
+        //{
+        //    throw new MethodNotImplementedException("LogStart(string Identifier, string Message)");
+        //}
 
-        void ITraceLogger.LogContinue(string Message, bool HexDump)
-        {
-            throw new MethodNotImplementedException("LogContinue(string Message, bool HexDump)");
-        }
+        //void ITraceLogger.LogContinue(string Message, bool HexDump)
+        //{
+        //    throw new MethodNotImplementedException("LogContinue(string Message, bool HexDump)");
+        //}
 
-        void ITraceLogger.LogFinish(string Message, bool HexDump)
-        {
-            throw new MethodNotImplementedException("LogFinish(string Message, bool HexDump)");
-        }
+        //void ITraceLogger.LogFinish(string Message, bool HexDump)
+        //{
+        //    throw new MethodNotImplementedException("LogFinish(string Message, bool HexDump)");
+        //}
 
-        void ITraceLogger.LogIssue(string Identifier, string Message)
-        {
-            throw new MethodNotImplementedException("e(string Identifier, string Message)");
-        }
+        //void ITraceLogger.LogIssue(string Identifier, string Message)
+        //{
+        //    throw new MethodNotImplementedException("e(string Identifier, string Message)");
+        //}
 
-        void ITraceLogger.SetLogFile(string LogFileName, string LogFileType)
-        {
-            throw new MethodNotImplementedException("SetLogFile(string LogFileName, string LogFileType)");
-        }
+        //void ITraceLogger.SetLogFile(string LogFileName, string LogFileType)
+        //{
+        //    throw new MethodNotImplementedException("SetLogFile(string LogFileName, string LogFileType)");
+        //}
 
         #endregion
     }

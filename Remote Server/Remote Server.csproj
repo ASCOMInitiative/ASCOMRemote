@@ -1,49 +1,29 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ASCOM.Remote</RootNamespace>
     <AssemblyName>ASCOM.RemoteServer</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net48</TargetFramework>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
+    <AssemblyTitle>ASCOM Remote Server</AssemblyTitle>
+    <Product>ASCOM Remote Server</Product>
+    <Copyright>Copyright © 2022 Peter Simpson</Copyright>
+    <Prefer32Bit>true</Prefer32Bit>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <PostBuildEvent />
+    <PostBuildEvent />
+    <PostBuildEvent />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>
-    </NoWarn>
-    <Prefer32Bit>true</Prefer32Bit>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <NoWarn />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>true</Prefer32Bit>
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>
-    </StartupObject>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <StartupObject />
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Remote Server Key.snk</AssemblyOriginatorKeyFile>
@@ -51,189 +31,94 @@
   <PropertyGroup>
     <ApplicationIcon>ASCOM.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent />
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ASCOM.DeviceInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL" />
-    <Reference Include="ASCOM.DriverAccess, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL" />
-    <Reference Include="ASCOM.Utilities, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Shared Resources\AlpacaConfiguredDevice.cs">
-      <Link>Entity Classes\AlpacaConfiguredDevice.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\AlpacaDeviceDescription.cs">
-      <Link>Entity Classes\AlpacaDeviceDescription.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\ConfiguredDevice.cs">
-      <Link>Entity Classes\ConfiguredDevice.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\ExtensionMethods.cs">
-      <Link>ExtensionMethods.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\ProfileDevice.cs">
-      <Link>Entity Classes\ProfileDevice.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\Properties\SharedVersionNumbers.cs">
-      <Link>Properties\SharedVersionNumbers.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\RequestData.cs">
-      <Link>RequestData.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\Response Classes\AlpacaConfiguredDevicesResponse.cs">
-      <Link>Response Classes\AlpacaConfiguredDevicesResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\Response Classes\AlpacaDescriptionResponse.cs">
-      <Link>Response Classes\AlpacaDescriptionResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\Response Classes\AlpacaDiscoveryResponse.cs">
-      <Link>Response Classes\AlpacaDiscoveryResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\AxisRatesResponse.cs">
-      <Link>Response Classes\AxisRatesResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\Response Classes\Base64ArrayHandOffResponse.cs">
-      <Link>Response Classes\Base64ArrayHandOffResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\Response Classes\Base64ArrayJsonResponse.cs">
-      <Link>Response Classes\Base64ArrayJsonResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\BoolResponse.cs">
-      <Link>Response Classes\BoolResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\ConfigurationResponse.cs">
-      <Link>Response Classes\ConfigurationResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\DateAndTimeResponse.cs">
-      <Link>Response Classes\DateAndTimeResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\DoubleArray2DResponse.cs">
-      <Link>Response Classes\DoubleArray2DResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\DoubleArray3DResponse.cs">
-      <Link>Response Classes\DoubleArray3DResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\DoubleResponse.cs">
-      <Link>Response Classes\DoubleResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\ImageArrayResponseBase.cs">
-      <Link>Response Classes\ImageArrayResponseBase.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\IntArray1DResponse.cs">
-      <Link>Response Classes\IntArray1DResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\IntArray2DResponse.cs">
-      <Link>Response Classes\IntArray2DResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\IntArray3DResponse.cs">
-      <Link>Response Classes\IntArray3DResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\IntResponse.cs">
-      <Link>Response Classes\IntResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\MethodResponse.cs">
-      <Link>Response Classes\MethodResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\ProfileResponse.cs">
-      <Link>Response Classes\ProfileResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\RateResponse.cs">
-      <Link>Response Classes\RateResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\RestResponseBase.cs">
-      <Link>Response Classes\RestResponseBase.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\ShortArray2DResponse.cs">
-      <Link>Response Classes\ShortArray2DResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\ShortArray3DResponse.cs">
-      <Link>Response Classes\ShortArray3DResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\ShortResponse.cs">
-      <Link>Response Classes\ShortResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\StringArrayResponse.cs">
-      <Link>Response Classes\StringArrayResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\StringListResponse.cs">
-      <Link>Response Classes\StringListResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\StringResponse.cs">
-      <Link>Response Classes\StringResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\shared resources\response classes\TrackingRatesResponse.cs">
-      <Link>Response Classes\TrackingRatesResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\Shared Constants.cs">
-      <Link>Shared Constants.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\SharedResources.cs">
-      <Link>SharedResources.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\StringValue.cs">
-      <Link>StringValue.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared Resources\TraceLoggerPlus.cs">
-      <Link>TraceLoggerPlus.cs</Link>
-    </Compile>
-    <Compile Include="Entity Classes\ActiveObject.cs" />
-    <Compile Include="Configuration.cs" />
-    <Compile Include="DriverHostForm.cs">
+    <Compile Include="..\Shared Resources\AlpacaConfiguredDevice.cs" Link="Entity Classes\AlpacaConfiguredDevice.cs" />
+    <Compile Include="..\Shared Resources\AlpacaDeviceDescription.cs" Link="Entity Classes\AlpacaDeviceDescription.cs" />
+    <Compile Include="..\Shared Resources\ConfiguredDevice.cs" Link="Entity Classes\ConfiguredDevice.cs" />
+    <Compile Include="..\Shared Resources\ExtensionMethods.cs" Link="ExtensionMethods.cs" />
+    <Compile Include="..\Shared Resources\ProfileDevice.cs" Link="Entity Classes\ProfileDevice.cs" />
+    <Compile Include="..\Shared Resources\RequestData.cs" Link="RequestData.cs" />
+    <Compile Include="..\Shared Resources\Response Classes\AlpacaConfiguredDevicesResponse.cs" Link="Response Classes\AlpacaConfiguredDevicesResponse.cs" />
+    <Compile Include="..\Shared Resources\Response Classes\AlpacaDescriptionResponse.cs" Link="Response Classes\AlpacaDescriptionResponse.cs" />
+    <Compile Include="..\Shared Resources\Response Classes\AlpacaDiscoveryResponse.cs" Link="Response Classes\AlpacaDiscoveryResponse.cs" />
+    <Compile Include="..\shared resources\response classes\AxisRatesResponse.cs" Link="Response Classes\AxisRatesResponse.cs" />
+    <Compile Include="..\Shared Resources\Response Classes\Base64ArrayHandOffResponse.cs" Link="Response Classes\Base64ArrayHandOffResponse.cs" />
+    <Compile Include="..\Shared Resources\Response Classes\Base64ArrayJsonResponse.cs" Link="Response Classes\Base64ArrayJsonResponse.cs" />
+    <Compile Include="..\shared resources\response classes\BoolResponse.cs" Link="Response Classes\BoolResponse.cs" />
+    <Compile Include="..\shared resources\response classes\ConfigurationResponse.cs" Link="Response Classes\ConfigurationResponse.cs" />
+    <Compile Include="..\shared resources\response classes\DateAndTimeResponse.cs" Link="Response Classes\DateAndTimeResponse.cs" />
+    <Compile Include="..\shared resources\response classes\DoubleArray2DResponse.cs" Link="Response Classes\DoubleArray2DResponse.cs" />
+    <Compile Include="..\shared resources\response classes\DoubleArray3DResponse.cs" Link="Response Classes\DoubleArray3DResponse.cs" />
+    <Compile Include="..\shared resources\response classes\DoubleResponse.cs" Link="Response Classes\DoubleResponse.cs" />
+    <Compile Include="..\shared resources\response classes\ImageArrayResponseBase.cs" Link="Response Classes\ImageArrayResponseBase.cs" />
+    <Compile Include="..\shared resources\response classes\IntArray1DResponse.cs" Link="Response Classes\IntArray1DResponse.cs" />
+    <Compile Include="..\shared resources\response classes\IntArray2DResponse.cs" Link="Response Classes\IntArray2DResponse.cs" />
+    <Compile Include="..\shared resources\response classes\IntArray3DResponse.cs" Link="Response Classes\IntArray3DResponse.cs" />
+    <Compile Include="..\shared resources\response classes\IntResponse.cs" Link="Response Classes\IntResponse.cs" />
+    <Compile Include="..\shared resources\response classes\MethodResponse.cs" Link="Response Classes\MethodResponse.cs" />
+    <Compile Include="..\shared resources\response classes\ProfileResponse.cs" Link="Response Classes\ProfileResponse.cs" />
+    <Compile Include="..\shared resources\response classes\RateResponse.cs" Link="Response Classes\RateResponse.cs" />
+    <Compile Include="..\shared resources\response classes\RestResponseBase.cs" Link="Response Classes\RestResponseBase.cs" />
+    <Compile Include="..\shared resources\response classes\ShortArray2DResponse.cs" Link="Response Classes\ShortArray2DResponse.cs" />
+    <Compile Include="..\shared resources\response classes\ShortArray3DResponse.cs" Link="Response Classes\ShortArray3DResponse.cs" />
+    <Compile Include="..\shared resources\response classes\ShortResponse.cs" Link="Response Classes\ShortResponse.cs" />
+    <Compile Include="..\shared resources\response classes\StringArrayResponse.cs" Link="Response Classes\StringArrayResponse.cs" />
+    <Compile Include="..\shared resources\response classes\StringListResponse.cs" Link="Response Classes\StringListResponse.cs" />
+    <Compile Include="..\shared resources\response classes\StringResponse.cs" Link="Response Classes\StringResponse.cs" />
+    <Compile Include="..\shared resources\response classes\TrackingRatesResponse.cs" Link="Response Classes\TrackingRatesResponse.cs" />
+    <Compile Include="..\Shared Resources\Shared Constants.cs" Link="Shared Constants.cs" />
+    <Compile Include="..\Shared Resources\SharedResources.cs" Link="SharedResources.cs" />
+    <Compile Include="..\Shared Resources\StringValue.cs" Link="StringValue.cs" />
+    <Compile Include="..\Shared Resources\TraceLoggerPlus.cs" Link="TraceLoggerPlus.cs" />
+    <Compile Update="DriverHostForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DriverHostForm.Designer.cs">
+    <Compile Update="DriverHostForm.Designer.cs">
       <DependentUpon>DriverHostForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="HideTabControlBorders.cs" />
-    <Compile Include="HostPc.cs" />
-    <Compile Include="InvalidParameterException.cs" />
-    <Compile Include="ServedDevice.cs">
+    <Compile Update="ServedDevice.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ServedDevice.Designer.cs">
+    <Compile Update="ServedDevice.Designer.cs">
       <DependentUpon>ServedDevice.cs</DependentUpon>
     </Compile>
-    <Compile Include="SetupForm.cs">
+    <Compile Update="SetupForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SetupForm.Designer.cs">
+    <Compile Update="SetupForm.Designer.cs">
       <DependentUpon>SetupForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ServerForm.cs">
+    <Compile Update="ServerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ServerForm.Designer.cs">
+    <Compile Update="ServerForm.Designer.cs">
       <DependentUpon>ServerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WindowsErrorCodes.cs" />
-    <EmbeddedResource Include="DriverHostForm.resx">
+    <EmbeddedResource Update="DriverHostForm.resx">
       <DependentUpon>DriverHostForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ServedDevice.resx">
+    <EmbeddedResource Update="ServedDevice.resx">
       <DependentUpon>ServedDevice.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="SetupForm.resx">
+    <EmbeddedResource Update="SetupForm.resx">
       <DependentUpon>SetupForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ServerForm.resx">
+    <EmbeddedResource Update="ServerForm.resx">
       <DependentUpon>ServerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="App.config" />
     <None Include="Remote Server Key.snk" />
   </ItemGroup>
   <ItemGroup>
@@ -246,24 +131,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ASCOM.Common.Components">
-      <Version>1.0.96</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.3</Version>
-    </PackageReference>
+    <PackageReference Include="ASCOM.Com.Components" Version="1.0.96" />
+    <PackageReference Include="ASCOM.Common.Components" Version="1.0.96" />
+    <PackageReference Include="ASCOM.Exception.Library" Version="6.6.1" />
+    <PackageReference Include="ASCOM.Tools" Version="1.0.96" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using ASCOM.DeviceInterface;
+﻿using System.Collections.Generic;
+using ASCOM.Common.DeviceInterfaces;
 
 namespace ASCOM.Remote
 {
     public class TrackingRatesResponse : RestResponseBase
     {
-        private List<DriveRates> rates;
+        private List<DriveRate> rates;
 
         public TrackingRatesResponse() { }
 
@@ -16,7 +15,7 @@ namespace ASCOM.Remote
             base.ClientTransactionID = clientTransactionID;
         }
 
-        public List<DriveRates> Value
+        public List<DriveRate> Value
         {
             get { return rates; }
             set { rates = value; }

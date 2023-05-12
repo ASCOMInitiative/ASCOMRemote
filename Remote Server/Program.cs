@@ -4,7 +4,7 @@ using System.Runtime.ExceptionServices;
 using System.Security;
 using System.Threading;
 using System.Windows.Forms;
-using ASCOM.Utilities;
+using ASCOM.Tools;
 
 namespace ASCOM.Remote
 {
@@ -35,7 +35,7 @@ namespace ASCOM.Remote
             if (serverForm.RestartApplication) Application.Restart(); // Restart the application if the network permissions have been changed
 
 #if DEBUG // When debugging, include a log to show the time of close down
-            TraceLogger TL = new TraceLogger("ASCOMRemoteEnded")
+            TraceLogger TL = new TraceLogger("ASCOMRemoteEnded", true)
             {
                 Enabled = true
             };
@@ -48,11 +48,11 @@ namespace ASCOM.Remote
 
         static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            TraceLogger TL = new TraceLogger("RemoteAccessServerException")
+            TraceLogger TL = new TraceLogger("RemoteAccessServerException",true)
             {
                 Enabled = true
             };
-            TL.LogMessageCrLf("Main", "Thread exception: " + e.Exception.ToString());
+            TL.LogMessage("Main", "Thread exception: " + e.Exception.ToString());
             Process.Start(TL.LogFileName);
 
             TL.Enabled = false;
@@ -65,11 +65,11 @@ namespace ASCOM.Remote
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Exception exception = (Exception)e.ExceptionObject;
-            TraceLogger TL = new TraceLogger("RemoteAccessServerException")
+            TraceLogger TL = new TraceLogger("RemoteAccessServerException",true)
             {
                 Enabled = true
             };
-            TL.LogMessageCrLf("Main", "Unhandled exception: " + exception.ToString());
+            TL.LogMessage("Main", "Unhandled exception: " + exception.ToString());
             Process.Start(TL.LogFileName);
             TL.Enabled = false;
             TL.Dispose();

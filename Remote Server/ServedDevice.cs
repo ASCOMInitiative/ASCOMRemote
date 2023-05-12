@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using ASCOM.Utilities;
+using ASCOM.Tools;
 using System.Collections;
 using System.Runtime.InteropServices;
+using ASCOM.Com;
+using ASCOM.Common;
 
 namespace ASCOM.Remote
 {
@@ -55,7 +57,7 @@ namespace ASCOM.Remote
             //ServerForm.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Added Device not configured");
 
 
-            foreach (string deviceType in profile.RegisteredDeviceTypes)
+            foreach (string deviceType in Devices.DeviceTypeNames())
             {
                 //ServerForm.LogMessage(0, 0, 0, "ServedDevice.InitUI", "Adding item: " + deviceType);
                 cmbDeviceType.Items.Add(deviceType);
@@ -264,14 +266,14 @@ namespace ASCOM.Remote
 
                 // Set up device list so we can translate ProgID to description
 
-                ArrayList installedDevices = profile.RegisteredDevices(cmbDeviceType.SelectedItem.ToString());
+                List<ASCOMRegistration> installedDevices = Profile.GetDrivers(Devices.StringToDeviceType(cmbDeviceType.SelectedItem.ToString()));
                 //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Created registered device array list");
 
                 deviceDictionary.Clear();
-                foreach (KeyValuePair kvp in installedDevices)
+                foreach (ASCOMRegistration kvp in installedDevices)
                 {
-                    if (!deviceDictionary.ContainsKey(kvp.Value)) deviceDictionary.Add(kvp.Key, kvp.Value);
-                    cmbDevice.Items.Add(kvp.Value);
+                    if (!deviceDictionary.ContainsKey(kvp.ProgID)) deviceDictionary.Add(kvp.ProgID, kvp.Name);
+                    cmbDevice.Items.Add(kvp.ProgID);
                 }
                 if (cmbDevice.Items.Count > 0) cmbDevice.SelectedIndex = 0;
                 //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Finished");

@@ -24,10 +24,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
+using ASCOM.Com;
+using ASCOM.Common;
 using ASCOM.Common.Alpaca;
+using ASCOM.Common.DeviceInterfaces;
 using ASCOM.Common.Helpers;
-using ASCOM.DeviceInterface;
-using ASCOM.Utilities;
 using Newtonsoft.Json;
 
 namespace ASCOM.Remote
@@ -1249,7 +1250,7 @@ namespace ASCOM.Remote
             lock (logLockObject) // Ensure that only one message is logged at once and that the midnight log change over is effected within just one log message call
             {
                 CheckWhetherNewLogRequired(clientID, clientTransactionID, serverTransactionID);
-                TL.LogMessageCrLf(clientID, clientTransactionID, serverTransactionID, Method, Message);
+                TL.LogMessage(clientID, clientTransactionID, serverTransactionID, Method, Message);
             }
         }
 
@@ -1258,7 +1259,7 @@ namespace ASCOM.Remote
             lock (logLockObject) // Ensure that only one message is logged at once and that the midnight log change over is effected within just one log message call
             {
                 CheckWhetherNewLogRequired(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID);
-                TL.LogMessageCrLf(requestData, Method, Message);
+                TL.LogMessage(requestData, Method, Message);
             }
         }
 
@@ -1267,7 +1268,7 @@ namespace ASCOM.Remote
             lock (logLockObject) // Ensure that only one message is logged at once and that the midnight log change over is effected within just one log message call
             {
                 CheckWhetherNewLogRequired(clientID, clientTransactionID, serverTransactionID);
-                TL.LogMessageCrLf(clientID, clientTransactionID, serverTransactionID, Method, Message);
+                TL.LogMessage(clientID, clientTransactionID, serverTransactionID, Method, Message);
             }
         }
 
@@ -1276,7 +1277,7 @@ namespace ASCOM.Remote
             lock (logLockObject) // Ensure that only one message is logged at once and that the midnight log change over is effected within just one log message call
             {
                 CheckWhetherNewLogRequired(requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID);
-                TL.LogMessageCrLf(requestData, Method, Message);
+                TL.LogMessage(requestData, Method, Message);
             }
         }
 
@@ -3041,13 +3042,14 @@ namespace ASCOM.Remote
                                                         {
                                                             using (Profile profile = new Profile())
                                                             {
-                                                                ArrayList deviceTypes = profile.RegisteredDeviceTypes;
-                                                                foreach (string deviceType in deviceTypes)
+                                                                //ArrayList deviceTypes = profile.RegisteredDeviceTypes;
+                                                                //Devices.DeviceTypeNames.
+                                                                foreach (DeviceTypes deviceType in Enum.GetValues( typeof (DeviceTypes)))
                                                                 {
-                                                                    ArrayList registeredDevices = profile.RegisteredDevices(deviceType);
-                                                                    foreach (KeyValuePair kvp in registeredDevices)
+                                                                    List<ASCOMRegistration> registeredDevices = Profile.GetDrivers(deviceType);
+                                                                    foreach (ASCOMRegistration kvp in registeredDevices)
                                                                     {
-                                                                        profileDevices.Add(new ProfileDevice(deviceType, kvp.Key, kvp.Value));
+                                                                        profileDevices.Add(new ProfileDevice(deviceType.ToString(), kvp.ProgID, kvp.Name));
                                                                     }
                                                                 }
                                                             }
@@ -5451,11 +5453,11 @@ namespace ASCOM.Remote
             };
 
             // Initialise a list to hold returned tracking rate values and add any tracking rate values that have been returned
-            List<DriveRates> rates = new List<DriveRates>();
+            List<DriveRate> rates = new List<DriveRate>();
 
             if (!(deviceResponse is null)) // Avoid processing a null return value because the for each code will fail 
             {
-                foreach (DriveRates rate in deviceResponse)
+                foreach (DriveRate rate in deviceResponse)
                 {
                     LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Rate = {0}", rate.ToString()));
                     rates.Add(rate);
@@ -5471,7 +5473,7 @@ namespace ASCOM.Remote
 
         private void ReturnEquatorialSystem(RequestData requestData)
         {
-            EquatorialCoordinateType deviceResponse = EquatorialCoordinateType.equTopocentric;
+            EquatorialCoordinateType deviceResponse = EquatorialCoordinateType.Topocentric;
             Exception exReturn = null;
 
             try
@@ -5495,12 +5497,12 @@ namespace ASCOM.Remote
 
         private void ReturnAlignmentMode(RequestData requestData)
         {
-            AlignmentModes deviceResponse = AlignmentModes.algGermanPolar;
+            AlignmentMode deviceResponse = AlignmentMode.GermanPolar;
             Exception exReturn = null;
 
             try
             {
-                deviceResponse = (AlignmentModes)device.AlignmentMode;
+                deviceResponse = (AlignmentMode)device.AlignmentMode;
             }
             catch (Exception ex)
             {
@@ -5518,12 +5520,12 @@ namespace ASCOM.Remote
 
         private void ReturnTrackingRate(RequestData requestData)
         {
-            DriveRates deviceResponse = DriveRates.driveSidereal;
+            DriveRate deviceResponse = DriveRate.Sidereal;
             Exception exReturn = null;
 
             try
             {
-                deviceResponse = (DriveRates)device.TrackingRate;
+                deviceResponse = (DriveRate)device.TrackingRate;
             }
             catch (Exception ex)
             {
@@ -5540,12 +5542,12 @@ namespace ASCOM.Remote
         }
         private void WriteTrackingRate(RequestData requestData)
         {
-            DriveRates driveRateValue; ;
+            DriveRate driveRateValue; ;
             Exception exReturn = null;
 
             try
             {
-                driveRateValue = (DriveRates)GetParameter<int>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD].ToCorrectCase());
+                driveRateValue = (DriveRate)GetParameter<int>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD].ToCorrectCase());
                 device.TrackingRate = driveRateValue;
             }
             // Handle missing or invalid parameters
@@ -5564,12 +5566,12 @@ namespace ASCOM.Remote
 
         private void ReturnSideofPier(RequestData requestData)
         {
-            PierSide deviceResponse = PierSide.pierUnknown;
+            PointingState deviceResponse = PointingState.Unknown;
             Exception exReturn = null;
 
             try
             {
-                deviceResponse = (PierSide)device.SideOfPier;
+                deviceResponse = (PointingState)device.SideOfPier;
             }
             catch (Exception ex)
             {
@@ -5587,12 +5589,12 @@ namespace ASCOM.Remote
 
         private void ReturnCameraStates(RequestData requestData)
         {
-            CameraStates deviceResponse = CameraStates.cameraIdle;
+            CameraState deviceResponse = CameraState.Idle;
             Exception exReturn = null;
 
             try
             {
-                deviceResponse = (CameraStates)device.CameraState;
+                deviceResponse = (CameraState)device.CameraState;
             }
             catch (Exception ex)
             {
@@ -5610,7 +5612,7 @@ namespace ASCOM.Remote
 
         private void ReturnShutterStatus(RequestData requestData)
         {
-            ShutterState deviceResponse = ShutterState.shutterError;
+            ShutterState deviceResponse = ShutterState.Error;
             Exception exReturn = null;
 
             try
@@ -6465,7 +6467,7 @@ namespace ASCOM.Remote
 
             try
             {
-                TelescopeAxes axis = (TelescopeAxes)GetParameter<int>(requestData, SharedConstants.AXIS_PARAMETER_NAME);
+                TelescopeAxis axis = (TelescopeAxis)GetParameter<int>(requestData, SharedConstants.AXIS_PARAMETER_NAME);
                 deviceResponse = device.CanMoveAxis(axis);
             }
             // Handle missing or invalid parameters
@@ -6490,14 +6492,14 @@ namespace ASCOM.Remote
 
         private void ReturnDestinationSideOfPier(RequestData requestData)
         {
-            PierSide deviceResponse = PierSide.pierUnknown;
+            PointingState deviceResponse = PointingState.Unknown;
             Exception exReturn = null;
 
             try
             {
                 double ra = GetParameter<double>(requestData, SharedConstants.RA_PARAMETER_NAME);
                 double dec = GetParameter<double>(requestData, SharedConstants.DEC_PARAMETER_NAME);
-                deviceResponse = (PierSide)device.DestinationSideOfPier(ra, dec);
+                deviceResponse = (PointingState)device.DestinationSideOfPier(ra, dec);
             }
             // Handle missing or invalid parameters
             catch (InvalidParameterException ex)
@@ -6528,7 +6530,7 @@ namespace ASCOM.Remote
 
             try
             {
-                TelescopeAxes axis = (TelescopeAxes)GetParameter<int>(requestData, SharedConstants.AXIS_PARAMETER_NAME);
+                TelescopeAxis axis = (TelescopeAxis)GetParameter<int>(requestData, SharedConstants.AXIS_PARAMETER_NAME);
                 deviceResponse = device.AxisRates(axis);
             }
             // Handle missing or invalid parameters
@@ -6570,12 +6572,12 @@ namespace ASCOM.Remote
             string command;
             bool raw, light, switchState;
             string switchName;
-            PierSide pierSideValue;
+            PointingState pierSideValue;
             short switchIndex;
             int positionInt, guideDuration, brightness;
             float positionFloat;
-            GuideDirections guideDirection;
-            TelescopeAxes axis;
+            GuideDirection guideDirection;
+            TelescopeAxis axis;
 
             Exception exReturn = null;
 
@@ -6606,7 +6608,7 @@ namespace ASCOM.Remote
 
                     //TELESCOPE
                     case "telescope.sideofpier":
-                        pierSideValue = (PierSide)GetParameter<int>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD].ToCorrectCase());
+                        pierSideValue = (PointingState)GetParameter<int>(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD].ToCorrectCase());
                         device.SideOfPier = pierSideValue;
                         break;
                     case "telescope.unpark":
@@ -6656,12 +6658,12 @@ namespace ASCOM.Remote
                         device.SyncToCoordinates(ra, dec);
                         break;
                     case "telescope.moveaxis":
-                        axis = (TelescopeAxes)GetParameter<int>(requestData, SharedConstants.AXIS_PARAMETER_NAME);
+                        axis = (TelescopeAxis)GetParameter<int>(requestData, SharedConstants.AXIS_PARAMETER_NAME);
                         double rate = GetParameter<double>(requestData, SharedConstants.RATE_PARAMETER_NAME);
                         device.MoveAxis(axis, rate);
                         break;
                     case "telescope.pulseguide":
-                        guideDirection = (GuideDirections)GetParameter<int>(requestData, SharedConstants.DIRECTION_PARAMETER_NAME);
+                        guideDirection = (GuideDirection)GetParameter<int>(requestData, SharedConstants.DIRECTION_PARAMETER_NAME);
                         guideDuration = GetParameter<int>(requestData, SharedConstants.DURATION_PARAMETER_NAME);
                         device.PulseGuide(guideDirection, guideDuration);
                         break;
@@ -6678,7 +6680,7 @@ namespace ASCOM.Remote
                     case "camera.abortexposure":
                         device.AbortExposure(); break;
                     case "camera.pulseguide":
-                        guideDirection = (GuideDirections)GetParameter<int>(requestData, SharedConstants.DIRECTION_PARAMETER_NAME);
+                        guideDirection = (GuideDirection)GetParameter<int>(requestData, SharedConstants.DIRECTION_PARAMETER_NAME);
                         guideDuration = GetParameter<int>(requestData, SharedConstants.DURATION_PARAMETER_NAME);
                         device.PulseGuide(guideDirection, guideDuration);
                         break;

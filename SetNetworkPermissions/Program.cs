@@ -8,12 +8,12 @@ using System.Security.Principal;
 using CommandLine;
 using WindowsFirewallHelper;
 
-using ASCOM.Utilities;
 using System.Net;
 using System.Runtime.ExceptionServices;
 using System.Reflection;
 using WindowsFirewallHelper.Collections;
 using WindowsFirewallHelper.FirewallRules;
+using ASCOM.Tools;
 
 namespace ASCOM.Remote
 {
@@ -37,7 +37,7 @@ namespace ASCOM.Remote
 
             try
             {
-                TL = new TraceLogger("", "SetNetworkPermissions")
+                TL = new TraceLogger("SetNetworkPermissions",true)
                 {
                     Enabled = true
                 };
@@ -63,11 +63,11 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                TraceLogger TL = new TraceLogger("SetNetworkPermissionsMainException")
+                TraceLogger TL = new TraceLogger("SetNetworkPermissionsMainException", true)
                 {
                     Enabled = true
                 };
-                TL.LogMessageCrLf("Main", "Unhandled exception: " + ex.ToString());
+                TL.LogMessage("Main", "Unhandled exception: " + ex.ToString());
                 TL.Enabled = false;
                 TL.Dispose();
                 TL = null;
@@ -135,7 +135,7 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                TL.LogMessageCrLf("QueryFireWall", "Exception: " + ex.ToString());
+                TL.LogMessage("QueryFireWall", "Exception: " + ex.ToString());
             }
             TL.BlankLine();
 
@@ -214,7 +214,7 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                TL.LogMessageCrLf("SetFireWallOutboundRule", "Exception: " + ex.ToString());
+                TL.LogMessage("SetFireWallOutboundRule", "Exception: " + ex.ToString());
                 Console.WriteLine("SetFireWallOutboundRule threw an exception: " + ex.Message);
             }
         }
@@ -243,7 +243,7 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                TL.LogMessageCrLf("QueryFireWall", "Exception: " + ex.ToString());
+                TL.LogMessage("QueryFireWall", "Exception: " + ex.ToString());
             }
             TL.BlankLine();
 
@@ -294,7 +294,7 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                TL.LogMessageCrLf("SetHttpSysFireWallRule", "Exception: " + ex.ToString());
+                TL.LogMessage("SetHttpSysFireWallRule", "Exception: " + ex.ToString());
                 Console.WriteLine("SetHttpSysFireWallRule threw an exception: " + ex.Message);
             }
 
@@ -429,7 +429,7 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                TL.LogMessageCrLf("SetAcl", $"Process exception: {ex}");
+                TL.LogMessage("SetAcl", $"Process exception: {ex}");
             }
         }
 
@@ -472,12 +472,12 @@ namespace ASCOM.Remote
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Exception exception = (Exception)e.ExceptionObject;
-            TraceLogger TL = new TraceLogger("SetNetworkPemissionsException")
+            TraceLogger TL = new TraceLogger("SetNetworkPemissionsException", true)
             {
                 Enabled = true
             };
 
-            TL.LogMessageCrLf("Main", "Unhandled exception: " + exception.ToString());
+            TL.LogMessage("Main", "Unhandled exception: " + exception.ToString());
             TL.Enabled = false;
             TL.Dispose();
             Environment.Exit(0);

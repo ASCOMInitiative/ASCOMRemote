@@ -6,9 +6,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
-using ASCOM.Utilities;
+using ASCOM.Tools;
 using System.Text.RegularExpressions;
 using System.Drawing;
+using ASCOM.Com;
+using ASCOM.Common;
 
 namespace ASCOM.Remote
 {
@@ -151,7 +153,7 @@ namespace ASCOM.Remote
                 using (Profile profile = new Profile())
                 {
                     // Populate the device types list
-                    foreach (string deviceType in profile.RegisteredDeviceTypes)
+                    foreach (string deviceType in Devices.DeviceTypeNames())
                     {
                         //ServerForm.LogMessage(0, 0, 0, "SetupForm Load", "Adding device type: " + deviceType);
                         registeredDeviceTypes.Add(deviceType); // Remember the device types on this system
