@@ -39,8 +39,5 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ASCOM.ico" />
-    <Content Include="netstandard.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 </Project>
