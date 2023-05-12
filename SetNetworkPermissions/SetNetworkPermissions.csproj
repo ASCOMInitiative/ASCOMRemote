@@ -1,43 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>ASCOM.Remote</RootNamespace>
-    <AssemblyName>ASCOM.SetNetworkPermissions</AssemblyName>
-    <TargetFramework>net48</TargetFramework>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <AssemblyTitle>Set Network Permissions</AssemblyTitle>
-    <Product>SetNetworkPemissions</Product>
-    <Copyright>Copyright ©  2018 ASCOM Initiative</Copyright>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>embedded</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>embedded</DebugType>
-    <Optimize>false</Optimize>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>ASCOM.ico</ApplicationIcon>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\Remote Server\HostPc.cs" Link="HostPc.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.manifest" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="ASCOM.Tools" Version="1.0.96" />
-    <PackageReference Include="CommandLineParser" Version="2.9.1" />
-    <PackageReference Include="WindowsFirewallHelper" Version="2.2.0.86" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="ASCOM.ico" />
-  </ItemGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>ASCOM.Remote</RootNamespace>
+		<AssemblyName>ASCOM.SetNetworkPermissions</AssemblyName>
+		<TargetFramework>net7.0-windows</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<AssemblyTitle>Set Network Permissions</AssemblyTitle>
+		<Product>SetNetworkPemissions</Product>
+		<Copyright>Copyright ©  2018 ASCOM Initiative</Copyright>
+		<OutputPath>bin\$(Configuration)\</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DebugType>embedded</DebugType>
+		<Optimize>false</Optimize>
+	</PropertyGroup>
+	<PropertyGroup>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+	</PropertyGroup>
+	<PropertyGroup>
+		<ApplicationIcon>ASCOM.ico</ApplicationIcon>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="..\Remote Server\HostPc.cs" Link="HostPc.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="app.manifest" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="ASCOM.Tools" Version="1.0.96" />
+		<PackageReference Include="CommandLineParser" Version="2.9.1" />
+		<PackageReference Include="WindowsFirewallHelper" Version="2.2.0.86" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="ASCOM.ico" />
+	</ItemGroup>
 </Project>
