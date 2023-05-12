@@ -4784,7 +4784,7 @@ namespace ASCOM.Remote
         }
         private void ReturnStringList(string deviceType, RequestData requestData)
         {
-            ArrayList deviceResponse;
+            IEnumerable deviceResponse;
             List<string> responseList = new();
             Exception exReturn = null;
 
@@ -4793,7 +4793,7 @@ namespace ASCOM.Remote
                 switch (deviceType + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     case "*.supportedactions":
-                        deviceResponse = (ArrayList)device.SupportedActions;
+                        deviceResponse = (IEnumerable)device.SupportedActions;
                         foreach (string action in deviceResponse)
                         {
                             responseList.Add(action);
@@ -4801,7 +4801,7 @@ namespace ASCOM.Remote
                         break;
 
                     case "camera.gains":
-                        deviceResponse = (ArrayList)device.Gains;
+                        deviceResponse = (IEnumerable)device.Gains;
                         foreach (string gain in deviceResponse)
                         {
                             responseList.Add(gain);
@@ -4809,7 +4809,7 @@ namespace ASCOM.Remote
                         break;
 
                     case "camera.readoutmodes":
-                        deviceResponse = (ArrayList)device.ReadoutModes;
+                        deviceResponse = (IEnumerable)device.ReadoutModes;
                         foreach (string mode in deviceResponse)
                         {
                             responseList.Add(mode);
@@ -4817,7 +4817,7 @@ namespace ASCOM.Remote
                         break;
 
                     case "camera.offsets":
-                        deviceResponse = (ArrayList)device.Offsets;
+                        deviceResponse = (IEnumerable)device.Offsets;
                         foreach (string offset in deviceResponse)
                         {
                             responseList.Add(offset);

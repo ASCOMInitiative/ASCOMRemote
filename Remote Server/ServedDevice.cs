@@ -265,7 +265,7 @@ namespace ASCOM.Remote
                 }
 
                 // Set up device list so we can translate ProgID to description
-                if (cmbDeviceType.SelectedItem.ToString() != "None")
+                if (cmbDeviceType.SelectedItem.ToString() != SharedConstants.DEVICE_NOT_CONFIGURED)
                 {
                     List<ASCOMRegistration> installedDevices = Profile.GetDrivers(Devices.StringToDeviceType(cmbDeviceType.SelectedItem.ToString()));
                     //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Created registered device array list");
@@ -274,7 +274,7 @@ namespace ASCOM.Remote
                     foreach (ASCOMRegistration kvp in installedDevices)
                     {
                         if (!deviceDictionary.ContainsKey(kvp.ProgID)) deviceDictionary.Add(kvp.ProgID, kvp.Name);
-                        cmbDevice.Items.Add(kvp.ProgID);
+                        cmbDevice.Items.Add(kvp.Name);
                     }
                     if (cmbDevice.Items.Count > 0) cmbDevice.SelectedIndex = 0;
                     //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Finished");
