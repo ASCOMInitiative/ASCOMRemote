@@ -28,7 +28,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Remote Server\HostPc.cs" Link="HostPc.cs" />
-    <Compile Include="..\Shared Resources\Shared Constants.cs" Link="Shared Constants.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.manifest" />

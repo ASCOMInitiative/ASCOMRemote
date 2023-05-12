@@ -26,6 +26,21 @@ namespace ASCOM.Remote
 
         public const string NOT_PRESENT_FLAG = "***** PARAMETER NOT PRESENT *****";
 
+
+        // Constants used to set network permissions
+        public const string SET_NETWORK_PERMISSIONS_EXE_PATH = @"\ASCOM\Remote\ASCOM.SetNetworkPermissions.exe"; //Relative path of the SetNetworkPermissions exe from C:\Program Files (or x86 on 64bit OS). Must match the location where the installer puts the exe!
+        public const string ENABLE_REMOTE_SERVER_MANAGEMENT_URI_COMMAND_NAME = "setremoteservermanagementuriacl";
+        public const string ENABLE_ALPACA_DEVICE_MANAGEMENT_URI_COMMAND_NAME = "setalpacamanagementurl";
+        public const string ENABLE_ALPACA_SETUP_URI_COMMAND_NAME = "setalpacasetupurl";
+        public const string ENABLE_API_URI_COMMAND_NAME = "setapiuriacl";
+        public const string ENABLE_HTTP_DOT_SYS_PORT_COMMAND_NAME = "enablehttpdotsysport";
+        public const string SET_LOCAL_SERVER_PATH_COMMAND_NAME = "localserverpath";
+        public const string SET_REMOTE_SERVER_PATH_COMMAND_NAME = "remoteserverpath";
+        public const string USER_NAME_COMMAND_NAME = "username";
+
+
+
+
         static TraceLogger TL;
 
         [HandleProcessCorruptedStateExceptions]

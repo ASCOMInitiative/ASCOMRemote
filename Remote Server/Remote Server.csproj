@@ -41,44 +41,6 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Shared Resources\AlpacaConfiguredDevice.cs" Link="Entity Classes\AlpacaConfiguredDevice.cs" />
-    <Compile Include="..\Shared Resources\AlpacaDeviceDescription.cs" Link="Entity Classes\AlpacaDeviceDescription.cs" />
-    <Compile Include="..\Shared Resources\ConfiguredDevice.cs" Link="Entity Classes\ConfiguredDevice.cs" />
-    <Compile Include="..\Shared Resources\ExtensionMethods.cs" Link="ExtensionMethods.cs" />
-    <Compile Include="..\Shared Resources\ProfileDevice.cs" Link="Entity Classes\ProfileDevice.cs" />
-    <Compile Include="..\Shared Resources\RequestData.cs" Link="RequestData.cs" />
-    <Compile Include="..\Shared Resources\Response Classes\AlpacaConfiguredDevicesResponse.cs" Link="Response Classes\AlpacaConfiguredDevicesResponse.cs" />
-    <Compile Include="..\Shared Resources\Response Classes\AlpacaDescriptionResponse.cs" Link="Response Classes\AlpacaDescriptionResponse.cs" />
-    <Compile Include="..\Shared Resources\Response Classes\AlpacaDiscoveryResponse.cs" Link="Response Classes\AlpacaDiscoveryResponse.cs" />
-    <Compile Include="..\shared resources\response classes\AxisRatesResponse.cs" Link="Response Classes\AxisRatesResponse.cs" />
-    <Compile Include="..\Shared Resources\Response Classes\Base64ArrayHandOffResponse.cs" Link="Response Classes\Base64ArrayHandOffResponse.cs" />
-    <Compile Include="..\Shared Resources\Response Classes\Base64ArrayJsonResponse.cs" Link="Response Classes\Base64ArrayJsonResponse.cs" />
-    <Compile Include="..\shared resources\response classes\BoolResponse.cs" Link="Response Classes\BoolResponse.cs" />
-    <Compile Include="..\shared resources\response classes\ConfigurationResponse.cs" Link="Response Classes\ConfigurationResponse.cs" />
-    <Compile Include="..\shared resources\response classes\DateAndTimeResponse.cs" Link="Response Classes\DateAndTimeResponse.cs" />
-    <Compile Include="..\shared resources\response classes\DoubleArray2DResponse.cs" Link="Response Classes\DoubleArray2DResponse.cs" />
-    <Compile Include="..\shared resources\response classes\DoubleArray3DResponse.cs" Link="Response Classes\DoubleArray3DResponse.cs" />
-    <Compile Include="..\shared resources\response classes\DoubleResponse.cs" Link="Response Classes\DoubleResponse.cs" />
-    <Compile Include="..\shared resources\response classes\ImageArrayResponseBase.cs" Link="Response Classes\ImageArrayResponseBase.cs" />
-    <Compile Include="..\shared resources\response classes\IntArray1DResponse.cs" Link="Response Classes\IntArray1DResponse.cs" />
-    <Compile Include="..\shared resources\response classes\IntArray2DResponse.cs" Link="Response Classes\IntArray2DResponse.cs" />
-    <Compile Include="..\shared resources\response classes\IntArray3DResponse.cs" Link="Response Classes\IntArray3DResponse.cs" />
-    <Compile Include="..\shared resources\response classes\IntResponse.cs" Link="Response Classes\IntResponse.cs" />
-    <Compile Include="..\shared resources\response classes\MethodResponse.cs" Link="Response Classes\MethodResponse.cs" />
-    <Compile Include="..\shared resources\response classes\ProfileResponse.cs" Link="Response Classes\ProfileResponse.cs" />
-    <Compile Include="..\shared resources\response classes\RateResponse.cs" Link="Response Classes\RateResponse.cs" />
-    <Compile Include="..\shared resources\response classes\RestResponseBase.cs" Link="Response Classes\RestResponseBase.cs" />
-    <Compile Include="..\shared resources\response classes\ShortArray2DResponse.cs" Link="Response Classes\ShortArray2DResponse.cs" />
-    <Compile Include="..\shared resources\response classes\ShortArray3DResponse.cs" Link="Response Classes\ShortArray3DResponse.cs" />
-    <Compile Include="..\shared resources\response classes\ShortResponse.cs" Link="Response Classes\ShortResponse.cs" />
-    <Compile Include="..\shared resources\response classes\StringArrayResponse.cs" Link="Response Classes\StringArrayResponse.cs" />
-    <Compile Include="..\shared resources\response classes\StringListResponse.cs" Link="Response Classes\StringListResponse.cs" />
-    <Compile Include="..\shared resources\response classes\StringResponse.cs" Link="Response Classes\StringResponse.cs" />
-    <Compile Include="..\shared resources\response classes\TrackingRatesResponse.cs" Link="Response Classes\TrackingRatesResponse.cs" />
-    <Compile Include="..\Shared Resources\Shared Constants.cs" Link="Shared Constants.cs" />
-    <Compile Include="..\Shared Resources\SharedResources.cs" Link="SharedResources.cs" />
-    <Compile Include="..\Shared Resources\StringValue.cs" Link="StringValue.cs" />
-    <Compile Include="..\Shared Resources\TraceLoggerPlus.cs" Link="TraceLoggerPlus.cs" />
     <Compile Update="DriverHostForm.cs">
       <SubType>Form</SubType>
     </Compile>

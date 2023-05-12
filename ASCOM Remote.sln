@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetNetworkPermissions", "SetNetworkPermissions\SetNetworkPermissions.csproj", "{FF57CAEA-63F3-4F4F-9252-734796B74731}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SetNetworkPermissions", "SetNetworkPermissions\SetNetworkPermissions.csproj", "{FF57CAEA-63F3-4F4F-9252-734796B74731}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared Resources", "Shared Resources\Shared Resources.csproj", "{A9A92122-3CD7-4960-8D80-D62B06553983}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Server", "Remote Server\Remote Server.csproj", "{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Remote Server", "Remote Server\Remote Server.csproj", "{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +17,6 @@ Global
 		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9A92122-3CD7-4960-8D80-D62B06553983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9A92122-3CD7-4960-8D80-D62B06553983}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A9A92122-3CD7-4960-8D80-D62B06553983}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9A92122-3CD7-4960-8D80-D62B06553983}.Release|Any CPU.Build.0 = Release|Any CPU
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
