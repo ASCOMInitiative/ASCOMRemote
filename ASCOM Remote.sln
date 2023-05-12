@@ -1,21 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Remote Client Drivers", "Remote Client Drivers", "{C375AA07-FA9A-4720-96F5-2B23DF4567F2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetNetworkPermissions", "SetNetworkPermissions\SetNetworkPermissions.csproj", "{FF57CAEA-63F3-4F4F-9252-734796B74731}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Local Server", "Remote Client Local Server\Remote Client Local Server.csproj", "{3689A2CB-94C5-4012-A5CF-7E7D1DD27143}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device Base Classes", "Remote Client Device Base Classes\Device Base Classes.csproj", "{C7605D43-D11A-4891-A32D-FD5AB6E74772}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Client Telescope 1", "Remote Client Telescope Device 1\Remote Client Telescope 1.csproj", "{C7273EC6-232F-41C1-8790-9B7ECF24055B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared Resources", "Shared Resources\Shared Resources.csproj", "{A9A92122-3CD7-4960-8D80-D62B06553983}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASCOM.DynamicRemoteClients", "ASCOM.DynamicRemoteClients\ASCOM.DynamicRemoteClients.csproj", "{97967194-9DD9-44DF-846C-E2D8D504DF2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote Server", "Remote Server\Remote Server.csproj", "{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}"
 EndProject
@@ -29,26 +19,10 @@ Global
 		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3689A2CB-94C5-4012-A5CF-7E7D1DD27143}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3689A2CB-94C5-4012-A5CF-7E7D1DD27143}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3689A2CB-94C5-4012-A5CF-7E7D1DD27143}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3689A2CB-94C5-4012-A5CF-7E7D1DD27143}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C7605D43-D11A-4891-A32D-FD5AB6E74772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C7605D43-D11A-4891-A32D-FD5AB6E74772}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C7605D43-D11A-4891-A32D-FD5AB6E74772}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C7605D43-D11A-4891-A32D-FD5AB6E74772}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C7273EC6-232F-41C1-8790-9B7ECF24055B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C7273EC6-232F-41C1-8790-9B7ECF24055B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C7273EC6-232F-41C1-8790-9B7ECF24055B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C7273EC6-232F-41C1-8790-9B7ECF24055B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9A92122-3CD7-4960-8D80-D62B06553983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A9A92122-3CD7-4960-8D80-D62B06553983}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9A92122-3CD7-4960-8D80-D62B06553983}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9A92122-3CD7-4960-8D80-D62B06553983}.Release|Any CPU.Build.0 = Release|Any CPU
-		{97967194-9DD9-44DF-846C-E2D8D504DF2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{97967194-9DD9-44DF-846C-E2D8D504DF2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{97967194-9DD9-44DF-846C-E2D8D504DF2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{97967194-9DD9-44DF-846C-E2D8D504DF2E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -56,11 +30,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{C7605D43-D11A-4891-A32D-FD5AB6E74772} = {C375AA07-FA9A-4720-96F5-2B23DF4567F2}
-		{C7273EC6-232F-41C1-8790-9B7ECF24055B} = {C375AA07-FA9A-4720-96F5-2B23DF4567F2}
-		{97967194-9DD9-44DF-846C-E2D8D504DF2E} = {C375AA07-FA9A-4720-96F5-2B23DF4567F2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {171EDC5A-81C8-4545-BB43-723B4AE9B622}
