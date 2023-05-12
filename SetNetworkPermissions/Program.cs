@@ -43,7 +43,6 @@ namespace ASCOM.Remote
 
         static TraceLogger TL;
 
-        [HandleProcessCorruptedStateExceptions]
         static void Main(string[] args)
         {
 
@@ -78,7 +77,7 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                TraceLogger TL = new TraceLogger("SetNetworkPermissionsMainException", true)
+                TraceLogger TL = new("SetNetworkPermissionsMainException", true)
                 {
                     Enabled = true
                 };
@@ -136,7 +135,7 @@ namespace ASCOM.Remote
                     TL.LogMessage("QueryFireWall", string.Format("Found current firewall profile {0}, enabled: {1}", profile.Type.ToString(), profile.IsActive));
                 }
 
-                COMTypeResolver cOMTypeResolver = new COMTypeResolver();
+                COMTypeResolver cOMTypeResolver = new();
                 IFirewallProductsCollection thirdPartyFirewalls = FirewallManager.GetRegisteredProducts(cOMTypeResolver);
                 TL.LogMessage("QueryFireWall", string.Format("number of third party firewalls: {0}", thirdPartyFirewalls.Count));
                 foreach (FirewallProduct firewall in thirdPartyFirewalls)
@@ -178,30 +177,30 @@ namespace ASCOM.Remote
                         rule.Direction = FirewallDirection.Outbound;
 
                         // Add the group name to the outbound rule
-                        if (rule is FirewallWASRule) //Rules.StandardRule)
+                        if (rule is FirewallWASRule firewallWASRule) //Rules.StandardRule)
                         {
                             TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a standard rule");
-                            ((FirewallWASRule)rule).Grouping = GROUP_NAME;
+                            firewallWASRule.Grouping = GROUP_NAME;
                             TL.LogMessage("SetHttpSysFireWallRule", $"Group name set to: {GROUP_NAME}");
                         }
                         else
                         {
                             TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is not a standard rule");
                         }
-                        if (rule is FirewallWASRuleWin7)
+                        if (rule is FirewallWASRuleWin7 firewallWASRuleWin7)
                         {
                             TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a WIN7 rule");
-                            ((FirewallWASRuleWin7)rule).Grouping = GROUP_NAME;
+                            firewallWASRuleWin7.Grouping = GROUP_NAME;
                             TL.LogMessage("SetHttpSysFireWallRule", $"Group name set to: {GROUP_NAME}");
                         }
                         else
                         {
                             TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is not a WIN7 rule");
                         }
-                        if (rule is FirewallWASRuleWin8)
+                        if (rule is FirewallWASRuleWin8 firewallWASRuleWin8)
                         {
                             TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a WIN8 rule");
-                            ((FirewallWASRuleWin8)rule).Grouping = GROUP_NAME;
+                            firewallWASRuleWin8.Grouping = GROUP_NAME;
                             TL.LogMessage("SetHttpSysFireWallRule", $"Group name set to: {GROUP_NAME}");
                         }
                         else
@@ -244,7 +243,7 @@ namespace ASCOM.Remote
                     TL.LogMessage("QueryFireWall", string.Format("Found current firewall profile {0}, enabled: {1}", profile.Type.ToString(), profile.IsActive));
                 }
 
-                COMTypeResolver cOMTypeResolver = new COMTypeResolver();
+                COMTypeResolver cOMTypeResolver = new();
                 IFirewallProductsCollection thirdPartyFirewalls = FirewallManager.GetRegisteredProducts(cOMTypeResolver);
                 TL.LogMessage("QueryFireWall", string.Format("number of third party firewalls: {0}", thirdPartyFirewalls.Count));
                 foreach (FirewallProduct firewall in thirdPartyFirewalls)
@@ -328,33 +327,33 @@ namespace ASCOM.Remote
 
 
             // Add edge traversal permission to the inbound rule so that the rule will apply to packets delivered in encapsulated transmission formats such as VPNs
-            if (rule is FirewallWASRule)
+            if (rule is FirewallWASRule firewallWASRule)
             {
                 TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a standard rule");
-                ((FirewallWASRule)rule).EdgeTraversal = true;
-                ((FirewallWASRule)rule).Grouping = GROUP_NAME;
+                firewallWASRule.EdgeTraversal = true;
+                firewallWASRule.Grouping = GROUP_NAME;
                 TL.LogMessage("SetHttpSysFireWallRule", $"Edge traversal set {true}, Group name set to: {GROUP_NAME}");
             }
             else
             {
                 TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is not a standard rule");
             }
-            if (rule is FirewallWASRuleWin7)
+            if (rule is FirewallWASRuleWin7 firewallWASRuleWin7)
             {
                 TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a WIN7 rule");
-                ((FirewallWASRuleWin7)rule).EdgeTraversalOptions = EdgeTraversalAction.Allow;
-                ((FirewallWASRuleWin7)rule).Grouping = GROUP_NAME;
+                firewallWASRuleWin7.EdgeTraversalOptions = EdgeTraversalAction.Allow;
+                firewallWASRuleWin7.Grouping = GROUP_NAME;
                 TL.LogMessage("SetHttpSysFireWallRule", $"Edge traversal set {true}, Group name set to: {GROUP_NAME}");
             }
             else
             {
                 TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is not a WIN7 rule");
             }
-            if (rule is FirewallWASRuleWin8)
+            if (rule is FirewallWASRuleWin8 firewallWASRuleWin8)
             {
                 TL.LogMessage("SetHttpSysFireWallRule", "Firewall rule is a WIN8 rule");
-                ((FirewallWASRuleWin8)rule).EdgeTraversalOptions = EdgeTraversalAction.Allow;
-                ((FirewallWASRuleWin8)rule).Grouping = GROUP_NAME;
+                firewallWASRuleWin8.EdgeTraversalOptions = EdgeTraversalAction.Allow;
+                firewallWASRuleWin8.Grouping = GROUP_NAME;
                 TL.LogMessage("SetHttpSysFireWallRule", $"Edge traversal set {true}, Group name set to: {GROUP_NAME}");
             }
             else
@@ -379,7 +378,7 @@ namespace ASCOM.Remote
                 int doubleSlashIndex = uri.IndexOf("//");
                 int colonIndex;
 
-                if (uri.Contains("[")) // The URI contains an IPv6 address
+                if (uri.Contains('[')) // The URI contains an IPv6 address
                 {
                     colonIndex = uri.IndexOf("]:", doubleSlashIndex + 2) + 1;
                 }
@@ -450,7 +449,7 @@ namespace ASCOM.Remote
 
         private static void SendNetshCommand(string command)
         {
-            ProcessStartInfo psi = new ProcessStartInfo("netsh")
+            ProcessStartInfo psi = new("netsh")
             {
                 CreateNoWindow = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
@@ -460,7 +459,7 @@ namespace ASCOM.Remote
             };
 
             TL.LogMessage("SendNetshCommand", "Creating netsh process");
-            Process process = new Process
+            Process process = new()
             {
                 StartInfo = psi
             };
@@ -487,7 +486,7 @@ namespace ASCOM.Remote
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Exception exception = (Exception)e.ExceptionObject;
-            TraceLogger TL = new TraceLogger("SetNetworkPemissionsException", true)
+            TraceLogger TL = new("SetNetworkPemissionsException", true)
             {
                 Enabled = true
             };

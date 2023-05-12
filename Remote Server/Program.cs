@@ -14,7 +14,6 @@ namespace ASCOM.Remote
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        [HandleProcessCorruptedStateExceptions, SecurityCritical]
         static void Main()
         {
 #if !DEBUG // Exclude the unhandled exception handlers from the Debug version so that the application can be debugged in Visual Studio
@@ -29,13 +28,13 @@ namespace ASCOM.Remote
 #endif
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            ServerForm serverForm = new ServerForm();
+            ServerForm serverForm = new();
             Application.Run(serverForm);
 
             if (serverForm.RestartApplication) Application.Restart(); // Restart the application if the network permissions have been changed
 
 #if DEBUG // When debugging, include a log to show the time of close down
-            TraceLogger TL = new TraceLogger("ASCOMRemoteEnded", true)
+            TraceLogger TL = new("ASCOMRemoteEnded", true)
             {
                 Enabled = true
             };
@@ -48,7 +47,7 @@ namespace ASCOM.Remote
 
         static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            TraceLogger TL = new TraceLogger("RemoteAccessServerException",true)
+            TraceLogger TL = new("RemoteAccessServerException",true)
             {
                 Enabled = true
             };
@@ -65,7 +64,7 @@ namespace ASCOM.Remote
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Exception exception = (Exception)e.ExceptionObject;
-            TraceLogger TL = new TraceLogger("RemoteAccessServerException",true)
+            TraceLogger TL = new("RemoteAccessServerException",true)
             {
                 Enabled = true
             };

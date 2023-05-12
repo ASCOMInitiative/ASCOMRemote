@@ -12,7 +12,7 @@ namespace ASCOM.Remote
         /// Lookup dictionary to translate lower case method names to mixed case.
         /// The device type is included in order to disambiguate the same method name if used in different device types AND cased differently/>
         /// </summary>
-        private static readonly Dictionary<string, string> methodLookup = new Dictionary<string, string>()
+        private static readonly Dictionary<string, string> methodLookup = new()
         {
             { "connected","Connected" },
 
@@ -133,7 +133,7 @@ namespace ASCOM.Remote
 
         public static List<StringValue> ToListStringValue(this List<string> fromList)
         {
-            List<StringValue> toList = new List<StringValue>();
+            List<StringValue> toList = new();
 
             foreach (string item in fromList)
             {
@@ -145,7 +145,7 @@ namespace ASCOM.Remote
 
         public static List<string> ToListString(this List<StringValue> fromList)
         {
-            List<string> toList = new List<string>();
+            List<string> toList = new();
 
             foreach (StringValue item in fromList)
             {

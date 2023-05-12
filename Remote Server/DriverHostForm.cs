@@ -76,7 +76,7 @@ namespace ASCOM.Remote
                 Application.DoEvents();
 
                 // Process the command on a separate thread allowing other requests to be handled concurrently through this thread, which is running the Windows message loop
-                Thread driverThread = new Thread(new ParameterizedThreadStart(ProcessCommand)); // Create a new thread on which to make the call to the COM driver
+                Thread driverThread = new(new ParameterizedThreadStart(ProcessCommand)); // Create a new thread on which to make the call to the COM driver
                 if (ServerForm.DebugTraceState) ServerForm.LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"DriverCommand has received a command for {deviceKey} on FORM thread {Thread.CurrentThread.ManagedThreadId} Apartment state: {Thread.CurrentThread.GetApartmentState()} Is background: {Thread.CurrentThread.IsBackground} Is thread pool thread: {Thread.CurrentThread.IsThreadPoolThread}");
 
                 driverThread.Start(requestData); // Start the thread supplying the request data to the method

@@ -218,12 +218,12 @@ namespace ASCOM.Remote
         internal static TraceLoggerPlus AccessLog;
 
         // Lists to hold discovery UDP clients
-        private readonly List<UdpClient> discoveryClientsIpV6 = new List<UdpClient>();
-        private readonly List<UdpClient> discoveryClientsIpV4 = new List<UdpClient>();
+        private readonly List<UdpClient> discoveryClientsIpV6 = new();
+        private readonly List<UdpClient> discoveryClientsIpV4 = new();
         private int discoveryCount; // Unique number for each discovery packet received
 
-        internal readonly object counterLock = new object();
-        internal readonly object managementCommandLock = new object();
+        internal readonly object counterLock = new();
+        internal readonly object managementCommandLock = new();
 
         // Application Status variables
         internal static bool apiIsEnabled = false;
@@ -236,8 +236,8 @@ namespace ASCOM.Remote
         // Variable to hold the last log time so that old logs are closed and new logs are started when we move to a new day
         internal static DateTime NextTraceLogRolloverTime = DateTime.Now; // Initialise to now to ensure that the roll-over code works correctly
         internal static DateTime NextAccessLogRolloverTime = DateTime.Now; // Initialise to now to ensure that the roll-over code works correctly
-        private static readonly object traceLoggerRolloverLockObject = new object();
-        private static readonly object accessLogRolloverLockObject = new object();
+        private static readonly object traceLoggerRolloverLockObject = new();
+        private static readonly object accessLogRolloverLockObject = new();
 
         internal static ConcurrentDictionary<string, ConfiguredDevice> ConfiguredDevices;
         internal static ConcurrentDictionary<string, ActiveObject> ActiveObjects;
@@ -258,7 +258,7 @@ namespace ASCOM.Remote
         internal static bool LogClientIPAddress;
         internal static bool IncludeDriverExceptionInJsonResponse;
         internal static string RemoteServerLocation;
-        internal static List<string> CorsPermittedOrigins = new List<string>(); // List of permitted origins
+        internal static List<string> CorsPermittedOrigins = new(); // List of permitted origins
         internal static bool CorsSupportIsEnabled;
         internal static decimal CorsMaxAge;
         internal static bool CorsCredentialsPermitted;
@@ -294,7 +294,7 @@ namespace ASCOM.Remote
 
         #region Private Variables
 
-        private static readonly object logLockObject = new object(); // Lock object to ensure that midnight log change overs happen smoothly
+        private static readonly object logLockObject = new(); // Lock object to ensure that midnight log change overs happen smoothly
         private static TraceLoggerPlus TL; // Variable to hold the trace logger
         private static FormWindowState formWindowState; // Holds the server form window state in use before the application is minimised to the system tray so that this state can be restored when required
 
@@ -438,7 +438,7 @@ namespace ASCOM.Remote
             using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
             {
                 // Determine whether the user is running as admin
-                WindowsPrincipal principal = new WindowsPrincipal(identity);
+                WindowsPrincipal principal = new(identity);
                 if (principal.IsInRole(WindowsBuiltInRole.Administrator))
                 {
                     // Running as admin so show a warning message on the screen
@@ -601,7 +601,7 @@ namespace ASCOM.Remote
                                                 $"--{SharedConstants.USER_NAME_COMMAND_NAME} {userName}";
                                             LogMessage(0, 0, 0, "StartRESTServer", $"SetNetworkPermissions arguments: {args}");
 
-                                            ProcessStartInfo psi = new ProcessStartInfo(setNetworkPermissionsPath, args)
+                                            ProcessStartInfo psi = new(setNetworkPermissionsPath, args)
                                             {
                                                 Verb = "runas",
                                                 CreateNoWindow = true,
@@ -715,7 +715,7 @@ namespace ASCOM.Remote
                                                 if (uni.Address.AddressFamily == AddressFamily.InterNetwork) // Found an IPv4 address
                                                 {
                                                     // Create a UDP client to listen for Alpaca IPv4 broadcasts on this IPv4 interface
-                                                    UdpClient udpClientV4 = new UdpClient(AddressFamily.InterNetwork);
+                                                    UdpClient udpClientV4 = new(AddressFamily.InterNetwork);
                                                     udpClientV4.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                                                     udpClientV4.EnableBroadcast = true;
                                                     udpClientV4.MulticastLoopback = false;
@@ -774,7 +774,7 @@ namespace ASCOM.Remote
                                                 if (uni.Address.IsIPv6LinkLocal | ((uni.Address.AddressFamily == AddressFamily.InterNetworkV6) & IPAddress.IsLoopback(uni.Address))) // Found either an IPv6 link local address or the IPv6 loop back address
                                                 {
                                                     // Create a UDP client to listen for Alpaca IPv6 multi casts on this IPv6 interface
-                                                    UdpClient udpClientV6 = new UdpClient(AddressFamily.InterNetworkV6);
+                                                    UdpClient udpClientV6 = new(AddressFamily.InterNetworkV6);
                                                     udpClientV6.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                                                     udpClientV6.ExclusiveAddressUse = false;
                                                     udpClientV6.Client.Bind(new IPEndPoint(uni.Address, (int)AlpacaDiscoveryPort));
@@ -923,7 +923,7 @@ namespace ASCOM.Remote
                                 if (RunDriversOnSeparateThreads)
                                 {
                                     LogMessage(0, 0, 0, "ConnectDevices", string.Format("Creating driver {0} on separate thread. This is thread: {1}", configuredDevice.Value.ProgID, Thread.CurrentThread.ManagedThreadId));
-                                    Thread driverThread = new Thread(DriverOnSeparateThread);
+                                    Thread driverThread = new(DriverOnSeparateThread);
                                     driverThread.SetApartmentState(ApartmentState.STA);
                                     driverThread.DisableComObjectEagerCleanup();
                                     driverThread.IsBackground = true;
@@ -944,7 +944,7 @@ namespace ASCOM.Remote
                                 {
                                     if (this.InvokeRequired)
                                     {
-                                        CreateInstanceDelegate createInstanceDelegate = new CreateInstanceDelegate(CreateInstance);
+                                        CreateInstanceDelegate createInstanceDelegate = new(CreateInstance);
                                         this.Invoke(createInstanceDelegate, new object[] { configuredDevice }); // Force the driver to be created on the main UI thread if we are currently executing on a different thread
                                     }
                                     else CreateInstance(configuredDevice); // We are on the UI thread so just create the driver
@@ -987,7 +987,7 @@ namespace ASCOM.Remote
                 UdpClient udpClient = (UdpClient)ar.AsyncState;
 
                 // Create a dummy value into which the actual endpoint can be placed by the UdpClient.EndReceive method
-                IPEndPoint remoteEndpoint = new IPEndPoint(IPAddress.Any, (int)AlpacaDiscoveryPort);
+                IPEndPoint remoteEndpoint = new(IPAddress.Any, (int)AlpacaDiscoveryPort);
 
                 // Convert the UDP message body to a string
                 string ReceiveString = Encoding.ASCII.GetString(udpClient.EndReceive(ar, ref remoteEndpoint));
@@ -1032,7 +1032,7 @@ namespace ASCOM.Remote
                     ServerForm.LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"Received a version {discoveryBroadcastVersionNumber} (0x{(int)Char.GetNumericValue(discoveryBroadcastVersionNumber):X}) discovery packet from the client IP address {remoteEndpoint.Address} of type {remoteEndpoint.AddressFamily}. Returning Alpaca port number: {ServerPortNumber}");
 
                     // Create a discovery response, convert it to JSON and return this to the caller
-                    AlpacaDiscoveryResponse alpacaDiscoveryResponse = new AlpacaDiscoveryResponse((int)ServerPortNumber); // Create the response object
+                    AlpacaDiscoveryResponse alpacaDiscoveryResponse = new((int)ServerPortNumber); // Create the response object
 
                     string jsonResponse = JsonConvert.SerializeObject(alpacaDiscoveryResponse); // Convert the response object to a JSON string
                     ServerForm.LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"JSON Discovery response: {jsonResponse}");
@@ -1059,7 +1059,7 @@ namespace ASCOM.Remote
             KeyValuePair<string, ConfiguredDevice> configuredDevice = (KeyValuePair<string, ConfiguredDevice>)arg; // Convert the supplied argument to the correct type
 
             LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("About to create driver host form"));
-            DriverHostForm driverHostForm = new DriverHostForm(configuredDevice, this); // Create the form
+            DriverHostForm driverHostForm = new(configuredDevice, this); // Create the form
             LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Created driver host form"));
             driverHostForm.Show(); // Make it come into existence - it doesn't exist until its shown for some reason
             LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Shown driver host form"));
@@ -1162,7 +1162,7 @@ namespace ASCOM.Remote
                     {
                         if (RunDriversOnSeparateThreads)
                         {
-                            DestroyDriverDelegate destroyDriverDelegate = new DestroyDriverDelegate(activeObject.Value.DriverHostForm.DestroyDriver);
+                            DestroyDriverDelegate destroyDriverDelegate = new(activeObject.Value.DriverHostForm.DestroyDriver);
                             LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Starting invoke of driver delegate for device {0} on thread {1}", activeObject.Key, Thread.CurrentThread.ManagedThreadId));
                             activeObject.Value.DriverHostForm.Invoke(destroyDriverDelegate);
                             LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Completed invoke of driver delegate for device {0} on thread {1}", activeObject.Key, Thread.CurrentThread.ManagedThreadId));
@@ -1390,7 +1390,7 @@ namespace ASCOM.Remote
                 // Invoke the code on the UI thread if required
                 if (txtLog.InvokeRequired)
                 {
-                    SetTextCallback logToScreenDelegate = new SetTextCallback(LogToScreen);
+                    SetTextCallback logToScreenDelegate = new(LogToScreen);
                     this.Invoke(logToScreenDelegate, screenMessage);
                 }
                 else
@@ -1411,7 +1411,7 @@ namespace ASCOM.Remote
         {
             if (txtConcurrency.InvokeRequired)
             {
-                SetConcurrencyCallback d = new SetConcurrencyCallback(IncrementConcurrencyCounter);
+                SetConcurrencyCallback d = new(IncrementConcurrencyCounter);
                 this.Invoke(d, new object[] { });
             }
             else
@@ -1425,7 +1425,7 @@ namespace ASCOM.Remote
         {
             if (this.txtConcurrency.InvokeRequired)
             {
-                SetConcurrencyCallback decrementConcurrencyCounterDelegate = new SetConcurrencyCallback(DecrementConcurrencyCounter);
+                SetConcurrencyCallback decrementConcurrencyCounterDelegate = new(DecrementConcurrencyCounter);
                 this.Invoke(decrementConcurrencyCounterDelegate, new object[] { });
             }
             else
@@ -1543,7 +1543,7 @@ namespace ASCOM.Remote
         /// <returns>The time taken by the garbage collection in milli-seconds.</returns>
         public static double ForceGarbageCollection()
         {
-            Stopwatch sw = new Stopwatch();
+            Stopwatch sw = new();
             sw.Start();
             GC.Collect(2, GCCollectionMode.Forced, true);
             return sw.Elapsed.TotalMilliseconds;
@@ -1558,7 +1558,7 @@ namespace ASCOM.Remote
         /// </summary>
         public static void ReadProfile()
         {
-            using (Configuration driverProfile = new Configuration())
+            using (Configuration driverProfile = new())
             {
                 // Initialise the logging trace state from the Profile
                 TraceState = driverProfile.GetValue<bool>(SERVER_TRACE_LEVEL_PROFILENAME, string.Empty, SERVER_TRACE_LEVEL_DEFAULT);
@@ -1679,7 +1679,7 @@ namespace ASCOM.Remote
         /// </summary>
         public static void WriteProfile()
         {
-            using (Configuration driverProfile = new Configuration())
+            using (Configuration driverProfile = new())
             {
                 // Save the variable state to the Profile
                 driverProfile.SetValue<string>(SERVER_LOG_FOLDER_PROFILENAME, string.Empty, TraceFolder);
@@ -1769,7 +1769,7 @@ namespace ASCOM.Remote
             DisconnectDevices(); // Disconnect all devices so we can use their Setup screens if necessary
 
             LogMessage(0, 0, 0, "SetupButton", string.Format("Loading Setup form"));
-            SetupForm frm = new SetupForm();
+            SetupForm frm = new();
             DialogResult outcome = frm.ShowDialog();
             LogMessage(0, 0, 0, "SetupButton", string.Format("Setup dialogue outcome: {0}", outcome.ToString()));
 
@@ -2043,7 +2043,7 @@ namespace ASCOM.Remote
         {
             HttpListener listener = (HttpListener)result.AsyncState; // Get the listener instance from which this particular callback has come, it is supplied as the state parameter on the BeginGetContext call
             HttpListenerContext context = null;
-            RequestData requestData = new RequestData(); // Blank value to make logging work
+            RequestData requestData = new(); // Blank value to make logging work
 
             // Get the result context from the client's call
             try
@@ -2178,7 +2178,7 @@ namespace ASCOM.Remote
             NameValueCollection formParameters;
             HttpListenerRequest request;
             HttpListenerResponse response;
-            RequestData requestData = new RequestData();
+            RequestData requestData = new();
             bool preFlightRequest = false; // Flag indicating whether this is a CORS pre-flight request 
 
             try
@@ -2688,7 +2688,7 @@ namespace ASCOM.Remote
                                                 if (RunDriversOnSeparateThreads) // Each driver is running in its own Form with its own message loop
                                                 {
                                                     LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"ProcessRequestAsync - Sending command to {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
-                                                    DriverCommandDelegate driverCommandDelegate = new DriverCommandDelegate(ActiveObjects[deviceKey].DriverHostForm.DriverCommand); // Create a delegate for this request
+                                                    DriverCommandDelegate driverCommandDelegate = new(ActiveObjects[deviceKey].DriverHostForm.DriverCommand); // Create a delegate for this request
 
                                                     Thread driverThread = (Thread)ActiveObjects[deviceKey].DriverHostForm.Invoke(driverCommandDelegate, requestData); // Send the command to the host form, which will return a thread where the command is running
 
@@ -2759,7 +2759,7 @@ namespace ASCOM.Remote
                     if (elements[SharedConstants.URL_ELEMENT_API_VERSION].Trim() == SharedConstants.ALPACA_DEVICE_MANAGEMENT_APIVERSIONS) // Handle the api versions command to return a list of supported api versions
                     {
                         // Return the array of supported version numbers
-                        IntArray1DResponse intArrayResponseClass = new IntArray1DResponse(clientTransactionID, serverTransactionID, SharedConstants.MANAGEMENT_SUPPORTED_INTERFACE_VERSIONS)
+                        IntArray1DResponse intArrayResponseClass = new(clientTransactionID, serverTransactionID, SharedConstants.MANAGEMENT_SUPPORTED_INTERFACE_VERSIONS)
                         {
                             DriverException = null,
                             SerializeDriverException = false
@@ -2820,12 +2820,12 @@ namespace ASCOM.Remote
 
                                                         case SharedConstants.ALPACA_DEVICE_MANAGEMENT_DESCRIPTION:
                                                             // Create the remote server description and return it to the client in the proscribed format
-                                                            AlpacaDeviceDescription remoteServerDescription = new AlpacaDeviceDescription(SharedConstants.ALPACA_DEVICE_MANAGEMENT_SERVERNAME,
+                                                            AlpacaDeviceDescription remoteServerDescription = new(SharedConstants.ALPACA_DEVICE_MANAGEMENT_SERVERNAME,
                                                                                                                                           SharedConstants.ALPACA_DEVICE_MANAGEMENT_MANUFACTURER,
                                                                                                                                           Assembly.GetEntryAssembly().GetName().Version.ToString(),
                                                                                                                                           RemoteServerLocation);
 
-                                                            AlpacaDescriptionResponse descriptionResponse = new AlpacaDescriptionResponse(clientTransactionID, serverTransactionID, remoteServerDescription)
+                                                            AlpacaDescriptionResponse descriptionResponse = new(clientTransactionID, serverTransactionID, remoteServerDescription)
                                                             {
                                                                 DriverException = null,
                                                                 SerializeDriverException = false
@@ -2836,14 +2836,14 @@ namespace ASCOM.Remote
                                                             break;
 
                                                         case SharedConstants.ALPACA_DEVICE_MANAGEMENT_CONFIGURED_DEVICES:
-                                                            List<AlpacaConfiguredDevice> alpacaConfiguredDevices = new List<AlpacaConfiguredDevice>(); // Create an empty list to hold the list of configured devices 
+                                                            List<AlpacaConfiguredDevice> alpacaConfiguredDevices = new(); // Create an empty list to hold the list of configured devices 
 
                                                             // Populate the list with configured devices
                                                             foreach (KeyValuePair<string, ConfiguredDevice> configuredDevice in ConfiguredDevices)
                                                             {
                                                                 if (configuredDevice.Value.DeviceType != SharedConstants.DEVICE_NOT_CONFIGURED) // Only include configured devices, ignoring un-configured device slots
                                                                 {
-                                                                    AlpacaConfiguredDevice alpacaConfiguredDevice = new AlpacaConfiguredDevice(configuredDevice.Value.Description,
+                                                                    AlpacaConfiguredDevice alpacaConfiguredDevice = new(configuredDevice.Value.Description,
                                                                                                                                                configuredDevice.Value.DeviceType,
                                                                                                                                                configuredDevice.Value.DeviceNumber,
                                                                                                                                                configuredDevice.Value.UniqueID);
@@ -2853,7 +2853,7 @@ namespace ASCOM.Remote
 
                                                             //alpacaConfiguredDevices.Add(new AlpacaConfiguredDevice("Example non-standard device type for test purposes. This endpoint doesn't exist and cannot be accessed through HTTP.", "Management", 90, "4478abd9-80f4-47ca-a1f9-31d2de53a27f)"));
 
-                                                            AlpacaConfiguredDevicesResponse alpacaConfigurationResponse = new AlpacaConfiguredDevicesResponse(clientTransactionID, serverTransactionID, alpacaConfiguredDevices)
+                                                            AlpacaConfiguredDevicesResponse alpacaConfigurationResponse = new(clientTransactionID, serverTransactionID, alpacaConfiguredDevices)
                                                             {
                                                                 DriverException = null,
                                                                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -3026,7 +3026,7 @@ namespace ASCOM.Remote
                                                         // Returns the number of concurrent device calls. 
                                                         // This call will have incremented the concurrent call counter in its own right so the value returned by this call is one less than the numberOfConcurrentTransactions counter value,
                                                         // which will be the number of concurrent device calls.
-                                                        IntResponse intResponseClass = new IntResponse(clientTransactionID, serverTransactionID, numberOfConcurrentTransactions - 1)
+                                                        IntResponse intResponseClass = new(clientTransactionID, serverTransactionID, numberOfConcurrentTransactions - 1)
                                                         {
                                                             DriverException = null,
                                                             SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -3037,10 +3037,10 @@ namespace ASCOM.Remote
 
                                                     // STRING Get Values
                                                     case SharedConstants.REMOTE_SERVER_MANGEMENT_GET_PROFILE:
-                                                        List<ProfileDevice> profileDevices = new List<ProfileDevice>();
+                                                        List<ProfileDevice> profileDevices = new();
                                                         try
                                                         {
-                                                            using (Profile profile = new Profile())
+                                                            using (Profile profile = new())
                                                             {
                                                                 //ArrayList deviceTypes = profile.RegisteredDeviceTypes;
                                                                 //Devices.DeviceTypeNames.
@@ -3053,7 +3053,7 @@ namespace ASCOM.Remote
                                                                     }
                                                                 }
                                                             }
-                                                            ProfileResponse profileResponse = new ProfileResponse(clientTransactionID, serverTransactionID, profileDevices)
+                                                            ProfileResponse profileResponse = new(clientTransactionID, serverTransactionID, profileDevices)
                                                             {
                                                                 DriverException = null,
                                                                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -3068,7 +3068,7 @@ namespace ASCOM.Remote
                                                         break;
 
                                                     case SharedConstants.REMOTE_SERVER_MANGEMENT_GET_CONFIGURATION:
-                                                        ConfigurationResponse configurationResponse = new ConfigurationResponse(clientTransactionID, serverTransactionID, ConfiguredDevices)
+                                                        ConfigurationResponse configurationResponse = new(clientTransactionID, serverTransactionID, ConfiguredDevices)
                                                         {
                                                             DriverException = null,
                                                             SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -4394,7 +4394,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            BoolResponse responseClass = new BoolResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
+            BoolResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -4439,7 +4439,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            BoolResponse responseClass = new BoolResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
+            BoolResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -4536,9 +4536,9 @@ namespace ASCOM.Remote
             string parameters;
             bool raw;
             Exception exReturn = null;
-            Stopwatch sw = new Stopwatch();
+            Stopwatch sw = new();
             string responseJson;
-            Stopwatch swOverall = new Stopwatch();
+            Stopwatch swOverall = new();
             swOverall.Start();
 
             try
@@ -4595,7 +4595,7 @@ namespace ASCOM.Remote
             }
 
             sw.Restart();
-            StringResponse responseClass = new StringResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
+            StringResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -4613,8 +4613,8 @@ namespace ASCOM.Remote
 
         private static void ReturnImageArrayBytes(RequestData requestData)
         {
-            Stopwatch sw = new Stopwatch();
-            Stopwatch swOverall = new Stopwatch();
+            Stopwatch sw = new();
+            Stopwatch swOverall = new();
 
             Array imageArray;
             byte[] imageArrayBytes;
@@ -4743,7 +4743,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            StringResponse responseClass = new StringResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
+            StringResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -4774,7 +4774,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            StringArrayResponse responseClass = new StringArrayResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
+            StringArrayResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -4785,7 +4785,7 @@ namespace ASCOM.Remote
         private void ReturnStringList(string deviceType, RequestData requestData)
         {
             ArrayList deviceResponse;
-            List<string> responseList = new List<string>();
+            List<string> responseList = new();
             Exception exReturn = null;
 
             try
@@ -4834,7 +4834,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            StringListResponse responseClass = new StringListResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, responseList)
+            StringListResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, responseList)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -4974,7 +4974,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            DoubleResponse responseClass = new DoubleResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
+            DoubleResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5023,7 +5023,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            DoubleResponse responseClass = new DoubleResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
+            DoubleResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5117,7 +5117,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            DoubleResponse responseClass = new DoubleResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
+            DoubleResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5181,7 +5181,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            ShortResponse responseClass = new ShortResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
+            ShortResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5288,7 +5288,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
+            IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5319,7 +5319,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntArray1DResponse responseClass = new IntArray1DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
+            IntArray1DResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5390,7 +5390,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            DateTimeResponse responseClass = new DateTimeResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
+            DateTimeResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5446,14 +5446,14 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            TrackingRatesResponse responseClass = new TrackingRatesResponse(requestData.ClientTransactionID, requestData.ServerTransactionID)
+            TrackingRatesResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
 
             // Initialise a list to hold returned tracking rate values and add any tracking rate values that have been returned
-            List<DriveRate> rates = new List<DriveRate>();
+            List<DriveRate> rates = new();
 
             if (!(deviceResponse is null)) // Avoid processing a null return value because the for each code will fail 
             {
@@ -5485,7 +5485,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
+            IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5509,7 +5509,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
+            IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5532,7 +5532,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
+            IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5578,7 +5578,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
+            IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5601,7 +5601,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
+            IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5624,7 +5624,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
+            IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5647,7 +5647,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
+            IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5670,7 +5670,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
+            IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5694,7 +5694,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
+            IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -5714,7 +5714,7 @@ namespace ASCOM.Remote
         private void ReturnImageArrayBase64(RequestData requestData)
         {
             Array imageArray = null;
-            Stopwatch sw = new Stopwatch();
+            Stopwatch sw = new();
             long lastTime;
             byte[] imageArrayBytes;
             int imageArrayElementSize = 0;
@@ -5882,7 +5882,7 @@ namespace ASCOM.Remote
             bool base64HandoffRequested = false; // Flag to indicate whether the client supports base64 serialisation
             bool imageBytesRequested = false; // Flag to indicate whether the client requests that the image be transferred as a byte array
 
-            Stopwatch sw = new Stopwatch(); // Create a stopwatch to time the process
+            Stopwatch sw = new(); // Create a stopwatch to time the process
 
             // Determine whether the client supports compressed responses by testing the Accept-Encoding header, if present. GZip compression will be favoured over Deflate if the client accepts both methods
             string[] acceptEncoding = requestData.Request.Headers.GetValues("Accept-Encoding"); // Get the Accept-Encoding header, if present
@@ -6276,8 +6276,8 @@ namespace ASCOM.Remote
                 if (base64HandoffRequested)  // Client supports base64 encoding
                 {
                     // Write the response back to the client using a stream
-                    JsonSerializer serializer = new JsonSerializer();
-                    StreamWriter streamWriter = new StreamWriter(requestData.Response.OutputStream);
+                    JsonSerializer serializer = new();
+                    StreamWriter streamWriter = new(requestData.Response.OutputStream);
 
                     using (JsonWriter writer = new JsonTextWriter(streamWriter))
                     {
@@ -6339,9 +6339,9 @@ namespace ASCOM.Remote
 
                         case SharedConstants.ImageArrayCompression.None:
                             // Write the array back to the client using a stream to avoid running out of memory when serialising very large image arrays
-                            JsonSerializer serializer1 = new JsonSerializer();
+                            JsonSerializer serializer1 = new();
 
-                            using (StreamWriter streamWriter1 = new StreamWriter(requestData.Response.OutputStream))
+                            using (StreamWriter streamWriter1 = new(requestData.Response.OutputStream))
                             {
                                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"No compression - ReturnImageArray Before writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
 
@@ -6378,8 +6378,8 @@ namespace ASCOM.Remote
 
         private static void ReturnImageBytes(RequestData requestData, ref Array deviceResponse)
         {
-            Stopwatch sw = new Stopwatch();
-            Stopwatch swOverall = new Stopwatch();
+            Stopwatch sw = new();
+            Stopwatch swOverall = new();
 
             byte[] imageArrayBytes;
 
@@ -6481,7 +6481,7 @@ namespace ASCOM.Remote
             {
                 exReturn = ex;
             }
-            BoolResponse responseClass = new BoolResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
+            BoolResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -6513,7 +6513,7 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
-            IntResponse responseClass = new IntResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
+            IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -6546,7 +6546,7 @@ namespace ASCOM.Remote
             }
 
             // Initialise a list to hold returned rate values and add any rate values that have been returned
-            List<RateResponse> rateResponse = new List<RateResponse>();
+            List<RateResponse> rateResponse = new();
 
             if (!(deviceResponse is null)) // Avoid processing a null return value because the for each code will fail 
             {
@@ -6556,7 +6556,7 @@ namespace ASCOM.Remote
                 }
             }
 
-            AxisRatesResponse responseClass = new AxisRatesResponse(requestData.ClientTransactionID, requestData.ServerTransactionID, rateResponse)
+            AxisRatesResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, rateResponse)
             {
                 DriverException = exReturn,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
@@ -6895,7 +6895,7 @@ namespace ASCOM.Remote
 
         private void SendEmptyResponseToClient(RequestData requestData, Exception ex)
         {
-            MethodResponse responseClass = new MethodResponse(requestData.ClientTransactionID, requestData.ServerTransactionID)
+            MethodResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID)
             {
                 DriverException = ex,
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse

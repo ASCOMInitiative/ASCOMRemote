@@ -19,7 +19,7 @@ namespace ASCOM.Remote
 
         #region Variables
 
-        private List<string> registeredDeviceTypes = new List<string>();
+        private List<string> registeredDeviceTypes = new();
         // Create a dictionary to hold the current device instance numbers of every device type
         private Dictionary<string, int> deviceNumberIndexes;
 
@@ -28,18 +28,18 @@ namespace ASCOM.Remote
         private bool selectByMouse = false; // Variable to help select the whole contents of a numeric up-down box when tabbed into our selected by mouse
 
         // CORS data grid view presentation variables
-        private BindingSource bindingSource = new BindingSource(); // Binding source to connect the List of permitted origins to the data grid view control
+        private BindingSource bindingSource = new(); // Binding source to connect the List of permitted origins to the data grid view control
 
-        private ToolStripMenuItem insertRow = new ToolStripMenuItem(); // Tool strip menu items for the context menu entries
-        private ToolStripMenuItem insertTenRows = new ToolStripMenuItem();
-        private ToolStripMenuItem deleteSelectedRows = new ToolStripMenuItem();
+        private ToolStripMenuItem insertRow = new(); // Tool strip menu items for the context menu entries
+        private ToolStripMenuItem insertTenRows = new();
+        private ToolStripMenuItem deleteSelectedRows = new();
 
         private int currentRowIndex; // Variable to hold the current row index during row inserts
 
         private DataGridViewSelectedRowCollection selectedRows; // Collections to hold selected rows and cells for use when deleting origins
         private DataGridViewSelectedCellCollection selectedCells;
 
-        private List<StringValue> corsPermittedOriginsCopy = new List<StringValue>(); // Variable to hold a copy of the list of permitted origins so that it can be edited without affecting the master copy.
+        private List<StringValue> corsPermittedOriginsCopy = new(); // Variable to hold a copy of the list of permitted origins so that it can be edited without affecting the master copy.
 
         private bool alreadyDisposed = false;
         private bool maxDevicesHasChanged;
@@ -52,7 +52,7 @@ namespace ASCOM.Remote
         {
             InitializeComponent();
 
-            HideTabControlBorders tabControl = new HideTabControlBorders(SetupTabControl); // Apply special drawing handler to the tab control in order to suppress white boarders that appear in the default control
+            HideTabControlBorders tabControl = new(SetupTabControl); // Apply special drawing handler to the tab control in order to suppress white boarders that appear in the default control
 
             addressList.Validating += AddressList_Validating; // Add event handlers for IP address validation events
             chkTrace.CheckedChanged += ChkTrace_CheckedChanged;
@@ -150,7 +150,7 @@ namespace ASCOM.Remote
                 ChkEnableCors_CheckedChanged(ChkEnableCors, new EventArgs()); // Fire the event handlers to ensure that the controls reflect the CORS enabled / disabled state
                 DataGridCorsOrigins_EnabledChanged(DataGridCorsOrigins, new EventArgs());
 
-                using (Profile profile = new Profile())
+                using (Profile profile = new())
                 {
                     // Populate the device types list
                     foreach (string deviceType in Devices.DeviceTypeNames())
@@ -752,7 +752,7 @@ namespace ASCOM.Remote
             foreach (string deviceType in registeredDeviceTypes)
             {
                 ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Processing device type: " + deviceType);
-                SortedDictionary<string, ServedDevice> servedDevices = new SortedDictionary<string, ServedDevice>();
+                SortedDictionary<string, ServedDevice> servedDevices = new();
                 foreach (ServedDevice c in deviceList) //.Where(device => device.DeviceType == deviceType))
                 {
                     if (c.DeviceType == deviceType)
@@ -762,7 +762,7 @@ namespace ASCOM.Remote
                     }
                 }
                 ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Added served devices");
-                Dictionary<string, string> x = new Dictionary<string, string>();
+                Dictionary<string, string> x = new();
 
                 foreach (KeyValuePair<string, ServedDevice> item in servedDevices)
                 {
@@ -908,7 +908,7 @@ namespace ASCOM.Remote
                 selectedCells = dataGridViewControl.SelectedCells;
 
                 // Create the right click context menu contents
-                ContextMenuStrip strip = new ContextMenuStrip();
+                ContextMenuStrip strip = new();
                 strip.Items.Add(insertRow);
                 strip.Items.Add(insertTenRows);
 

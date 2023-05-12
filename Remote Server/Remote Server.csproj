@@ -9,11 +9,7 @@
 		<AssemblyTitle>ASCOM Remote Server</AssemblyTitle>
 		<Product>ASCOM Remote Server</Product>
 		<Copyright>Copyright © 2022 Peter Simpson</Copyright>
-		<Prefer32Bit>true</Prefer32Bit>
 		<OutputPath>bin\$(Configuration)\</OutputPath>
-		<PostBuildEvent />
-		<PostBuildEvent />
-		<PostBuildEvent />
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugType>embedded</DebugType>
