@@ -28,291 +28,282 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ServerForm));
-            this.BtnSetup = new System.Windows.Forms.Button();
-            this.BtnConnectDevices = new System.Windows.Forms.Button();
-            this.BtnDisconnectDevices = new System.Windows.Forms.Button();
-            this.BtnExit = new System.Windows.Forms.Button();
-            this.LblDriverStatus = new System.Windows.Forms.Label();
-            this.txtLog = new System.Windows.Forms.TextBox();
-            this.lblTitle = new System.Windows.Forms.Label();
-            this.chkLogRequests = new System.Windows.Forms.CheckBox();
-            this.chkLogResponses = new System.Windows.Forms.CheckBox();
-            this.txtConcurrency = new System.Windows.Forms.TextBox();
-            this.lblConcurrentTransactions = new System.Windows.Forms.Label();
-            this.LblRESTStatus = new System.Windows.Forms.Label();
-            this.BtnStartRESTServer = new System.Windows.Forms.Button();
-            this.BtnStopRESTServer = new System.Windows.Forms.Button();
-            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.systemTrayMenuItems = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.Title = new System.Windows.Forms.ToolStripMenuItem();
-            this.TitleSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.NumberOfDevices = new System.Windows.Forms.ToolStripMenuItem();
-            this.IpV4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.IpV6 = new System.Windows.Forms.ToolStripMenuItem();
-            this.IpAddress = new System.Windows.Forms.ToolStripMenuItem();
-            this.Port = new System.Windows.Forms.ToolStripMenuItem();
-            this.ActionSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.Exit = new System.Windows.Forms.ToolStripMenuItem();
-            this.systemTrayMenuItems.SuspendLayout();
-            this.SuspendLayout();
+            BtnSetup = new System.Windows.Forms.Button();
+            BtnConnectDevices = new System.Windows.Forms.Button();
+            BtnDisconnectDevices = new System.Windows.Forms.Button();
+            BtnExit = new System.Windows.Forms.Button();
+            LblDriverStatus = new System.Windows.Forms.Label();
+            txtLog = new System.Windows.Forms.TextBox();
+            lblTitle = new System.Windows.Forms.Label();
+            chkLogRequests = new System.Windows.Forms.CheckBox();
+            chkLogResponses = new System.Windows.Forms.CheckBox();
+            txtConcurrency = new System.Windows.Forms.TextBox();
+            lblConcurrentTransactions = new System.Windows.Forms.Label();
+            LblRESTStatus = new System.Windows.Forms.Label();
+            BtnStartRESTServer = new System.Windows.Forms.Button();
+            BtnStopRESTServer = new System.Windows.Forms.Button();
+            notifyIcon = new System.Windows.Forms.NotifyIcon(components);
+            systemTrayMenuItems = new System.Windows.Forms.ContextMenuStrip(components);
+            Title = new System.Windows.Forms.ToolStripMenuItem();
+            TitleSeparator = new System.Windows.Forms.ToolStripSeparator();
+            NumberOfDevices = new System.Windows.Forms.ToolStripMenuItem();
+            IpV4 = new System.Windows.Forms.ToolStripMenuItem();
+            IpV6 = new System.Windows.Forms.ToolStripMenuItem();
+            IpAddress = new System.Windows.Forms.ToolStripMenuItem();
+            Port = new System.Windows.Forms.ToolStripMenuItem();
+            ActionSeparator = new System.Windows.Forms.ToolStripSeparator();
+            Exit = new System.Windows.Forms.ToolStripMenuItem();
+            systemTrayMenuItems.SuspendLayout();
+            SuspendLayout();
             // 
             // BtnSetup
             // 
-            this.BtnSetup.Location = new System.Drawing.Point(773, 416);
-            this.BtnSetup.Name = "BtnSetup";
-            this.BtnSetup.Size = new System.Drawing.Size(100, 24);
-            this.BtnSetup.TabIndex = 0;
-            this.BtnSetup.Text = "Setup";
-            this.BtnSetup.UseVisualStyleBackColor = true;
-            this.BtnSetup.Click += new System.EventHandler(this.BtnSetup_Click);
+            BtnSetup.Location = new System.Drawing.Point(773, 416);
+            BtnSetup.Name = "BtnSetup";
+            BtnSetup.Size = new System.Drawing.Size(100, 24);
+            BtnSetup.TabIndex = 0;
+            BtnSetup.Text = "Setup";
+            BtnSetup.UseVisualStyleBackColor = true;
+            BtnSetup.Click += BtnSetup_Click;
             // 
             // BtnConnectDevices
             // 
-            this.BtnConnectDevices.Location = new System.Drawing.Point(824, 339);
-            this.BtnConnectDevices.Name = "BtnConnectDevices";
-            this.BtnConnectDevices.Size = new System.Drawing.Size(79, 24);
-            this.BtnConnectDevices.TabIndex = 2;
-            this.BtnConnectDevices.Text = "Connect";
-            this.BtnConnectDevices.UseVisualStyleBackColor = true;
-            this.BtnConnectDevices.Click += new System.EventHandler(this.BtnConnectDevices_Click);
+            BtnConnectDevices.Location = new System.Drawing.Point(824, 339);
+            BtnConnectDevices.Name = "BtnConnectDevices";
+            BtnConnectDevices.Size = new System.Drawing.Size(79, 24);
+            BtnConnectDevices.TabIndex = 2;
+            BtnConnectDevices.Text = "Connect";
+            BtnConnectDevices.UseVisualStyleBackColor = true;
+            BtnConnectDevices.Click += BtnConnectDevices_Click;
             // 
             // BtnDisconnectDevices
             // 
-            this.BtnDisconnectDevices.Location = new System.Drawing.Point(733, 339);
-            this.BtnDisconnectDevices.Name = "BtnDisconnectDevices";
-            this.BtnDisconnectDevices.Size = new System.Drawing.Size(79, 24);
-            this.BtnDisconnectDevices.TabIndex = 3;
-            this.BtnDisconnectDevices.Text = "Disconnect";
-            this.BtnDisconnectDevices.UseVisualStyleBackColor = true;
-            this.BtnDisconnectDevices.Click += new System.EventHandler(this.BtnDisconnectDevices_Click);
+            BtnDisconnectDevices.Location = new System.Drawing.Point(733, 339);
+            BtnDisconnectDevices.Name = "BtnDisconnectDevices";
+            BtnDisconnectDevices.Size = new System.Drawing.Size(79, 24);
+            BtnDisconnectDevices.TabIndex = 3;
+            BtnDisconnectDevices.Text = "Disconnect";
+            BtnDisconnectDevices.UseVisualStyleBackColor = true;
+            BtnDisconnectDevices.Click += BtnDisconnectDevices_Click;
             // 
             // BtnExit
             // 
-            this.BtnExit.Location = new System.Drawing.Point(773, 476);
-            this.BtnExit.Name = "BtnExit";
-            this.BtnExit.Size = new System.Drawing.Size(100, 24);
-            this.BtnExit.TabIndex = 4;
-            this.BtnExit.Text = "Exit";
-            this.BtnExit.UseVisualStyleBackColor = true;
-            this.BtnExit.Click += new System.EventHandler(this.BtnExit_Click);
+            BtnExit.Location = new System.Drawing.Point(773, 476);
+            BtnExit.Name = "BtnExit";
+            BtnExit.Size = new System.Drawing.Size(100, 24);
+            BtnExit.TabIndex = 4;
+            BtnExit.Text = "Exit";
+            BtnExit.UseVisualStyleBackColor = true;
+            BtnExit.Click += BtnExit_Click;
             // 
             // LblDriverStatus
             // 
-            this.LblDriverStatus.BackColor = System.Drawing.Color.Red;
-            this.LblDriverStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LblDriverStatus.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.LblDriverStatus.Location = new System.Drawing.Point(734, 309);
-            this.LblDriverStatus.Name = "LblDriverStatus";
-            this.LblDriverStatus.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
-            this.LblDriverStatus.Size = new System.Drawing.Size(168, 24);
-            this.LblDriverStatus.TabIndex = 6;
-            this.LblDriverStatus.Text = "Drivers Unloaded";
-            this.LblDriverStatus.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            LblDriverStatus.BackColor = System.Drawing.Color.Red;
+            LblDriverStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            LblDriverStatus.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            LblDriverStatus.Location = new System.Drawing.Point(734, 309);
+            LblDriverStatus.Name = "LblDriverStatus";
+            LblDriverStatus.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            LblDriverStatus.Size = new System.Drawing.Size(168, 24);
+            LblDriverStatus.TabIndex = 6;
+            LblDriverStatus.Text = "Drivers Unloaded";
+            LblDriverStatus.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // txtLog
             // 
-            this.txtLog.Location = new System.Drawing.Point(12, 73);
-            this.txtLog.Multiline = true;
-            this.txtLog.Name = "txtLog";
-            this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLog.Size = new System.Drawing.Size(704, 531);
-            this.txtLog.TabIndex = 7;
+            txtLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtLog.Location = new System.Drawing.Point(12, 73);
+            txtLog.Multiline = true;
+            txtLog.Name = "txtLog";
+            txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            txtLog.Size = new System.Drawing.Size(704, 531);
+            txtLog.TabIndex = 7;
             // 
             // lblTitle
             // 
-            this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitle.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.lblTitle.Location = new System.Drawing.Point(185, 25);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(359, 26);
-            this.lblTitle.TabIndex = 8;
-            this.lblTitle.Text = "ASCOM Remote Server Console";
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            lblTitle.ForeColor = System.Drawing.SystemColors.Highlight;
+            lblTitle.Location = new System.Drawing.Point(185, 25);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new System.Drawing.Size(359, 26);
+            lblTitle.TabIndex = 8;
+            lblTitle.Text = "ASCOM Remote Server Console";
             // 
             // chkLogRequests
             // 
-            this.chkLogRequests.AutoSize = true;
-            this.chkLogRequests.Location = new System.Drawing.Point(770, 159);
-            this.chkLogRequests.Name = "chkLogRequests";
-            this.chkLogRequests.Size = new System.Drawing.Size(92, 17);
-            this.chkLogRequests.TabIndex = 9;
-            this.chkLogRequests.Text = "Log Requests";
-            this.chkLogRequests.UseVisualStyleBackColor = true;
+            chkLogRequests.AutoSize = true;
+            chkLogRequests.Location = new System.Drawing.Point(770, 159);
+            chkLogRequests.Name = "chkLogRequests";
+            chkLogRequests.Size = new System.Drawing.Size(92, 17);
+            chkLogRequests.TabIndex = 9;
+            chkLogRequests.Text = "Log Requests";
+            chkLogRequests.UseVisualStyleBackColor = true;
             // 
             // chkLogResponses
             // 
-            this.chkLogResponses.AutoSize = true;
-            this.chkLogResponses.Location = new System.Drawing.Point(770, 182);
-            this.chkLogResponses.Name = "chkLogResponses";
-            this.chkLogResponses.Size = new System.Drawing.Size(100, 17);
-            this.chkLogResponses.TabIndex = 10;
-            this.chkLogResponses.Text = "Log Responses";
-            this.chkLogResponses.UseVisualStyleBackColor = true;
+            chkLogResponses.AutoSize = true;
+            chkLogResponses.Location = new System.Drawing.Point(770, 182);
+            chkLogResponses.Name = "chkLogResponses";
+            chkLogResponses.Size = new System.Drawing.Size(100, 17);
+            chkLogResponses.TabIndex = 10;
+            chkLogResponses.Text = "Log Responses";
+            chkLogResponses.UseVisualStyleBackColor = true;
             // 
             // txtConcurrency
             // 
-            this.txtConcurrency.BackColor = System.Drawing.SystemColors.Window;
-            this.txtConcurrency.Location = new System.Drawing.Point(764, 103);
-            this.txtConcurrency.Name = "txtConcurrency";
-            this.txtConcurrency.ReadOnly = true;
-            this.txtConcurrency.Size = new System.Drawing.Size(26, 20);
-            this.txtConcurrency.TabIndex = 11;
-            this.txtConcurrency.Text = "0";
-            this.txtConcurrency.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            txtConcurrency.BackColor = System.Drawing.SystemColors.Window;
+            txtConcurrency.Location = new System.Drawing.Point(764, 103);
+            txtConcurrency.Name = "txtConcurrency";
+            txtConcurrency.ReadOnly = true;
+            txtConcurrency.Size = new System.Drawing.Size(26, 20);
+            txtConcurrency.TabIndex = 11;
+            txtConcurrency.Text = "0";
+            txtConcurrency.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lblConcurrentTransactions
             // 
-            this.lblConcurrentTransactions.AutoSize = true;
-            this.lblConcurrentTransactions.Location = new System.Drawing.Point(809, 99);
-            this.lblConcurrentTransactions.Name = "lblConcurrentTransactions";
-            this.lblConcurrentTransactions.Size = new System.Drawing.Size(68, 26);
-            this.lblConcurrentTransactions.TabIndex = 12;
-            this.lblConcurrentTransactions.Text = "Concurrent\r\nTransactions";
+            lblConcurrentTransactions.AutoSize = true;
+            lblConcurrentTransactions.Location = new System.Drawing.Point(809, 99);
+            lblConcurrentTransactions.Name = "lblConcurrentTransactions";
+            lblConcurrentTransactions.Size = new System.Drawing.Size(68, 26);
+            lblConcurrentTransactions.TabIndex = 12;
+            lblConcurrentTransactions.Text = "Concurrent\r\nTransactions";
             // 
             // LblRESTStatus
             // 
-            this.LblRESTStatus.BackColor = System.Drawing.Color.Red;
-            this.LblRESTStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LblRESTStatus.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.LblRESTStatus.Location = new System.Drawing.Point(734, 220);
-            this.LblRESTStatus.Name = "LblRESTStatus";
-            this.LblRESTStatus.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
-            this.LblRESTStatus.Size = new System.Drawing.Size(168, 24);
-            this.LblRESTStatus.TabIndex = 14;
-            this.LblRESTStatus.Text = "Remote Server Down";
-            this.LblRESTStatus.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            LblRESTStatus.BackColor = System.Drawing.Color.Red;
+            LblRESTStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            LblRESTStatus.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            LblRESTStatus.Location = new System.Drawing.Point(734, 220);
+            LblRESTStatus.Name = "LblRESTStatus";
+            LblRESTStatus.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            LblRESTStatus.Size = new System.Drawing.Size(168, 24);
+            LblRESTStatus.TabIndex = 14;
+            LblRESTStatus.Text = "Remote Server Down";
+            LblRESTStatus.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // BtnStartRESTServer
             // 
-            this.BtnStartRESTServer.Location = new System.Drawing.Point(824, 250);
-            this.BtnStartRESTServer.Name = "BtnStartRESTServer";
-            this.BtnStartRESTServer.Size = new System.Drawing.Size(79, 24);
-            this.BtnStartRESTServer.TabIndex = 16;
-            this.BtnStartRESTServer.Text = "Start";
-            this.BtnStartRESTServer.UseVisualStyleBackColor = true;
-            this.BtnStartRESTServer.Click += new System.EventHandler(this.BtnStartRESTServer_Click);
+            BtnStartRESTServer.Location = new System.Drawing.Point(824, 250);
+            BtnStartRESTServer.Name = "BtnStartRESTServer";
+            BtnStartRESTServer.Size = new System.Drawing.Size(79, 24);
+            BtnStartRESTServer.TabIndex = 16;
+            BtnStartRESTServer.Text = "Start";
+            BtnStartRESTServer.UseVisualStyleBackColor = true;
+            BtnStartRESTServer.Click += BtnStartRESTServer_Click;
             // 
             // BtnStopRESTServer
             // 
-            this.BtnStopRESTServer.Location = new System.Drawing.Point(733, 250);
-            this.BtnStopRESTServer.Name = "BtnStopRESTServer";
-            this.BtnStopRESTServer.Size = new System.Drawing.Size(79, 24);
-            this.BtnStopRESTServer.TabIndex = 15;
-            this.BtnStopRESTServer.Text = "Stop";
-            this.BtnStopRESTServer.UseVisualStyleBackColor = true;
-            this.BtnStopRESTServer.Click += new System.EventHandler(this.BtnStopRESTServer_Click);
+            BtnStopRESTServer.Location = new System.Drawing.Point(733, 250);
+            BtnStopRESTServer.Name = "BtnStopRESTServer";
+            BtnStopRESTServer.Size = new System.Drawing.Size(79, 24);
+            BtnStopRESTServer.TabIndex = 15;
+            BtnStopRESTServer.Text = "Stop";
+            BtnStopRESTServer.UseVisualStyleBackColor = true;
+            BtnStopRESTServer.Click += BtnStopRESTServer_Click;
             // 
             // notifyIcon
             // 
-            this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.notifyIcon.BalloonTipText = "Double click to restore ASCOM Remote";
-            this.notifyIcon.BalloonTipTitle = "ASCOM Remote";
-            this.notifyIcon.ContextMenuStrip = this.systemTrayMenuItems;
-            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
-            this.notifyIcon.Text = "ASCOM Remote";
+            notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            notifyIcon.BalloonTipText = "Double click to restore ASCOM Remote";
+            notifyIcon.BalloonTipTitle = "ASCOM Remote";
+            notifyIcon.ContextMenuStrip = systemTrayMenuItems;
+            notifyIcon.Icon = (System.Drawing.Icon)resources.GetObject("notifyIcon.Icon");
+            notifyIcon.Text = "ASCOM Remote";
             // 
             // systemTrayMenuItems
             // 
-            this.systemTrayMenuItems.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.Title,
-            this.TitleSeparator,
-            this.NumberOfDevices,
-            this.IpV4,
-            this.IpV6,
-            this.IpAddress,
-            this.Port,
-            this.ActionSeparator,
-            this.Exit});
-            this.systemTrayMenuItems.Name = "systemTrayMenuItems";
-            this.systemTrayMenuItems.Size = new System.Drawing.Size(206, 192);
+            systemTrayMenuItems.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { Title, TitleSeparator, NumberOfDevices, IpV4, IpV6, IpAddress, Port, ActionSeparator, Exit });
+            systemTrayMenuItems.Name = "systemTrayMenuItems";
+            systemTrayMenuItems.Size = new System.Drawing.Size(206, 170);
             // 
             // Title
             // 
-            this.Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.Title.Name = "Title";
-            this.Title.Size = new System.Drawing.Size(205, 22);
-            this.Title.Text = "ASCOM Remote Server";
+            Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            Title.Name = "Title";
+            Title.Size = new System.Drawing.Size(205, 22);
+            Title.Text = "ASCOM Remote Server";
             // 
             // TitleSeparator
             // 
-            this.TitleSeparator.Name = "TitleSeparator";
-            this.TitleSeparator.Size = new System.Drawing.Size(202, 6);
+            TitleSeparator.Name = "TitleSeparator";
+            TitleSeparator.Size = new System.Drawing.Size(202, 6);
             // 
             // NumberOfDevices
             // 
-            this.NumberOfDevices.Enabled = false;
-            this.NumberOfDevices.Name = "NumberOfDevices";
-            this.NumberOfDevices.Size = new System.Drawing.Size(205, 22);
-            this.NumberOfDevices.Text = "Number of devices: 0";
+            NumberOfDevices.Enabled = false;
+            NumberOfDevices.Name = "NumberOfDevices";
+            NumberOfDevices.Size = new System.Drawing.Size(205, 22);
+            NumberOfDevices.Text = "Number of devices: 0";
             // 
             // IpV4
             // 
-            this.IpV4.Enabled = false;
-            this.IpV4.Name = "IpV4";
-            this.IpV4.Size = new System.Drawing.Size(205, 22);
-            this.IpV4.Text = "IP v4 enabled: False";
+            IpV4.Enabled = false;
+            IpV4.Name = "IpV4";
+            IpV4.Size = new System.Drawing.Size(205, 22);
+            IpV4.Text = "IP v4 enabled: False";
             // 
             // IpV6
             // 
-            this.IpV6.Enabled = false;
-            this.IpV6.Name = "IpV6";
-            this.IpV6.Size = new System.Drawing.Size(205, 22);
-            this.IpV6.Text = "IP v6 enabled: False";
+            IpV6.Enabled = false;
+            IpV6.Name = "IpV6";
+            IpV6.Size = new System.Drawing.Size(205, 22);
+            IpV6.Text = "IP v6 enabled: False";
             // 
             // IpAddress
             // 
-            this.IpAddress.Enabled = false;
-            this.IpAddress.Name = "IpAddress";
-            this.IpAddress.Size = new System.Drawing.Size(205, 22);
+            IpAddress.Enabled = false;
+            IpAddress.Name = "IpAddress";
+            IpAddress.Size = new System.Drawing.Size(205, 22);
             // 
             // Port
             // 
-            this.Port.Enabled = false;
-            this.Port.Name = "Port";
-            this.Port.Size = new System.Drawing.Size(205, 22);
-            this.Port.Text = "toolStripMenuItem2";
+            Port.Enabled = false;
+            Port.Name = "Port";
+            Port.Size = new System.Drawing.Size(205, 22);
+            Port.Text = "toolStripMenuItem2";
             // 
             // ActionSeparator
             // 
-            this.ActionSeparator.Name = "ActionSeparator";
-            this.ActionSeparator.Size = new System.Drawing.Size(202, 6);
+            ActionSeparator.Name = "ActionSeparator";
+            ActionSeparator.Size = new System.Drawing.Size(202, 6);
             // 
             // Exit
             // 
-            this.Exit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.Exit.Name = "Exit";
-            this.Exit.Size = new System.Drawing.Size(205, 22);
-            this.Exit.Text = "Exit";
+            Exit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            Exit.Name = "Exit";
+            Exit.Size = new System.Drawing.Size(205, 22);
+            Exit.Text = "Exit";
             // 
             // ServerForm
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(920, 616);
-            this.Controls.Add(this.BtnStartRESTServer);
-            this.Controls.Add(this.BtnStopRESTServer);
-            this.Controls.Add(this.LblRESTStatus);
-            this.Controls.Add(this.lblConcurrentTransactions);
-            this.Controls.Add(this.txtConcurrency);
-            this.Controls.Add(this.chkLogResponses);
-            this.Controls.Add(this.chkLogRequests);
-            this.Controls.Add(this.lblTitle);
-            this.Controls.Add(this.txtLog);
-            this.Controls.Add(this.LblDriverStatus);
-            this.Controls.Add(this.BtnExit);
-            this.Controls.Add(this.BtnDisconnectDevices);
-            this.Controls.Add(this.BtnConnectDevices);
-            this.Controls.Add(this.BtnSetup);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "ServerForm";
-            this.Text = "ASCOM Remote Server";
-            this.Load += new System.EventHandler(this.ServerForm_Load);
-            this.systemTrayMenuItems.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            ClientSize = new System.Drawing.Size(920, 616);
+            Controls.Add(BtnStartRESTServer);
+            Controls.Add(BtnStopRESTServer);
+            Controls.Add(LblRESTStatus);
+            Controls.Add(lblConcurrentTransactions);
+            Controls.Add(txtConcurrency);
+            Controls.Add(chkLogResponses);
+            Controls.Add(chkLogRequests);
+            Controls.Add(lblTitle);
+            Controls.Add(txtLog);
+            Controls.Add(LblDriverStatus);
+            Controls.Add(BtnExit);
+            Controls.Add(BtnDisconnectDevices);
+            Controls.Add(BtnConnectDevices);
+            Controls.Add(BtnSetup);
+            Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Name = "ServerForm";
+            Text = "ASCOM Remote Server";
+            Load += ServerForm_Load;
+            systemTrayMenuItems.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

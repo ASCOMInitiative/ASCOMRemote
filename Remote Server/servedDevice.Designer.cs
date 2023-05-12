@@ -28,98 +28,106 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.cmbDeviceType = new System.Windows.Forms.ComboBox();
-            this.txtDeviceNumber = new System.Windows.Forms.TextBox();
-            this.cmbDevice = new System.Windows.Forms.ComboBox();
-            this.chkAllowSetConnectedTrue = new System.Windows.Forms.CheckBox();
-            this.chkAllowSetConnectedFalse = new System.Windows.Forms.CheckBox();
-            this.btnSetup = new System.Windows.Forms.Button();
-            this.ChkAllowConcurrentAccess = new System.Windows.Forms.CheckBox();
-            this.SuspendLayout();
+            cmbDeviceType = new System.Windows.Forms.ComboBox();
+            txtDeviceNumber = new System.Windows.Forms.TextBox();
+            cmbDevice = new System.Windows.Forms.ComboBox();
+            chkAllowSetConnectedTrue = new System.Windows.Forms.CheckBox();
+            chkAllowSetConnectedFalse = new System.Windows.Forms.CheckBox();
+            btnSetup = new System.Windows.Forms.Button();
+            ChkAllowConcurrentAccess = new System.Windows.Forms.CheckBox();
+            SuspendLayout();
             // 
             // cmbDeviceType
             // 
-            this.cmbDeviceType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbDeviceType.FormattingEnabled = true;
-            this.cmbDeviceType.Location = new System.Drawing.Point(0, 1);
-            this.cmbDeviceType.Name = "cmbDeviceType";
-            this.cmbDeviceType.Size = new System.Drawing.Size(165, 21);
-            this.cmbDeviceType.TabIndex = 0;
-            this.cmbDeviceType.SelectedIndexChanged += new System.EventHandler(this.CmbDeviceType_SelectedIndexChanged);
+            cmbDeviceType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbDeviceType.FormattingEnabled = true;
+            cmbDeviceType.Location = new System.Drawing.Point(0, 1);
+            cmbDeviceType.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cmbDeviceType.Name = "cmbDeviceType";
+            cmbDeviceType.Size = new System.Drawing.Size(192, 23);
+            cmbDeviceType.TabIndex = 0;
+            cmbDeviceType.SelectedIndexChanged += CmbDeviceType_SelectedIndexChanged;
             // 
             // txtDeviceNumber
             // 
-            this.txtDeviceNumber.BackColor = System.Drawing.SystemColors.Window;
-            this.txtDeviceNumber.Location = new System.Drawing.Point(200, 1);
-            this.txtDeviceNumber.Name = "txtDeviceNumber";
-            this.txtDeviceNumber.ReadOnly = true;
-            this.txtDeviceNumber.Size = new System.Drawing.Size(25, 20);
-            this.txtDeviceNumber.TabIndex = 1;
-            this.txtDeviceNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            txtDeviceNumber.BackColor = System.Drawing.SystemColors.Window;
+            txtDeviceNumber.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            txtDeviceNumber.Location = new System.Drawing.Point(233, 1);
+            txtDeviceNumber.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtDeviceNumber.Name = "txtDeviceNumber";
+            txtDeviceNumber.ReadOnly = true;
+            txtDeviceNumber.Size = new System.Drawing.Size(28, 23);
+            txtDeviceNumber.TabIndex = 1;
+            txtDeviceNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // cmbDevice
             // 
-            this.cmbDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbDevice.FormattingEnabled = true;
-            this.cmbDevice.Location = new System.Drawing.Point(290, 1);
-            this.cmbDevice.Name = "cmbDevice";
-            this.cmbDevice.Size = new System.Drawing.Size(296, 21);
-            this.cmbDevice.TabIndex = 3;
-            this.cmbDevice.SelectedIndexChanged += new System.EventHandler(this.CmbDevice_SelectedIndexChanged);
+            cmbDevice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbDevice.FormattingEnabled = true;
+            cmbDevice.Location = new System.Drawing.Point(338, 1);
+            cmbDevice.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cmbDevice.Name = "cmbDevice";
+            cmbDevice.Size = new System.Drawing.Size(345, 23);
+            cmbDevice.TabIndex = 3;
+            cmbDevice.SelectedIndexChanged += CmbDevice_SelectedIndexChanged;
             // 
             // chkAllowSetConnectedTrue
             // 
-            this.chkAllowSetConnectedTrue.AutoSize = true;
-            this.chkAllowSetConnectedTrue.Location = new System.Drawing.Point(844, 4);
-            this.chkAllowSetConnectedTrue.Name = "chkAllowSetConnectedTrue";
-            this.chkAllowSetConnectedTrue.Size = new System.Drawing.Size(15, 14);
-            this.chkAllowSetConnectedTrue.TabIndex = 5;
-            this.chkAllowSetConnectedTrue.UseVisualStyleBackColor = true;
+            chkAllowSetConnectedTrue.AutoSize = true;
+            chkAllowSetConnectedTrue.Location = new System.Drawing.Point(985, 5);
+            chkAllowSetConnectedTrue.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkAllowSetConnectedTrue.Name = "chkAllowSetConnectedTrue";
+            chkAllowSetConnectedTrue.Size = new System.Drawing.Size(15, 14);
+            chkAllowSetConnectedTrue.TabIndex = 5;
+            chkAllowSetConnectedTrue.UseVisualStyleBackColor = true;
             // 
             // chkAllowSetConnectedFalse
             // 
-            this.chkAllowSetConnectedFalse.AutoSize = true;
-            this.chkAllowSetConnectedFalse.Location = new System.Drawing.Point(784, 4);
-            this.chkAllowSetConnectedFalse.Name = "chkAllowSetConnectedFalse";
-            this.chkAllowSetConnectedFalse.Size = new System.Drawing.Size(15, 14);
-            this.chkAllowSetConnectedFalse.TabIndex = 4;
-            this.chkAllowSetConnectedFalse.UseVisualStyleBackColor = true;
+            chkAllowSetConnectedFalse.AutoSize = true;
+            chkAllowSetConnectedFalse.Location = new System.Drawing.Point(915, 5);
+            chkAllowSetConnectedFalse.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkAllowSetConnectedFalse.Name = "chkAllowSetConnectedFalse";
+            chkAllowSetConnectedFalse.Size = new System.Drawing.Size(15, 14);
+            chkAllowSetConnectedFalse.TabIndex = 4;
+            chkAllowSetConnectedFalse.UseVisualStyleBackColor = true;
             // 
             // btnSetup
             // 
-            this.btnSetup.Location = new System.Drawing.Point(644, 1);
-            this.btnSetup.Name = "btnSetup";
-            this.btnSetup.Size = new System.Drawing.Size(75, 19);
-            this.btnSetup.TabIndex = 6;
-            this.btnSetup.Text = "Setup";
-            this.btnSetup.UseVisualStyleBackColor = true;
-            this.btnSetup.Click += new System.EventHandler(this.BtnSetup_Click);
+            btnSetup.Location = new System.Drawing.Point(751, 1);
+            btnSetup.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSetup.Name = "btnSetup";
+            btnSetup.Size = new System.Drawing.Size(88, 22);
+            btnSetup.TabIndex = 6;
+            btnSetup.Text = "Setup";
+            btnSetup.UseVisualStyleBackColor = true;
+            btnSetup.Click += BtnSetup_Click;
             // 
             // ChkAllowConcurrentAccess
             // 
-            this.ChkAllowConcurrentAccess.AutoSize = true;
-            this.ChkAllowConcurrentAccess.Location = new System.Drawing.Point(928, 4);
-            this.ChkAllowConcurrentAccess.Name = "ChkAllowConcurrentAccess";
-            this.ChkAllowConcurrentAccess.Size = new System.Drawing.Size(15, 14);
-            this.ChkAllowConcurrentAccess.TabIndex = 7;
-            this.ChkAllowConcurrentAccess.UseVisualStyleBackColor = true;
+            ChkAllowConcurrentAccess.AutoSize = true;
+            ChkAllowConcurrentAccess.Location = new System.Drawing.Point(1083, 5);
+            ChkAllowConcurrentAccess.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ChkAllowConcurrentAccess.Name = "ChkAllowConcurrentAccess";
+            ChkAllowConcurrentAccess.Size = new System.Drawing.Size(15, 14);
+            ChkAllowConcurrentAccess.TabIndex = 7;
+            ChkAllowConcurrentAccess.UseVisualStyleBackColor = true;
             // 
             // ServedDevice
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.ChkAllowConcurrentAccess);
-            this.Controls.Add(this.btnSetup);
-            this.Controls.Add(this.chkAllowSetConnectedTrue);
-            this.Controls.Add(this.chkAllowSetConnectedFalse);
-            this.Controls.Add(this.cmbDevice);
-            this.Controls.Add(this.txtDeviceNumber);
-            this.Controls.Add(this.cmbDeviceType);
-            this.Name = "ServedDevice";
-            this.Size = new System.Drawing.Size(979, 22);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            Controls.Add(ChkAllowConcurrentAccess);
+            Controls.Add(btnSetup);
+            Controls.Add(chkAllowSetConnectedTrue);
+            Controls.Add(chkAllowSetConnectedFalse);
+            Controls.Add(cmbDevice);
+            Controls.Add(txtDeviceNumber);
+            Controls.Add(cmbDeviceType);
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "ServedDevice";
+            Size = new System.Drawing.Size(1142, 25);
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

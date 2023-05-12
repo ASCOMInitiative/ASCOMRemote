@@ -265,18 +265,20 @@ namespace ASCOM.Remote
                 }
 
                 // Set up device list so we can translate ProgID to description
-
-                List<ASCOMRegistration> installedDevices = Profile.GetDrivers(Devices.StringToDeviceType(cmbDeviceType.SelectedItem.ToString()));
-                //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Created registered device array list");
-
-                deviceDictionary.Clear();
-                foreach (ASCOMRegistration kvp in installedDevices)
+                if (cmbDeviceType.SelectedItem.ToString() != "None")
                 {
-                    if (!deviceDictionary.ContainsKey(kvp.ProgID)) deviceDictionary.Add(kvp.ProgID, kvp.Name);
-                    cmbDevice.Items.Add(kvp.ProgID);
+                    List<ASCOMRegistration> installedDevices = Profile.GetDrivers(Devices.StringToDeviceType(cmbDeviceType.SelectedItem.ToString()));
+                    //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Created registered device array list");
+
+                    deviceDictionary.Clear();
+                    foreach (ASCOMRegistration kvp in installedDevices)
+                    {
+                        if (!deviceDictionary.ContainsKey(kvp.ProgID)) deviceDictionary.Add(kvp.ProgID, kvp.Name);
+                        cmbDevice.Items.Add(kvp.ProgID);
+                    }
+                    if (cmbDevice.Items.Count > 0) cmbDevice.SelectedIndex = 0;
+                    //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Finished");
                 }
-                if (cmbDevice.Items.Count > 0) cmbDevice.SelectedIndex = 0;
-                //ServerForm.LogMessage(0, 0, 0, this.Name, "cmbDeviceType_Changed - Finished");
 
             }
             catch (Exception ex)
