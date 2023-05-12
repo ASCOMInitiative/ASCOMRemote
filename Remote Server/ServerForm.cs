@@ -3042,8 +3042,6 @@ namespace ASCOM.Remote
                                                         {
                                                             using (Profile profile = new())
                                                             {
-                                                                //ArrayList deviceTypes = profile.RegisteredDeviceTypes;
-                                                                //Devices.DeviceTypeNames.
                                                                 foreach (DeviceTypes deviceType in Enum.GetValues(typeof(DeviceTypes)))
                                                                 {
                                                                     List<ASCOMRegistration> registeredDevices = Profile.GetDrivers(deviceType);
