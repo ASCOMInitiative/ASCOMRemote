@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Ignore Spelling: PROFILENAME AUTOCONNECT
+
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -37,7 +39,6 @@ namespace ASCOM.Remote
 
         // Testing Constants - NEVER TO BE USED IN PRODUCTION!
         private readonly bool FORCE_JSON_RESPONSE_TO_LOWER_CASE_TESTING_ONLY = false;
-        private readonly bool FORCE_400_RESPONSE_FOR_INCORRECTLY_CASED_IDS = false;
 
         // NOTE - Setup page HTML is set in the ReturnHTMLPageOrImage  method
 
