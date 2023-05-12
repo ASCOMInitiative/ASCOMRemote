@@ -28,6 +28,7 @@
 		<Compile Include="..\Remote Server\HostPc.cs" Link="HostPc.cs" />
 	</ItemGroup>
 	<ItemGroup>
+		<None Include="..\.editorconfig" Link=".editorconfig" />
 		<None Include="app.manifest" />
 	</ItemGroup>
 	<ItemGroup>
