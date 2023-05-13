@@ -10,6 +10,7 @@
 		<Product>ASCOM Remote Server</Product>
 		<Copyright>Copyright © 2023 Peter Simpson</Copyright>
 		<OutputPath>bin\$(Configuration)\</OutputPath>
+		<Platforms>AnyCPU;x86</Platforms>
 	</PropertyGroup>
 	<Target Name="Test" AfterTargets="AfterBuild">
 		<Message Importance="High" Text=" Version: $(ProductMajor).$(ProductMinor).$(ProductPatch).$(BuildNumber)" />
@@ -47,15 +48,22 @@
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugType>embedded</DebugType>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+	  <DebugType>embedded</DebugType>
+	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<DebugType>embedded</DebugType>
 		<UseVSHostingProcess>true</UseVSHostingProcess>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+	  <DebugType>embedded</DebugType>
+	  <UseVSHostingProcess>true</UseVSHostingProcess>
 	</PropertyGroup>
 	<PropertyGroup>
 		<StartupObject>ASCOM.Remote.Program</StartupObject>
 	</PropertyGroup>
 	<PropertyGroup>
-		<AssemblyOriginatorKeyFile>Remote Server Key.snk</AssemblyOriginatorKeyFile>
+		<AssemblyOriginatorKeyFile>..\Remote Server Key.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 	<PropertyGroup>
 		<ApplicationIcon>ASCOM.ico</ApplicationIcon>
@@ -94,7 +102,6 @@
 			<DependentUpon>ServerForm.cs</DependentUpon>
 			<SubType>Designer</SubType>
 		</EmbeddedResource>
-		<None Include="Remote Server Key.snk" />
 	</ItemGroup>
 	<ItemGroup>
 		<Content Include="ASCOM.ico" />
