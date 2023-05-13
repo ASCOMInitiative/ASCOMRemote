@@ -36,30 +36,23 @@
 	<PropertyGroup Condition="'$(ProductPreRelease)'!=''">
 		<ProductPreReleaseSeparator>-</ProductPreReleaseSeparator>
 	</PropertyGroup>
-	<PropertyGroup >
+	<PropertyGroup>
 		<!--Set the assembly version numbers to major.minor.patch.build - This must be a a separate property group to the group where the variables are set -->
-		<Version>$(ProductMajor).$(ProductMinor).$(ProductPatch).$(BuildNumber)</Version>
 		<AssemblyVersion>$(ProductMajor).$(ProductMinor).$(ProductPatch).$(BuildNumber)</AssemblyVersion>
 		<FileVersion>$(ProductMajor).$(ProductMinor).$(ProductPatch).$(BuildNumber)</FileVersion>
 
-		<!--Set the product version to the SEMVER version string -->
+		<!--Set the product version to the SEMVER version string including the major, minor, patch, pre-release and build number elements-->
 		<InformationalVersion>$(ProductMajor).$(ProductMinor).$(ProductPatch)$(ProductPreReleaseSeparator)$(ProductPreRelease)+$(BuildNumber)</InformationalVersion>
-	</PropertyGroup>
-
-	<!-- Create the pre-release string minus character separator if this is a pre-release -->
-	<PropertyGroup Condition="'$(ProductPreRelease)'!=''">
-		<ProductPreReleaseSeparator>-</ProductPreReleaseSeparator>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugType>embedded</DebugType>
-		<NoWarn />
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<DebugType>embedded</DebugType>
 		<UseVSHostingProcess>true</UseVSHostingProcess>
 	</PropertyGroup>
 	<PropertyGroup>
-		<StartupObject />
+		<StartupObject>ASCOM.Remote.Program</StartupObject>
 	</PropertyGroup>
 	<PropertyGroup>
 		<AssemblyOriginatorKeyFile>Remote Server Key.snk</AssemblyOriginatorKeyFile>
@@ -68,7 +61,7 @@
 		<ApplicationIcon>ASCOM.ico</ApplicationIcon>
 	</PropertyGroup>
 	<PropertyGroup>
-		<PostBuildEvent />
+	  <SignAssembly>True</SignAssembly>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Update="DriverHostForm.cs" />
