@@ -8,7 +8,7 @@
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<AssemblyTitle>ASCOM Remote Server</AssemblyTitle>
 		<Product>ASCOM Remote Server</Product>
-		<Copyright>Copyright © 2022 Peter Simpson</Copyright>
+		<Copyright>Copyright © 2023 Peter Simpson</Copyright>
 		<OutputPath>bin\$(Configuration)\</OutputPath>
 	</PropertyGroup>
 	<Target Name="Test" AfterTargets="AfterBuild">
@@ -26,11 +26,11 @@
 
 		<!--Create a dynamic revision number based on time of build
 		 
-		The revision number is calculated by using the lowest 5 bits (0::31) to store the build hour (0::23) and the upper 11 bits to store the build day since the 1st January 2022.
+		The revision number is calculated by using the lowest 5 bits (0::31) to store the build hour (0::23) and the upper 11 bits to store the build day since the 1st January 2023.
 		This approach gives a revision number that changes every hour and that only repeats after 2048 days (over 5 years). 
 		To simplify the formula, years are assumed to be 366 days in length and UTC is used for the time of day so that daylight savings time changes can be ignored. -->
 
-		<BuildNumber>$([MSBuild]::Add($([MSBuild]::Multiply($([MSBuild]::Modulo($([MSBuild]::Add($([MSBuild]::Multiply($([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year),2022)),366)),$([System.DateTime]::UtcNow.DayOfYear))),2048)),32)),$([System.DateTime]::UtcNow.TimeOfDay.Hours)))</BuildNumber>
+		<BuildNumber>$([MSBuild]::Add($([MSBuild]::Multiply($([MSBuild]::Modulo($([MSBuild]::Add($([MSBuild]::Multiply($([MSBuild]::Subtract($([System.DateTime]::UtcNow.Year),2023)),366)),$([System.DateTime]::UtcNow.DayOfYear))),2048)),32)),$([System.DateTime]::UtcNow.TimeOfDay.Hours)))</BuildNumber>
 	</PropertyGroup>
 	<!-- Create the pre-release string minus character separator if this is a pre-release -->
 	<PropertyGroup Condition="'$(ProductPreRelease)'!=''">
