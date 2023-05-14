@@ -17,6 +17,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -158,6 +159,8 @@ namespace ASCOM.Remote
         internal const string MINIMISE_TO_SYSTEM_TRAY_PROFILENAME = "Minimise To System Tray"; public const bool MINIMISE_TO_SYSTEM_TRAY_DEFAULT = false;
         internal const string CONFIRM_EXIT_PROFILENAME = "Confirm Exit"; public const bool CONFIRM_EXIT_DEFAULT = false;
         internal const string MINIMISE_ON_START_PROFILENAME = "Minimise On Start"; public const bool MINIMISE_ON_START_DEFAULT = false;
+        internal const string CHECK_FOR_UPDATES = "Check For Updates"; public const bool CHECK_FOR_UPDATES_DEFAULT = true;
+        internal const string CHECK_FOR_PRE_RELEASE = "Check For Pre-release Updates"; public const bool CHECK_FOR_PRE_RELEASE_DEFAULT = false;
 
         // Minimise behaviour strings
         internal const string MINIMISE_TO_SYSTEM_TRAY_KEY = "Minimise to system tray";
@@ -274,6 +277,8 @@ namespace ASCOM.Remote
         internal static bool MinimiseToSystemTray;
         internal static bool ConfirmExit;
         internal static bool StartMinimised;
+        internal static bool CheckForUpdates;
+        internal static bool CheckForPreReleaseUpdates;
 
         #endregion
 
@@ -343,10 +348,11 @@ namespace ASCOM.Remote
                     UseUtcTime = UseUtcTimeInLogs
                 };
 
-                Version version = Assembly.GetEntryAssembly().GetName().Version;
-                LogMessage(0, 0, 0, "New", $"Remote Server Version {version}, Started on {DateTime.Now:dddd d MMMM yyyy HH: mm:ss}");
+                LogMessage(0, 0, 0, "New", $"Remote Server Version {Updates.AscomRemoteVersionDisplayString}, Started on {DateTime.Now:dddd d MMMM yyyy HH: mm:ss}");
                 LogMessage(0, 0, 0, "New", $"Running as user {WindowsIdentity.GetCurrent().Name}");
                 LogMessage(0, 0, 0, "New", $"Running as a {(Environment.Is64BitProcess ? "64" : "32")}bit application on a {(Environment.Is64BitOperatingSystem ? "64" : "32")}bit OS.");
+
+                RunCheckForUpdates();
 
                 AccessLog = new TraceLoggerPlus("", TraceFolder, ACCESSLOG_TRACELOGGER_NAME, AccessLogEnabled)
                 {
@@ -397,9 +403,45 @@ namespace ASCOM.Remote
             }
         }
 
+        private void RunCheckForUpdates()
+        {
+            if (CheckForUpdates | CheckForPreReleaseUpdates)
+            {
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        await Updates.CheckForUpdates();
+                        LogMessage(0, 0, 0, "RunCheckForUpdates", $"Found latest release: {Updates.LatestReleaseName} {Updates.LatestReleaseVersion}, Latest pre-release: {Updates.LatestPreviewName} {Updates.LatestPreviewVersion}");
+                        LogMessage(0, 0, 0, "RunCheckForUpdates", $"Has newer release: {Updates.HasNewerRelease}, Has newer preview: {Updates.HasNewerPreview}");
+
+                        if (CheckForUpdates & Updates.HasNewerRelease)
+                            BtnUpdateAvailable.Invoke(() => BtnUpdateAvailable.Visible = true);
+
+                        if (CheckForPreReleaseUpdates & Updates.HasNewerPreview)
+                            BtnUpdateAvailable.Invoke(() => BtnPreviewAvailable.Visible = true);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogMessage(0, 0, 0, "RunCheckForUpdates", $"Exception running task: {ex.Message}\r\n{ex}");
+                    }
+                });
+            }
+            if (!CheckForUpdates)
+                if (BtnUpdateAvailable.InvokeRequired)
+                    BtnUpdateAvailable.Invoke(() => BtnUpdateAvailable.Visible = false);
+                else
+                    BtnUpdateAvailable.Visible = false;
+
+            if (!CheckForPreReleaseUpdates)
+                if (BtnPreviewAvailable.InvokeRequired)
+                    BtnUpdateAvailable.Invoke(() => BtnPreviewAvailable.Visible = false);
+                else BtnPreviewAvailable.Visible = false;
+        }
+
         private void ServerForm_Load(object sender, EventArgs e)
         {
-            this.Text = $"ASCOM Remote Server - v{Assembly.GetExecutingAssembly().GetName().Version} - {(Environment.Is64BitProcess ? "64" : "32")}bit mode.";
+            this.Text = $"ASCOM Remote Server - v{Updates.AscomRemoteVersionDisplayString} - {(Environment.Is64BitProcess ? "64" : "32")}bit mode.";
             if (StartWithDevicesConnected)
             {
                 ConnectDevices();
@@ -1595,6 +1637,8 @@ namespace ASCOM.Remote
                 MinimiseToSystemTray = driverProfile.GetValue<bool>(MINIMISE_TO_SYSTEM_TRAY_PROFILENAME, string.Empty, MINIMISE_TO_SYSTEM_TRAY_DEFAULT);
                 ConfirmExit = driverProfile.GetValue<bool>(CONFIRM_EXIT_PROFILENAME, string.Empty, CONFIRM_EXIT_DEFAULT);
                 StartMinimised = driverProfile.GetValue<bool>(MINIMISE_ON_START_PROFILENAME, string.Empty, MINIMISE_ON_START_DEFAULT);
+                CheckForUpdates = driverProfile.GetValue<bool>(CHECK_FOR_UPDATES, string.Empty, CHECK_FOR_UPDATES_DEFAULT);
+                CheckForPreReleaseUpdates = driverProfile.GetValue<bool>(CHECK_FOR_PRE_RELEASE, string.Empty, CHECK_FOR_PRE_RELEASE_DEFAULT);
 
                 // Set the next log roll-over time using the persisted roll-over time value
                 SetNextRolloverTime();
@@ -1714,6 +1758,8 @@ namespace ASCOM.Remote
                 driverProfile.SetValueInvariant<bool>(MINIMISE_TO_SYSTEM_TRAY_PROFILENAME, string.Empty, MinimiseToSystemTray);
                 driverProfile.SetValueInvariant<bool>(CONFIRM_EXIT_PROFILENAME, string.Empty, ConfirmExit);
                 driverProfile.SetValueInvariant<bool>(MINIMISE_ON_START_PROFILENAME, string.Empty, StartMinimised);
+                driverProfile.SetValueInvariant<bool>(CHECK_FOR_UPDATES, string.Empty, CheckForUpdates);
+                driverProfile.SetValueInvariant<bool>(CHECK_FOR_PRE_RELEASE, string.Empty, CheckForPreReleaseUpdates);
 
                 // Update the next roll-over time in case the time has changed
                 //TL.LogMessage("WriteProfile", $"NextRolloverTime Before: {NextRolloverTime}");
@@ -1780,6 +1826,9 @@ namespace ASCOM.Remote
                 AccessLog.UseUtcTime = UseUtcTimeInLogs;
             }
 
+            // Initiate a version update check if required or clear visible update buttons
+            RunCheckForUpdates();
+
             // Log new configuration
             WriteConfigurationToLog();
 
@@ -1805,6 +1854,7 @@ namespace ASCOM.Remote
             {
                 LogMessage(0, 0, 0, "SetupButton", string.Format("Not starting Remote server because it wasn't running in the first place."));
             }
+
         }
 
         /// <summary>
@@ -6979,6 +7029,15 @@ namespace ASCOM.Remote
 
         #endregion
 
+        private void BtnUpdateAvailable_Click(Object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(Updates.ReleaseUrl) { UseShellExecute = true });
+        }
+
+        private void BtnPreviewAvailable_Click(Object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(Updates.PreviewURL) { UseShellExecute = true });
+        }
     } // End of ServerForm class
 
 } // End of namespace

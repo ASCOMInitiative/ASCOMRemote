@@ -118,6 +118,8 @@ namespace ASCOM.Remote
                 ChkUseUtcTime.Checked = ServerForm.UseUtcTimeInLogs;
                 chkConfirmExit.Checked = ServerForm.ConfirmExit;
                 chkStartMinimised.Checked = ServerForm.StartMinimised;
+                ChkCheckForUpdates.Checked = ServerForm.CheckForUpdates;
+                ChkCheckForPreReleaseUpdates.Checked = ServerForm.CheckForPreReleaseUpdates;
 
                 // Initialise the application minimise options combo box
                 cmbMinimiseOptions.Items.AddRange(new object[] { ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY, ServerForm.MINIMISE_TO_TASK_BAR_KEY });
@@ -579,6 +581,8 @@ namespace ASCOM.Remote
                 ServerForm.UseUtcTimeInLogs = ChkUseUtcTime.Checked;
                 ServerForm.ConfirmExit = chkConfirmExit.Checked;
                 ServerForm.StartMinimised = chkStartMinimised.Checked;
+                ServerForm.CheckForUpdates = ChkCheckForUpdates.Checked;
+                ServerForm.CheckForPreReleaseUpdates = ChkCheckForPreReleaseUpdates.Checked;
 
                 // Update the minimise to system tray value
                 ServerForm.MinimiseToSystemTray = (string)cmbMinimiseOptions.SelectedItem == ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY; // Expression evaluates to True if minimise to tray is selected, otherwise false

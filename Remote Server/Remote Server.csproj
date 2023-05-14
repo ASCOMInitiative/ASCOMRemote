@@ -18,12 +18,12 @@
 	</Target>
 	<PropertyGroup>
 		<!-- Set version numbers -->
-		<ProductMajor>7</ProductMajor>
-		<ProductMinor>0</ProductMinor>
-		<ProductPatch>0</ProductPatch>
+		<ProductMajor>6</ProductMajor>
+		<ProductMinor>6</ProductMinor>
+		<ProductPatch>3</ProductPatch>
 
 		<!-- Set the pre-release string without a leading minus e.g. rc.1 -->
-		<ProductPreRelease>rc.1</ProductPreRelease>
+		<ProductPreRelease></ProductPreRelease>
 
 		<!--Create a dynamic revision number based on time of build
 		 
@@ -118,5 +118,7 @@
 		<PackageReference Include="ASCOM.Exception.Library" Version="6.6.1" />
 		<PackageReference Include="ASCOM.Tools" Version="1.0.96" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Octokit" Version="6.0.0" />
+		<PackageReference Include="Semver" Version="2.3.0" />
 	</ItemGroup>
 </Project>

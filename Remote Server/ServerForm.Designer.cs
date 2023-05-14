@@ -55,12 +55,14 @@
             Port = new System.Windows.Forms.ToolStripMenuItem();
             ActionSeparator = new System.Windows.Forms.ToolStripSeparator();
             Exit = new System.Windows.Forms.ToolStripMenuItem();
+            BtnUpdateAvailable = new System.Windows.Forms.Button();
+            BtnPreviewAvailable = new System.Windows.Forms.Button();
             systemTrayMenuItems.SuspendLayout();
             SuspendLayout();
             // 
             // BtnSetup
             // 
-            BtnSetup.Location = new System.Drawing.Point(773, 416);
+            BtnSetup.Location = new System.Drawing.Point(770, 414);
             BtnSetup.Name = "BtnSetup";
             BtnSetup.Size = new System.Drawing.Size(100, 24);
             BtnSetup.TabIndex = 0;
@@ -90,7 +92,7 @@
             // 
             // BtnExit
             // 
-            BtnExit.Location = new System.Drawing.Point(773, 476);
+            BtnExit.Location = new System.Drawing.Point(770, 474);
             BtnExit.Name = "BtnExit";
             BtnExit.Size = new System.Drawing.Size(100, 24);
             BtnExit.TabIndex = 4;
@@ -155,7 +157,9 @@
             // txtConcurrency
             // 
             txtConcurrency.BackColor = System.Drawing.SystemColors.Window;
+            txtConcurrency.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             txtConcurrency.Location = new System.Drawing.Point(764, 103);
+            txtConcurrency.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             txtConcurrency.Name = "txtConcurrency";
             txtConcurrency.ReadOnly = true;
             txtConcurrency.Size = new System.Drawing.Size(26, 20);
@@ -278,10 +282,37 @@
             Exit.Size = new System.Drawing.Size(205, 22);
             Exit.Text = "Exit";
             // 
+            // BtnUpdateAvailable
+            // 
+            BtnUpdateAvailable.BackColor = System.Drawing.SystemColors.Control;
+            BtnUpdateAvailable.ForeColor = System.Drawing.SystemColors.HotTrack;
+            BtnUpdateAvailable.Location = new System.Drawing.Point(770, 553);
+            BtnUpdateAvailable.Name = "BtnUpdateAvailable";
+            BtnUpdateAvailable.Size = new System.Drawing.Size(100, 24);
+            BtnUpdateAvailable.TabIndex = 17;
+            BtnUpdateAvailable.Text = "Update Available";
+            BtnUpdateAvailable.UseVisualStyleBackColor = false;
+            BtnUpdateAvailable.Visible = false;
+            BtnUpdateAvailable.Click += BtnUpdateAvailable_Click;
+            // 
+            // BtnPreviewAvailable
+            // 
+            BtnPreviewAvailable.ForeColor = System.Drawing.SystemColors.HotTrack;
+            BtnPreviewAvailable.Location = new System.Drawing.Point(770, 583);
+            BtnPreviewAvailable.Name = "BtnPreviewAvailable";
+            BtnPreviewAvailable.Size = new System.Drawing.Size(100, 24);
+            BtnPreviewAvailable.TabIndex = 18;
+            BtnPreviewAvailable.Text = "Preview Available";
+            BtnPreviewAvailable.UseVisualStyleBackColor = true;
+            BtnPreviewAvailable.Visible = false;
+            BtnPreviewAvailable.Click += BtnPreviewAvailable_Click;
+            // 
             // ServerForm
             // 
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             ClientSize = new System.Drawing.Size(920, 616);
+            Controls.Add(BtnPreviewAvailable);
+            Controls.Add(BtnUpdateAvailable);
             Controls.Add(BtnStartRESTServer);
             Controls.Add(BtnStopRESTServer);
             Controls.Add(LblRESTStatus);
@@ -333,6 +364,8 @@
         private System.Windows.Forms.ToolStripSeparator TitleSeparator;
         private System.Windows.Forms.ToolStripMenuItem IpAddress;
         private System.Windows.Forms.ToolStripMenuItem Port;
+        private System.Windows.Forms.Button BtnUpdateAvailable;
+        private System.Windows.Forms.Button BtnPreviewAvailable;
     }
 }
 

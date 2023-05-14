@@ -16,8 +16,8 @@
         private void InitializeComponent()
         {
             this.components = (new global::System.ComponentModel.Container());
+            global::System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new global::System.Windows.Forms.DataGridViewCellStyle();
             global::System.ComponentModel.ComponentResourceManager resources = new global::System.ComponentModel.ComponentResourceManager(typeof(global::ASCOM.Remote.SetupForm));
-            global::System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new global::System.Windows.Forms.DataGridViewCellStyle();
             this.BtnCancel = (new global::System.Windows.Forms.Button());
             this.BtnOK = (new global::System.Windows.Forms.Button());
             this.chkAutoConnect = (new global::System.Windows.Forms.CheckBox());
@@ -231,17 +231,13 @@
             this.ServedDevice99 = (new global::ASCOM.Remote.ServedDevice());
             this.LblDevicesNotDisconnoected = (new global::System.Windows.Forms.Label());
             this.ServerConfigurationTab = (new global::System.Windows.Forms.TabPage());
-            this.lblMinimisationBehaviour = (new global::System.Windows.Forms.Label());
             this.chkStartMinimised = (new global::System.Windows.Forms.CheckBox());
             this.chkConfirmExit = (new global::System.Windows.Forms.CheckBox());
-            this.cmbMinimiseOptions = (new global::System.Windows.Forms.ComboBox());
             this.textBox1 = (new global::System.Windows.Forms.TextBox());
             this.GrpIpVersionSelector = (new global::System.Windows.Forms.GroupBox());
             this.RadIpV4AndV6 = (new global::System.Windows.Forms.RadioButton());
             this.RadIpV6 = (new global::System.Windows.Forms.RadioButton());
             this.RadIpV4 = (new global::System.Windows.Forms.RadioButton());
-            this.label96 = (new global::System.Windows.Forms.Label());
-            this.NumMaxDevices = (new global::System.Windows.Forms.NumericUpDown());
             this.label13 = (new global::System.Windows.Forms.Label());
             this.NumDiscoveryPort = (new global::System.Windows.Forms.NumericUpDown());
             this.ChkEnableDiscovery = (new global::System.Windows.Forms.CheckBox());
@@ -251,6 +247,13 @@
             this.numPort = (new global::System.Windows.Forms.NumericUpDown());
             this.label8 = (new global::System.Windows.Forms.Label());
             this.label7 = (new global::System.Windows.Forms.Label());
+            this.ServerConfigurationTab2 = (new global::System.Windows.Forms.TabPage());
+            this.ChkCheckForPreReleaseUpdates = (new global::System.Windows.Forms.CheckBox());
+            this.ChkCheckForUpdates = (new global::System.Windows.Forms.CheckBox());
+            this.lblMinimisationBehaviour = (new global::System.Windows.Forms.Label());
+            this.cmbMinimiseOptions = (new global::System.Windows.Forms.ComboBox());
+            this.label96 = (new global::System.Windows.Forms.Label());
+            this.NumMaxDevices = (new global::System.Windows.Forms.NumericUpDown());
             this.LoggingConfigurationTab = (new global::System.Windows.Forms.TabPage());
             this.groupBox3 = (new global::System.Windows.Forms.GroupBox());
             this.chkTrace = (new global::System.Windows.Forms.CheckBox());
@@ -277,6 +280,7 @@
             this.LabHelp1 = (new global::System.Windows.Forms.Label());
             this.DataGridCorsOrigins = (new global::System.Windows.Forms.DataGridView());
             this.DlgSetLogFolderPath = (new global::System.Windows.Forms.FolderBrowserDialog());
+            this.groupBox4 = (new global::System.Windows.Forms.GroupBox());
             ((global::System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SetupTabControl.SuspendLayout();
             this.DeviceConfigurationTab.SuspendLayout();
@@ -293,9 +297,10 @@
             this.DeviceTab9.SuspendLayout();
             this.ServerConfigurationTab.SuspendLayout();
             this.GrpIpVersionSelector.SuspendLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.NumMaxDevices)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.NumDiscoveryPort)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
+            this.ServerConfigurationTab2.SuspendLayout();
+            ((global::System.ComponentModel.ISupportInitialize)(this.NumMaxDevices)).BeginInit();
             this.LoggingConfigurationTab.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -303,6 +308,7 @@
             this.CorsConfigurationTab.SuspendLayout();
             ((global::System.ComponentModel.ISupportInitialize)(this.NumCorsMaxAge)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.DataGridCorsOrigins)).BeginInit();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // BtnCancel
@@ -332,7 +338,7 @@
             // chkAutoConnect
             // 
             this.chkAutoConnect.AutoSize = (true);
-            this.chkAutoConnect.Location = (new global::System.Drawing.Point(315, 248));
+            this.chkAutoConnect.Location = (new global::System.Drawing.Point(311, 285));
             this.chkAutoConnect.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
             this.chkAutoConnect.Name = ("chkAutoConnect");
             this.chkAutoConnect.Size = (new global::System.Drawing.Size(180, 19));
@@ -343,7 +349,7 @@
             // chkManagementInterfaceEnabled
             // 
             this.chkManagementInterfaceEnabled.AutoSize = (true);
-            this.chkManagementInterfaceEnabled.Location = (new global::System.Drawing.Point(564, 248));
+            this.chkManagementInterfaceEnabled.Location = (new global::System.Drawing.Point(560, 285));
             this.chkManagementInterfaceEnabled.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
             this.chkManagementInterfaceEnabled.Name = ("chkManagementInterfaceEnabled");
             this.chkManagementInterfaceEnabled.Size = (new global::System.Drawing.Size(332, 19));
@@ -358,7 +364,7 @@
             // ChkStartWithApiEnabled
             // 
             this.ChkStartWithApiEnabled.AutoSize = (true);
-            this.ChkStartWithApiEnabled.Location = (new global::System.Drawing.Point(315, 275));
+            this.ChkStartWithApiEnabled.Location = (new global::System.Drawing.Point(311, 312));
             this.ChkStartWithApiEnabled.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
             this.ChkStartWithApiEnabled.Name = ("ChkStartWithApiEnabled");
             this.ChkStartWithApiEnabled.Size = (new global::System.Drawing.Size(142, 19));
@@ -369,7 +375,7 @@
             // ChkRunDriversInSeparateThreadss
             // 
             this.ChkRunDriversInSeparateThreadss.AutoSize = (true);
-            this.ChkRunDriversInSeparateThreadss.Location = (new global::System.Drawing.Point(315, 301));
+            this.ChkRunDriversInSeparateThreadss.Location = (new global::System.Drawing.Point(311, 338));
             this.ChkRunDriversInSeparateThreadss.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
             this.ChkRunDriversInSeparateThreadss.Name = ("ChkRunDriversInSeparateThreadss");
             this.ChkRunDriversInSeparateThreadss.Size = (new global::System.Drawing.Size(191, 19));
@@ -380,7 +386,7 @@
             // ChkIncludeDriverExceptionsInJsonResponses
             // 
             this.ChkIncludeDriverExceptionsInJsonResponses.AutoSize = (true);
-            this.ChkIncludeDriverExceptionsInJsonResponses.Location = (new global::System.Drawing.Point(564, 301));
+            this.ChkIncludeDriverExceptionsInJsonResponses.Location = (new global::System.Drawing.Point(560, 338));
             this.ChkIncludeDriverExceptionsInJsonResponses.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
             this.ChkIncludeDriverExceptionsInJsonResponses.Name = ("ChkIncludeDriverExceptionsInJsonResponses");
             this.ChkIncludeDriverExceptionsInJsonResponses.Size = (new global::System.Drawing.Size(405, 19));
@@ -392,6 +398,7 @@
             // 
             this.SetupTabControl.Controls.Add(this.DeviceConfigurationTab);
             this.SetupTabControl.Controls.Add(this.ServerConfigurationTab);
+            this.SetupTabControl.Controls.Add(this.ServerConfigurationTab2);
             this.SetupTabControl.Controls.Add(this.LoggingConfigurationTab);
             this.SetupTabControl.Controls.Add(this.CorsConfigurationTab);
             this.SetupTabControl.Location = (new global::System.Drawing.Point(14, 12));
@@ -482,7 +489,7 @@
             this.ServedDevice00.DevicesAreConnected = (false);
             this.ServedDevice00.DeviceType = ("None");
             this.ServedDevice00.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice00.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice00.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice00.Name = ("ServedDevice00");
             this.ServedDevice00.ProgID = ("");
             this.ServedDevice00.Size = (new global::System.Drawing.Size(1120, 25));
@@ -508,7 +515,7 @@
             this.ServedDevice01.DevicesAreConnected = (false);
             this.ServedDevice01.DeviceType = ("None");
             this.ServedDevice01.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice01.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice01.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice01.Name = ("ServedDevice01");
             this.ServedDevice01.ProgID = ("");
             this.ServedDevice01.Size = (new global::System.Drawing.Size(1120, 25));
@@ -524,7 +531,7 @@
             this.ServedDevice02.DevicesAreConnected = (false);
             this.ServedDevice02.DeviceType = ("None");
             this.ServedDevice02.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice02.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice02.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice02.Name = ("ServedDevice02");
             this.ServedDevice02.ProgID = ("");
             this.ServedDevice02.Size = (new global::System.Drawing.Size(1120, 25));
@@ -580,7 +587,7 @@
             this.ServedDevice03.DevicesAreConnected = (false);
             this.ServedDevice03.DeviceType = ("None");
             this.ServedDevice03.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice03.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice03.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice03.Name = ("ServedDevice03");
             this.ServedDevice03.ProgID = ("");
             this.ServedDevice03.Size = (new global::System.Drawing.Size(1120, 25));
@@ -596,7 +603,7 @@
             this.ServedDevice04.DevicesAreConnected = (false);
             this.ServedDevice04.DeviceType = ("None");
             this.ServedDevice04.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice04.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice04.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice04.Name = ("ServedDevice04");
             this.ServedDevice04.ProgID = ("");
             this.ServedDevice04.Size = (new global::System.Drawing.Size(1120, 25));
@@ -612,7 +619,7 @@
             this.ServedDevice05.DevicesAreConnected = (false);
             this.ServedDevice05.DeviceType = ("None");
             this.ServedDevice05.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice05.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice05.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice05.Name = ("ServedDevice05");
             this.ServedDevice05.ProgID = ("");
             this.ServedDevice05.Size = (new global::System.Drawing.Size(1120, 25));
@@ -628,7 +635,7 @@
             this.ServedDevice06.DevicesAreConnected = (false);
             this.ServedDevice06.DeviceType = ("None");
             this.ServedDevice06.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice06.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice06.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice06.Name = ("ServedDevice06");
             this.ServedDevice06.ProgID = ("");
             this.ServedDevice06.Size = (new global::System.Drawing.Size(1120, 25));
@@ -654,7 +661,7 @@
             this.ServedDevice07.DevicesAreConnected = (false);
             this.ServedDevice07.DeviceType = ("None");
             this.ServedDevice07.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice07.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice07.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice07.Name = ("ServedDevice07");
             this.ServedDevice07.ProgID = ("");
             this.ServedDevice07.Size = (new global::System.Drawing.Size(1120, 25));
@@ -680,7 +687,7 @@
             this.ServedDevice08.DevicesAreConnected = (false);
             this.ServedDevice08.DeviceType = ("None");
             this.ServedDevice08.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice08.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice08.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice08.Name = ("ServedDevice08");
             this.ServedDevice08.ProgID = ("");
             this.ServedDevice08.Size = (new global::System.Drawing.Size(1120, 25));
@@ -706,7 +713,7 @@
             this.ServedDevice09.DevicesAreConnected = (false);
             this.ServedDevice09.DeviceType = ("None");
             this.ServedDevice09.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice09.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice09.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice09.Name = ("ServedDevice09");
             this.ServedDevice09.ProgID = ("");
             this.ServedDevice09.Size = (new global::System.Drawing.Size(1120, 25));
@@ -842,7 +849,7 @@
             this.ServedDevice10.DevicesAreConnected = (false);
             this.ServedDevice10.DeviceType = ("None");
             this.ServedDevice10.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice10.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice10.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice10.Name = ("ServedDevice10");
             this.ServedDevice10.ProgID = ("");
             this.ServedDevice10.Size = (new global::System.Drawing.Size(1120, 25));
@@ -858,7 +865,7 @@
             this.ServedDevice11.DevicesAreConnected = (false);
             this.ServedDevice11.DeviceType = ("None");
             this.ServedDevice11.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice11.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice11.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice11.Name = ("ServedDevice11");
             this.ServedDevice11.ProgID = ("");
             this.ServedDevice11.Size = (new global::System.Drawing.Size(1120, 25));
@@ -874,7 +881,7 @@
             this.ServedDevice12.DevicesAreConnected = (false);
             this.ServedDevice12.DeviceType = ("None");
             this.ServedDevice12.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice12.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice12.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice12.Name = ("ServedDevice12");
             this.ServedDevice12.ProgID = ("");
             this.ServedDevice12.Size = (new global::System.Drawing.Size(1120, 25));
@@ -890,7 +897,7 @@
             this.ServedDevice13.DevicesAreConnected = (false);
             this.ServedDevice13.DeviceType = ("None");
             this.ServedDevice13.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice13.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice13.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice13.Name = ("ServedDevice13");
             this.ServedDevice13.ProgID = ("");
             this.ServedDevice13.Size = (new global::System.Drawing.Size(1120, 25));
@@ -906,7 +913,7 @@
             this.ServedDevice14.DevicesAreConnected = (false);
             this.ServedDevice14.DeviceType = ("None");
             this.ServedDevice14.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice14.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice14.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice14.Name = ("ServedDevice14");
             this.ServedDevice14.ProgID = ("");
             this.ServedDevice14.Size = (new global::System.Drawing.Size(1120, 25));
@@ -922,7 +929,7 @@
             this.ServedDevice15.DevicesAreConnected = (false);
             this.ServedDevice15.DeviceType = ("None");
             this.ServedDevice15.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice15.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice15.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice15.Name = ("ServedDevice15");
             this.ServedDevice15.ProgID = ("");
             this.ServedDevice15.Size = (new global::System.Drawing.Size(1120, 25));
@@ -938,7 +945,7 @@
             this.ServedDevice16.DevicesAreConnected = (false);
             this.ServedDevice16.DeviceType = ("None");
             this.ServedDevice16.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice16.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice16.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice16.Name = ("ServedDevice16");
             this.ServedDevice16.ProgID = ("");
             this.ServedDevice16.Size = (new global::System.Drawing.Size(1120, 25));
@@ -954,7 +961,7 @@
             this.ServedDevice17.DevicesAreConnected = (false);
             this.ServedDevice17.DeviceType = ("None");
             this.ServedDevice17.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice17.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice17.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice17.Name = ("ServedDevice17");
             this.ServedDevice17.ProgID = ("");
             this.ServedDevice17.Size = (new global::System.Drawing.Size(1120, 25));
@@ -970,7 +977,7 @@
             this.ServedDevice18.DevicesAreConnected = (false);
             this.ServedDevice18.DeviceType = ("None");
             this.ServedDevice18.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice18.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice18.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice18.Name = ("ServedDevice18");
             this.ServedDevice18.ProgID = ("");
             this.ServedDevice18.Size = (new global::System.Drawing.Size(1120, 25));
@@ -986,7 +993,7 @@
             this.ServedDevice19.DevicesAreConnected = (false);
             this.ServedDevice19.DeviceType = ("None");
             this.ServedDevice19.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice19.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice19.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice19.Name = ("ServedDevice19");
             this.ServedDevice19.ProgID = ("");
             this.ServedDevice19.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1122,7 +1129,7 @@
             this.ServedDevice20.DevicesAreConnected = (false);
             this.ServedDevice20.DeviceType = ("None");
             this.ServedDevice20.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice20.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice20.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice20.Name = ("ServedDevice20");
             this.ServedDevice20.ProgID = ("");
             this.ServedDevice20.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1138,7 +1145,7 @@
             this.ServedDevice21.DevicesAreConnected = (false);
             this.ServedDevice21.DeviceType = ("None");
             this.ServedDevice21.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice21.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice21.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice21.Name = ("ServedDevice21");
             this.ServedDevice21.ProgID = ("");
             this.ServedDevice21.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1154,7 +1161,7 @@
             this.ServedDevice22.DevicesAreConnected = (false);
             this.ServedDevice22.DeviceType = ("None");
             this.ServedDevice22.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice22.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice22.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice22.Name = ("ServedDevice22");
             this.ServedDevice22.ProgID = ("");
             this.ServedDevice22.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1170,7 +1177,7 @@
             this.ServedDevice23.DevicesAreConnected = (false);
             this.ServedDevice23.DeviceType = ("None");
             this.ServedDevice23.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice23.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice23.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice23.Name = ("ServedDevice23");
             this.ServedDevice23.ProgID = ("");
             this.ServedDevice23.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1186,7 +1193,7 @@
             this.ServedDevice24.DevicesAreConnected = (false);
             this.ServedDevice24.DeviceType = ("None");
             this.ServedDevice24.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice24.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice24.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice24.Name = ("ServedDevice24");
             this.ServedDevice24.ProgID = ("");
             this.ServedDevice24.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1202,7 +1209,7 @@
             this.ServedDevice25.DevicesAreConnected = (false);
             this.ServedDevice25.DeviceType = ("None");
             this.ServedDevice25.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice25.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice25.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice25.Name = ("ServedDevice25");
             this.ServedDevice25.ProgID = ("");
             this.ServedDevice25.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1218,7 +1225,7 @@
             this.ServedDevice26.DevicesAreConnected = (false);
             this.ServedDevice26.DeviceType = ("None");
             this.ServedDevice26.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice26.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice26.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice26.Name = ("ServedDevice26");
             this.ServedDevice26.ProgID = ("");
             this.ServedDevice26.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1234,7 +1241,7 @@
             this.ServedDevice27.DevicesAreConnected = (false);
             this.ServedDevice27.DeviceType = ("None");
             this.ServedDevice27.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice27.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice27.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice27.Name = ("ServedDevice27");
             this.ServedDevice27.ProgID = ("");
             this.ServedDevice27.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1250,7 +1257,7 @@
             this.ServedDevice28.DevicesAreConnected = (false);
             this.ServedDevice28.DeviceType = ("None");
             this.ServedDevice28.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice28.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice28.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice28.Name = ("ServedDevice28");
             this.ServedDevice28.ProgID = ("");
             this.ServedDevice28.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1266,7 +1273,7 @@
             this.ServedDevice29.DevicesAreConnected = (false);
             this.ServedDevice29.DeviceType = ("None");
             this.ServedDevice29.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice29.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice29.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice29.Name = ("ServedDevice29");
             this.ServedDevice29.ProgID = ("");
             this.ServedDevice29.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1401,7 +1408,7 @@
             this.ServedDevice30.DevicesAreConnected = (false);
             this.ServedDevice30.DeviceType = ("None");
             this.ServedDevice30.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice30.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice30.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice30.Name = ("ServedDevice30");
             this.ServedDevice30.ProgID = ("");
             this.ServedDevice30.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1417,7 +1424,7 @@
             this.ServedDevice31.DevicesAreConnected = (false);
             this.ServedDevice31.DeviceType = ("None");
             this.ServedDevice31.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice31.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice31.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice31.Name = ("ServedDevice31");
             this.ServedDevice31.ProgID = ("");
             this.ServedDevice31.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1433,7 +1440,7 @@
             this.ServedDevice32.DevicesAreConnected = (false);
             this.ServedDevice32.DeviceType = ("None");
             this.ServedDevice32.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice32.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice32.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice32.Name = ("ServedDevice32");
             this.ServedDevice32.ProgID = ("");
             this.ServedDevice32.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1449,7 +1456,7 @@
             this.ServedDevice33.DevicesAreConnected = (false);
             this.ServedDevice33.DeviceType = ("None");
             this.ServedDevice33.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice33.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice33.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice33.Name = ("ServedDevice33");
             this.ServedDevice33.ProgID = ("");
             this.ServedDevice33.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1465,7 +1472,7 @@
             this.ServedDevice34.DevicesAreConnected = (false);
             this.ServedDevice34.DeviceType = ("None");
             this.ServedDevice34.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice34.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice34.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice34.Name = ("ServedDevice34");
             this.ServedDevice34.ProgID = ("");
             this.ServedDevice34.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1481,7 +1488,7 @@
             this.ServedDevice35.DevicesAreConnected = (false);
             this.ServedDevice35.DeviceType = ("None");
             this.ServedDevice35.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice35.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice35.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice35.Name = ("ServedDevice35");
             this.ServedDevice35.ProgID = ("");
             this.ServedDevice35.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1497,7 +1504,7 @@
             this.ServedDevice36.DevicesAreConnected = (false);
             this.ServedDevice36.DeviceType = ("None");
             this.ServedDevice36.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice36.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice36.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice36.Name = ("ServedDevice36");
             this.ServedDevice36.ProgID = ("");
             this.ServedDevice36.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1513,7 +1520,7 @@
             this.ServedDevice37.DevicesAreConnected = (false);
             this.ServedDevice37.DeviceType = ("None");
             this.ServedDevice37.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice37.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice37.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice37.Name = ("ServedDevice37");
             this.ServedDevice37.ProgID = ("");
             this.ServedDevice37.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1529,7 +1536,7 @@
             this.ServedDevice38.DevicesAreConnected = (false);
             this.ServedDevice38.DeviceType = ("None");
             this.ServedDevice38.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice38.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice38.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice38.Name = ("ServedDevice38");
             this.ServedDevice38.ProgID = ("");
             this.ServedDevice38.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1545,7 +1552,7 @@
             this.ServedDevice39.DevicesAreConnected = (false);
             this.ServedDevice39.DeviceType = ("None");
             this.ServedDevice39.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice39.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice39.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice39.Name = ("ServedDevice39");
             this.ServedDevice39.ProgID = ("");
             this.ServedDevice39.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1680,7 +1687,7 @@
             this.ServedDevice40.DevicesAreConnected = (false);
             this.ServedDevice40.DeviceType = ("None");
             this.ServedDevice40.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice40.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice40.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice40.Name = ("ServedDevice40");
             this.ServedDevice40.ProgID = ("");
             this.ServedDevice40.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1696,7 +1703,7 @@
             this.ServedDevice41.DevicesAreConnected = (false);
             this.ServedDevice41.DeviceType = ("None");
             this.ServedDevice41.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice41.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice41.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice41.Name = ("ServedDevice41");
             this.ServedDevice41.ProgID = ("");
             this.ServedDevice41.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1712,7 +1719,7 @@
             this.ServedDevice42.DevicesAreConnected = (false);
             this.ServedDevice42.DeviceType = ("None");
             this.ServedDevice42.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice42.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice42.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice42.Name = ("ServedDevice42");
             this.ServedDevice42.ProgID = ("");
             this.ServedDevice42.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1728,7 +1735,7 @@
             this.ServedDevice43.DevicesAreConnected = (false);
             this.ServedDevice43.DeviceType = ("None");
             this.ServedDevice43.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice43.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice43.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice43.Name = ("ServedDevice43");
             this.ServedDevice43.ProgID = ("");
             this.ServedDevice43.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1744,7 +1751,7 @@
             this.ServedDevice44.DevicesAreConnected = (false);
             this.ServedDevice44.DeviceType = ("None");
             this.ServedDevice44.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice44.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice44.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice44.Name = ("ServedDevice44");
             this.ServedDevice44.ProgID = ("");
             this.ServedDevice44.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1760,7 +1767,7 @@
             this.ServedDevice45.DevicesAreConnected = (false);
             this.ServedDevice45.DeviceType = ("None");
             this.ServedDevice45.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice45.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice45.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice45.Name = ("ServedDevice45");
             this.ServedDevice45.ProgID = ("");
             this.ServedDevice45.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1776,7 +1783,7 @@
             this.ServedDevice46.DevicesAreConnected = (false);
             this.ServedDevice46.DeviceType = ("None");
             this.ServedDevice46.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice46.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice46.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice46.Name = ("ServedDevice46");
             this.ServedDevice46.ProgID = ("");
             this.ServedDevice46.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1792,7 +1799,7 @@
             this.ServedDevice47.DevicesAreConnected = (false);
             this.ServedDevice47.DeviceType = ("None");
             this.ServedDevice47.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice47.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice47.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice47.Name = ("ServedDevice47");
             this.ServedDevice47.ProgID = ("");
             this.ServedDevice47.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1808,7 +1815,7 @@
             this.ServedDevice48.DevicesAreConnected = (false);
             this.ServedDevice48.DeviceType = ("None");
             this.ServedDevice48.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice48.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice48.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice48.Name = ("ServedDevice48");
             this.ServedDevice48.ProgID = ("");
             this.ServedDevice48.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1824,7 +1831,7 @@
             this.ServedDevice49.DevicesAreConnected = (false);
             this.ServedDevice49.DeviceType = ("None");
             this.ServedDevice49.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice49.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice49.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice49.Name = ("ServedDevice49");
             this.ServedDevice49.ProgID = ("");
             this.ServedDevice49.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1959,7 +1966,7 @@
             this.ServedDevice50.DevicesAreConnected = (false);
             this.ServedDevice50.DeviceType = ("None");
             this.ServedDevice50.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice50.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice50.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice50.Name = ("ServedDevice50");
             this.ServedDevice50.ProgID = ("");
             this.ServedDevice50.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1975,7 +1982,7 @@
             this.ServedDevice51.DevicesAreConnected = (false);
             this.ServedDevice51.DeviceType = ("None");
             this.ServedDevice51.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice51.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice51.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice51.Name = ("ServedDevice51");
             this.ServedDevice51.ProgID = ("");
             this.ServedDevice51.Size = (new global::System.Drawing.Size(1120, 25));
@@ -1991,7 +1998,7 @@
             this.ServedDevice52.DevicesAreConnected = (false);
             this.ServedDevice52.DeviceType = ("None");
             this.ServedDevice52.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice52.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice52.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice52.Name = ("ServedDevice52");
             this.ServedDevice52.ProgID = ("");
             this.ServedDevice52.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2007,7 +2014,7 @@
             this.ServedDevice53.DevicesAreConnected = (false);
             this.ServedDevice53.DeviceType = ("None");
             this.ServedDevice53.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice53.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice53.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice53.Name = ("ServedDevice53");
             this.ServedDevice53.ProgID = ("");
             this.ServedDevice53.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2023,7 +2030,7 @@
             this.ServedDevice54.DevicesAreConnected = (false);
             this.ServedDevice54.DeviceType = ("None");
             this.ServedDevice54.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice54.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice54.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice54.Name = ("ServedDevice54");
             this.ServedDevice54.ProgID = ("");
             this.ServedDevice54.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2039,7 +2046,7 @@
             this.ServedDevice55.DevicesAreConnected = (false);
             this.ServedDevice55.DeviceType = ("None");
             this.ServedDevice55.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice55.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice55.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice55.Name = ("ServedDevice55");
             this.ServedDevice55.ProgID = ("");
             this.ServedDevice55.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2055,7 +2062,7 @@
             this.ServedDevice56.DevicesAreConnected = (false);
             this.ServedDevice56.DeviceType = ("None");
             this.ServedDevice56.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice56.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice56.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice56.Name = ("ServedDevice56");
             this.ServedDevice56.ProgID = ("");
             this.ServedDevice56.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2071,7 +2078,7 @@
             this.ServedDevice57.DevicesAreConnected = (false);
             this.ServedDevice57.DeviceType = ("None");
             this.ServedDevice57.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice57.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice57.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice57.Name = ("ServedDevice57");
             this.ServedDevice57.ProgID = ("");
             this.ServedDevice57.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2087,7 +2094,7 @@
             this.ServedDevice58.DevicesAreConnected = (false);
             this.ServedDevice58.DeviceType = ("None");
             this.ServedDevice58.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice58.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice58.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice58.Name = ("ServedDevice58");
             this.ServedDevice58.ProgID = ("");
             this.ServedDevice58.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2103,7 +2110,7 @@
             this.ServedDevice59.DevicesAreConnected = (false);
             this.ServedDevice59.DeviceType = ("None");
             this.ServedDevice59.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice59.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice59.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice59.Name = ("ServedDevice59");
             this.ServedDevice59.ProgID = ("");
             this.ServedDevice59.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2238,7 +2245,7 @@
             this.ServedDevice60.DevicesAreConnected = (false);
             this.ServedDevice60.DeviceType = ("None");
             this.ServedDevice60.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice60.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice60.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice60.Name = ("ServedDevice60");
             this.ServedDevice60.ProgID = ("");
             this.ServedDevice60.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2254,7 +2261,7 @@
             this.ServedDevice61.DevicesAreConnected = (false);
             this.ServedDevice61.DeviceType = ("None");
             this.ServedDevice61.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice61.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice61.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice61.Name = ("ServedDevice61");
             this.ServedDevice61.ProgID = ("");
             this.ServedDevice61.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2270,7 +2277,7 @@
             this.ServedDevice62.DevicesAreConnected = (false);
             this.ServedDevice62.DeviceType = ("None");
             this.ServedDevice62.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice62.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice62.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice62.Name = ("ServedDevice62");
             this.ServedDevice62.ProgID = ("");
             this.ServedDevice62.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2286,7 +2293,7 @@
             this.ServedDevice63.DevicesAreConnected = (false);
             this.ServedDevice63.DeviceType = ("None");
             this.ServedDevice63.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice63.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice63.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice63.Name = ("ServedDevice63");
             this.ServedDevice63.ProgID = ("");
             this.ServedDevice63.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2302,7 +2309,7 @@
             this.ServedDevice64.DevicesAreConnected = (false);
             this.ServedDevice64.DeviceType = ("None");
             this.ServedDevice64.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice64.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice64.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice64.Name = ("ServedDevice64");
             this.ServedDevice64.ProgID = ("");
             this.ServedDevice64.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2318,7 +2325,7 @@
             this.ServedDevice65.DevicesAreConnected = (false);
             this.ServedDevice65.DeviceType = ("None");
             this.ServedDevice65.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice65.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice65.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice65.Name = ("ServedDevice65");
             this.ServedDevice65.ProgID = ("");
             this.ServedDevice65.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2334,7 +2341,7 @@
             this.ServedDevice66.DevicesAreConnected = (false);
             this.ServedDevice66.DeviceType = ("None");
             this.ServedDevice66.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice66.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice66.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice66.Name = ("ServedDevice66");
             this.ServedDevice66.ProgID = ("");
             this.ServedDevice66.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2350,7 +2357,7 @@
             this.ServedDevice67.DevicesAreConnected = (false);
             this.ServedDevice67.DeviceType = ("None");
             this.ServedDevice67.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice67.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice67.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice67.Name = ("ServedDevice67");
             this.ServedDevice67.ProgID = ("");
             this.ServedDevice67.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2366,7 +2373,7 @@
             this.ServedDevice68.DevicesAreConnected = (false);
             this.ServedDevice68.DeviceType = ("None");
             this.ServedDevice68.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice68.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice68.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice68.Name = ("ServedDevice68");
             this.ServedDevice68.ProgID = ("");
             this.ServedDevice68.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2382,7 +2389,7 @@
             this.ServedDevice69.DevicesAreConnected = (false);
             this.ServedDevice69.DeviceType = ("None");
             this.ServedDevice69.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice69.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice69.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice69.Name = ("ServedDevice69");
             this.ServedDevice69.ProgID = ("");
             this.ServedDevice69.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2517,7 +2524,7 @@
             this.ServedDevice70.DevicesAreConnected = (false);
             this.ServedDevice70.DeviceType = ("None");
             this.ServedDevice70.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice70.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice70.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice70.Name = ("ServedDevice70");
             this.ServedDevice70.ProgID = ("");
             this.ServedDevice70.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2533,7 +2540,7 @@
             this.ServedDevice71.DevicesAreConnected = (false);
             this.ServedDevice71.DeviceType = ("None");
             this.ServedDevice71.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice71.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice71.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice71.Name = ("ServedDevice71");
             this.ServedDevice71.ProgID = ("");
             this.ServedDevice71.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2549,7 +2556,7 @@
             this.ServedDevice72.DevicesAreConnected = (false);
             this.ServedDevice72.DeviceType = ("None");
             this.ServedDevice72.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice72.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice72.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice72.Name = ("ServedDevice72");
             this.ServedDevice72.ProgID = ("");
             this.ServedDevice72.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2565,7 +2572,7 @@
             this.ServedDevice73.DevicesAreConnected = (false);
             this.ServedDevice73.DeviceType = ("None");
             this.ServedDevice73.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice73.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice73.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice73.Name = ("ServedDevice73");
             this.ServedDevice73.ProgID = ("");
             this.ServedDevice73.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2581,7 +2588,7 @@
             this.ServedDevice74.DevicesAreConnected = (false);
             this.ServedDevice74.DeviceType = ("None");
             this.ServedDevice74.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice74.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice74.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice74.Name = ("ServedDevice74");
             this.ServedDevice74.ProgID = ("");
             this.ServedDevice74.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2597,7 +2604,7 @@
             this.ServedDevice75.DevicesAreConnected = (false);
             this.ServedDevice75.DeviceType = ("None");
             this.ServedDevice75.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice75.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice75.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice75.Name = ("ServedDevice75");
             this.ServedDevice75.ProgID = ("");
             this.ServedDevice75.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2613,7 +2620,7 @@
             this.ServedDevice76.DevicesAreConnected = (false);
             this.ServedDevice76.DeviceType = ("None");
             this.ServedDevice76.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice76.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice76.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice76.Name = ("ServedDevice76");
             this.ServedDevice76.ProgID = ("");
             this.ServedDevice76.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2629,7 +2636,7 @@
             this.ServedDevice77.DevicesAreConnected = (false);
             this.ServedDevice77.DeviceType = ("None");
             this.ServedDevice77.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice77.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice77.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice77.Name = ("ServedDevice77");
             this.ServedDevice77.ProgID = ("");
             this.ServedDevice77.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2645,7 +2652,7 @@
             this.ServedDevice78.DevicesAreConnected = (false);
             this.ServedDevice78.DeviceType = ("None");
             this.ServedDevice78.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice78.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice78.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice78.Name = ("ServedDevice78");
             this.ServedDevice78.ProgID = ("");
             this.ServedDevice78.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2661,7 +2668,7 @@
             this.ServedDevice79.DevicesAreConnected = (false);
             this.ServedDevice79.DeviceType = ("None");
             this.ServedDevice79.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice79.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice79.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice79.Name = ("ServedDevice79");
             this.ServedDevice79.ProgID = ("");
             this.ServedDevice79.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2796,7 +2803,7 @@
             this.ServedDevice80.DevicesAreConnected = (false);
             this.ServedDevice80.DeviceType = ("None");
             this.ServedDevice80.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice80.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice80.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice80.Name = ("ServedDevice80");
             this.ServedDevice80.ProgID = ("");
             this.ServedDevice80.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2812,7 +2819,7 @@
             this.ServedDevice81.DevicesAreConnected = (false);
             this.ServedDevice81.DeviceType = ("None");
             this.ServedDevice81.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice81.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice81.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice81.Name = ("ServedDevice81");
             this.ServedDevice81.ProgID = ("");
             this.ServedDevice81.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2828,7 +2835,7 @@
             this.ServedDevice82.DevicesAreConnected = (false);
             this.ServedDevice82.DeviceType = ("None");
             this.ServedDevice82.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice82.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice82.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice82.Name = ("ServedDevice82");
             this.ServedDevice82.ProgID = ("");
             this.ServedDevice82.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2844,7 +2851,7 @@
             this.ServedDevice83.DevicesAreConnected = (false);
             this.ServedDevice83.DeviceType = ("None");
             this.ServedDevice83.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice83.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice83.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice83.Name = ("ServedDevice83");
             this.ServedDevice83.ProgID = ("");
             this.ServedDevice83.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2860,7 +2867,7 @@
             this.ServedDevice84.DevicesAreConnected = (false);
             this.ServedDevice84.DeviceType = ("None");
             this.ServedDevice84.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice84.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice84.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice84.Name = ("ServedDevice84");
             this.ServedDevice84.ProgID = ("");
             this.ServedDevice84.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2876,7 +2883,7 @@
             this.ServedDevice85.DevicesAreConnected = (false);
             this.ServedDevice85.DeviceType = ("None");
             this.ServedDevice85.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice85.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice85.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice85.Name = ("ServedDevice85");
             this.ServedDevice85.ProgID = ("");
             this.ServedDevice85.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2892,7 +2899,7 @@
             this.ServedDevice86.DevicesAreConnected = (false);
             this.ServedDevice86.DeviceType = ("None");
             this.ServedDevice86.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice86.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice86.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice86.Name = ("ServedDevice86");
             this.ServedDevice86.ProgID = ("");
             this.ServedDevice86.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2908,7 +2915,7 @@
             this.ServedDevice87.DevicesAreConnected = (false);
             this.ServedDevice87.DeviceType = ("None");
             this.ServedDevice87.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice87.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice87.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice87.Name = ("ServedDevice87");
             this.ServedDevice87.ProgID = ("");
             this.ServedDevice87.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2924,7 +2931,7 @@
             this.ServedDevice88.DevicesAreConnected = (false);
             this.ServedDevice88.DeviceType = ("None");
             this.ServedDevice88.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice88.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice88.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice88.Name = ("ServedDevice88");
             this.ServedDevice88.ProgID = ("");
             this.ServedDevice88.Size = (new global::System.Drawing.Size(1120, 25));
@@ -2940,7 +2947,7 @@
             this.ServedDevice89.DevicesAreConnected = (false);
             this.ServedDevice89.DeviceType = ("None");
             this.ServedDevice89.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice89.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice89.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice89.Name = ("ServedDevice89");
             this.ServedDevice89.ProgID = ("");
             this.ServedDevice89.Size = (new global::System.Drawing.Size(1120, 25));
@@ -3075,7 +3082,7 @@
             this.ServedDevice90.DevicesAreConnected = (false);
             this.ServedDevice90.DeviceType = ("None");
             this.ServedDevice90.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice90.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice90.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice90.Name = ("ServedDevice90");
             this.ServedDevice90.ProgID = ("");
             this.ServedDevice90.Size = (new global::System.Drawing.Size(1120, 25));
@@ -3091,7 +3098,7 @@
             this.ServedDevice91.DevicesAreConnected = (false);
             this.ServedDevice91.DeviceType = ("None");
             this.ServedDevice91.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice91.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice91.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice91.Name = ("ServedDevice91");
             this.ServedDevice91.ProgID = ("");
             this.ServedDevice91.Size = (new global::System.Drawing.Size(1120, 25));
@@ -3107,7 +3114,7 @@
             this.ServedDevice92.DevicesAreConnected = (false);
             this.ServedDevice92.DeviceType = ("None");
             this.ServedDevice92.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice92.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice92.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice92.Name = ("ServedDevice92");
             this.ServedDevice92.ProgID = ("");
             this.ServedDevice92.Size = (new global::System.Drawing.Size(1120, 25));
@@ -3123,7 +3130,7 @@
             this.ServedDevice93.DevicesAreConnected = (false);
             this.ServedDevice93.DeviceType = ("None");
             this.ServedDevice93.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice93.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice93.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice93.Name = ("ServedDevice93");
             this.ServedDevice93.ProgID = ("");
             this.ServedDevice93.Size = (new global::System.Drawing.Size(1120, 25));
@@ -3139,7 +3146,7 @@
             this.ServedDevice94.DevicesAreConnected = (false);
             this.ServedDevice94.DeviceType = ("None");
             this.ServedDevice94.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice94.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice94.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice94.Name = ("ServedDevice94");
             this.ServedDevice94.ProgID = ("");
             this.ServedDevice94.Size = (new global::System.Drawing.Size(1120, 25));
@@ -3155,7 +3162,7 @@
             this.ServedDevice95.DevicesAreConnected = (false);
             this.ServedDevice95.DeviceType = ("None");
             this.ServedDevice95.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice95.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice95.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice95.Name = ("ServedDevice95");
             this.ServedDevice95.ProgID = ("");
             this.ServedDevice95.Size = (new global::System.Drawing.Size(1120, 25));
@@ -3171,7 +3178,7 @@
             this.ServedDevice96.DevicesAreConnected = (false);
             this.ServedDevice96.DeviceType = ("None");
             this.ServedDevice96.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice96.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice96.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice96.Name = ("ServedDevice96");
             this.ServedDevice96.ProgID = ("");
             this.ServedDevice96.Size = (new global::System.Drawing.Size(1120, 25));
@@ -3187,7 +3194,7 @@
             this.ServedDevice97.DevicesAreConnected = (false);
             this.ServedDevice97.DeviceType = ("None");
             this.ServedDevice97.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice97.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice97.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice97.Name = ("ServedDevice97");
             this.ServedDevice97.ProgID = ("");
             this.ServedDevice97.Size = (new global::System.Drawing.Size(1120, 25));
@@ -3203,7 +3210,7 @@
             this.ServedDevice98.DevicesAreConnected = (false);
             this.ServedDevice98.DeviceType = ("None");
             this.ServedDevice98.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice98.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice98.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice98.Name = ("ServedDevice98");
             this.ServedDevice98.ProgID = ("");
             this.ServedDevice98.Size = (new global::System.Drawing.Size(1120, 25));
@@ -3219,7 +3226,7 @@
             this.ServedDevice99.DevicesAreConnected = (false);
             this.ServedDevice99.DeviceType = ("None");
             this.ServedDevice99.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice99.Margin = (new global::System.Windows.Forms.Padding(5, 5, 5, 5));
+            this.ServedDevice99.Margin = (new global::System.Windows.Forms.Padding(5));
             this.ServedDevice99.Name = ("ServedDevice99");
             this.ServedDevice99.ProgID = ("");
             this.ServedDevice99.Size = (new global::System.Drawing.Size(1120, 25));
@@ -3241,14 +3248,10 @@
             // ServerConfigurationTab
             // 
             this.ServerConfigurationTab.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.ServerConfigurationTab.Controls.Add(this.lblMinimisationBehaviour);
             this.ServerConfigurationTab.Controls.Add(this.chkStartMinimised);
             this.ServerConfigurationTab.Controls.Add(this.chkConfirmExit);
-            this.ServerConfigurationTab.Controls.Add(this.cmbMinimiseOptions);
             this.ServerConfigurationTab.Controls.Add(this.textBox1);
             this.ServerConfigurationTab.Controls.Add(this.GrpIpVersionSelector);
-            this.ServerConfigurationTab.Controls.Add(this.label96);
-            this.ServerConfigurationTab.Controls.Add(this.NumMaxDevices);
             this.ServerConfigurationTab.Controls.Add(this.label13);
             this.ServerConfigurationTab.Controls.Add(this.NumDiscoveryPort);
             this.ServerConfigurationTab.Controls.Add(this.ChkEnableDiscovery);
@@ -3271,20 +3274,10 @@
             this.ServerConfigurationTab.TabIndex = (1);
             this.ServerConfigurationTab.Text = ("Server Configuration");
             // 
-            // lblMinimisationBehaviour
-            // 
-            this.lblMinimisationBehaviour.AutoSize = (true);
-            this.lblMinimisationBehaviour.Location = (new global::System.Drawing.Point(497, 372));
-            this.lblMinimisationBehaviour.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.lblMinimisationBehaviour.Name = ("lblMinimisationBehaviour");
-            this.lblMinimisationBehaviour.Size = (new global::System.Drawing.Size(195, 15));
-            this.lblMinimisationBehaviour.TabIndex = (56);
-            this.lblMinimisationBehaviour.Text = ("Minimisation behaviour description");
-            // 
             // chkStartMinimised
             // 
             this.chkStartMinimised.AutoSize = (true);
-            this.chkStartMinimised.Location = (new global::System.Drawing.Point(564, 328));
+            this.chkStartMinimised.Location = (new global::System.Drawing.Point(560, 365));
             this.chkStartMinimised.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
             this.chkStartMinimised.Name = ("chkStartMinimised");
             this.chkStartMinimised.Size = (new global::System.Drawing.Size(204, 19));
@@ -3295,23 +3288,13 @@
             // chkConfirmExit
             // 
             this.chkConfirmExit.AutoSize = (true);
-            this.chkConfirmExit.Location = (new global::System.Drawing.Point(315, 328));
+            this.chkConfirmExit.Location = (new global::System.Drawing.Point(311, 365));
             this.chkConfirmExit.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
             this.chkConfirmExit.Name = ("chkConfirmExit");
             this.chkConfirmExit.Size = (new global::System.Drawing.Size(205, 19));
             this.chkConfirmExit.TabIndex = (54);
             this.chkConfirmExit.Text = ("Confirm Remote Server shutdown");
             this.chkConfirmExit.UseVisualStyleBackColor = (true);
-            // 
-            // cmbMinimiseOptions
-            // 
-            this.cmbMinimiseOptions.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbMinimiseOptions.FormattingEnabled = (true);
-            this.cmbMinimiseOptions.Location = (new global::System.Drawing.Point(315, 368));
-            this.cmbMinimiseOptions.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.cmbMinimiseOptions.Name = ("cmbMinimiseOptions");
-            this.cmbMinimiseOptions.Size = (new global::System.Drawing.Size(174, 23));
-            this.cmbMinimiseOptions.TabIndex = (53);
             // 
             // textBox1
             // 
@@ -3320,11 +3303,11 @@
             this.textBox1.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
             this.textBox1.ForeColor = (global::System.Drawing.SystemColors.ActiveCaptionText);
             this.textBox1.Location = (new global::System.Drawing.Point(22, 42));
-            this.textBox1.Margin = (new global::System.Windows.Forms.Padding(6, 6, 6, 6));
+            this.textBox1.Margin = (new global::System.Windows.Forms.Padding(6));
             this.textBox1.Multiline = (true);
             this.textBox1.Name = ("textBox1");
             this.textBox1.ReadOnly = (true);
-            this.textBox1.Size = (new global::System.Drawing.Size(270, 190));
+            this.textBox1.Size = (new global::System.Drawing.Size(270, 169));
             this.textBox1.TabIndex = (51);
             this.textBox1.Text = (resources.GetString("textBox1.Text"));
             // 
@@ -3381,33 +3364,10 @@
             this.RadIpV4.UseVisualStyleBackColor = (true);
             this.RadIpV4.CheckedChanged += (this.RadIpV4_CheckedChanged);
             // 
-            // label96
-            // 
-            this.label96.AutoSize = (true);
-            this.label96.Location = (new global::System.Drawing.Point(497, 418));
-            this.label96.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label96.Name = ("label96");
-            this.label96.Size = (new global::System.Drawing.Size(312, 15));
-            this.label96.TabIndex = (49);
-            this.label96.Text = ("Maximum number of served devices (in increments of 10)");
-            // 
-            // NumMaxDevices
-            // 
-            this.NumMaxDevices.Increment = (new global::System.Decimal(new global::System.Int32[] { 10, 0, 0, 0 }));
-            this.NumMaxDevices.Location = (new global::System.Drawing.Point(315, 415));
-            this.NumMaxDevices.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.NumMaxDevices.Minimum = (new global::System.Decimal(new global::System.Int32[] { 10, 0, 0, 0 }));
-            this.NumMaxDevices.Name = ("NumMaxDevices");
-            this.NumMaxDevices.ReadOnly = (true);
-            this.NumMaxDevices.Size = (new global::System.Drawing.Size(175, 23));
-            this.NumMaxDevices.TabIndex = (48);
-            this.NumMaxDevices.TextAlign = (global::System.Windows.Forms.HorizontalAlignment.Right);
-            this.NumMaxDevices.Value = (new global::System.Decimal(new global::System.Int32[] { 10, 0, 0, 0 }));
-            // 
             // label13
             // 
             this.label13.AutoSize = (true);
-            this.label13.Location = (new global::System.Drawing.Point(705, 196));
+            this.label13.Location = (new global::System.Drawing.Point(701, 196));
             this.label13.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
             this.label13.Name = ("label13");
             this.label13.Size = (new global::System.Drawing.Size(209, 15));
@@ -3428,7 +3388,7 @@
             // ChkEnableDiscovery
             // 
             this.ChkEnableDiscovery.AutoSize = (true);
-            this.ChkEnableDiscovery.Location = (new global::System.Drawing.Point(564, 275));
+            this.ChkEnableDiscovery.Location = (new global::System.Drawing.Point(560, 312));
             this.ChkEnableDiscovery.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
             this.ChkEnableDiscovery.Name = ("ChkEnableDiscovery");
             this.ChkEnableDiscovery.Size = (new global::System.Drawing.Size(300, 19));
@@ -3440,7 +3400,7 @@
             // label10
             // 
             this.label10.AutoSize = (true);
-            this.label10.Location = (new global::System.Drawing.Point(705, 78));
+            this.label10.Location = (new global::System.Drawing.Point(701, 78));
             this.label10.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
             this.label10.Name = ("label10");
             this.label10.Size = (new global::System.Drawing.Size(88, 15));
@@ -3458,6 +3418,7 @@
             // 
             // TxtRemoteServerLocation
             // 
+            this.TxtRemoteServerLocation.BorderStyle = (global::System.Windows.Forms.BorderStyle.FixedSingle);
             this.TxtRemoteServerLocation.Location = (new global::System.Drawing.Point(315, 75));
             this.TxtRemoteServerLocation.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
             this.TxtRemoteServerLocation.Name = ("TxtRemoteServerLocation");
@@ -3478,7 +3439,7 @@
             // label8
             // 
             this.label8.AutoSize = (true);
-            this.label8.Location = (new global::System.Drawing.Point(705, 166));
+            this.label8.Location = (new global::System.Drawing.Point(701, 166));
             this.label8.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
             this.label8.Name = ("label8");
             this.label8.Size = (new global::System.Drawing.Size(77, 15));
@@ -3488,12 +3449,91 @@
             // label7
             // 
             this.label7.AutoSize = (true);
-            this.label7.Location = (new global::System.Drawing.Point(705, 136));
+            this.label7.Location = (new global::System.Drawing.Point(701, 136));
             this.label7.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
             this.label7.Name = ("label7");
             this.label7.Size = (new global::System.Drawing.Size(95, 15));
             this.label7.TabIndex = (41);
             this.label7.Text = ("Server IP address");
+            // 
+            // ServerConfigurationTab2
+            // 
+            this.ServerConfigurationTab2.BackColor = (global::System.Drawing.SystemColors.Control);
+            this.ServerConfigurationTab2.Controls.Add(this.groupBox4);
+            this.ServerConfigurationTab2.Controls.Add(this.lblMinimisationBehaviour);
+            this.ServerConfigurationTab2.Controls.Add(this.cmbMinimiseOptions);
+            this.ServerConfigurationTab2.Controls.Add(this.label96);
+            this.ServerConfigurationTab2.Controls.Add(this.NumMaxDevices);
+            this.ServerConfigurationTab2.Location = (new global::System.Drawing.Point(4, 24));
+            this.ServerConfigurationTab2.Name = ("ServerConfigurationTab2");
+            this.ServerConfigurationTab2.Padding = (new global::System.Windows.Forms.Padding(3));
+            this.ServerConfigurationTab2.Size = (new global::System.Drawing.Size(1198, 457));
+            this.ServerConfigurationTab2.TabIndex = (5);
+            this.ServerConfigurationTab2.Text = ("Server Configuration 2");
+            // 
+            // ChkCheckForPreReleaseUpdates
+            // 
+            this.ChkCheckForPreReleaseUpdates.AutoSize = (true);
+            this.ChkCheckForPreReleaseUpdates.Location = (new global::System.Drawing.Point(6, 47));
+            this.ChkCheckForPreReleaseUpdates.Name = ("ChkCheckForPreReleaseUpdates");
+            this.ChkCheckForPreReleaseUpdates.Size = (new global::System.Drawing.Size(183, 19));
+            this.ChkCheckForPreReleaseUpdates.TabIndex = (62);
+            this.ChkCheckForPreReleaseUpdates.Text = ("Check for pre-release updates");
+            this.ChkCheckForPreReleaseUpdates.UseVisualStyleBackColor = (true);
+            // 
+            // ChkCheckForUpdates
+            // 
+            this.ChkCheckForUpdates.AutoSize = (true);
+            this.ChkCheckForUpdates.Location = (new global::System.Drawing.Point(6, 22));
+            this.ChkCheckForUpdates.Name = ("ChkCheckForUpdates");
+            this.ChkCheckForUpdates.Size = (new global::System.Drawing.Size(122, 19));
+            this.ChkCheckForUpdates.TabIndex = (61);
+            this.ChkCheckForUpdates.Text = ("Check for updates");
+            this.ChkCheckForUpdates.UseVisualStyleBackColor = (true);
+            // 
+            // lblMinimisationBehaviour
+            // 
+            this.lblMinimisationBehaviour.AutoSize = (true);
+            this.lblMinimisationBehaviour.Location = (new global::System.Drawing.Point(621, 250));
+            this.lblMinimisationBehaviour.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
+            this.lblMinimisationBehaviour.Name = ("lblMinimisationBehaviour");
+            this.lblMinimisationBehaviour.Size = (new global::System.Drawing.Size(195, 15));
+            this.lblMinimisationBehaviour.TabIndex = (60);
+            this.lblMinimisationBehaviour.Text = ("Minimisation behaviour description");
+            // 
+            // cmbMinimiseOptions
+            // 
+            this.cmbMinimiseOptions.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
+            this.cmbMinimiseOptions.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
+            this.cmbMinimiseOptions.FormattingEnabled = (true);
+            this.cmbMinimiseOptions.Location = (new global::System.Drawing.Point(414, 247));
+            this.cmbMinimiseOptions.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
+            this.cmbMinimiseOptions.Name = ("cmbMinimiseOptions");
+            this.cmbMinimiseOptions.Size = (new global::System.Drawing.Size(199, 23));
+            this.cmbMinimiseOptions.TabIndex = (59);
+            // 
+            // label96
+            // 
+            this.label96.AutoSize = (true);
+            this.label96.Location = (new global::System.Drawing.Point(621, 296));
+            this.label96.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
+            this.label96.Name = ("label96");
+            this.label96.Size = (new global::System.Drawing.Size(312, 15));
+            this.label96.TabIndex = (58);
+            this.label96.Text = ("Maximum number of served devices (in increments of 10)");
+            // 
+            // NumMaxDevices
+            // 
+            this.NumMaxDevices.Increment = (new global::System.Decimal(new global::System.Int32[] { 10, 0, 0, 0 }));
+            this.NumMaxDevices.Location = (new global::System.Drawing.Point(414, 294));
+            this.NumMaxDevices.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
+            this.NumMaxDevices.Minimum = (new global::System.Decimal(new global::System.Int32[] { 10, 0, 0, 0 }));
+            this.NumMaxDevices.Name = ("NumMaxDevices");
+            this.NumMaxDevices.ReadOnly = (true);
+            this.NumMaxDevices.Size = (new global::System.Drawing.Size(199, 23));
+            this.NumMaxDevices.TabIndex = (57);
+            this.NumMaxDevices.TextAlign = (global::System.Windows.Forms.HorizontalAlignment.Right);
+            this.NumMaxDevices.Value = (new global::System.Decimal(new global::System.Int32[] { 10, 0, 0, 0 }));
             // 
             // LoggingConfigurationTab
             // 
@@ -3787,14 +3827,14 @@
             // DataGridCorsOrigins
             // 
             this.DataGridCorsOrigins.AutoSizeColumnsMode = (global::System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill);
-            dataGridViewCellStyle1.Alignment = (global::System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter);
-            dataGridViewCellStyle1.BackColor = (global::System.Drawing.SystemColors.Control);
-            dataGridViewCellStyle1.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            dataGridViewCellStyle1.ForeColor = (global::System.Drawing.SystemColors.Highlight);
-            dataGridViewCellStyle1.SelectionBackColor = (global::System.Drawing.SystemColors.Highlight);
-            dataGridViewCellStyle1.SelectionForeColor = (global::System.Drawing.SystemColors.HighlightText);
-            dataGridViewCellStyle1.WrapMode = (global::System.Windows.Forms.DataGridViewTriState.True);
-            this.DataGridCorsOrigins.ColumnHeadersDefaultCellStyle = (dataGridViewCellStyle1);
+            dataGridViewCellStyle2.Alignment = (global::System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter);
+            dataGridViewCellStyle2.BackColor = (global::System.Drawing.SystemColors.Control);
+            dataGridViewCellStyle2.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            dataGridViewCellStyle2.ForeColor = (global::System.Drawing.SystemColors.Highlight);
+            dataGridViewCellStyle2.SelectionBackColor = (global::System.Drawing.SystemColors.Highlight);
+            dataGridViewCellStyle2.SelectionForeColor = (global::System.Drawing.SystemColors.HighlightText);
+            dataGridViewCellStyle2.WrapMode = (global::System.Windows.Forms.DataGridViewTriState.True);
+            this.DataGridCorsOrigins.ColumnHeadersDefaultCellStyle = (dataGridViewCellStyle2);
             this.DataGridCorsOrigins.ColumnHeadersHeightSizeMode = (global::System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize);
             this.DataGridCorsOrigins.EnableHeadersVisualStyles = (false);
             this.DataGridCorsOrigins.Location = (new global::System.Drawing.Point(255, 58));
@@ -3803,6 +3843,17 @@
             this.DataGridCorsOrigins.RowHeadersWidth = (51);
             this.DataGridCorsOrigins.Size = (new global::System.Drawing.Size(684, 250));
             this.DataGridCorsOrigins.TabIndex = (0);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.ChkCheckForUpdates);
+            this.groupBox4.Controls.Add(this.ChkCheckForPreReleaseUpdates);
+            this.groupBox4.Location = (new global::System.Drawing.Point(414, 128));
+            this.groupBox4.Name = ("groupBox4");
+            this.groupBox4.Size = (new global::System.Drawing.Size(199, 77));
+            this.groupBox4.TabIndex = (63);
+            this.groupBox4.TabStop = (false);
+            this.groupBox4.Text = ("Update Checks");
             // 
             // SetupForm
             // 
@@ -3849,9 +3900,11 @@
             this.ServerConfigurationTab.PerformLayout();
             this.GrpIpVersionSelector.ResumeLayout(false);
             this.GrpIpVersionSelector.PerformLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.NumMaxDevices)).EndInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.NumDiscoveryPort)).EndInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.numPort)).EndInit();
+            this.ServerConfigurationTab2.ResumeLayout(false);
+            this.ServerConfigurationTab2.PerformLayout();
+            ((global::System.ComponentModel.ISupportInitialize)(this.NumMaxDevices)).EndInit();
             this.LoggingConfigurationTab.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
@@ -3863,6 +3916,8 @@
             this.CorsConfigurationTab.PerformLayout();
             ((global::System.ComponentModel.ISupportInitialize)(this.NumCorsMaxAge)).EndInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.DataGridCorsOrigins)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
         }
 
@@ -4097,8 +4152,6 @@
         private System.Windows.Forms.Label label95;
         private ServedDevice ServedDevice99;
         private System.Windows.Forms.Label LblDevicesNotDisconnoected;
-        private System.Windows.Forms.Label label96;
-        private System.Windows.Forms.NumericUpDown NumMaxDevices;
         private System.Windows.Forms.GroupBox GrpIpVersionSelector;
         private System.Windows.Forms.RadioButton RadIpV4AndV6;
         private System.Windows.Forms.RadioButton RadIpV6;
@@ -4120,11 +4173,17 @@
         private System.Windows.Forms.CheckBox ChkUseUtcTime;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ComboBox cmbMinimiseOptions;
         private System.Windows.Forms.CheckBox chkConfirmExit;
         private System.Windows.Forms.CheckBox chkStartMinimised;
-        private System.Windows.Forms.Label lblMinimisationBehaviour;
         private System.Windows.Forms.Label label97;
         private System.Windows.Forms.Label LabHelp2;
+        private global::System.Windows.Forms.TabPage ServerConfigurationTab2;
+        private global::System.Windows.Forms.CheckBox ChkCheckForPreReleaseUpdates;
+        private global::System.Windows.Forms.CheckBox ChkCheckForUpdates;
+        private global::System.Windows.Forms.Label lblMinimisationBehaviour;
+        private global::System.Windows.Forms.ComboBox cmbMinimiseOptions;
+        private global::System.Windows.Forms.Label label96;
+        private global::System.Windows.Forms.NumericUpDown NumMaxDevices;
+        private global::System.Windows.Forms.GroupBox groupBox4;
     }
 }
