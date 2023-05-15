@@ -16,11 +16,65 @@ namespace ASCOM.Remote
         [STAThread]
         static void Main()
         {
-#if !DEBUG // Exclude the unhandled exception handlers from the Debug version so that the application can be debugged in Visual Studio
+            // Restart as the other bitness version if required
+            bool is64BitOS = Environment.Is64BitOperatingSystem;
+            bool is64BitApplication = Environment.Is64BitProcess;
+
+            // Check whether we are supposed to be running as a 32bit or a 64bit application
+            if (Settings.RunAs64Bit)  // We are supposed to be running as a 64bit application
+            {
+                // Check whether the OS is 32bit or 64bit
+                if (is64BitOS) // OS is 64bit
+                {
+                    // Check whether the application is running as 32bit or 64bit
+                    if (is64BitApplication) // Application is 64bit
+                    {
+                        // No action required because we are already running as 64bit
+                    }
+                    else // Applicati9n is 32bit
+                    {
+                        // Start the 64bit version of the application
+
+                        // End this program
+                        return;
+                    }
+                }
+                else // OS is 32bit
+                {
+                    // Can't run as a 64bit application on a 32bit OS so no action because this must already be the 32bit version of the application
+                }
+            }
+            else // We are supposed to be running as a 32bit application
+            {
+                // Check whether the OS is 32bit or 64bit
+                if (is64BitOS) // OS is 64bit
+                {
+                    // Check whether the application is running as 32bit or 64bit
+                    if (is64BitApplication) // Application is 64bit
+                    {
+                        // Start the 32bit version of the application
+
+                        // End this program
+                        return;
+                    }
+                    else // Application is 32bit
+                    {
+                        // No action required because we are already running as 32bit on the 64bit OS
+                    }
+                }
+                else // OS is 32bit
+                {
+                    // No action required because the OS is 32bit so this application must also be 32bit.
+                }
+            }
+
+
+
+#if !DEBUG // Exclude the un-handled exception handlers from the Debug version so that the application can be debugged in Visual Studio
             // Add the event handler for handling UI thread exceptions to the event.
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
 
-            // Set the unhandled exception mode to force all Windows Forms errors to go through our handler.
+            // Set the un-handled exception mode to force all Windows Forms errors to go through our handler.
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 
             // Add the event handler for handling non-UI thread exceptions to the event. 
@@ -57,7 +111,7 @@ namespace ASCOM.Remote
             TL.Enabled = false;
             TL.Dispose();
 
-            //MessageBox.Show(e.Exception.Message, "Unhandled Thread Exception, see RemoteAccessServerException log for details.");
+            //MessageBox.Show(e.Exception.Message, "Un-handled Thread Exception, see RemoteAccessServerException log for details.");
             Environment.Exit(0);
         }
 
@@ -68,7 +122,7 @@ namespace ASCOM.Remote
             {
                 Enabled = true
             };
-            TL.LogMessage("Main", "Unhandled exception: " + exception.ToString());
+            TL.LogMessage("Main", "Un-handled exception: " + exception.ToString());
             Process.Start(TL.LogFileName);
             TL.Enabled = false;
             TL.Dispose();

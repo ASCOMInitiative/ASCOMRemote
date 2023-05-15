@@ -2,14 +2,7 @@
 ; Script to install the ASCOM Remote Server
 ;
 
-; Install direrctory names
-#define public RemoteServerDirectory "{commonpf}\ASCOM\Remote" ; Target directory where the remote server will be installed
-
 ; Install file names
-#define public RemoteServerName "RemoteServer" ; Remote server application name
-#define public SetNetworkPermissionsName "ASCOM.SetNetworkPermissions" ; Firewall configuration application name
-#define public ASCOMRemoteDocumentationFileName "ASCOM Remote Installation and Configuration.pdf"; ASCOM Remote documentation file
-
 #define MyAppName "ASCOM Remote"
 #define MyAppPublisher "ASCOM Initiative (Peter Simpson)"
 #define MyAppPublisherURL "https://ascom-standards.org"
@@ -18,9 +11,7 @@
 #define MyAppExeName "RemoteServer.exe"
 #define MyAppAuthor "Peter Simpson"
 #define MyAppCopyright "Copyright © 2023 " + MyAppAuthor
-#define MyAppVersion GetVersionNumbersString("..\publish\x64\ASCOM.Remote.exe")  ; Create version number variable
-
-
+#define MyAppVersion GetVersionNumbersString("..\publish\x64\{#MyAppExeName}")  ; Create version number variable
 
 ; Specifiy debug or release build;#define public BuildType "Debug" ; Type of build - Release or Debug
 #define public BuildType "Release" ; Type of build - Release or Debug
@@ -37,9 +28,8 @@ AppVerName={#MyAppName}
 AppVersion={#MyAppVersion}
 ArchitecturesInstallIn64BitMode=x64
 Compression = lzma
-
 DefaultDirName={autopf}\ASCOM\RemoteServer
-DefaultGroupName=ASCOM Remote
+DefaultGroupName={#MyAppName}
 MinVersion=6.1SP1
 DisableProgramGroupPage=yes
 OutputBaseFilename=ASCOMRemote({#MyAppVersion})Setup
@@ -100,9 +90,9 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 ; 64bit OS - Install the 64bit app
-Source: "..\publish\x64\*.exe"; DestDir: "{app}\64bit"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
-Source: "..\publish\x64\*.dll"; DestDir: "{app}\64bit"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
-Source: "..\publish\x64\*"; DestDir: "{app}\64bit"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: Is64BitInstallMode
+Source: "..\publish\x64\*.exe"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
+Source: "..\publish\x64\*.dll"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
+Source: "..\publish\x64\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: Is64BitInstallMode
 
 ; 64bit OS - Install the 32bit app
 Source: "..\publish\x86\*.exe"; DestDir: "{app}\32bit"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
