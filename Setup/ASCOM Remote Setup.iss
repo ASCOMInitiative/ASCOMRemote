@@ -1,90 +1,163 @@
 ;
-; Script to install the ASCOM Remote Drivers and ASCOM Remote Server
+; Script to install the ASCOM Remote Server
 ;
 
 ; Install direrctory names
-#define public RemoteClientDirectory "{app}\RemoteClients" ; Target directory where remote clients will be installed
 #define public RemoteServerDirectory "{commonpf}\ASCOM\Remote" ; Target directory where the remote server will be installed
 
 ; Install file names
-#define public RemoteClientLocalServerName "ASCOM.RemoteClientLocalServer" ; Remote client local server name
-#define public RemoteServerName "ASCOM.RemoteServer" ; Remote server application name
-#define public ASCOMStandardName "ASCOMStandard" ; ASCOMStandard support DLL name
+#define public RemoteServerName "RemoteServer" ; Remote server application name
 #define public SetNetworkPermissionsName "ASCOM.SetNetworkPermissions" ; Firewall configuration application name
-#define public DynamicRemoteClientsName "ASCOM.DynamicRemoteClients" ; Remote client management application name
-#define public RemoteClientBaseClassesName "ASCOM.RemoteClientBaseClasses" ; Remote client support DLL name
 #define public ASCOMRemoteDocumentationFileName "ASCOM Remote Installation and Configuration.pdf"; ASCOM Remote documentation file
+
+#define MyAppName "ASCOM Remote"
+#define MyAppPublisher "ASCOM Initiative (Peter Simpson)"
+#define MyAppPublisherURL "https://ascom-standards.org"
+#define MyAppSupportURL "URL=https://ascomtalk.groups.io/g/Developer/topics"
+#define MyAppUpdatesURL "https://github.com/ASCOMInitiative/ASCOMRemote/releases"
+#define MyAppExeName "RemoteServer.exe"
+#define MyAppAuthor "Peter Simpson"
+#define MyAppCopyright "Copyright © 2023 " + MyAppAuthor
+#define MyAppVersion GetVersionNumbersString("..\publish\x64\ASCOM.Remote.exe")  ; Create version number variable
+
+
 
 ; Specifiy debug or release build;#define public BuildType "Debug" ; Type of build - Release or Debug
 #define public BuildType "Release" ; Type of build - Release or Debug
 
 [Setup]
 AppID={{0ee690ae-7927-4ee7-b851-f5877c077ff5}
-#define MyAppVer GetVersionNumbersString("..\Remote Server\bin\Release\ASCOM.RemoteServer.exe") ; define variable
+AppCopyright={#MyAppCopyright}
+AppName={#MyAppName}
+AppPublisher={#MyAppPublisher}
+AppPublisherURL={#MyAppPublisherURL}
+AppSupportURL={#MyAppSupportURL}
+AppUpdatesURL={#MyAppUpdatesURL}
+AppVerName={#MyAppName}
+AppVersion={#MyAppVersion}
+ArchitecturesInstallIn64BitMode=x64
+Compression = lzma
 
-AppName=ASCOM Remote
-AppCopyright=Copyright © 2021 ASCOM Initiative
-AppPublisher=ASCOM Initiative
-AppPublisherURL=mailto:peter@peterandjill.co.uk
-AppSupportURL=https://ascomtalk.groups.io/g/Help/topics
-AppUpdatesURL=https://github.com/ASCOMInitiative/ASCOMRemote/releases
-#emit "AppVerName=ASCOM Remote " + MyAppVer + " ("+ BuildType + ")"
-#emit "AppVersion=" + MyAppVer
-Compression=lzma
-DefaultDirName="{commoncf}\ASCOM"
-DefaultGroupName="ASCOM Remote"
-DisableDirPage=yes
-DisableProgramGroupPage=no
-; Must be at least Windows 7 SP1 or later to run
+DefaultDirName={autopf}\ASCOM\RemoteServer
+DefaultGroupName=ASCOM Remote
 MinVersion=6.1SP1
-OutputDir="Build"
-#emit "OutputBaseFilename=ASCOMRemote(" + MyAppVer +")setup"
+DisableProgramGroupPage=yes
+OutputBaseFilename=ASCOMRemote({#MyAppVersion})Setup
+OutputDir=.\Builds
 PrivilegesRequired=admin
 SetupIconFile=ASCOM.ico
 SetupLogging=true
+;ShowLanguageDialog=auto
 SolidCompression=yes
-UninstallDisplayIcon={commonpf}\ASCOM\Remote\ASCOM.ico
-UninstallFilesDir="{commoncf}\ASCOM\Uninstall\Remote"
-UsePreviousAppDir=no
-UsePreviousGroup=no
-VersionInfoCompany=Peter Simpson
-VersionInfoCopyright=Peter Simpson
-VersionInfoDescription=ASCOM Remote
-VersionInfoProductName=ASCOM Remote
+UninstallDisplayName=
+UninstallDisplayIcon={app}\{#MyAppExeName}
+VersionInfoCompany=ASCOM Initiative
+VersionInfoCopyright={#MyAppAuthor}
+VersionInfoDescription= {#MyAppName}
+VersionInfoProductName={#MyAppName}
+VersionInfoProductVersion= {#MyAppVersion}
+VersionInfoVersion={#MyAppVersion}
 WizardImageFile=NewWizardImage.bmp
 WizardSmallImageFile=ASCOMLogo.bmp
-#emit "VersionInfoProductVersion=" + MyAppVer
-#emit "VersionInfoVersion=" + MyAppVer
+WizardStyle=modern
+SignToolRunMinimized=yes
 SignTool = SignASCOMRemote
+
+
+
+
+
+;DefaultDirName = "{commoncf}\ASCOM"
+;DefaultGroupName = "ASCOM Remote"
+;DisableDirPage = yes
+;DisableProgramGroupPage = no
+; Must be at least Windows 7 SP1 or later to run
+;MinVersion = 6.1SP1
+;OutputDir = "Build"
+;#emit "OutputBaseFilename = ASCOMRemote(" + MyAppVer +")setup"
+;PrivilegesRequired = admin
+;SetupIconFile = ASCOM.ico
+;SetupLogging = true
+;SolidCompression = yes
+;UninstallDisplayIcon = {commonpf}\ASCOM\Remote\ASCOM.ico
+;UninstallFilesDir = "{commoncf}\ASCOM\Uninstall\Remote"
+;UsePreviousAppDir = no
+;UsePreviousGroup = no
+;VersionInfoCompany = Peter Simpson
+;VersionInfoCopyright = Peter Simpson
+;VersionInfoDescription = ASCOM Remote
+;VersionInfoProductName = ASCOM Remote
+;WizardImageFile = NewWizardImage.bmp
+;WizardSmallImageFile = ASCOMLogo.bmp
+;WizardStyle = modern
+;#emit "VersionInfoProductVersion = " + MyAppVer
+;#emit "VersionInfoVersion = " + MyAppVer
+;SignTool = SignASCOMRemote
+;SignToolRunMinimized = yes
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-; REMOTE SERVER FILES
-Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.exe.config"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-Source: "..\Remote Server\ASCOMAlpacaMidRes.jpg"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-Source: "..\Remote Server\ascomicon.ico"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+; 64bit OS - Install the 64bit app
+Source: "..\publish\x64\*.exe"; DestDir: "{app}\64bit"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
+Source: "..\publish\x64\*.dll"; DestDir: "{app}\64bit"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
+Source: "..\publish\x64\*"; DestDir: "{app}\64bit"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: Is64BitInstallMode
 
-; REMOTE SERVER SUPPORT FILES
-Source: "..\Remote Server\bin\{#BuildType}\Newtonsoft.Json.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-Source: "..\Remote Server\bin\{#BuildType}\ASCOM.Common.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+; 64bit OS - Install the 32bit app
+Source: "..\publish\x86\*.exe"; DestDir: "{app}\32bit"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
+Source: "..\publish\x86\*.dll"; DestDir: "{app}\32bit"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
+Source: "..\publish\x86\*"; DestDir: "{app}\32bit"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: Is64BitInstallMode
 
-; SET NETWORK PERMISSIONS FILES
-Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents 
-Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-
-; SET NETWORK PERMISSIONS SUPPORT FILES
-Source: "..\SetNetworkPermissions\bin\{#BuildType}\WindowsFirewallHelper.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-Source: "..\SetNetworkPermissions\bin\{#BuildType}\CommandLine.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+; 32bit OS - Install the 32bit app
+Source: "..\publish\x86\*.exe"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: not Is64BitInstallMode
+Source: "..\publish\x86\*.dll"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: not Is64BitInstallMode
+Source: "..\publish\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: not Is64BitInstallMode
 
 ; DOCUMENTATION
-Source: "..\Documentation\{#ASCOMRemoteDocumentationFileName}"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
+Source: "..\Documentation\{#ASCOMRemoteDocumentationFileName}"; DestDir: "{app}"; Flags: ignoreversion
+
+[Icons]
+; 64bit OS
+Name: "{autoprograms}\ASCOM Remote Server"; Filename: "{app}\64bit\{#MyAppExeName}"; IconFilename: "{app}\64bit\ASCOM.ico"; Check: Is64BitInstallMode
+; Name: "{autodesktop}\Remote Server"; Filename: "{app}\64bit\ASCOM.RemoteServer"; Tasks: desktopicon; IconFilename: "{app}\64bit\ASCOM.ico"; Check: Is64BitInstallMode
+
+;32bit OS
+Name: "{autoprograms}\ASCOM Remote Server"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\ASCOM.ico"; Check: not Is64BitInstallMode
+;Name: "{autodesktop}\Remote Server"; Filename: "{app}\ASCOM.RemoteServer"; Tasks: desktopicon; IconFilename: "{app}\ASCOM.ico"; Check: not Is64BitInstallMode
+
+;Name: "{group}\ASCOM Remote Documentation"; Filename: "{#RemoteServerDirectory}\{#ASCOMRemoteDocumentationFileName}";
+;Name: "{group}\Remote Server"; Filename: "{#RemoteServerDirectory}\{#RemoteServerName}.exe"; Components: ServerComponents
+
+
+
+
+
+
+; REMOTE SERVER FILES
+;Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+;Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.exe.config"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+;Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+;Source: "..\Remote Server\ASCOMAlpacaMidRes.jpg"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+;Source: "..\Remote Server\ascomicon.ico"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+
+; REMOTE SERVER SUPPORT FILES
+;Source: "..\Remote Server\bin\{#BuildType}\Newtonsoft.Json.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+;Source: "..\Remote Server\bin\{#BuildType}\ASCOM.Common.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+
+; SET NETWORK PERMISSIONS FILES
+;Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents 
+;Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+
+; SET NETWORK PERMISSIONS SUPPORT FILES
+;Source: "..\SetNetworkPermissions\bin\{#BuildType}\WindowsFirewallHelper.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+;Source: "..\SetNetworkPermissions\bin\{#BuildType}\CommandLine.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
+
+; DOCUMENTATION
+;Source: "..\Documentation\{#ASCOMRemoteDocumentationFileName}"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
 
 ; INSTALLER SUPPORT FILES
-Source: "ASCOM.ico"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
+;Source: "ASCOM.ico"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
 
 [Run]
 
@@ -92,18 +165,15 @@ Source: "ASCOM.ico"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
 
 [Registry]
 
-[Icons]
-Name: "{group}\ASCOM Remote Documentation"; Filename: "{#RemoteServerDirectory}\{#ASCOMRemoteDocumentationFileName}";
-Name: "{group}\Remote Server"; Filename: "{#RemoteServerDirectory}\{#RemoteServerName}.exe"; Components: ServerComponents
+;[Icons]
+;Name: "{group}\ASCOM Remote Documentation"; Filename: "{#RemoteServerDirectory}\{#ASCOMRemoteDocumentationFileName}";
+;Name: "{group}\Remote Server"; Filename: "{#RemoteServerDirectory}\{#RemoteServerName}.exe"; Components: ServerComponents
 
 [Components]
-Name: "ServerComponents"; Description: "Remote Server"; Flags: disablenouninstallwarning
+;Name: "ServerComponents"; Description: "Remote Server"; Flags: disablenouninstallwarning
 
 [Types]
-Name: "Custom"; Description: "Custom"; Flags: iscustom
-
-[PreCompile]
-Name: "..\BuildRemote.cmd"; Flags: cmdprompt
+;Name: "Custom"; Description: "Custom"; Flags: iscustom
 
 [Code]
 const
