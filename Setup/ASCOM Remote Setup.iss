@@ -11,7 +11,9 @@
 #define MyAppExeName "RemoteServer.exe"
 #define MyAppAuthor "Peter Simpson"
 #define MyAppCopyright "Copyright © 2023 " + MyAppAuthor
-#define MyAppVersion GetVersionNumbersString("..\publish\x64\{#MyAppExeName}")  ; Create version number variable
+#define MyAppVersion GetVersionNumbersString("..\publish\x64\RemoteServer.exe")  ; Create version number variable
+#define ASCOMRemoteDocumentationFileName "ASCOM Remote Installation and Configuration.pdf"
+#define MyInstallFolder = "ASCOM\RemoteServer"
 
 ; Specifiy debug or release build;#define public BuildType "Debug" ; Type of build - Release or Debug
 #define public BuildType "Release" ; Type of build - Release or Debug
@@ -28,20 +30,23 @@ AppVerName={#MyAppName}
 AppVersion={#MyAppVersion}
 ArchitecturesInstallIn64BitMode=x64
 Compression = lzma
-DefaultDirName={autopf}\ASCOM\RemoteServer
+DefaultDirName={autopf}\{#MyInstallFolder}
 DefaultGroupName={#MyAppName}
 MinVersion=6.1SP1
 DisableProgramGroupPage=yes
+DisableDirPage = no
 OutputBaseFilename=ASCOMRemote({#MyAppVersion})Setup
-OutputDir=.\Builds
+OutputDir=.\Build
 PrivilegesRequired=admin
 SetupIconFile=ASCOM.ico
 SetupLogging=true
-;ShowLanguageDialog=auto
+SignToolRunMinimized=yes
+SignTool = SignASCOMRemote
+ShowLanguageDialog=auto
 SolidCompression=yes
 UninstallDisplayName=
 UninstallDisplayIcon={app}\{#MyAppExeName}
-VersionInfoCompany=ASCOM Initiative
+VersionInfoCompany={#MyAppPublisher}
 VersionInfoCopyright={#MyAppAuthor}
 VersionInfoDescription= {#MyAppName}
 VersionInfoProductName={#MyAppName}
@@ -50,43 +55,33 @@ VersionInfoVersion={#MyAppVersion}
 WizardImageFile=NewWizardImage.bmp
 WizardSmallImageFile=ASCOMLogo.bmp
 WizardStyle=modern
-SignToolRunMinimized=yes
-SignTool = SignASCOMRemote
-
-
-
-
-
-;DefaultDirName = "{commoncf}\ASCOM"
-;DefaultGroupName = "ASCOM Remote"
-;DisableDirPage = yes
-;DisableProgramGroupPage = no
-; Must be at least Windows 7 SP1 or later to run
-;MinVersion = 6.1SP1
-;OutputDir = "Build"
-;#emit "OutputBaseFilename = ASCOMRemote(" + MyAppVer +")setup"
-;PrivilegesRequired = admin
-;SetupIconFile = ASCOM.ico
-;SetupLogging = true
-;SolidCompression = yes
-;UninstallDisplayIcon = {commonpf}\ASCOM\Remote\ASCOM.ico
-;UninstallFilesDir = "{commoncf}\ASCOM\Uninstall\Remote"
-;UsePreviousAppDir = no
-;UsePreviousGroup = no
-;VersionInfoCompany = Peter Simpson
-;VersionInfoCopyright = Peter Simpson
-;VersionInfoDescription = ASCOM Remote
-;VersionInfoProductName = ASCOM Remote
-;WizardImageFile = NewWizardImage.bmp
-;WizardSmallImageFile = ASCOMLogo.bmp
-;WizardStyle = modern
-;#emit "VersionInfoProductVersion = " + MyAppVer
-;#emit "VersionInfoVersion = " + MyAppVer
-;SignTool = SignASCOMRemote
-;SignToolRunMinimized = yes
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
+Name: "armenian"; MessagesFile: "compiler:Languages\Armenian.isl"
+Name: "brazilianportuguese"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
+Name: "bulgarian"; MessagesFile: "compiler:Languages\Bulgarian.isl"
+Name: "catalan"; MessagesFile: "compiler:Languages\Catalan.isl"
+Name: "corsican"; MessagesFile: "compiler:Languages\Corsican.isl"
+Name: "czech"; MessagesFile: "compiler:Languages\Czech.isl"
+Name: "danish"; MessagesFile: "compiler:Languages\Danish.isl"
+Name: "dutch"; MessagesFile: "compiler:Languages\Dutch.isl"
+Name: "finnish"; MessagesFile: "compiler:Languages\Finnish.isl"
+Name: "french"; MessagesFile: "compiler:Languages\French.isl"
+Name: "german"; MessagesFile: "compiler:Languages\German.isl"
+Name: "hebrew"; MessagesFile: "compiler:Languages\Hebrew.isl"
+Name: "icelandic"; MessagesFile: "compiler:Languages\Icelandic.isl"
+Name: "italian"; MessagesFile: "compiler:Languages\Italian.isl"
+Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
+Name: "norwegian"; MessagesFile: "compiler:Languages\Norwegian.isl"
+Name: "polish"; MessagesFile: "compiler:Languages\Polish.isl"
+Name: "portuguese"; MessagesFile: "compiler:Languages\Portuguese.isl"
+Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
+Name: "slovak"; MessagesFile: "compiler:Languages\Slovak.isl"
+Name: "slovenian"; MessagesFile: "compiler:Languages\Slovenian.isl"
+Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
+Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
+Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 
 [Files]
 ; 64bit OS - Install the 64bit app
@@ -109,45 +104,14 @@ Source: "..\Documentation\{#ASCOMRemoteDocumentationFileName}"; DestDir: "{app}"
 
 [Icons]
 ; 64bit OS
-Name: "{autoprograms}\ASCOM Remote Server"; Filename: "{app}\64bit\{#MyAppExeName}"; IconFilename: "{app}\64bit\ASCOM.ico"; Check: Is64BitInstallMode
+Name: "{autoprograms}\ASCOM Remote Server"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\ASCOM.ico"; Check: Is64BitInstallMode
 ; Name: "{autodesktop}\Remote Server"; Filename: "{app}\64bit\ASCOM.RemoteServer"; Tasks: desktopicon; IconFilename: "{app}\64bit\ASCOM.ico"; Check: Is64BitInstallMode
 
 ;32bit OS
 Name: "{autoprograms}\ASCOM Remote Server"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\ASCOM.ico"; Check: not Is64BitInstallMode
 ;Name: "{autodesktop}\Remote Server"; Filename: "{app}\ASCOM.RemoteServer"; Tasks: desktopicon; IconFilename: "{app}\ASCOM.ico"; Check: not Is64BitInstallMode
 
-;Name: "{group}\ASCOM Remote Documentation"; Filename: "{#RemoteServerDirectory}\{#ASCOMRemoteDocumentationFileName}";
-;Name: "{group}\Remote Server"; Filename: "{#RemoteServerDirectory}\{#RemoteServerName}.exe"; Components: ServerComponents
 
-
-
-
-
-
-; REMOTE SERVER FILES
-;Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-;Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.exe.config"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-;Source: "..\Remote Server\bin\{#BuildType}\{#RemoteServerName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-;Source: "..\Remote Server\ASCOMAlpacaMidRes.jpg"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-;Source: "..\Remote Server\ascomicon.ico"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-
-; REMOTE SERVER SUPPORT FILES
-;Source: "..\Remote Server\bin\{#BuildType}\Newtonsoft.Json.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-;Source: "..\Remote Server\bin\{#BuildType}\ASCOM.Common.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-
-; SET NETWORK PERMISSIONS FILES
-;Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.exe"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents 
-;Source: "..\SetNetworkPermissions\bin\{#BuildType}\{#SetNetworkPermissionsName}.pdb"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-
-; SET NETWORK PERMISSIONS SUPPORT FILES
-;Source: "..\SetNetworkPermissions\bin\{#BuildType}\WindowsFirewallHelper.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-;Source: "..\SetNetworkPermissions\bin\{#BuildType}\CommandLine.dll"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion; Components: ServerComponents
-
-; DOCUMENTATION
-;Source: "..\Documentation\{#ASCOMRemoteDocumentationFileName}"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
-
-; INSTALLER SUPPORT FILES
-;Source: "ASCOM.ico"; DestDir: "{#RemoteServerDirectory}"; Flags: ignoreversion
 
 [Run]
 

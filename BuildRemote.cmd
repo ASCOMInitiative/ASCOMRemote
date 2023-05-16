@@ -19,6 +19,6 @@ msbuild /t:rebuild /p:configuration=Release;Platform="Any CPU"
 cd %RemoteDirectory%
 rmdir /s /q "publish"
 @echo Publishing ASCOM Remote x86
-dotnet publish "remote server\remote server.csproj" --runtime win-x86 --self-contained -p:publishsinglefile=true -o publish\x86
+dotnet publish "remote server\remote server.csproj" --runtime win-x86 --self-contained -p:Configuration=Debug -p:Platform="Any CPU" -p:publishsinglefile=true -o publish\x86
 @echo Publishing ASCOM Remote x64
-dotnet publish "remote server\remote server.csproj" --runtime win-x64 --self-contained -p:publishsinglefile=true -o publish\x64
+dotnet publish "remote server\remote server.csproj" --runtime win-x64 --self-contained -p:Configuration=Debug -p:Platform="Any CPU" -p:publishsinglefile=true -o publish\x64

@@ -44,6 +44,8 @@ namespace ASCOM.Remote
         private bool alreadyDisposed = false;
         private bool maxDevicesHasChanged;
 
+        private ConfigurationManager configurationManager;
+
         #endregion
 
         #region Setup and form load
@@ -266,6 +268,16 @@ namespace ASCOM.Remote
 
                 // Add this event handler after the initial value has been set so that this doesn't trigger an event
                 this.NumMaxDevices.ValueChanged += new System.EventHandler(this.NumMaxDevices_ValueChanged);
+
+                // Set configuration handled by the configuration manager 
+                configurationManager = new(null);
+                ChkRunAs64BitApplication.Checked = configurationManager.Settings.RunAs64Bit;
+
+                // Enable or disable this option depending on whether or not we are running in 64bit mode
+                if (Environment.Is64BitProcess)
+                    ChkRunAs64BitApplication.Enabled = true;
+                else
+                    ChkRunAs64BitApplication.Enabled = false;
 
             }
             catch (Exception ex)
@@ -635,6 +647,10 @@ namespace ASCOM.Remote
 
                 if (maxDevicesHasChanged) MessageBox.Show("The maximum number of devices has changed, please close and restart the Remote Server before adding further devices.", "Maximum Number of Devices", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
+                // Save the configuration manager settings
+                configurationManager.Save();
+                configurationManager.Dispose();
+
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
@@ -927,5 +943,9 @@ namespace ASCOM.Remote
         }
         #endregion
 
+        private void ChkRunAs64BitApplication_CheckedChanged(object sender, EventArgs e)
+        {
+            configurationManager.Settings.RunAs64Bit = ((CheckBox)sender).Checked;
+        }
     }
 }

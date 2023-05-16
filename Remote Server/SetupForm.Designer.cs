@@ -16,8 +16,8 @@
         private void InitializeComponent()
         {
             this.components = (new global::System.ComponentModel.Container());
-            global::System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new global::System.Windows.Forms.DataGridViewCellStyle();
             global::System.ComponentModel.ComponentResourceManager resources = new global::System.ComponentModel.ComponentResourceManager(typeof(global::ASCOM.Remote.SetupForm));
+            global::System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new global::System.Windows.Forms.DataGridViewCellStyle();
             this.BtnCancel = (new global::System.Windows.Forms.Button());
             this.BtnOK = (new global::System.Windows.Forms.Button());
             this.chkAutoConnect = (new global::System.Windows.Forms.CheckBox());
@@ -248,8 +248,10 @@
             this.label8 = (new global::System.Windows.Forms.Label());
             this.label7 = (new global::System.Windows.Forms.Label());
             this.ServerConfigurationTab2 = (new global::System.Windows.Forms.TabPage());
-            this.ChkCheckForPreReleaseUpdates = (new global::System.Windows.Forms.CheckBox());
+            this.ChkRunAs64BitApplication = (new global::System.Windows.Forms.CheckBox());
+            this.groupBox4 = (new global::System.Windows.Forms.GroupBox());
             this.ChkCheckForUpdates = (new global::System.Windows.Forms.CheckBox());
+            this.ChkCheckForPreReleaseUpdates = (new global::System.Windows.Forms.CheckBox());
             this.lblMinimisationBehaviour = (new global::System.Windows.Forms.Label());
             this.cmbMinimiseOptions = (new global::System.Windows.Forms.ComboBox());
             this.label96 = (new global::System.Windows.Forms.Label());
@@ -280,7 +282,6 @@
             this.LabHelp1 = (new global::System.Windows.Forms.Label());
             this.DataGridCorsOrigins = (new global::System.Windows.Forms.DataGridView());
             this.DlgSetLogFolderPath = (new global::System.Windows.Forms.FolderBrowserDialog());
-            this.groupBox4 = (new global::System.Windows.Forms.GroupBox());
             ((global::System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SetupTabControl.SuspendLayout();
             this.DeviceConfigurationTab.SuspendLayout();
@@ -300,6 +301,7 @@
             ((global::System.ComponentModel.ISupportInitialize)(this.NumDiscoveryPort)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             this.ServerConfigurationTab2.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             ((global::System.ComponentModel.ISupportInitialize)(this.NumMaxDevices)).BeginInit();
             this.LoggingConfigurationTab.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -308,7 +310,6 @@
             this.CorsConfigurationTab.SuspendLayout();
             ((global::System.ComponentModel.ISupportInitialize)(this.NumCorsMaxAge)).BeginInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.DataGridCorsOrigins)).BeginInit();
-            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // BtnCancel
@@ -3459,6 +3460,7 @@
             // ServerConfigurationTab2
             // 
             this.ServerConfigurationTab2.BackColor = (global::System.Drawing.SystemColors.Control);
+            this.ServerConfigurationTab2.Controls.Add(this.ChkRunAs64BitApplication);
             this.ServerConfigurationTab2.Controls.Add(this.groupBox4);
             this.ServerConfigurationTab2.Controls.Add(this.lblMinimisationBehaviour);
             this.ServerConfigurationTab2.Controls.Add(this.cmbMinimiseOptions);
@@ -3471,15 +3473,27 @@
             this.ServerConfigurationTab2.TabIndex = (5);
             this.ServerConfigurationTab2.Text = ("Server Configuration 2");
             // 
-            // ChkCheckForPreReleaseUpdates
+            // ChkRunAs64BitApplication
             // 
-            this.ChkCheckForPreReleaseUpdates.AutoSize = (true);
-            this.ChkCheckForPreReleaseUpdates.Location = (new global::System.Drawing.Point(6, 47));
-            this.ChkCheckForPreReleaseUpdates.Name = ("ChkCheckForPreReleaseUpdates");
-            this.ChkCheckForPreReleaseUpdates.Size = (new global::System.Drawing.Size(183, 19));
-            this.ChkCheckForPreReleaseUpdates.TabIndex = (62);
-            this.ChkCheckForPreReleaseUpdates.Text = ("Check for pre-release updates");
-            this.ChkCheckForPreReleaseUpdates.UseVisualStyleBackColor = (true);
+            this.ChkRunAs64BitApplication.AutoSize = (true);
+            this.ChkRunAs64BitApplication.Location = (new global::System.Drawing.Point(414, 359));
+            this.ChkRunAs64BitApplication.Name = ("ChkRunAs64BitApplication");
+            this.ChkRunAs64BitApplication.Size = (new global::System.Drawing.Size(233, 19));
+            this.ChkRunAs64BitApplication.TabIndex = (64);
+            this.ChkRunAs64BitApplication.Text = ("Run as 64bit application (64bit OS only)");
+            this.ChkRunAs64BitApplication.UseVisualStyleBackColor = (true);
+            this.ChkRunAs64BitApplication.CheckedChanged += (this.ChkRunAs64BitApplication_CheckedChanged);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.ChkCheckForUpdates);
+            this.groupBox4.Controls.Add(this.ChkCheckForPreReleaseUpdates);
+            this.groupBox4.Location = (new global::System.Drawing.Point(414, 128));
+            this.groupBox4.Name = ("groupBox4");
+            this.groupBox4.Size = (new global::System.Drawing.Size(199, 77));
+            this.groupBox4.TabIndex = (63);
+            this.groupBox4.TabStop = (false);
+            this.groupBox4.Text = ("Update Checks");
             // 
             // ChkCheckForUpdates
             // 
@@ -3490,6 +3504,16 @@
             this.ChkCheckForUpdates.TabIndex = (61);
             this.ChkCheckForUpdates.Text = ("Check for updates");
             this.ChkCheckForUpdates.UseVisualStyleBackColor = (true);
+            // 
+            // ChkCheckForPreReleaseUpdates
+            // 
+            this.ChkCheckForPreReleaseUpdates.AutoSize = (true);
+            this.ChkCheckForPreReleaseUpdates.Location = (new global::System.Drawing.Point(6, 47));
+            this.ChkCheckForPreReleaseUpdates.Name = ("ChkCheckForPreReleaseUpdates");
+            this.ChkCheckForPreReleaseUpdates.Size = (new global::System.Drawing.Size(183, 19));
+            this.ChkCheckForPreReleaseUpdates.TabIndex = (62);
+            this.ChkCheckForPreReleaseUpdates.Text = ("Check for pre-release updates");
+            this.ChkCheckForPreReleaseUpdates.UseVisualStyleBackColor = (true);
             // 
             // lblMinimisationBehaviour
             // 
@@ -3827,14 +3851,14 @@
             // DataGridCorsOrigins
             // 
             this.DataGridCorsOrigins.AutoSizeColumnsMode = (global::System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill);
-            dataGridViewCellStyle2.Alignment = (global::System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter);
-            dataGridViewCellStyle2.BackColor = (global::System.Drawing.SystemColors.Control);
-            dataGridViewCellStyle2.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            dataGridViewCellStyle2.ForeColor = (global::System.Drawing.SystemColors.Highlight);
-            dataGridViewCellStyle2.SelectionBackColor = (global::System.Drawing.SystemColors.Highlight);
-            dataGridViewCellStyle2.SelectionForeColor = (global::System.Drawing.SystemColors.HighlightText);
-            dataGridViewCellStyle2.WrapMode = (global::System.Windows.Forms.DataGridViewTriState.True);
-            this.DataGridCorsOrigins.ColumnHeadersDefaultCellStyle = (dataGridViewCellStyle2);
+            dataGridViewCellStyle1.Alignment = (global::System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter);
+            dataGridViewCellStyle1.BackColor = (global::System.Drawing.SystemColors.Control);
+            dataGridViewCellStyle1.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
+            dataGridViewCellStyle1.ForeColor = (global::System.Drawing.SystemColors.Highlight);
+            dataGridViewCellStyle1.SelectionBackColor = (global::System.Drawing.SystemColors.Highlight);
+            dataGridViewCellStyle1.SelectionForeColor = (global::System.Drawing.SystemColors.HighlightText);
+            dataGridViewCellStyle1.WrapMode = (global::System.Windows.Forms.DataGridViewTriState.True);
+            this.DataGridCorsOrigins.ColumnHeadersDefaultCellStyle = (dataGridViewCellStyle1);
             this.DataGridCorsOrigins.ColumnHeadersHeightSizeMode = (global::System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize);
             this.DataGridCorsOrigins.EnableHeadersVisualStyles = (false);
             this.DataGridCorsOrigins.Location = (new global::System.Drawing.Point(255, 58));
@@ -3843,17 +3867,6 @@
             this.DataGridCorsOrigins.RowHeadersWidth = (51);
             this.DataGridCorsOrigins.Size = (new global::System.Drawing.Size(684, 250));
             this.DataGridCorsOrigins.TabIndex = (0);
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.ChkCheckForUpdates);
-            this.groupBox4.Controls.Add(this.ChkCheckForPreReleaseUpdates);
-            this.groupBox4.Location = (new global::System.Drawing.Point(414, 128));
-            this.groupBox4.Name = ("groupBox4");
-            this.groupBox4.Size = (new global::System.Drawing.Size(199, 77));
-            this.groupBox4.TabIndex = (63);
-            this.groupBox4.TabStop = (false);
-            this.groupBox4.Text = ("Update Checks");
             // 
             // SetupForm
             // 
@@ -3904,6 +3917,8 @@
             ((global::System.ComponentModel.ISupportInitialize)(this.numPort)).EndInit();
             this.ServerConfigurationTab2.ResumeLayout(false);
             this.ServerConfigurationTab2.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             ((global::System.ComponentModel.ISupportInitialize)(this.NumMaxDevices)).EndInit();
             this.LoggingConfigurationTab.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
@@ -3916,8 +3931,6 @@
             this.CorsConfigurationTab.PerformLayout();
             ((global::System.ComponentModel.ISupportInitialize)(this.NumCorsMaxAge)).EndInit();
             ((global::System.ComponentModel.ISupportInitialize)(this.DataGridCorsOrigins)).EndInit();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
         }
 
@@ -4185,5 +4198,6 @@
         private global::System.Windows.Forms.Label label96;
         private global::System.Windows.Forms.NumericUpDown NumMaxDevices;
         private global::System.Windows.Forms.GroupBox groupBox4;
+        private global::System.Windows.Forms.CheckBox ChkRunAs64BitApplication;
     }
 }

@@ -47,17 +47,21 @@
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugType>embedded</DebugType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-	  <DebugType>embedded</DebugType>
+		<PlatformTarget>x86</PlatformTarget>
+		<DebugType>embedded</DebugType>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<DebugType>embedded</DebugType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
 		<UseVSHostingProcess>true</UseVSHostingProcess>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-	  <DebugType>embedded</DebugType>
-	  <UseVSHostingProcess>true</UseVSHostingProcess>
+		<DebugType>embedded</DebugType>
+		<PlatformTarget>x86</PlatformTarget>
+		<UseVSHostingProcess>true</UseVSHostingProcess>
 	</PropertyGroup>
 	<PropertyGroup>
 		<StartupObject>ASCOM.Remote.Program</StartupObject>
@@ -69,8 +73,7 @@
 		<ApplicationIcon>ASCOM.ico</ApplicationIcon>
 	</PropertyGroup>
 	<PropertyGroup>
-	  <SignAssembly>True</SignAssembly>
-	  <PlatformTarget>AnyCPU</PlatformTarget>
+		<SignAssembly>True</SignAssembly>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Update="DriverHostForm.cs" />
@@ -105,7 +108,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Content Include="ASCOM.ico">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="ASCOMAlpacaMidRes.jpg">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
