@@ -29,7 +29,7 @@ AppUpdatesURL={#MyAppUpdatesURL}
 AppVerName={#MyAppName}
 AppVersion={#MyAppVersion}
 ArchitecturesInstallIn64BitMode=x64
-Compression = lzma
+Compression = none
 DefaultDirName={autopf}\{#MyInstallFolder}
 DefaultGroupName={#MyAppName}
 MinVersion=6.1SP1
@@ -43,7 +43,7 @@ SetupLogging=true
 SignToolRunMinimized=yes
 SignTool = SignASCOMRemote
 ShowLanguageDialog=auto
-SolidCompression=yes
+SolidCompression=no
 UninstallDisplayName=
 UninstallDisplayIcon={app}\{#MyAppExeName}
 VersionInfoCompany={#MyAppPublisher}
@@ -85,19 +85,19 @@ Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 
 [Files]
 ; 64bit OS - Install the 64bit app
-Source: "..\publish\x64\*.exe"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
-Source: "..\publish\x64\*.dll"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
-Source: "..\publish\x64\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: Is64BitInstallMode
+Source: "..\publish\x64\*.exe"; DestDir: "{app}"; Flags: ignoreversion signonce; Components: nosupport; Check: Is64BitInstallMode
+Source: "..\publish\x64\*.dll"; DestDir: "{app}"; Flags: ignoreversion signonce; Components: nosupport; Check: Is64BitInstallMode
+Source: "..\publish\x64\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Components: nosupport; Check: Is64BitInstallMode
 
 ; 64bit OS - Install the 32bit app
-Source: "..\publish\x86\*.exe"; DestDir: "{app}\32bit"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
-Source: "..\publish\x86\*.dll"; DestDir: "{app}\32bit"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
-Source: "..\publish\x86\*"; DestDir: "{app}\32bit"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: Is64BitInstallMode
+Source: "..\publish\x86\*.exe"; DestDir: "{app}\32bit"; Flags: ignoreversion signonce; Components: nosupport; Check: Is64BitInstallMode
+Source: "..\publish\x86\*.dll"; DestDir: "{app}\32bit"; Flags: ignoreversion signonce; Components: nosupport; Check: Is64BitInstallMode
+Source: "..\publish\x86\*"; DestDir: "{app}\32bit"; Flags: ignoreversion; Excludes:"*.exe,*.dll";Components: nosupport; Check: Is64BitInstallMode
 
 ; 32bit OS - Install the 32bit app
-Source: "..\publish\x86\*.exe"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: not Is64BitInstallMode
-Source: "..\publish\x86\*.dll"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: not Is64BitInstallMode
-Source: "..\publish\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: not Is64BitInstallMode
+Source: "..\publish\x86\*.exe"; DestDir: "{app}"; Flags: ignoreversion signonce; Components: nosupport; Check: not Is64BitInstallMode
+Source: "..\publish\x86\*.dll"; DestDir: "{app}"; Flags: ignoreversion signonce; Components: nosupport; Check: not Is64BitInstallMode
+Source: "..\publish\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Components: nosupport; Check: not Is64BitInstallMode
 
 ; DOCUMENTATION
 Source: "..\Documentation\{#ASCOMRemoteDocumentationFileName}"; DestDir: "{app}"; Flags: ignoreversion
@@ -111,23 +111,19 @@ Name: "{autoprograms}\ASCOM Remote Server"; Filename: "{app}\{#MyAppExeName}"; I
 Name: "{autoprograms}\ASCOM Remote Server"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\ASCOM.ico"; Check: not Is64BitInstallMode
 ;Name: "{autodesktop}\Remote Server"; Filename: "{app}\ASCOM.RemoteServer"; Tasks: desktopicon; IconFilename: "{app}\ASCOM.ico"; Check: not Is64BitInstallMode
 
-
-
 [Run]
 
 [UninstallRun]
 
 [Registry]
 
-;[Icons]
-;Name: "{group}\ASCOM Remote Documentation"; Filename: "{#RemoteServerDirectory}\{#ASCOMRemoteDocumentationFileName}";
-;Name: "{group}\Remote Server"; Filename: "{#RemoteServerDirectory}\{#RemoteServerName}.exe"; Components: ServerComponents
-
 [Components]
-;Name: "ServerComponents"; Description: "Remote Server"; Flags: disablenouninstallwarning
+Name: "nosupport"; Description: "Stand alone executables"; Types: standalonetype; Flags:  disablenouninstallwarning
+Name: "support"; Description: "Executables that require support files"; Types: requiressupporttype; Flags:  disablenouninstallwarning
 
 [Types]
-;Name: "Custom"; Description: "Custom"; Flags: iscustom
+Name: "requiressupporttype"; Description: "Remote Server - Requires .NET 7 support files (7Mb)"
+Name: "standalonetype"; Description: "Remote Server - Stand alone installation (140MB)"
 
 [Code]
 const
@@ -291,9 +287,13 @@ begin
 	begin
       // Create the correct registry location name, which is based on the AppId
       UninstallRegistry := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#SetupSetting("AppId")}' + '_is1');
+      MsgBox(UninstallRegistry, mbCriticalError, MB_OK);
       // Check whether an extry exists
       if RegQueryStringValue(HKLM, UninstallRegistry, 'UninstallString', UninstallExe) then
+       MsgBox('If evaluated to TRUE', mbCriticalError, MB_OK);
+     
         begin // Entry exists and previous version is installed so run its uninstaller quietly after informing the user
+          MsgBox('About to run uninstaller...', mbCriticalError, MB_OK);
           Exec(RemoveQuotes(UninstallExe), ' /SILENT', '', SW_SHOWNORMAL, ewWaitUntilTerminated, ResultCode);
           sleep(100);    //Give enough time for the install screen to be repainted before continuing
         end

@@ -273,8 +273,8 @@ namespace ASCOM.Remote
                 configurationManager = new(null);
                 ChkRunAs64BitApplication.Checked = configurationManager.Settings.RunAs64Bit;
 
-                // Enable or disable this option depending on whether or not we are running in 64bit mode
-                if (Environment.Is64BitProcess)
+                // Enable or disable this option depending on whether or not we are running on a 64bit OS
+                if (Environment.Is64BitOperatingSystem)
                     ChkRunAs64BitApplication.Enabled = true;
                 else
                     ChkRunAs64BitApplication.Enabled = false;
