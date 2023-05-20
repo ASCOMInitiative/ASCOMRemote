@@ -1804,26 +1804,81 @@ namespace ASCOM.Remote
         {
             bool apiEnabled; // Local variables to hold the current server state
             bool devicesConnected;
+            bool currentRunAs64Bit;
+            bool newRunAs64Bit;
 
             LogMessage(0, 0, 0, "SetupButton", string.Format("Saving current server state", apiIsEnabled, devicesAreConnected));
-            apiEnabled = apiIsEnabled; // Save current server state
+
+            // Save current server state
+            apiEnabled = apiIsEnabled;
             devicesConnected = devicesAreConnected;
 
+            // Save the current state of the RunAs64Bit setting
+            using (ConfigurationManager configurationManager = new(null))
+            {
+                currentRunAs64Bit = configurationManager.Settings.RunAs64Bit;
+            }
+
+            // Stop the REST server and disconnect served devices
             LogMessage(0, 0, 0, "SetupButton", string.Format("Stopping RemoteServer"));
             StopRESTServer(); // Shut down access while we use the Setup screen
             LogMessage(0, 0, 0, "SetupButton", string.Format("Disconnecting devices"));
             DisconnectDevices(); // Disconnect all devices so we can use their Setup screens if necessary
 
+            // Show the configuration Setup form and determine whether or not the user committed any changes.
             LogMessage(0, 0, 0, "SetupButton", string.Format("Loading Setup form"));
             SetupForm frm = new();
             DialogResult outcome = frm.ShowDialog();
             LogMessage(0, 0, 0, "SetupButton", string.Format("Setup dialogue outcome: {0}", outcome.ToString()));
 
-            // Update use of UTC time in case this was changed in the setup dialogue
-            if (outcome == DialogResult.OK)
+            // Update use of UTC time and application bitness in case these were changed in the setup dialogue
+            if (outcome == DialogResult.OK) // The user committed their changes
             {
+                // Update the UTC time settings
                 TL.UseUtcTime = UseUtcTimeInLogs;
                 AccessLog.UseUtcTime = UseUtcTimeInLogs;
+
+                // Get the latest RunAs64Bit value so that we can test whether it was changed in the Setup dialogue
+                using (ConfigurationManager configurationManager = new(null))
+                {
+                    newRunAs64Bit = configurationManager.Settings.RunAs64Bit;
+                }
+
+                // Check whether the RunAs64Bit setting was changed
+                if (newRunAs64Bit != currentRunAs64Bit) // The value was changed
+                {
+                    // Display a YES/MO dialogue asking whether to re-start the Remote Server
+                    DialogResult dialogResult = MessageBox.Show("Restart required because the bitness was changed.\r\n\r\nRestart the Remote Server now? ", "Application 32/64bit Bitness Changed", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                    // Check whether the user indicated that they want to reboot now
+                    if (dialogResult == DialogResult.Yes) // The reboot now option was selected
+                    {
+                        // Restart the server so that the revised setting comes into effect
+                        try
+                        {
+                            LogMessage(0, 0, 0, "SetupButton", $"");
+                            LogMessage(0, 0, 0, "SetupButton", $"RESTARTING SERVER TO ENABLE NEW BITBESS TO BE USED");
+                            LogMessage(0, 0, 0, "SetupButton", $"");
+
+                            LogToScreen("Restarting the Remote Server...");
+
+                            LogMessage(0, 0, 0, "RestartRESTServer", $"About to close form ...");
+
+                            // Set the restart flag and close the form so that control returns to program.cs
+                            this.RestartApplication = true;
+                            this.Close(); // Close the form
+                        }
+                        catch (Exception ex2)
+                        {
+                            LogToScreen($"Error closing down Remote Server for a restart: {ex2.Message}");
+                            LogMessage(0, 0, 0, "RestartRESTServer", $"Exception while attempting to restart the server: {ex2.Message}");
+                            LogException(0, 0, 0, "RestartRESTServer", ex2.ToString());
+                        }
+
+                        // Exit this method so that the form can close down
+                        return;
+                    }
+                }
             }
 
             // Initiate a version update check if required or clear visible update buttons

@@ -16,14 +16,26 @@
 		<Message Importance="High" Text=" Version: $(ProductMajor).$(ProductMinor).$(ProductPatch).$(BuildNumber)" />
 		<Message Importance="High" Text=" InformationalVersion: $(InformationalVersion)" />
 	</Target>
+
+	<Target Name="WriteInformationVersion" AfterTargets="CopyFilesToOutputDirectory">
+		<PropertyGroup>
+			<InfoVersion>$(InformationalVersion)</InfoVersion>
+		</PropertyGroup>
+
+		<WriteLinesToFile
+		  File="$(PublishDir)..\InformationVersion.txt"
+		  Overwrite="true"
+		  Lines="$(InfoVersion)" />
+	</Target>
+	
 	<PropertyGroup>
 		<!-- Set version numbers -->
 		<ProductMajor>6</ProductMajor>
 		<ProductMinor>6</ProductMinor>
-		<ProductPatch>3</ProductPatch>
+		<ProductPatch>4</ProductPatch>
 
 		<!-- Set the pre-release string without a leading minus e.g. rc.1 -->
-		<ProductPreRelease></ProductPreRelease>
+		<ProductPreRelease>rc.1</ProductPreRelease>
 
 		<!--Create a dynamic revision number based on time of build
 		 
