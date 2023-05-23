@@ -18,7 +18,7 @@ namespace ASCOM.Remote
     {
         private const int WM_PAINT = 0xF;
 
-        private TabControl tabControl;
+        private readonly TabControl tabControl;
 
         public HideTabControlBorders(TabControl tc)
         {

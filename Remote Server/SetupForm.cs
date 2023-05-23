@@ -19,7 +19,7 @@ namespace ASCOM.Remote
 
         #region Variables
 
-        private List<string> registeredDeviceTypes = new();
+        private readonly List<string> registeredDeviceTypes = new();
         // Create a dictionary to hold the current device instance numbers of every device type
         private Dictionary<string, int> deviceNumberIndexes;
 
@@ -28,18 +28,18 @@ namespace ASCOM.Remote
         private bool selectByMouse = false; // Variable to help select the whole contents of a numeric up-down box when tabbed into our selected by mouse
 
         // CORS data grid view presentation variables
-        private BindingSource bindingSource = new(); // Binding source to connect the List of permitted origins to the data grid view control
+        private readonly BindingSource bindingSource = new(); // Binding source to connect the List of permitted origins to the data grid view control
 
-        private ToolStripMenuItem insertRow = new(); // Tool strip menu items for the context menu entries
-        private ToolStripMenuItem insertTenRows = new();
-        private ToolStripMenuItem deleteSelectedRows = new();
+        private readonly ToolStripMenuItem insertRow = new(); // Tool strip menu items for the context menu entries
+        private readonly ToolStripMenuItem insertTenRows = new();
+        private readonly ToolStripMenuItem deleteSelectedRows = new();
 
         private int currentRowIndex; // Variable to hold the current row index during row inserts
 
         private DataGridViewSelectedRowCollection selectedRows; // Collections to hold selected rows and cells for use when deleting origins
         private DataGridViewSelectedCellCollection selectedCells;
 
-        private List<StringValue> corsPermittedOriginsCopy = new(); // Variable to hold a copy of the list of permitted origins so that it can be edited without affecting the master copy.
+        private readonly List<StringValue> corsPermittedOriginsCopy = new(); // Variable to hold a copy of the list of permitted origins so that it can be edited without affecting the master copy.
 
         private bool alreadyDisposed = false;
         private bool maxDevicesHasChanged;
@@ -797,7 +797,7 @@ namespace ASCOM.Remote
             }
         }
 
-        public bool ValidIPAddress(string ipAddress, out string errorMessage)
+        public static bool ValidIPAddress(string ipAddress, out string errorMessage)
         {
             if (string.IsNullOrEmpty(ipAddress.Trim()))
             {

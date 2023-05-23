@@ -21,8 +21,8 @@ namespace ASCOM.Remote
         bool devicesAreConnected = false;
 
         Profile profile;
-        List<string> deviceTypes;
-        Dictionary<string, string> deviceDictionary;
+        readonly List<string> deviceTypes;
+        readonly Dictionary<string, string> deviceDictionary;
         SetupForm setupForm;
         bool recalculate = false;
 
@@ -433,7 +433,7 @@ namespace ASCOM.Remote
         #endregion
 
         #region Support code
-        private bool GetConnectdState(dynamic driverObject)
+        private static bool GetConnectdState(dynamic driverObject)
         {
             bool connectedState;
 

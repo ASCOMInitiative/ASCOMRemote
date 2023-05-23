@@ -208,6 +208,9 @@ namespace ASCOM.Remote
         internal const int DESTROY_DRIVER = int.MinValue;
         internal const int ASYNC_WAIT_LOOP_TIME = 20; // Number of milliseconds to wait for work before timing out and going round the wait loop to run Application.DoEvents()
 
+        [GeneratedRegex("[^\\u0020-\\u007E]")]
+        private static partial Regex AsciiRegex();
+
         #endregion
 
         #region Application Global Variables
@@ -513,18 +516,18 @@ namespace ASCOM.Remote
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Clear down the listener
-            LogMessage(0, 0, 0, "FormClosed", string.Format("Stopping Remote server on thread {0}", Thread.CurrentThread.ManagedThreadId));
+            LogMessage(0, 0, 0, "FormClosed", string.Format("Stopping Remote server on thread {0}", Environment.CurrentManagedThreadId));
             StopRESTServer();
-            LogMessage(0, 0, 0, "FormClosed", string.Format("Stopped Remote server on thread {0}", Thread.CurrentThread.ManagedThreadId));
+            LogMessage(0, 0, 0, "FormClosed", string.Format("Stopped Remote server on thread {0}", Environment.CurrentManagedThreadId));
 
             // Clear all of the current objects
-            LogMessage(0, 0, 0, "FormClosed", string.Format("Disconnecting devices on thread {0}", Thread.CurrentThread.ManagedThreadId));
+            LogMessage(0, 0, 0, "FormClosed", string.Format("Disconnecting devices on thread {0}", Environment.CurrentManagedThreadId));
             DisconnectDevices();
-            LogMessage(0, 0, 0, "FormClosed", string.Format("Disconnected devices on thread {0}", Thread.CurrentThread.ManagedThreadId));
+            LogMessage(0, 0, 0, "FormClosed", string.Format("Disconnected devices on thread {0}", Environment.CurrentManagedThreadId));
 
             WaitFor(200);
             LogMessage(0, 0, 0, "FormClosed", "");
-            LogMessage(0, 0, 0, "FormClosed", string.Format("Remote Server SHUT DOWN on thread {0}", Thread.CurrentThread.ManagedThreadId));
+            LogMessage(0, 0, 0, "FormClosed", string.Format("Remote Server SHUT DOWN on thread {0}", Environment.CurrentManagedThreadId));
         }
 
         #endregion
@@ -964,13 +967,13 @@ namespace ASCOM.Remote
 
                                 if (RunDriversOnSeparateThreads)
                                 {
-                                    LogMessage(0, 0, 0, "ConnectDevices", string.Format("Creating driver {0} on separate thread. This is thread: {1}", configuredDevice.Value.ProgID, Thread.CurrentThread.ManagedThreadId));
+                                    LogMessage(0, 0, 0, "ConnectDevices", string.Format("Creating driver {0} on separate thread. This is thread: {1}", configuredDevice.Value.ProgID, Environment.CurrentManagedThreadId));
                                     Thread driverThread = new(DriverOnSeparateThread);
                                     driverThread.SetApartmentState(ApartmentState.STA);
                                     driverThread.DisableComObjectEagerCleanup();
                                     driverThread.IsBackground = true;
                                     driverThread.Start(configuredDevice);
-                                    LogMessage(0, 0, 0, "ConnectDevices", string.Format("Thread started successfully for {0}. This is thread: {1}", configuredDevice.Value.ProgID, Thread.CurrentThread.ManagedThreadId));
+                                    LogMessage(0, 0, 0, "ConnectDevices", string.Format("Thread started successfully for {0}. This is thread: {1}", configuredDevice.Value.ProgID, Environment.CurrentManagedThreadId));
 
                                     string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber);
 
@@ -980,7 +983,7 @@ namespace ASCOM.Remote
                                         Application.DoEvents();
                                     } while (ActiveObjects[deviceKey].DriverHostForm == null);
 
-                                    LogMessage(0, 0, 0, "ConnectDevices", string.Format("Completed create driver delegate for {0} on thread {1}", configuredDevice.Value.ProgID, Thread.CurrentThread.ManagedThreadId));
+                                    LogMessage(0, 0, 0, "ConnectDevices", string.Format("Completed create driver delegate for {0} on thread {1}", configuredDevice.Value.ProgID, Environment.CurrentManagedThreadId));
                                 }
                                 else
                                 {
@@ -1108,9 +1111,9 @@ namespace ASCOM.Remote
             driverHostForm.Hide(); // Hide the form from view
             LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Hidden driver host form"));
 
-            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Starting driver host environment for {0} on thread {1}", configuredDevice.Value.DeviceKey, Thread.CurrentThread.ManagedThreadId));
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Starting driver host environment for {0} on thread {1}", configuredDevice.Value.DeviceKey, Environment.CurrentManagedThreadId));
             Application.Run();  // Start the message loop on this thread to bring the form to life
-            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Environment for driver host {0} shut down on thread {1}", configuredDevice.Value.DeviceKey, Thread.CurrentThread.ManagedThreadId));
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Environment for driver host {0} shut down on thread {1}", configuredDevice.Value.DeviceKey, Environment.CurrentManagedThreadId));
             driverHostForm.Dispose();
 
         }
@@ -1119,7 +1122,7 @@ namespace ASCOM.Remote
         {
             try
             {
-                LogMessage(0, 0, 0, "CreateInstance", string.Format("Creating device: {0}, ProgID: {1}, Key: {2} on thread {3}", configuredDevice.Key, configuredDevice.Value.ProgID, configuredDevice.Value.DeviceKey, Thread.CurrentThread.ManagedThreadId));
+                LogMessage(0, 0, 0, "CreateInstance", string.Format("Creating device: {0}, ProgID: {1}, Key: {2} on thread {3}", configuredDevice.Key, configuredDevice.Value.ProgID, configuredDevice.Value.DeviceKey, Environment.CurrentManagedThreadId));
 
                 // Create the device and save its reference to the ActiveObject instance
                 Type deviceType = Type.GetTypeFromProgID(configuredDevice.Value.ProgID);
@@ -1205,13 +1208,13 @@ namespace ASCOM.Remote
                         if (RunDriversOnSeparateThreads)
                         {
                             DestroyDriverDelegate destroyDriverDelegate = new(activeObject.Value.DriverHostForm.DestroyDriver);
-                            LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Starting invoke of driver delegate for device {0} on thread {1}", activeObject.Key, Thread.CurrentThread.ManagedThreadId));
+                            LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Starting invoke of driver delegate for device {0} on thread {1}", activeObject.Key, Environment.CurrentManagedThreadId));
                             activeObject.Value.DriverHostForm.Invoke(destroyDriverDelegate);
-                            LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Completed invoke of driver delegate for device {0} on thread {1}", activeObject.Key, Thread.CurrentThread.ManagedThreadId));
+                            LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Completed invoke of driver delegate for device {0} on thread {1}", activeObject.Key, Environment.CurrentManagedThreadId));
                         }
                         else
                         {
-                            LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Drivers on same thread - destroying device {0} on thread {1}", activeObject.Key, Thread.CurrentThread.ManagedThreadId));
+                            LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Drivers on same thread - destroying device {0} on thread {1}", activeObject.Key, Environment.CurrentManagedThreadId));
                             RemainingObjectCount = DestroyDriver(activeObject.Key);
                         }
                     }
@@ -1454,7 +1457,7 @@ namespace ASCOM.Remote
             if (txtConcurrency.InvokeRequired)
             {
                 SetConcurrencyCallback d = new(IncrementConcurrencyCounter);
-                this.Invoke(d, new object[] { });
+                this.Invoke(d, Array.Empty<object>());
             }
             else
             {
@@ -1468,7 +1471,7 @@ namespace ASCOM.Remote
             if (this.txtConcurrency.InvokeRequired)
             {
                 SetConcurrencyCallback decrementConcurrencyCounterDelegate = new(DecrementConcurrencyCounter);
-                this.Invoke(decrementConcurrencyCounterDelegate, new object[] { });
+                this.Invoke(decrementConcurrencyCounterDelegate, Array.Empty<object>());
             }
             else
             {
@@ -1482,9 +1485,9 @@ namespace ASCOM.Remote
         /// </summary>
         /// <param name="message">String message to be cleaned</param>
         /// <returns>Cleaned message string</returns>
-        private string CleanMessage(string message)
+        private static string CleanMessage(string message)
         {
-            string cleanedMessage = Regex.Replace(message, @"[^\u0020-\u007E]", string.Empty);
+            string cleanedMessage = AsciiRegex().Replace(message, string.Empty);
             return cleanedMessage;
         }
 
@@ -1517,7 +1520,7 @@ namespace ASCOM.Remote
         /// <param name="htmlText">HTML formatted text to return to clients that request this</param>
         /// <param name="plainText">Plain text to be returned to clients that do not specifically request html</param>
         /// <returns></returns>
-        private string HTMLOrPlainText(RequestData requestData, string htmlText, string plainText)
+        private static string HTMLOrPlainText(RequestData requestData, string htmlText, string plainText)
         {
             // Test whether the client requests HTML messages
             if (requestData.Request.AcceptTypes != null) // There are some accept types so check whether text/html is among them
@@ -1537,7 +1540,7 @@ namespace ASCOM.Remote
             }
         }
 
-        private string HTMLOrPlainTextContentType(RequestData requestData)
+        private static string HTMLOrPlainTextContentType(RequestData requestData)
         {
             if (requestData.Request.AcceptTypes != null) // There are some accept types so check whether text/html is among them
             {
@@ -1568,7 +1571,7 @@ namespace ASCOM.Remote
         public static int GetManagedSize(Type type)
         {
             // all this just to invoke one op code with no arguments!
-            var method = new DynamicMethod("GetManagedSizeImpl", typeof(uint), new Type[0]);
+            var method = new DynamicMethod("GetManagedSizeImpl", typeof(uint), Array.Empty<Type>());
 
             ILGenerator gen = method.GetILGenerator();
 
@@ -1807,7 +1810,7 @@ namespace ASCOM.Remote
             bool currentRunAs64Bit;
             bool newRunAs64Bit;
 
-            LogMessage(0, 0, 0, "SetupButton", string.Format("Saving current server state", apiIsEnabled, devicesAreConnected));
+            LogMessage(0, 0, 0, "SetupButton", Message: string.Format("Saving current server state", apiIsEnabled, devicesAreConnected));
 
             // Save current server state
             apiEnabled = apiIsEnabled;
@@ -2153,17 +2156,17 @@ namespace ASCOM.Remote
             // Get the result context from the client's call
             try
             {
-                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Request received. Is thread pool thread: {1}. Is background thread: {2}.", Thread.CurrentThread.ManagedThreadId.ToString(), Thread.CurrentThread.IsThreadPoolThread, Thread.CurrentThread.IsBackground));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Request received. Is thread pool thread: {1}. Is background thread: {2}.", Environment.CurrentManagedThreadId.ToString(), Thread.CurrentThread.IsThreadPoolThread, Thread.CurrentThread.IsBackground));
                 context = listener.EndGetContext(result); // Get the context object
             }
             catch (NullReferenceException) // httpListener is null because we are closing down or because of some other error so just log the event
             {
-                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - EndGetContext - httpListener is null so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - EndGetContext - httpListener is null so taking no action and just returning.", Environment.CurrentManagedThreadId.ToString()));
                 return;
             }
             catch (ObjectDisposedException) // httpListener is disposed because the Remote server has been stopped or because of some other error so just log the event
             {
-                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - EndGetContext - httpListener is disposed so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - EndGetContext - httpListener is disposed so taking no action and just returning.", Environment.CurrentManagedThreadId.ToString()));
                 return;
             }
 
@@ -2179,7 +2182,7 @@ namespace ASCOM.Remote
                 }
                 else // No context object so not possible to return an error to the client, just log the error and increment the error counter
                 {
-                    LogException1(requestData, "APIRequestCallback", string.Format("Thread {0} - EndGetContext exception: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), ex.ToString()));
+                    LogException1(requestData, "APIRequestCallback", string.Format("Thread {0} - EndGetContext exception: {1}", Environment.CurrentManagedThreadId.ToString(), ex.ToString()));
                     Interlocked.Increment(ref numberOfConsecutiveErrors);
                 }
             }
@@ -2187,12 +2190,12 @@ namespace ASCOM.Remote
             // Set up the next call back            
             try
             {
-                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Setting up new call back to wait for next request ", Thread.CurrentThread.ManagedThreadId.ToString()));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Setting up new call back to wait for next request ", Environment.CurrentManagedThreadId.ToString()));
                 httpListener.BeginGetContext(new AsyncCallback(RestRequestReceivedHandler), httpListener);
             }
             catch (NullReferenceException) // httpListener is null because we are closing down or because of some other error so just log the event
             {
-                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - BeginGetContext - httpListener is null so taking no action and just returning.", Thread.CurrentThread.ManagedThreadId.ToString()));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - BeginGetContext - httpListener is null so taking no action and just returning.", Environment.CurrentManagedThreadId.ToString()));
                 return;
             }
             catch (Exception ex)
@@ -2207,7 +2210,7 @@ namespace ASCOM.Remote
                 }
                 else // No context object so not possible to return an error to the client
                 {
-                    LogException1(requestData, "APIRequestCallback", string.Format("Thread {0} - BeginGetContext exception: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), ex.ToString()));
+                    LogException1(requestData, "APIRequestCallback", string.Format("Thread {0} - BeginGetContext exception: {1}", Environment.CurrentManagedThreadId.ToString(), ex.ToString()));
                     Interlocked.Increment(ref numberOfConsecutiveErrors);
                     return;
                 }
@@ -2253,13 +2256,13 @@ namespace ASCOM.Remote
             }
 
             // Now process this request, any exceptions are handled by the ProcessRequest method itself
-            if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Processing received message.", Thread.CurrentThread.ManagedThreadId.ToString()));
+            if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Processing received message.", Environment.CurrentManagedThreadId.ToString()));
             ProcessRestRequest(context);
 
             // Shut down the listener and close down device drivers if the maximum number of errors has been reached
             if (numberOfConsecutiveErrors == MAX_ERRORS_BEFORE_CLOSE)
             {
-                LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Maximum number of errors ({1}) reached, closing server and device drivers.", Thread.CurrentThread.ManagedThreadId, MAX_ERRORS_BEFORE_CLOSE));
+                LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Maximum number of errors ({1}) reached, closing server and device drivers.", Environment.CurrentManagedThreadId, MAX_ERRORS_BEFORE_CLOSE));
 
                 // Clear down the listener
                 StopRESTServer();
@@ -2306,7 +2309,7 @@ namespace ASCOM.Remote
                 response.Headers.Add(HttpResponseHeader.Server, "ASCOM Rest API Server -");
 
                 // Log the request 
-                LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Protocol: HTTP/{request.ProtocolVersion}, Thread: {Thread.CurrentThread.ManagedThreadId}");
+                LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Protocol: HTTP/{request.ProtocolVersion}, Thread: {Environment.CurrentManagedThreadId}");
 
                 // Create collections of supplied query and form parameters.
 
@@ -2549,14 +2552,14 @@ namespace ASCOM.Remote
                         // Parse the integer value out or throw a 400 error if the value is not an unsigned integer
                         if (!uint.TryParse(clientIDString, out clientID))
                         {
-                            LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}, Concurrent requests: {3}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString(), numberOfConcurrentTransactions));
+                            LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}, Concurrent requests: {3}", request.HttpMethod, request.Url.PathAndQuery, Environment.CurrentManagedThreadId.ToString(), numberOfConcurrentTransactions));
                             Return400Error(requestData, "Client ID is not an unsigned integer: " + queryParameters[SharedConstants.CLIENT_ID_PARAMETER_NAME]);
                             return;
                         }
                     }
                     else // Empty or white space
                     {
-                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}, Concurrent requests: {3}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString(), numberOfConcurrentTransactions));
+                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}, Concurrent requests: {3}", request.HttpMethod, request.Url.PathAndQuery, Environment.CurrentManagedThreadId.ToString(), numberOfConcurrentTransactions));
                         Return400Error(requestData, "Client ID is empty or white space");
                         return;
                     }
@@ -2572,14 +2575,14 @@ namespace ASCOM.Remote
                         // Parse the integer value out or throw a 400 error if the value is not an unsigned integer
                         if (!UInt32.TryParse(clientTransactionIDString, out clientTransactionID))
                         {
-                            LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Thread.CurrentThread.ManagedThreadId}, Concurrent requests: {numberOfConcurrentTransactions}");
+                            LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Environment.CurrentManagedThreadId}, Concurrent requests: {numberOfConcurrentTransactions}");
                             Return400Error(requestData, "Client transaction ID is not an unsigned integer: " + queryParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME]);
                             return;
                         }
                     }
                     else // Empty or white space
                     {
-                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Thread.CurrentThread.ManagedThreadId}, Concurrent requests: {numberOfConcurrentTransactions}");
+                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Environment.CurrentManagedThreadId}, Concurrent requests: {numberOfConcurrentTransactions}");
                         Return400Error(requestData, "Client Transaction ID is empty or white space");
                         return;
                     }
@@ -2730,7 +2733,7 @@ namespace ASCOM.Remote
                     // Return a 403 error if the API is not enabled through the management console
                     if (!apiIsEnabled)
                     {
-                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString()));
+                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, Environment.CurrentManagedThreadId.ToString()));
                         Return403Error(requestData, API_INTERFACE_NOT_ENABLED_MESSAGE);
                         return;
                     }
@@ -2776,11 +2779,11 @@ namespace ASCOM.Remote
                                             if (!ActiveObjects[deviceKey].AllowConcurrentAccess) // Concurrent processing is not permitted so wait for the synchronisation lock
                                             {
                                                 Monitor.Enter(ActiveObjects[deviceKey].CommandLock);
-                                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock acquired for device {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock acquired for device {deviceKey} on REST thread {Environment.CurrentManagedThreadId}");
                                             }  // Concurrent processing is not enabled 
                                             else
                                             {
-                                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock required for {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock required for {deviceKey} from REST thread {Environment.CurrentManagedThreadId}");
                                             } // Concurrent processing is enabled
 
                                             // Process the command within a try block so that "finally" can be used to release the Monitor synchronisation object if it was set because the device can only handle one command at a time
@@ -2792,7 +2795,7 @@ namespace ASCOM.Remote
                                                 // This mechanic leaves the form message loop running so that concurrent commands to the driver can be processed even if an earlier slow running command has not completed.
                                                 if (RunDriversOnSeparateThreads) // Each driver is running in its own Form with its own message loop
                                                 {
-                                                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"ProcessRequestAsync - Sending command to {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"ProcessRequestAsync - Sending command to {deviceKey} on REST thread {Environment.CurrentManagedThreadId}");
                                                     DriverCommandDelegate driverCommandDelegate = new(ActiveObjects[deviceKey].DriverHostForm.DriverCommand); // Create a delegate for this request
 
                                                     Thread driverThread = (Thread)ActiveObjects[deviceKey].DriverHostForm.Invoke(driverCommandDelegate, requestData); // Send the command to the host form, which will return a thread where the command is running
@@ -2801,11 +2804,11 @@ namespace ASCOM.Remote
                                                     {
                                                         int threadId = driverThread.ManagedThreadId; // Get the thread ID for reporting purposes
                                                         driverThread.Join(); // Wait for the worker thread to complete. By using Thread.Join other COM requests can be processed
-                                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"ProcessRequestAsync - Command completed for {deviceKey} using WORKER thread {threadId} on REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"ProcessRequestAsync - Command completed for {deviceKey} using WORKER thread {threadId} on REST thread {Environment.CurrentManagedThreadId}");
                                                     } // A thread was returned by the driver host form
                                                     else // No thread was returned because of a catastrophic failure in the host form
                                                     {
-                                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"ProcessRequestAsync - No thread returned from DriverCommand for {deviceKey} on REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"ProcessRequestAsync - No thread returned from DriverCommand for {deviceKey} on REST thread {Environment.CurrentManagedThreadId}");
                                                     } // No thread was returned by the driver host for so log the error
                                                 } // Drivers are running on separate threads with independent forms and message queues
                                                 else // Driver is running on the UI thread so just process the command
@@ -2818,11 +2821,11 @@ namespace ASCOM.Remote
                                                 if (!ActiveObjects[deviceKey].AllowConcurrentAccess)
                                                 {
                                                     Monitor.Exit(ActiveObjects[deviceKey].CommandLock); // Release the command lock object if a lock was used
-                                                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock released for device {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Device only supports serialised access - command lock released for device {deviceKey} from REST thread {Environment.CurrentManagedThreadId}");
                                                 } // Concurrent access is not enabled so release the synchronisation lock obtained earlier
                                                 else // Specified is configured but threw an error when created or when Connected was set True so return the error message
                                                 {
-                                                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock to release for {deviceKey} from REST thread {Thread.CurrentThread.ManagedThreadId}");
+                                                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Device supports concurrent access - no command lock to release for {deviceKey} from REST thread {Environment.CurrentManagedThreadId}");
                                                 } // Concurrent operation is permitted so just log progress
                                             }
                                         } // The device did initialise OK
@@ -3266,7 +3269,7 @@ namespace ASCOM.Remote
 
                 else // A URI that did not start with /api/, /management, /setup or /configuration/ was requested
                 {
-                    LogMessage1(requestData, "Request", string.Format("Non API call - {0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, Thread.CurrentThread.ManagedThreadId.ToString()));
+                    LogMessage1(requestData, "Request", string.Format("Non API call - {0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, Environment.CurrentManagedThreadId.ToString()));
                     string returnMessage = HTMLOrPlainText(requestData, UNRECOGNISED_URI_MESSAGE_HTML, UNRECOGNISED_URI_MESSAGE_PLAIN);
 
                     foreach (KeyValuePair<string, ConfiguredDevice> device in ConfiguredDevices)
@@ -3301,7 +3304,7 @@ namespace ASCOM.Remote
                 allowConcurrentAccess = ActiveObjects[requestData.DeviceKey].AllowConcurrentAccess;
 
                 // Log a message showing the thread number on which we are running
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Processing driver command on WORKER thread {Thread.CurrentThread.ManagedThreadId}");
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Processing driver command on WORKER thread {Environment.CurrentManagedThreadId}");
 
                 switch (requestData.Request.HttpMethod.ToUpperInvariant()) // Handle GET and PUT requestData.Requests
                 {
@@ -5083,6 +5086,14 @@ namespace ASCOM.Remote
                 SerializeDriverException = IncludeDriverExceptionInJsonResponse
             };
             string responseJson = JsonConvert.SerializeObject(responseClass);
+
+            //string pattern = "({\"Value\":)([0-9.-]*)(.*)";
+            //foreach (Match match in Regex.Matches(responseJson, pattern, RegexOptions.None, TimeSpan.FromSeconds(1)))
+            //{
+            //    LogMessage1(requestData, "ReturnDouble", $"REGEX Group 1: {match.Groups[1]}, Group 2: {match.Groups[2]}, Match 3: {match.Groups[3]}");
+            //    responseJson = $"{match.Groups[1]}null{match.Groups[3]}";
+            //}
+            //responseJson = "{\"Value\":null,\"ClientTransactionID\":9,\"ServerTransactionID\":107,\"ErrorNumber\":1024,\"ErrorMessage\":\"Test not implemented error message \"}";
             SendResponseValueToClient(requestData, exReturn, responseJson);
         }
         private void ReturnShortIndexedDouble(RequestData requestData)
@@ -5558,7 +5569,7 @@ namespace ASCOM.Remote
             // Initialise a list to hold returned tracking rate values and add any tracking rate values that have been returned
             List<DriveRate> rates = new();
 
-            if (!(deviceResponse is null)) // Avoid processing a null return value because the for each code will fail 
+            if (deviceResponse is not null) // Avoid processing a null return value because the for each code will fail 
             {
                 foreach (DriveRate rate in deviceResponse)
                 {
@@ -5814,7 +5825,7 @@ namespace ASCOM.Remote
         /// <remarks>
         /// The last provided image data that was saved by the imagearray and imagearrayvariant method calls is binary serialised then compressed and finally returned to the client
         /// </remarks>
-        private void ReturnImageArrayBase64(RequestData requestData)
+        private static void ReturnImageArrayBase64(RequestData requestData)
         {
             Array imageArray = null;
             Stopwatch sw = new();
@@ -5855,7 +5866,7 @@ namespace ASCOM.Remote
             }
             else
             {
-                imageArrayBytes = new byte[0];
+                imageArrayBytes = Array.Empty<byte>();
                 imageArrayElementType = "No array elements";
             }
             long timeBCreateByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
@@ -5969,7 +5980,7 @@ namespace ASCOM.Remote
         /// and then compressed with Gzip to reduce transmission size. The BinaryFormatter format is internal to .NET and is not published, but is compatible between different releases of .NET so this approach is only of value when 
         /// the client is written in .NET
         /// </remarks>
-        private void ReturnImageArray(RequestData requestData)
+        private static void ReturnImageArray(RequestData requestData)
         {
             Array deviceResponse;
             dynamic responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID); // Initialise here so that there is a class ready to convey back an error message
@@ -6651,7 +6662,7 @@ namespace ASCOM.Remote
             // Initialise a list to hold returned rate values and add any rate values that have been returned
             List<RateResponse> rateResponse = new();
 
-            if (!(deviceResponse is null)) // Avoid processing a null return value because the for each code will fail 
+            if (deviceResponse is not null) // Avoid processing a null return value because the for each code will fail 
             {
                 foreach (dynamic r in deviceResponse)
                 {
@@ -6882,7 +6893,7 @@ namespace ASCOM.Remote
             SendEmptyResponseToClient(requestData, exReturn);
         }
 
-        private T GetParameter<T>(RequestData requestData, string parameterName)
+        private static T GetParameter<T>(RequestData requestData, string parameterName)
         {
             // Debug logging
             if (true)
@@ -7017,7 +7028,7 @@ namespace ASCOM.Remote
 
             if (ex == null) // Command ran successfully so return the JSON encoded result
             {
-                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("OK - no exception. Thread: {0}, JSON: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), (jsonResponse.Length < 1000) ? jsonResponse : jsonResponse.Substring(0, 1000)));
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("OK - no exception. Thread: {0}, JSON: {1}", Environment.CurrentManagedThreadId.ToString(), (jsonResponse.Length < 1000) ? jsonResponse : jsonResponse.Substring(0, 1000)));
                 if (ScreenLogResponses) LogToScreen(string.Format("  OK - JSON: {0}", jsonResponse));
                 TransmitResponse(requestData, "application/json; charset=utf-8", HttpStatusCode.OK, "200 OK", jsonResponse);
             }
@@ -7037,12 +7048,12 @@ namespace ASCOM.Remote
                 if (DebugTraceState) LogException1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Exception: " + ex.ToString());
                 else LogException1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Exception: " + ex.Message);
 
-                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Thread: {0}, Json: {1}", Thread.CurrentThread.ManagedThreadId.ToString(), jsonResponse));
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Thread: {0}, Json: {1}", Environment.CurrentManagedThreadId.ToString(), jsonResponse));
             }
         }
 
         // Handle the mechanics of putting the response onto the wire back to the client
-        void TransmitResponse(RequestData requestData, string contentType, HttpStatusCode httpStatusCode, string statusDescription, string messageToSend)
+        static void TransmitResponse(RequestData requestData, string contentType, HttpStatusCode httpStatusCode, string statusDescription, string messageToSend)
         {
             byte[] bytesToSend; // Array to hold the encoded message
 

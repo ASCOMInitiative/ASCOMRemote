@@ -6,9 +6,9 @@ namespace ASCOM.Remote
 {
     class Configuration : IDisposable
     {
-        private bool LOG_CONFIGURATION_CALLS = false; // Stored as a variable rather than a const to avoid compiler warnings about unreachable code
+        private readonly bool LOG_CONFIGURATION_CALLS = false; // Stored as a variable rather than a const to avoid compiler warnings about unreachable code
 
-        private RegistryKey hiveKey, baseRegistryKey;
+        private readonly RegistryKey hiveKey, baseRegistryKey;
 
         public Configuration()
         {

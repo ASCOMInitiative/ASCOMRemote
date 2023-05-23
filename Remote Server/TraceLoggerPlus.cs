@@ -31,14 +31,14 @@ namespace ASCOM.Remote
         private const bool RESPECT_CRLF_DEFAULT = true;
 
         // Property backing variables
-        private string logFileType;
+        private readonly string logFileType;
         private int identifierWidthValue;
 
         // Global fields
         private StreamWriter logFileStream;
         private Mutex loggerMutex;
-        private bool autoGenerateFileName;
-        private bool autoGenerateFilePath;
+        private readonly bool autoGenerateFileName;
+        private readonly bool autoGenerateFilePath;
         private bool traceLoggerHasBeenDisposed;
         private string mutexName;
 
@@ -371,7 +371,7 @@ namespace ASCOM.Remote
                     while (File.Exists(Path.Combine(logFilePath, LogFileName)) & (logFileSuffixInteger <= MAXIMUM_UNIQUE_SUFFIX_ATTEMPTS)); // Loop until the generated file name does not exist or we hit the maximum number of attempts
 
                     // Close any current file stream before creating a new one
-                    if (!(logFileStream is null))
+                    if (logFileStream is not null)
                     {
                         logFileStream.Close();
                         logFileStream.Dispose();
@@ -391,7 +391,7 @@ namespace ASCOM.Remote
                 try
                 {
                     // Close any current file stream before creating a new one
-                    if (!(logFileStream is null))
+                    if (logFileStream is not null)
                     {
                         logFileStream.Close();
                         logFileStream.Dispose();
