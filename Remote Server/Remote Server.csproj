@@ -28,11 +28,11 @@
 	<PropertyGroup>
 		<!-- Set version numbers -->
 		<ProductMajor>6</ProductMajor>
-		<ProductMinor>6</ProductMinor>
-		<ProductPatch>4</ProductPatch>
+		<ProductMinor>7</ProductMinor>
+		<ProductPatch>0</ProductPatch>
 
 		<!-- Set the pre-release string without a leading minus e.g. rc.1 -->
-		<ProductPreRelease>rc.1</ProductPreRelease>
+		<ProductPreRelease></ProductPreRelease>
 
 		<!--Create a dynamic revision number based on time of build
 		 
