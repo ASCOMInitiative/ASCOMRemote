@@ -29,10 +29,10 @@
 		<!-- Set version numbers -->
 		<ProductMajor>6</ProductMajor>
 		<ProductMinor>7</ProductMinor>
-		<ProductPatch>0</ProductPatch>
+		<ProductPatch>1</ProductPatch>
 
 		<!-- Set the pre-release string without a leading minus e.g. rc.1 -->
-		<ProductPreRelease></ProductPreRelease>
+		<ProductPreRelease>rc-1</ProductPreRelease>
 
 		<!--Create a dynamic revision number based on time of build
 		 

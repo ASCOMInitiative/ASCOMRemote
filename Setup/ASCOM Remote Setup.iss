@@ -2,13 +2,13 @@
 ; Script to install the ASCOM Remote Server
 ;
 
-;; Pre-define ISPP variables
+; Pre-define ISPP variables
 #define FileHandle
 #define FileLine
 #define MyInformationVersion
 
 ; Read the informational SEMVER version string from the file created by the build process
-#define FileHandle = FileOpen("..\publish\InformationVersion.txt"); 
+#define FileHandle = FileOpen("..\publish\remote\InformationVersion.txt"); 
 #define FileLine = FileRead(FileHandle)
 #pragma message "Informational version number: " + FileLine
 
@@ -100,19 +100,28 @@ Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 
 [Files]
 ; 64bit OS - Install the 64bit app
-Source: "..\publish\x64\*.exe"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: Is64BitInstallMode 
-Source: "..\publish\x64\*.dll"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
-Source: "..\publish\x64\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: Is64BitInstallMode
+Source: "..\publish\remote\x64\*.exe"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: Is64BitInstallMode 
+Source: "..\publish\remote\x64\*.dll"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
+Source: "..\publish\remote\x64\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: Is64BitInstallMode
 
 ; 64bit OS - Install the 32bit app
-Source: "..\publish\x86\*.exe"; DestDir: "{app}\32bit"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
-Source: "..\publish\x86\*.dll"; DestDir: "{app}\32bit"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
-Source: "..\publish\x86\*"; DestDir: "{app}\32bit"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: Is64BitInstallMode
+Source: "..\publish\remote\x86\*.exe"; DestDir: "{app}\32bit"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
+Source: "..\publish\remote\x86\*.dll"; DestDir: "{app}\32bit"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
+Source: "..\publish\remote\x86\*"; DestDir: "{app}\32bit"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: Is64BitInstallMode
 
 ; 32bit OS - Install the 32bit app
-Source: "..\publish\x86\*.exe"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: not Is64BitInstallMode
-Source: "..\publish\x86\*.dll"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: not Is64BitInstallMode
-Source: "..\publish\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: not Is64BitInstallMode
+Source: "..\publish\remote\x86\*.exe"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: not Is64BitInstallMode
+Source: "..\publish\remote\x86\*.dll"; DestDir: "{app}"; Flags: ignoreversion signonce; Check: not Is64BitInstallMode
+Source: "..\publish\remote\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: not Is64BitInstallMode
+
+;Source: "..\publish\permissions\x64\*.exe"; DestDir: "{app}\SetNetworkPermissions"; Flags: ignoreversion signonce; Check: Is64BitInstallMode 
+;Source: "..\publish\permissions\x64\*.dll"; DestDir: "{app}\SetNetworkPermissions"; Flags: ignoreversion signonce; Check: Is64BitInstallMode
+;Source: "..\publish\permissions\x64\*"; DestDir: "{app}\SetNetworkPermissions"; Flags: ignoreversion; Excludes:"*.exe,*.dll"; Check: Is64BitInstallMode
+
+; Install the 32bit exe into the 32bit program files folder structure
+Source: "..\publish\permissions\x86\*.exe"; DestDir: "{autopf32}\{#MyInstallFolder}\SetNetworkPermissions"; Flags: ignoreversion signonce;
+Source: "..\publish\permissions\x86\*.dll"; DestDir: "{autopf32}\{#MyInstallFolder}\SetNetworkPermissions"; Flags: ignoreversion signonce;
+Source: "..\publish\permissions\x86\*"; DestDir: "{autopf32}\{#MyInstallFolder}\SetNetworkPermissions"; Flags: ignoreversion; Excludes:"*.exe,*.dll";
 
 ; DOCUMENTATION
 Source: "..\Documentation\{#ASCOMRemoteDocumentationFileName}"; DestDir: "{app}"; Flags: ignoreversion

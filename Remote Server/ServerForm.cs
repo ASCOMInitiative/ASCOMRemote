@@ -160,7 +160,7 @@ namespace ASCOM.Remote
         internal const string CONFIRM_EXIT_PROFILENAME = "Confirm Exit"; public const bool CONFIRM_EXIT_DEFAULT = false;
         internal const string MINIMISE_ON_START_PROFILENAME = "Minimise On Start"; public const bool MINIMISE_ON_START_DEFAULT = false;
         internal const string CHECK_FOR_UPDATES = "Check For Updates"; public const bool CHECK_FOR_UPDATES_DEFAULT = true;
-        internal const string CHECK_FOR_PRE_RELEASE = "Check For Pre-release Updates"; public const bool CHECK_FOR_PRE_RELEASE_DEFAULT = false;
+        internal const string CHECK_FOR_PRE_RELEASE = "Check For Pre-release Updates"; public const bool CHECK_FOR_PRE_RELEASE_DEFAULT = true;
 
         // Minimise behaviour strings
         internal const string MINIMISE_TO_SYSTEM_TRAY_KEY = "Minimise to system tray";
@@ -632,7 +632,19 @@ namespace ASCOM.Remote
 
                                     try
                                     {
-                                        string setNetworkPermissionsPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + SharedConstants.SET_NETWORK_PERMISSIONS_EXE_PATH;
+                                        string setNetworkPermissionsPath;
+
+                                        // Set the path to the permissions exe depending on whether we are a 32 or 64bit application
+                                        if (Environment.Is64BitProcess) // 64bit application
+                                        {
+                                            // Use the Program Files (x86) folder (32bit folder on a 64bit OS)
+                                            setNetworkPermissionsPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + SharedConstants.SET_NETWORK_PERMISSIONS_EXE_PATH;
+                                        }
+                                        else
+                                        {
+                                            // Use the Program Files folder (32bit folder on a 32bit OS)
+                                            setNetworkPermissionsPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) + SharedConstants.SET_NETWORK_PERMISSIONS_EXE_PATH;
+                                        }
                                         LogMessage(0, 0, 0, "StartRESTServer", string.Format("SetNetworkPermissionspath: {0}", setNetworkPermissionsPath));
 
                                         // Check that the SetNetworkPermissions EXE exists

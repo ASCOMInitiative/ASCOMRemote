@@ -4,7 +4,6 @@
 		<RootNamespace>ASCOM.Remote</RootNamespace>
 		<AssemblyName>ASCOM.SetNetworkPermissions</AssemblyName>
 		<TargetFramework>net7.0-windows</TargetFramework>
-		<UseWindowsForms>true</UseWindowsForms>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<AssemblyTitle>Set Network Permissions</AssemblyTitle>
 		<Product>SetNetworkPemissions</Product>

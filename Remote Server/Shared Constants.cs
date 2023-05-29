@@ -88,7 +88,7 @@ namespace ASCOM.Remote
         public const string BROWSER_URL_SETUP = "setup";
 
         // Constants used to set network permissions
-        public const string SET_NETWORK_PERMISSIONS_EXE_PATH = @"\ASCOM\Remote\ASCOM.SetNetworkPermissions.exe"; //Relative path of the SetNetworkPermissions exe from C:\Program Files (or x86 on 64bit OS). Must match the location where the installer puts the exe!
+        public const string SET_NETWORK_PERMISSIONS_EXE_PATH = @"\ASCOM\RemoteServer\SetNetworkPermissions\ASCOM.SetNetworkPermissions.exe"; //Relative path of the SetNetworkPermissions exe from C:\Program Files (or x86 on 64bit OS). Must match the location where the installer puts the exe!
         public const string ENABLE_REMOTE_SERVER_MANAGEMENT_URI_COMMAND_NAME = "setremoteservermanagementuriacl";
         public const string ENABLE_ALPACA_DEVICE_MANAGEMENT_URI_COMMAND_NAME = "setalpacamanagementurl";
         public const string ENABLE_ALPACA_SETUP_URI_COMMAND_NAME = "setalpacasetupurl";
