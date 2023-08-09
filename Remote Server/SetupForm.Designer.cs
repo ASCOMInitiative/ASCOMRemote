@@ -15,3923 +15,3951 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = (new global::System.ComponentModel.Container());
-            global::System.ComponentModel.ComponentResourceManager resources = new global::System.ComponentModel.ComponentResourceManager(typeof(global::ASCOM.Remote.SetupForm));
-            global::System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new global::System.Windows.Forms.DataGridViewCellStyle();
-            this.BtnCancel = (new global::System.Windows.Forms.Button());
-            this.BtnOK = (new global::System.Windows.Forms.Button());
-            this.chkAutoConnect = (new global::System.Windows.Forms.CheckBox());
-            this.chkManagementInterfaceEnabled = (new global::System.Windows.Forms.CheckBox());
-            this.errorProvider1 = (new global::System.Windows.Forms.ErrorProvider(this.components));
-            this.ChkStartWithApiEnabled = (new global::System.Windows.Forms.CheckBox());
-            this.ChkRunDriversInSeparateThreadss = (new global::System.Windows.Forms.CheckBox());
-            this.ChkIncludeDriverExceptionsInJsonResponses = (new global::System.Windows.Forms.CheckBox());
-            this.SetupTabControl = (new global::System.Windows.Forms.TabControl());
-            this.DeviceConfigurationTab = (new global::System.Windows.Forms.TabPage());
-            this.DeviceTabs = (new global::System.Windows.Forms.TabControl());
-            this.DeviceTab0 = (new global::System.Windows.Forms.TabPage());
-            this.label12 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice00 = (new global::ASCOM.Remote.ServedDevice());
-            this.label11 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice01 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice02 = (new global::ASCOM.Remote.ServedDevice());
-            this.label1 = (new global::System.Windows.Forms.Label());
-            this.label2 = (new global::System.Windows.Forms.Label());
-            this.label9 = (new global::System.Windows.Forms.Label());
-            this.label3 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice03 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice04 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice05 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice06 = (new global::ASCOM.Remote.ServedDevice());
-            this.label6 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice07 = (new global::ASCOM.Remote.ServedDevice());
-            this.label5 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice08 = (new global::ASCOM.Remote.ServedDevice());
-            this.label4 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice09 = (new global::ASCOM.Remote.ServedDevice());
-            this.DeviceTab1 = (new global::System.Windows.Forms.TabPage());
-            this.label15 = (new global::System.Windows.Forms.Label());
-            this.label16 = (new global::System.Windows.Forms.Label());
-            this.label17 = (new global::System.Windows.Forms.Label());
-            this.label19 = (new global::System.Windows.Forms.Label());
-            this.label20 = (new global::System.Windows.Forms.Label());
-            this.label21 = (new global::System.Windows.Forms.Label());
-            this.label22 = (new global::System.Windows.Forms.Label());
-            this.label23 = (new global::System.Windows.Forms.Label());
-            this.label24 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice10 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice11 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice12 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice13 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice14 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice15 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice16 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice17 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice18 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice19 = (new global::ASCOM.Remote.ServedDevice());
-            this.DeviceTab2 = (new global::System.Windows.Forms.TabPage());
-            this.label18 = (new global::System.Windows.Forms.Label());
-            this.label25 = (new global::System.Windows.Forms.Label());
-            this.label26 = (new global::System.Windows.Forms.Label());
-            this.label27 = (new global::System.Windows.Forms.Label());
-            this.label28 = (new global::System.Windows.Forms.Label());
-            this.label29 = (new global::System.Windows.Forms.Label());
-            this.label30 = (new global::System.Windows.Forms.Label());
-            this.label31 = (new global::System.Windows.Forms.Label());
-            this.label32 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice20 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice21 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice22 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice23 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice24 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice25 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice26 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice27 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice28 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice29 = (new global::ASCOM.Remote.ServedDevice());
-            this.DeviceTab3 = (new global::System.Windows.Forms.TabPage());
-            this.label33 = (new global::System.Windows.Forms.Label());
-            this.label34 = (new global::System.Windows.Forms.Label());
-            this.label35 = (new global::System.Windows.Forms.Label());
-            this.label36 = (new global::System.Windows.Forms.Label());
-            this.label37 = (new global::System.Windows.Forms.Label());
-            this.label38 = (new global::System.Windows.Forms.Label());
-            this.label39 = (new global::System.Windows.Forms.Label());
-            this.label40 = (new global::System.Windows.Forms.Label());
-            this.label41 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice30 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice31 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice32 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice33 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice34 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice35 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice36 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice37 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice38 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice39 = (new global::ASCOM.Remote.ServedDevice());
-            this.DeviceTab4 = (new global::System.Windows.Forms.TabPage());
-            this.label42 = (new global::System.Windows.Forms.Label());
-            this.label43 = (new global::System.Windows.Forms.Label());
-            this.label44 = (new global::System.Windows.Forms.Label());
-            this.label45 = (new global::System.Windows.Forms.Label());
-            this.label46 = (new global::System.Windows.Forms.Label());
-            this.label47 = (new global::System.Windows.Forms.Label());
-            this.label48 = (new global::System.Windows.Forms.Label());
-            this.label49 = (new global::System.Windows.Forms.Label());
-            this.label50 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice40 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice41 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice42 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice43 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice44 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice45 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice46 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice47 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice48 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice49 = (new global::ASCOM.Remote.ServedDevice());
-            this.DeviceTab5 = (new global::System.Windows.Forms.TabPage());
-            this.label51 = (new global::System.Windows.Forms.Label());
-            this.label52 = (new global::System.Windows.Forms.Label());
-            this.label53 = (new global::System.Windows.Forms.Label());
-            this.label54 = (new global::System.Windows.Forms.Label());
-            this.label55 = (new global::System.Windows.Forms.Label());
-            this.label56 = (new global::System.Windows.Forms.Label());
-            this.label57 = (new global::System.Windows.Forms.Label());
-            this.label58 = (new global::System.Windows.Forms.Label());
-            this.label59 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice50 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice51 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice52 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice53 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice54 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice55 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice56 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice57 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice58 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice59 = (new global::ASCOM.Remote.ServedDevice());
-            this.DeviceTab6 = (new global::System.Windows.Forms.TabPage());
-            this.label60 = (new global::System.Windows.Forms.Label());
-            this.label61 = (new global::System.Windows.Forms.Label());
-            this.label62 = (new global::System.Windows.Forms.Label());
-            this.label63 = (new global::System.Windows.Forms.Label());
-            this.label64 = (new global::System.Windows.Forms.Label());
-            this.label65 = (new global::System.Windows.Forms.Label());
-            this.label66 = (new global::System.Windows.Forms.Label());
-            this.label67 = (new global::System.Windows.Forms.Label());
-            this.label68 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice60 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice61 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice62 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice63 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice64 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice65 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice66 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice67 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice68 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice69 = (new global::ASCOM.Remote.ServedDevice());
-            this.DeviceTab7 = (new global::System.Windows.Forms.TabPage());
-            this.label69 = (new global::System.Windows.Forms.Label());
-            this.label70 = (new global::System.Windows.Forms.Label());
-            this.label71 = (new global::System.Windows.Forms.Label());
-            this.label72 = (new global::System.Windows.Forms.Label());
-            this.label73 = (new global::System.Windows.Forms.Label());
-            this.label74 = (new global::System.Windows.Forms.Label());
-            this.label75 = (new global::System.Windows.Forms.Label());
-            this.label76 = (new global::System.Windows.Forms.Label());
-            this.label77 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice70 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice71 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice72 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice73 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice74 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice75 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice76 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice77 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice78 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice79 = (new global::ASCOM.Remote.ServedDevice());
-            this.DeviceTab8 = (new global::System.Windows.Forms.TabPage());
-            this.label78 = (new global::System.Windows.Forms.Label());
-            this.label79 = (new global::System.Windows.Forms.Label());
-            this.label80 = (new global::System.Windows.Forms.Label());
-            this.label81 = (new global::System.Windows.Forms.Label());
-            this.label82 = (new global::System.Windows.Forms.Label());
-            this.label83 = (new global::System.Windows.Forms.Label());
-            this.label84 = (new global::System.Windows.Forms.Label());
-            this.label85 = (new global::System.Windows.Forms.Label());
-            this.label86 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice80 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice81 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice82 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice83 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice84 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice85 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice86 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice87 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice88 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice89 = (new global::ASCOM.Remote.ServedDevice());
-            this.DeviceTab9 = (new global::System.Windows.Forms.TabPage());
-            this.label87 = (new global::System.Windows.Forms.Label());
-            this.label88 = (new global::System.Windows.Forms.Label());
-            this.label89 = (new global::System.Windows.Forms.Label());
-            this.label90 = (new global::System.Windows.Forms.Label());
-            this.label91 = (new global::System.Windows.Forms.Label());
-            this.label92 = (new global::System.Windows.Forms.Label());
-            this.label93 = (new global::System.Windows.Forms.Label());
-            this.label94 = (new global::System.Windows.Forms.Label());
-            this.label95 = (new global::System.Windows.Forms.Label());
-            this.ServedDevice90 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice91 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice92 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice93 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice94 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice95 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice96 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice97 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice98 = (new global::ASCOM.Remote.ServedDevice());
-            this.ServedDevice99 = (new global::ASCOM.Remote.ServedDevice());
-            this.LblDevicesNotDisconnoected = (new global::System.Windows.Forms.Label());
-            this.ServerConfigurationTab = (new global::System.Windows.Forms.TabPage());
-            this.chkStartMinimised = (new global::System.Windows.Forms.CheckBox());
-            this.chkConfirmExit = (new global::System.Windows.Forms.CheckBox());
-            this.textBox1 = (new global::System.Windows.Forms.TextBox());
-            this.GrpIpVersionSelector = (new global::System.Windows.Forms.GroupBox());
-            this.RadIpV4AndV6 = (new global::System.Windows.Forms.RadioButton());
-            this.RadIpV6 = (new global::System.Windows.Forms.RadioButton());
-            this.RadIpV4 = (new global::System.Windows.Forms.RadioButton());
-            this.label13 = (new global::System.Windows.Forms.Label());
-            this.NumDiscoveryPort = (new global::System.Windows.Forms.NumericUpDown());
-            this.ChkEnableDiscovery = (new global::System.Windows.Forms.CheckBox());
-            this.label10 = (new global::System.Windows.Forms.Label());
-            this.addressList = (new global::System.Windows.Forms.ComboBox());
-            this.TxtRemoteServerLocation = (new global::System.Windows.Forms.TextBox());
-            this.numPort = (new global::System.Windows.Forms.NumericUpDown());
-            this.label8 = (new global::System.Windows.Forms.Label());
-            this.label7 = (new global::System.Windows.Forms.Label());
-            this.ServerConfigurationTab2 = (new global::System.Windows.Forms.TabPage());
-            this.ChkRunAs64BitApplication = (new global::System.Windows.Forms.CheckBox());
-            this.groupBox4 = (new global::System.Windows.Forms.GroupBox());
-            this.ChkCheckForUpdates = (new global::System.Windows.Forms.CheckBox());
-            this.ChkCheckForPreReleaseUpdates = (new global::System.Windows.Forms.CheckBox());
-            this.lblMinimisationBehaviour = (new global::System.Windows.Forms.Label());
-            this.cmbMinimiseOptions = (new global::System.Windows.Forms.ComboBox());
-            this.label96 = (new global::System.Windows.Forms.Label());
-            this.NumMaxDevices = (new global::System.Windows.Forms.NumericUpDown());
-            this.LoggingConfigurationTab = (new global::System.Windows.Forms.TabPage());
-            this.groupBox3 = (new global::System.Windows.Forms.GroupBox());
-            this.chkTrace = (new global::System.Windows.Forms.CheckBox());
-            this.chkAccessLog = (new global::System.Windows.Forms.CheckBox());
-            this.chkDebugTrace = (new global::System.Windows.Forms.CheckBox());
-            this.ChkUseUtcTime = (new global::System.Windows.Forms.CheckBox());
-            this.ChkLogClientIPAddress = (new global::System.Windows.Forms.CheckBox());
-            this.groupBox2 = (new global::System.Windows.Forms.GroupBox());
-            this.BtnSelectLogFileFolder = (new global::System.Windows.Forms.Button());
-            this.label98 = (new global::System.Windows.Forms.Label());
-            this.label99 = (new global::System.Windows.Forms.Label());
-            this.groupBox1 = (new global::System.Windows.Forms.GroupBox());
-            this.ChkRollOverLogs = (new global::System.Windows.Forms.CheckBox());
-            this.DateTimeLogRolloverTime = (new global::System.Windows.Forms.DateTimePicker());
-            this.LblLogRolloverTime = (new global::System.Windows.Forms.Label());
-            this.CorsConfigurationTab = (new global::System.Windows.Forms.TabPage());
-            this.label97 = (new global::System.Windows.Forms.Label());
-            this.ChkCorsSupportCredentials = (new global::System.Windows.Forms.CheckBox());
-            this.LabMaxAge = (new global::System.Windows.Forms.Label());
-            this.NumCorsMaxAge = (new global::System.Windows.Forms.NumericUpDown());
-            this.ChkEnableCors = (new global::System.Windows.Forms.CheckBox());
-            this.label14 = (new global::System.Windows.Forms.Label());
-            this.LabHelp2 = (new global::System.Windows.Forms.Label());
-            this.LabHelp1 = (new global::System.Windows.Forms.Label());
-            this.DataGridCorsOrigins = (new global::System.Windows.Forms.DataGridView());
-            this.DlgSetLogFolderPath = (new global::System.Windows.Forms.FolderBrowserDialog());
-            ((global::System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
-            this.SetupTabControl.SuspendLayout();
-            this.DeviceConfigurationTab.SuspendLayout();
-            this.DeviceTabs.SuspendLayout();
-            this.DeviceTab0.SuspendLayout();
-            this.DeviceTab1.SuspendLayout();
-            this.DeviceTab2.SuspendLayout();
-            this.DeviceTab3.SuspendLayout();
-            this.DeviceTab4.SuspendLayout();
-            this.DeviceTab5.SuspendLayout();
-            this.DeviceTab6.SuspendLayout();
-            this.DeviceTab7.SuspendLayout();
-            this.DeviceTab8.SuspendLayout();
-            this.DeviceTab9.SuspendLayout();
-            this.ServerConfigurationTab.SuspendLayout();
-            this.GrpIpVersionSelector.SuspendLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.NumDiscoveryPort)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
-            this.ServerConfigurationTab2.SuspendLayout();
-            this.groupBox4.SuspendLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.NumMaxDevices)).BeginInit();
-            this.LoggingConfigurationTab.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.CorsConfigurationTab.SuspendLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.NumCorsMaxAge)).BeginInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.DataGridCorsOrigins)).BeginInit();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupForm));
+            BtnCancel = new System.Windows.Forms.Button();
+            BtnOK = new System.Windows.Forms.Button();
+            chkAutoConnect = new System.Windows.Forms.CheckBox();
+            chkManagementInterfaceEnabled = new System.Windows.Forms.CheckBox();
+            errorProvider1 = new System.Windows.Forms.ErrorProvider(components);
+            ChkStartWithApiEnabled = new System.Windows.Forms.CheckBox();
+            ChkRunDriversInSeparateThreadss = new System.Windows.Forms.CheckBox();
+            ChkIncludeDriverExceptionsInJsonResponses = new System.Windows.Forms.CheckBox();
+            SetupTabControl = new System.Windows.Forms.TabControl();
+            DeviceConfigurationTab = new System.Windows.Forms.TabPage();
+            DeviceTabs = new System.Windows.Forms.TabControl();
+            DeviceTab0 = new System.Windows.Forms.TabPage();
+            label12 = new System.Windows.Forms.Label();
+            ServedDevice00 = new ServedDevice();
+            label11 = new System.Windows.Forms.Label();
+            ServedDevice01 = new ServedDevice();
+            ServedDevice02 = new ServedDevice();
+            label1 = new System.Windows.Forms.Label();
+            label2 = new System.Windows.Forms.Label();
+            label9 = new System.Windows.Forms.Label();
+            label3 = new System.Windows.Forms.Label();
+            ServedDevice03 = new ServedDevice();
+            ServedDevice04 = new ServedDevice();
+            ServedDevice05 = new ServedDevice();
+            ServedDevice06 = new ServedDevice();
+            label6 = new System.Windows.Forms.Label();
+            ServedDevice07 = new ServedDevice();
+            label5 = new System.Windows.Forms.Label();
+            ServedDevice08 = new ServedDevice();
+            label4 = new System.Windows.Forms.Label();
+            ServedDevice09 = new ServedDevice();
+            DeviceTab1 = new System.Windows.Forms.TabPage();
+            label15 = new System.Windows.Forms.Label();
+            label16 = new System.Windows.Forms.Label();
+            label17 = new System.Windows.Forms.Label();
+            label19 = new System.Windows.Forms.Label();
+            label20 = new System.Windows.Forms.Label();
+            label21 = new System.Windows.Forms.Label();
+            label22 = new System.Windows.Forms.Label();
+            label23 = new System.Windows.Forms.Label();
+            label24 = new System.Windows.Forms.Label();
+            ServedDevice10 = new ServedDevice();
+            ServedDevice11 = new ServedDevice();
+            ServedDevice12 = new ServedDevice();
+            ServedDevice13 = new ServedDevice();
+            ServedDevice14 = new ServedDevice();
+            ServedDevice15 = new ServedDevice();
+            ServedDevice16 = new ServedDevice();
+            ServedDevice17 = new ServedDevice();
+            ServedDevice18 = new ServedDevice();
+            ServedDevice19 = new ServedDevice();
+            DeviceTab2 = new System.Windows.Forms.TabPage();
+            label18 = new System.Windows.Forms.Label();
+            label25 = new System.Windows.Forms.Label();
+            label26 = new System.Windows.Forms.Label();
+            label27 = new System.Windows.Forms.Label();
+            label28 = new System.Windows.Forms.Label();
+            label29 = new System.Windows.Forms.Label();
+            label30 = new System.Windows.Forms.Label();
+            label31 = new System.Windows.Forms.Label();
+            label32 = new System.Windows.Forms.Label();
+            ServedDevice20 = new ServedDevice();
+            ServedDevice21 = new ServedDevice();
+            ServedDevice22 = new ServedDevice();
+            ServedDevice23 = new ServedDevice();
+            ServedDevice24 = new ServedDevice();
+            ServedDevice25 = new ServedDevice();
+            ServedDevice26 = new ServedDevice();
+            ServedDevice27 = new ServedDevice();
+            ServedDevice28 = new ServedDevice();
+            ServedDevice29 = new ServedDevice();
+            DeviceTab3 = new System.Windows.Forms.TabPage();
+            label33 = new System.Windows.Forms.Label();
+            label34 = new System.Windows.Forms.Label();
+            label35 = new System.Windows.Forms.Label();
+            label36 = new System.Windows.Forms.Label();
+            label37 = new System.Windows.Forms.Label();
+            label38 = new System.Windows.Forms.Label();
+            label39 = new System.Windows.Forms.Label();
+            label40 = new System.Windows.Forms.Label();
+            label41 = new System.Windows.Forms.Label();
+            ServedDevice30 = new ServedDevice();
+            ServedDevice31 = new ServedDevice();
+            ServedDevice32 = new ServedDevice();
+            ServedDevice33 = new ServedDevice();
+            ServedDevice34 = new ServedDevice();
+            ServedDevice35 = new ServedDevice();
+            ServedDevice36 = new ServedDevice();
+            ServedDevice37 = new ServedDevice();
+            ServedDevice38 = new ServedDevice();
+            ServedDevice39 = new ServedDevice();
+            DeviceTab4 = new System.Windows.Forms.TabPage();
+            label42 = new System.Windows.Forms.Label();
+            label43 = new System.Windows.Forms.Label();
+            label44 = new System.Windows.Forms.Label();
+            label45 = new System.Windows.Forms.Label();
+            label46 = new System.Windows.Forms.Label();
+            label47 = new System.Windows.Forms.Label();
+            label48 = new System.Windows.Forms.Label();
+            label49 = new System.Windows.Forms.Label();
+            label50 = new System.Windows.Forms.Label();
+            ServedDevice40 = new ServedDevice();
+            ServedDevice41 = new ServedDevice();
+            ServedDevice42 = new ServedDevice();
+            ServedDevice43 = new ServedDevice();
+            ServedDevice44 = new ServedDevice();
+            ServedDevice45 = new ServedDevice();
+            ServedDevice46 = new ServedDevice();
+            ServedDevice47 = new ServedDevice();
+            ServedDevice48 = new ServedDevice();
+            ServedDevice49 = new ServedDevice();
+            DeviceTab5 = new System.Windows.Forms.TabPage();
+            label51 = new System.Windows.Forms.Label();
+            label52 = new System.Windows.Forms.Label();
+            label53 = new System.Windows.Forms.Label();
+            label54 = new System.Windows.Forms.Label();
+            label55 = new System.Windows.Forms.Label();
+            label56 = new System.Windows.Forms.Label();
+            label57 = new System.Windows.Forms.Label();
+            label58 = new System.Windows.Forms.Label();
+            label59 = new System.Windows.Forms.Label();
+            ServedDevice50 = new ServedDevice();
+            ServedDevice51 = new ServedDevice();
+            ServedDevice52 = new ServedDevice();
+            ServedDevice53 = new ServedDevice();
+            ServedDevice54 = new ServedDevice();
+            ServedDevice55 = new ServedDevice();
+            ServedDevice56 = new ServedDevice();
+            ServedDevice57 = new ServedDevice();
+            ServedDevice58 = new ServedDevice();
+            ServedDevice59 = new ServedDevice();
+            DeviceTab6 = new System.Windows.Forms.TabPage();
+            label60 = new System.Windows.Forms.Label();
+            label61 = new System.Windows.Forms.Label();
+            label62 = new System.Windows.Forms.Label();
+            label63 = new System.Windows.Forms.Label();
+            label64 = new System.Windows.Forms.Label();
+            label65 = new System.Windows.Forms.Label();
+            label66 = new System.Windows.Forms.Label();
+            label67 = new System.Windows.Forms.Label();
+            label68 = new System.Windows.Forms.Label();
+            ServedDevice60 = new ServedDevice();
+            ServedDevice61 = new ServedDevice();
+            ServedDevice62 = new ServedDevice();
+            ServedDevice63 = new ServedDevice();
+            ServedDevice64 = new ServedDevice();
+            ServedDevice65 = new ServedDevice();
+            ServedDevice66 = new ServedDevice();
+            ServedDevice67 = new ServedDevice();
+            ServedDevice68 = new ServedDevice();
+            ServedDevice69 = new ServedDevice();
+            DeviceTab7 = new System.Windows.Forms.TabPage();
+            label69 = new System.Windows.Forms.Label();
+            label70 = new System.Windows.Forms.Label();
+            label71 = new System.Windows.Forms.Label();
+            label72 = new System.Windows.Forms.Label();
+            label73 = new System.Windows.Forms.Label();
+            label74 = new System.Windows.Forms.Label();
+            label75 = new System.Windows.Forms.Label();
+            label76 = new System.Windows.Forms.Label();
+            label77 = new System.Windows.Forms.Label();
+            ServedDevice70 = new ServedDevice();
+            ServedDevice71 = new ServedDevice();
+            ServedDevice72 = new ServedDevice();
+            ServedDevice73 = new ServedDevice();
+            ServedDevice74 = new ServedDevice();
+            ServedDevice75 = new ServedDevice();
+            ServedDevice76 = new ServedDevice();
+            ServedDevice77 = new ServedDevice();
+            ServedDevice78 = new ServedDevice();
+            ServedDevice79 = new ServedDevice();
+            DeviceTab8 = new System.Windows.Forms.TabPage();
+            label78 = new System.Windows.Forms.Label();
+            label79 = new System.Windows.Forms.Label();
+            label80 = new System.Windows.Forms.Label();
+            label81 = new System.Windows.Forms.Label();
+            label82 = new System.Windows.Forms.Label();
+            label83 = new System.Windows.Forms.Label();
+            label84 = new System.Windows.Forms.Label();
+            label85 = new System.Windows.Forms.Label();
+            label86 = new System.Windows.Forms.Label();
+            ServedDevice80 = new ServedDevice();
+            ServedDevice81 = new ServedDevice();
+            ServedDevice82 = new ServedDevice();
+            ServedDevice83 = new ServedDevice();
+            ServedDevice84 = new ServedDevice();
+            ServedDevice85 = new ServedDevice();
+            ServedDevice86 = new ServedDevice();
+            ServedDevice87 = new ServedDevice();
+            ServedDevice88 = new ServedDevice();
+            ServedDevice89 = new ServedDevice();
+            DeviceTab9 = new System.Windows.Forms.TabPage();
+            label87 = new System.Windows.Forms.Label();
+            label88 = new System.Windows.Forms.Label();
+            label89 = new System.Windows.Forms.Label();
+            label90 = new System.Windows.Forms.Label();
+            label91 = new System.Windows.Forms.Label();
+            label92 = new System.Windows.Forms.Label();
+            label93 = new System.Windows.Forms.Label();
+            label94 = new System.Windows.Forms.Label();
+            label95 = new System.Windows.Forms.Label();
+            ServedDevice90 = new ServedDevice();
+            ServedDevice91 = new ServedDevice();
+            ServedDevice92 = new ServedDevice();
+            ServedDevice93 = new ServedDevice();
+            ServedDevice94 = new ServedDevice();
+            ServedDevice95 = new ServedDevice();
+            ServedDevice96 = new ServedDevice();
+            ServedDevice97 = new ServedDevice();
+            ServedDevice98 = new ServedDevice();
+            ServedDevice99 = new ServedDevice();
+            LblDevicesNotDisconnoected = new System.Windows.Forms.Label();
+            ServerConfigurationTab = new System.Windows.Forms.TabPage();
+            chkStartMinimised = new System.Windows.Forms.CheckBox();
+            textBox1 = new System.Windows.Forms.TextBox();
+            GrpIpVersionSelector = new System.Windows.Forms.GroupBox();
+            RadIpV4AndV6 = new System.Windows.Forms.RadioButton();
+            RadIpV6 = new System.Windows.Forms.RadioButton();
+            RadIpV4 = new System.Windows.Forms.RadioButton();
+            label13 = new System.Windows.Forms.Label();
+            NumDiscoveryPort = new System.Windows.Forms.NumericUpDown();
+            ChkEnableDiscovery = new System.Windows.Forms.CheckBox();
+            label10 = new System.Windows.Forms.Label();
+            addressList = new System.Windows.Forms.ComboBox();
+            TxtRemoteServerLocation = new System.Windows.Forms.TextBox();
+            numPort = new System.Windows.Forms.NumericUpDown();
+            label8 = new System.Windows.Forms.Label();
+            label7 = new System.Windows.Forms.Label();
+            ServerConfigurationTab2 = new System.Windows.Forms.TabPage();
+            groupBox5 = new System.Windows.Forms.GroupBox();
+            chkSuppressConformationOnWindowsClose = new System.Windows.Forms.CheckBox();
+            chkConfirmExit = new System.Windows.Forms.CheckBox();
+            ChkRunAs64BitApplication = new System.Windows.Forms.CheckBox();
+            groupBox4 = new System.Windows.Forms.GroupBox();
+            ChkCheckForUpdates = new System.Windows.Forms.CheckBox();
+            ChkCheckForPreReleaseUpdates = new System.Windows.Forms.CheckBox();
+            lblMinimisationBehaviour = new System.Windows.Forms.Label();
+            cmbMinimiseOptions = new System.Windows.Forms.ComboBox();
+            label96 = new System.Windows.Forms.Label();
+            NumMaxDevices = new System.Windows.Forms.NumericUpDown();
+            LoggingConfigurationTab = new System.Windows.Forms.TabPage();
+            groupBox3 = new System.Windows.Forms.GroupBox();
+            chkTrace = new System.Windows.Forms.CheckBox();
+            chkAccessLog = new System.Windows.Forms.CheckBox();
+            chkDebugTrace = new System.Windows.Forms.CheckBox();
+            ChkUseUtcTime = new System.Windows.Forms.CheckBox();
+            ChkLogClientIPAddress = new System.Windows.Forms.CheckBox();
+            groupBox2 = new System.Windows.Forms.GroupBox();
+            BtnSelectLogFileFolder = new System.Windows.Forms.Button();
+            label98 = new System.Windows.Forms.Label();
+            label99 = new System.Windows.Forms.Label();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            ChkRollOverLogs = new System.Windows.Forms.CheckBox();
+            DateTimeLogRolloverTime = new System.Windows.Forms.DateTimePicker();
+            LblLogRolloverTime = new System.Windows.Forms.Label();
+            CorsConfigurationTab = new System.Windows.Forms.TabPage();
+            label97 = new System.Windows.Forms.Label();
+            ChkCorsSupportCredentials = new System.Windows.Forms.CheckBox();
+            LabMaxAge = new System.Windows.Forms.Label();
+            NumCorsMaxAge = new System.Windows.Forms.NumericUpDown();
+            ChkEnableCors = new System.Windows.Forms.CheckBox();
+            label14 = new System.Windows.Forms.Label();
+            LabHelp2 = new System.Windows.Forms.Label();
+            LabHelp1 = new System.Windows.Forms.Label();
+            DataGridCorsOrigins = new System.Windows.Forms.DataGridView();
+            DlgSetLogFolderPath = new System.Windows.Forms.FolderBrowserDialog();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
+            SetupTabControl.SuspendLayout();
+            DeviceConfigurationTab.SuspendLayout();
+            DeviceTabs.SuspendLayout();
+            DeviceTab0.SuspendLayout();
+            DeviceTab1.SuspendLayout();
+            DeviceTab2.SuspendLayout();
+            DeviceTab3.SuspendLayout();
+            DeviceTab4.SuspendLayout();
+            DeviceTab5.SuspendLayout();
+            DeviceTab6.SuspendLayout();
+            DeviceTab7.SuspendLayout();
+            DeviceTab8.SuspendLayout();
+            DeviceTab9.SuspendLayout();
+            ServerConfigurationTab.SuspendLayout();
+            GrpIpVersionSelector.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)NumDiscoveryPort).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numPort).BeginInit();
+            ServerConfigurationTab2.SuspendLayout();
+            groupBox5.SuspendLayout();
+            groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)NumMaxDevices).BeginInit();
+            LoggingConfigurationTab.SuspendLayout();
+            groupBox3.SuspendLayout();
+            groupBox2.SuspendLayout();
+            groupBox1.SuspendLayout();
+            CorsConfigurationTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)NumCorsMaxAge).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)DataGridCorsOrigins).BeginInit();
+            SuspendLayout();
             // 
             // BtnCancel
             // 
-            this.BtnCancel.Anchor = ((global::System.Windows.Forms.AnchorStyles)((global::System.Windows.Forms.AnchorStyles.Bottom) | (global::System.Windows.Forms.AnchorStyles.Right)));
-            this.BtnCancel.DialogResult = (global::System.Windows.Forms.DialogResult.Cancel);
-            this.BtnCancel.Location = (new global::System.Drawing.Point(1132, 512));
-            this.BtnCancel.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.BtnCancel.Name = ("BtnCancel");
-            this.BtnCancel.Size = (new global::System.Drawing.Size(88, 27));
-            this.BtnCancel.TabIndex = (19);
-            this.BtnCancel.Text = ("Cancel");
-            this.BtnCancel.UseVisualStyleBackColor = (true);
+            BtnCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            BtnCancel.Location = new System.Drawing.Point(1132, 512);
+            BtnCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            BtnCancel.Name = "BtnCancel";
+            BtnCancel.Size = new System.Drawing.Size(88, 27);
+            BtnCancel.TabIndex = 19;
+            BtnCancel.Text = "Cancel";
+            BtnCancel.UseVisualStyleBackColor = true;
             // 
             // BtnOK
             // 
-            this.BtnOK.Anchor = ((global::System.Windows.Forms.AnchorStyles)((global::System.Windows.Forms.AnchorStyles.Bottom) | (global::System.Windows.Forms.AnchorStyles.Right)));
-            this.BtnOK.Location = (new global::System.Drawing.Point(1037, 512));
-            this.BtnOK.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.BtnOK.Name = ("BtnOK");
-            this.BtnOK.Size = (new global::System.Drawing.Size(88, 27));
-            this.BtnOK.TabIndex = (18);
-            this.BtnOK.Text = ("OK");
-            this.BtnOK.UseVisualStyleBackColor = (true);
-            this.BtnOK.Click += (this.BtnOK_Click);
+            BtnOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            BtnOK.Location = new System.Drawing.Point(1037, 512);
+            BtnOK.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            BtnOK.Name = "BtnOK";
+            BtnOK.Size = new System.Drawing.Size(88, 27);
+            BtnOK.TabIndex = 18;
+            BtnOK.Text = "OK";
+            BtnOK.UseVisualStyleBackColor = true;
+            BtnOK.Click += BtnOK_Click;
             // 
             // chkAutoConnect
             // 
-            this.chkAutoConnect.AutoSize = (true);
-            this.chkAutoConnect.Location = (new global::System.Drawing.Point(311, 285));
-            this.chkAutoConnect.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.chkAutoConnect.Name = ("chkAutoConnect");
-            this.chkAutoConnect.Size = (new global::System.Drawing.Size(180, 19));
-            this.chkAutoConnect.TabIndex = (2);
-            this.chkAutoConnect.Text = ("Start with Devices Connected");
-            this.chkAutoConnect.UseVisualStyleBackColor = (true);
+            chkAutoConnect.AutoSize = true;
+            chkAutoConnect.Location = new System.Drawing.Point(311, 285);
+            chkAutoConnect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkAutoConnect.Name = "chkAutoConnect";
+            chkAutoConnect.Size = new System.Drawing.Size(180, 19);
+            chkAutoConnect.TabIndex = 2;
+            chkAutoConnect.Text = "Start with Devices Connected";
+            chkAutoConnect.UseVisualStyleBackColor = true;
             // 
             // chkManagementInterfaceEnabled
             // 
-            this.chkManagementInterfaceEnabled.AutoSize = (true);
-            this.chkManagementInterfaceEnabled.Location = (new global::System.Drawing.Point(560, 285));
-            this.chkManagementInterfaceEnabled.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.chkManagementInterfaceEnabled.Name = ("chkManagementInterfaceEnabled");
-            this.chkManagementInterfaceEnabled.Size = (new global::System.Drawing.Size(332, 19));
-            this.chkManagementInterfaceEnabled.TabIndex = (3);
-            this.chkManagementInterfaceEnabled.Text = ("Enable Management Interface (Alpaca Discovery disabled)");
-            this.chkManagementInterfaceEnabled.UseVisualStyleBackColor = (true);
+            chkManagementInterfaceEnabled.AutoSize = true;
+            chkManagementInterfaceEnabled.Location = new System.Drawing.Point(560, 285);
+            chkManagementInterfaceEnabled.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkManagementInterfaceEnabled.Name = "chkManagementInterfaceEnabled";
+            chkManagementInterfaceEnabled.Size = new System.Drawing.Size(332, 19);
+            chkManagementInterfaceEnabled.TabIndex = 3;
+            chkManagementInterfaceEnabled.Text = "Enable Management Interface (Alpaca Discovery disabled)";
+            chkManagementInterfaceEnabled.UseVisualStyleBackColor = true;
             // 
             // errorProvider1
             // 
-            this.errorProvider1.ContainerControl = (this);
+            errorProvider1.ContainerControl = this;
             // 
             // ChkStartWithApiEnabled
             // 
-            this.ChkStartWithApiEnabled.AutoSize = (true);
-            this.ChkStartWithApiEnabled.Location = (new global::System.Drawing.Point(311, 312));
-            this.ChkStartWithApiEnabled.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.ChkStartWithApiEnabled.Name = ("ChkStartWithApiEnabled");
-            this.ChkStartWithApiEnabled.Size = (new global::System.Drawing.Size(142, 19));
-            this.ChkStartWithApiEnabled.TabIndex = (5);
-            this.ChkStartWithApiEnabled.Text = ("Start with API enabled");
-            this.ChkStartWithApiEnabled.UseVisualStyleBackColor = (true);
+            ChkStartWithApiEnabled.AutoSize = true;
+            ChkStartWithApiEnabled.Location = new System.Drawing.Point(311, 312);
+            ChkStartWithApiEnabled.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ChkStartWithApiEnabled.Name = "ChkStartWithApiEnabled";
+            ChkStartWithApiEnabled.Size = new System.Drawing.Size(142, 19);
+            ChkStartWithApiEnabled.TabIndex = 5;
+            ChkStartWithApiEnabled.Text = "Start with API enabled";
+            ChkStartWithApiEnabled.UseVisualStyleBackColor = true;
             // 
             // ChkRunDriversInSeparateThreadss
             // 
-            this.ChkRunDriversInSeparateThreadss.AutoSize = (true);
-            this.ChkRunDriversInSeparateThreadss.Location = (new global::System.Drawing.Point(311, 338));
-            this.ChkRunDriversInSeparateThreadss.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.ChkRunDriversInSeparateThreadss.Name = ("ChkRunDriversInSeparateThreadss");
-            this.ChkRunDriversInSeparateThreadss.Size = (new global::System.Drawing.Size(191, 19));
-            this.ChkRunDriversInSeparateThreadss.TabIndex = (34);
-            this.ChkRunDriversInSeparateThreadss.Text = ("Run Drivers in Separate Threads");
-            this.ChkRunDriversInSeparateThreadss.UseVisualStyleBackColor = (true);
+            ChkRunDriversInSeparateThreadss.AutoSize = true;
+            ChkRunDriversInSeparateThreadss.Location = new System.Drawing.Point(311, 338);
+            ChkRunDriversInSeparateThreadss.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ChkRunDriversInSeparateThreadss.Name = "ChkRunDriversInSeparateThreadss";
+            ChkRunDriversInSeparateThreadss.Size = new System.Drawing.Size(191, 19);
+            ChkRunDriversInSeparateThreadss.TabIndex = 34;
+            ChkRunDriversInSeparateThreadss.Text = "Run Drivers in Separate Threads";
+            ChkRunDriversInSeparateThreadss.UseVisualStyleBackColor = true;
             // 
             // ChkIncludeDriverExceptionsInJsonResponses
             // 
-            this.ChkIncludeDriverExceptionsInJsonResponses.AutoSize = (true);
-            this.ChkIncludeDriverExceptionsInJsonResponses.Location = (new global::System.Drawing.Point(560, 338));
-            this.ChkIncludeDriverExceptionsInJsonResponses.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.ChkIncludeDriverExceptionsInJsonResponses.Name = ("ChkIncludeDriverExceptionsInJsonResponses");
-            this.ChkIncludeDriverExceptionsInJsonResponses.Size = (new global::System.Drawing.Size(405, 19));
-            this.ChkIncludeDriverExceptionsInJsonResponses.TabIndex = (36);
-            this.ChkIncludeDriverExceptionsInJsonResponses.Text = ("Include driver exceptions in JSON responses (only useful for debugging)");
-            this.ChkIncludeDriverExceptionsInJsonResponses.UseVisualStyleBackColor = (true);
+            ChkIncludeDriverExceptionsInJsonResponses.AutoSize = true;
+            ChkIncludeDriverExceptionsInJsonResponses.Location = new System.Drawing.Point(560, 338);
+            ChkIncludeDriverExceptionsInJsonResponses.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ChkIncludeDriverExceptionsInJsonResponses.Name = "ChkIncludeDriverExceptionsInJsonResponses";
+            ChkIncludeDriverExceptionsInJsonResponses.Size = new System.Drawing.Size(405, 19);
+            ChkIncludeDriverExceptionsInJsonResponses.TabIndex = 36;
+            ChkIncludeDriverExceptionsInJsonResponses.Text = "Include driver exceptions in JSON responses (only useful for debugging)";
+            ChkIncludeDriverExceptionsInJsonResponses.UseVisualStyleBackColor = true;
             // 
             // SetupTabControl
             // 
-            this.SetupTabControl.Controls.Add(this.DeviceConfigurationTab);
-            this.SetupTabControl.Controls.Add(this.ServerConfigurationTab);
-            this.SetupTabControl.Controls.Add(this.ServerConfigurationTab2);
-            this.SetupTabControl.Controls.Add(this.LoggingConfigurationTab);
-            this.SetupTabControl.Controls.Add(this.CorsConfigurationTab);
-            this.SetupTabControl.Location = (new global::System.Drawing.Point(14, 12));
-            this.SetupTabControl.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.SetupTabControl.Name = ("SetupTabControl");
-            this.SetupTabControl.SelectedIndex = (0);
-            this.SetupTabControl.Size = (new global::System.Drawing.Size(1206, 485));
-            this.SetupTabControl.TabIndex = (39);
+            SetupTabControl.Controls.Add(DeviceConfigurationTab);
+            SetupTabControl.Controls.Add(ServerConfigurationTab);
+            SetupTabControl.Controls.Add(ServerConfigurationTab2);
+            SetupTabControl.Controls.Add(LoggingConfigurationTab);
+            SetupTabControl.Controls.Add(CorsConfigurationTab);
+            SetupTabControl.Location = new System.Drawing.Point(14, 12);
+            SetupTabControl.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            SetupTabControl.Name = "SetupTabControl";
+            SetupTabControl.SelectedIndex = 0;
+            SetupTabControl.Size = new System.Drawing.Size(1206, 485);
+            SetupTabControl.TabIndex = 39;
             // 
             // DeviceConfigurationTab
             // 
-            this.DeviceConfigurationTab.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.DeviceConfigurationTab.Controls.Add(this.DeviceTabs);
-            this.DeviceConfigurationTab.Controls.Add(this.LblDevicesNotDisconnoected);
-            this.DeviceConfigurationTab.Location = (new global::System.Drawing.Point(4, 24));
-            this.DeviceConfigurationTab.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceConfigurationTab.Name = ("DeviceConfigurationTab");
-            this.DeviceConfigurationTab.Padding = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceConfigurationTab.Size = (new global::System.Drawing.Size(1198, 457));
-            this.DeviceConfigurationTab.TabIndex = (3);
-            this.DeviceConfigurationTab.Text = ("Device Configuration");
+            DeviceConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
+            DeviceConfigurationTab.Controls.Add(DeviceTabs);
+            DeviceConfigurationTab.Controls.Add(LblDevicesNotDisconnoected);
+            DeviceConfigurationTab.Location = new System.Drawing.Point(4, 24);
+            DeviceConfigurationTab.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceConfigurationTab.Name = "DeviceConfigurationTab";
+            DeviceConfigurationTab.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceConfigurationTab.Size = new System.Drawing.Size(1198, 457);
+            DeviceConfigurationTab.TabIndex = 3;
+            DeviceConfigurationTab.Text = "Device Configuration";
             // 
             // DeviceTabs
             // 
-            this.DeviceTabs.Controls.Add(this.DeviceTab0);
-            this.DeviceTabs.Controls.Add(this.DeviceTab1);
-            this.DeviceTabs.Controls.Add(this.DeviceTab2);
-            this.DeviceTabs.Controls.Add(this.DeviceTab3);
-            this.DeviceTabs.Controls.Add(this.DeviceTab4);
-            this.DeviceTabs.Controls.Add(this.DeviceTab5);
-            this.DeviceTabs.Controls.Add(this.DeviceTab6);
-            this.DeviceTabs.Controls.Add(this.DeviceTab7);
-            this.DeviceTabs.Controls.Add(this.DeviceTab8);
-            this.DeviceTabs.Controls.Add(this.DeviceTab9);
-            this.DeviceTabs.Location = (new global::System.Drawing.Point(7, 7));
-            this.DeviceTabs.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceTabs.Name = ("DeviceTabs");
-            this.DeviceTabs.SelectedIndex = (0);
-            this.DeviceTabs.Size = (new global::System.Drawing.Size(1181, 403));
-            this.DeviceTabs.TabIndex = (0);
+            DeviceTabs.Controls.Add(DeviceTab0);
+            DeviceTabs.Controls.Add(DeviceTab1);
+            DeviceTabs.Controls.Add(DeviceTab2);
+            DeviceTabs.Controls.Add(DeviceTab3);
+            DeviceTabs.Controls.Add(DeviceTab4);
+            DeviceTabs.Controls.Add(DeviceTab5);
+            DeviceTabs.Controls.Add(DeviceTab6);
+            DeviceTabs.Controls.Add(DeviceTab7);
+            DeviceTabs.Controls.Add(DeviceTab8);
+            DeviceTabs.Controls.Add(DeviceTab9);
+            DeviceTabs.Location = new System.Drawing.Point(7, 7);
+            DeviceTabs.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceTabs.Name = "DeviceTabs";
+            DeviceTabs.SelectedIndex = 0;
+            DeviceTabs.Size = new System.Drawing.Size(1181, 403);
+            DeviceTabs.TabIndex = 0;
             // 
             // DeviceTab0
             // 
-            this.DeviceTab0.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.DeviceTab0.Controls.Add(this.label12);
-            this.DeviceTab0.Controls.Add(this.ServedDevice00);
-            this.DeviceTab0.Controls.Add(this.label11);
-            this.DeviceTab0.Controls.Add(this.ServedDevice01);
-            this.DeviceTab0.Controls.Add(this.ServedDevice02);
-            this.DeviceTab0.Controls.Add(this.label1);
-            this.DeviceTab0.Controls.Add(this.label2);
-            this.DeviceTab0.Controls.Add(this.label9);
-            this.DeviceTab0.Controls.Add(this.label3);
-            this.DeviceTab0.Controls.Add(this.ServedDevice03);
-            this.DeviceTab0.Controls.Add(this.ServedDevice04);
-            this.DeviceTab0.Controls.Add(this.ServedDevice05);
-            this.DeviceTab0.Controls.Add(this.ServedDevice06);
-            this.DeviceTab0.Controls.Add(this.label6);
-            this.DeviceTab0.Controls.Add(this.ServedDevice07);
-            this.DeviceTab0.Controls.Add(this.label5);
-            this.DeviceTab0.Controls.Add(this.ServedDevice08);
-            this.DeviceTab0.Controls.Add(this.label4);
-            this.DeviceTab0.Controls.Add(this.ServedDevice09);
-            this.DeviceTab0.Location = (new global::System.Drawing.Point(4, 24));
-            this.DeviceTab0.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceTab0.Name = ("DeviceTab0");
-            this.DeviceTab0.Size = (new global::System.Drawing.Size(1173, 375));
-            this.DeviceTab0.TabIndex = (2);
-            this.DeviceTab0.Text = ("Devices 0 to 9");
+            DeviceTab0.BackColor = System.Drawing.SystemColors.Control;
+            DeviceTab0.Controls.Add(label12);
+            DeviceTab0.Controls.Add(ServedDevice00);
+            DeviceTab0.Controls.Add(label11);
+            DeviceTab0.Controls.Add(ServedDevice01);
+            DeviceTab0.Controls.Add(ServedDevice02);
+            DeviceTab0.Controls.Add(label1);
+            DeviceTab0.Controls.Add(label2);
+            DeviceTab0.Controls.Add(label9);
+            DeviceTab0.Controls.Add(label3);
+            DeviceTab0.Controls.Add(ServedDevice03);
+            DeviceTab0.Controls.Add(ServedDevice04);
+            DeviceTab0.Controls.Add(ServedDevice05);
+            DeviceTab0.Controls.Add(ServedDevice06);
+            DeviceTab0.Controls.Add(label6);
+            DeviceTab0.Controls.Add(ServedDevice07);
+            DeviceTab0.Controls.Add(label5);
+            DeviceTab0.Controls.Add(ServedDevice08);
+            DeviceTab0.Controls.Add(label4);
+            DeviceTab0.Controls.Add(ServedDevice09);
+            DeviceTab0.Location = new System.Drawing.Point(4, 24);
+            DeviceTab0.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceTab0.Name = "DeviceTab0";
+            DeviceTab0.Size = new System.Drawing.Size(1173, 375);
+            DeviceTab0.TabIndex = 2;
+            DeviceTab0.Text = "Devices 0 to 9";
             // 
             // label12
             // 
-            this.label12.AutoSize = (true);
-            this.label12.Location = (new global::System.Drawing.Point(1083, 9));
-            this.label12.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label12.Name = ("label12");
-            this.label12.Size = (new global::System.Drawing.Size(42, 15));
-            this.label12.TabIndex = (60);
-            this.label12.Text = ("Enable");
+            label12.AutoSize = true;
+            label12.Location = new System.Drawing.Point(1083, 9);
+            label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label12.Name = "label12";
+            label12.Size = new System.Drawing.Size(42, 15);
+            label12.TabIndex = 60;
+            label12.Text = "Enable";
             // 
             // ServedDevice00
             // 
-            this.ServedDevice00.AllowConcurrentAccess = (false);
-            this.ServedDevice00.AllowConnectedSetFalse = (false);
-            this.ServedDevice00.AllowConnectedSetTrue = (false);
-            this.ServedDevice00.Description = ("");
-            this.ServedDevice00.DeviceNumber = (0);
-            this.ServedDevice00.DevicesAreConnected = (false);
-            this.ServedDevice00.DeviceType = ("None");
-            this.ServedDevice00.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice00.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice00.Name = ("ServedDevice00");
-            this.ServedDevice00.ProgID = ("");
-            this.ServedDevice00.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice00.TabIndex = (41);
+            ServedDevice00.AllowConcurrentAccess = false;
+            ServedDevice00.AllowConnectedSetFalse = false;
+            ServedDevice00.AllowConnectedSetTrue = false;
+            ServedDevice00.Description = "";
+            ServedDevice00.DeviceNumber = 0;
+            ServedDevice00.DevicesAreConnected = false;
+            ServedDevice00.DeviceType = "None";
+            ServedDevice00.Location = new System.Drawing.Point(9, 46);
+            ServedDevice00.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice00.Name = "ServedDevice00";
+            ServedDevice00.ProgID = "";
+            ServedDevice00.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice00.TabIndex = 41;
             // 
             // label11
             // 
-            this.label11.AutoSize = (true);
-            this.label11.Location = (new global::System.Drawing.Point(1049, 28));
-            this.label11.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label11.Name = ("label11");
-            this.label11.Size = (new global::System.Drawing.Size(106, 15));
-            this.label11.TabIndex = (59);
-            this.label11.Text = ("Concurrent Access");
+            label11.AutoSize = true;
+            label11.Location = new System.Drawing.Point(1049, 28);
+            label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label11.Name = "label11";
+            label11.Size = new System.Drawing.Size(106, 15);
+            label11.TabIndex = 59;
+            label11.Text = "Concurrent Access";
             // 
             // ServedDevice01
             // 
-            this.ServedDevice01.AllowConcurrentAccess = (false);
-            this.ServedDevice01.AllowConnectedSetFalse = (false);
-            this.ServedDevice01.AllowConnectedSetTrue = (false);
-            this.ServedDevice01.Description = ("");
-            this.ServedDevice01.DeviceNumber = (0);
-            this.ServedDevice01.DevicesAreConnected = (false);
-            this.ServedDevice01.DeviceType = ("None");
-            this.ServedDevice01.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice01.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice01.Name = ("ServedDevice01");
-            this.ServedDevice01.ProgID = ("");
-            this.ServedDevice01.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice01.TabIndex = (42);
+            ServedDevice01.AllowConcurrentAccess = false;
+            ServedDevice01.AllowConnectedSetFalse = false;
+            ServedDevice01.AllowConnectedSetTrue = false;
+            ServedDevice01.Description = "";
+            ServedDevice01.DeviceNumber = 0;
+            ServedDevice01.DevicesAreConnected = false;
+            ServedDevice01.DeviceType = "None";
+            ServedDevice01.Location = new System.Drawing.Point(9, 78);
+            ServedDevice01.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice01.Name = "ServedDevice01";
+            ServedDevice01.ProgID = "";
+            ServedDevice01.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice01.TabIndex = 42;
             // 
             // ServedDevice02
             // 
-            this.ServedDevice02.AllowConcurrentAccess = (false);
-            this.ServedDevice02.AllowConnectedSetFalse = (false);
-            this.ServedDevice02.AllowConnectedSetTrue = (false);
-            this.ServedDevice02.Description = ("");
-            this.ServedDevice02.DeviceNumber = (0);
-            this.ServedDevice02.DevicesAreConnected = (false);
-            this.ServedDevice02.DeviceType = ("None");
-            this.ServedDevice02.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice02.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice02.Name = ("ServedDevice02");
-            this.ServedDevice02.ProgID = ("");
-            this.ServedDevice02.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice02.TabIndex = (44);
+            ServedDevice02.AllowConcurrentAccess = false;
+            ServedDevice02.AllowConnectedSetFalse = false;
+            ServedDevice02.AllowConnectedSetTrue = false;
+            ServedDevice02.Description = "";
+            ServedDevice02.DeviceNumber = 0;
+            ServedDevice02.DevicesAreConnected = false;
+            ServedDevice02.DeviceType = "None";
+            ServedDevice02.Location = new System.Drawing.Point(9, 111);
+            ServedDevice02.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice02.Name = "ServedDevice02";
+            ServedDevice02.ProgID = "";
+            ServedDevice02.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice02.TabIndex = 44;
             // 
             // label1
             // 
-            this.label1.AutoSize = (true);
-            this.label1.Location = (new global::System.Drawing.Point(65, 28));
-            this.label1.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label1.Name = ("label1");
-            this.label1.Size = (new global::System.Drawing.Size(69, 15));
-            this.label1.TabIndex = (43);
-            this.label1.Text = ("Device Type");
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(65, 28);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(69, 15);
+            label1.TabIndex = 43;
+            label1.Text = "Device Type";
             // 
             // label2
             // 
-            this.label2.AutoSize = (true);
-            this.label2.Location = (new global::System.Drawing.Point(497, 28));
-            this.label2.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label2.Name = ("label2");
-            this.label2.Size = (new global::System.Drawing.Size(42, 15));
-            this.label2.TabIndex = (45);
-            this.label2.Text = ("Device");
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(497, 28);
+            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(42, 15);
+            label2.TabIndex = 45;
+            label2.Text = "Device";
             // 
             // label9
             // 
-            this.label9.AutoSize = (true);
-            this.label9.Location = (new global::System.Drawing.Point(756, 28));
-            this.label9.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label9.Name = ("label9");
-            this.label9.Size = (new global::System.Drawing.Size(98, 15));
-            this.label9.TabIndex = (57);
-            this.label9.Text = ("Configure Device");
+            label9.AutoSize = true;
+            label9.Location = new System.Drawing.Point(756, 28);
+            label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label9.Name = "label9";
+            label9.Size = new System.Drawing.Size(98, 15);
+            label9.TabIndex = 57;
+            label9.Text = "Configure Device";
             // 
             // label3
             // 
-            this.label3.AutoSize = (true);
-            this.label3.Location = (new global::System.Drawing.Point(218, 28));
-            this.label3.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label3.Name = ("label3");
-            this.label3.Size = (new global::System.Drawing.Size(89, 15));
-            this.label3.TabIndex = (46);
-            this.label3.Text = ("Device Number");
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(218, 28);
+            label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(89, 15);
+            label3.TabIndex = 46;
+            label3.Text = "Device Number";
             // 
             // ServedDevice03
             // 
-            this.ServedDevice03.AllowConcurrentAccess = (false);
-            this.ServedDevice03.AllowConnectedSetFalse = (false);
-            this.ServedDevice03.AllowConnectedSetTrue = (false);
-            this.ServedDevice03.Description = ("");
-            this.ServedDevice03.DeviceNumber = (0);
-            this.ServedDevice03.DevicesAreConnected = (false);
-            this.ServedDevice03.DeviceType = ("None");
-            this.ServedDevice03.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice03.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice03.Name = ("ServedDevice03");
-            this.ServedDevice03.ProgID = ("");
-            this.ServedDevice03.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice03.TabIndex = (47);
+            ServedDevice03.AllowConcurrentAccess = false;
+            ServedDevice03.AllowConnectedSetFalse = false;
+            ServedDevice03.AllowConnectedSetTrue = false;
+            ServedDevice03.Description = "";
+            ServedDevice03.DeviceNumber = 0;
+            ServedDevice03.DevicesAreConnected = false;
+            ServedDevice03.DeviceType = "None";
+            ServedDevice03.Location = new System.Drawing.Point(9, 143);
+            ServedDevice03.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice03.Name = "ServedDevice03";
+            ServedDevice03.ProgID = "";
+            ServedDevice03.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice03.TabIndex = 47;
             // 
             // ServedDevice04
             // 
-            this.ServedDevice04.AllowConcurrentAccess = (false);
-            this.ServedDevice04.AllowConnectedSetFalse = (false);
-            this.ServedDevice04.AllowConnectedSetTrue = (false);
-            this.ServedDevice04.Description = ("");
-            this.ServedDevice04.DeviceNumber = (0);
-            this.ServedDevice04.DevicesAreConnected = (false);
-            this.ServedDevice04.DeviceType = ("None");
-            this.ServedDevice04.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice04.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice04.Name = ("ServedDevice04");
-            this.ServedDevice04.ProgID = ("");
-            this.ServedDevice04.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice04.TabIndex = (48);
+            ServedDevice04.AllowConcurrentAccess = false;
+            ServedDevice04.AllowConnectedSetFalse = false;
+            ServedDevice04.AllowConnectedSetTrue = false;
+            ServedDevice04.Description = "";
+            ServedDevice04.DeviceNumber = 0;
+            ServedDevice04.DevicesAreConnected = false;
+            ServedDevice04.DeviceType = "None";
+            ServedDevice04.Location = new System.Drawing.Point(9, 175);
+            ServedDevice04.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice04.Name = "ServedDevice04";
+            ServedDevice04.ProgID = "";
+            ServedDevice04.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice04.TabIndex = 48;
             // 
             // ServedDevice05
             // 
-            this.ServedDevice05.AllowConcurrentAccess = (false);
-            this.ServedDevice05.AllowConnectedSetFalse = (false);
-            this.ServedDevice05.AllowConnectedSetTrue = (false);
-            this.ServedDevice05.Description = ("");
-            this.ServedDevice05.DeviceNumber = (0);
-            this.ServedDevice05.DevicesAreConnected = (false);
-            this.ServedDevice05.DeviceType = ("None");
-            this.ServedDevice05.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice05.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice05.Name = ("ServedDevice05");
-            this.ServedDevice05.ProgID = ("");
-            this.ServedDevice05.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice05.TabIndex = (49);
+            ServedDevice05.AllowConcurrentAccess = false;
+            ServedDevice05.AllowConnectedSetFalse = false;
+            ServedDevice05.AllowConnectedSetTrue = false;
+            ServedDevice05.Description = "";
+            ServedDevice05.DeviceNumber = 0;
+            ServedDevice05.DevicesAreConnected = false;
+            ServedDevice05.DeviceType = "None";
+            ServedDevice05.Location = new System.Drawing.Point(9, 208);
+            ServedDevice05.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice05.Name = "ServedDevice05";
+            ServedDevice05.ProgID = "";
+            ServedDevice05.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice05.TabIndex = 49;
             // 
             // ServedDevice06
             // 
-            this.ServedDevice06.AllowConcurrentAccess = (false);
-            this.ServedDevice06.AllowConnectedSetFalse = (false);
-            this.ServedDevice06.AllowConnectedSetTrue = (false);
-            this.ServedDevice06.Description = ("");
-            this.ServedDevice06.DeviceNumber = (0);
-            this.ServedDevice06.DevicesAreConnected = (false);
-            this.ServedDevice06.DeviceType = ("None");
-            this.ServedDevice06.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice06.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice06.Name = ("ServedDevice06");
-            this.ServedDevice06.ProgID = ("");
-            this.ServedDevice06.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice06.TabIndex = (50);
+            ServedDevice06.AllowConcurrentAccess = false;
+            ServedDevice06.AllowConnectedSetFalse = false;
+            ServedDevice06.AllowConnectedSetTrue = false;
+            ServedDevice06.Description = "";
+            ServedDevice06.DeviceNumber = 0;
+            ServedDevice06.DevicesAreConnected = false;
+            ServedDevice06.DeviceType = "None";
+            ServedDevice06.Location = new System.Drawing.Point(9, 240);
+            ServedDevice06.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice06.Name = "ServedDevice06";
+            ServedDevice06.ProgID = "";
+            ServedDevice06.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice06.TabIndex = 50;
             // 
             // label6
             // 
-            this.label6.AutoSize = (true);
-            this.label6.Location = (new global::System.Drawing.Point(985, 28));
-            this.label6.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label6.Name = ("label6");
-            this.label6.Size = (new global::System.Drawing.Size(29, 15));
-            this.label6.TabIndex = (56);
-            this.label6.Text = ("True");
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(985, 28);
+            label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(29, 15);
+            label6.TabIndex = 56;
+            label6.Text = "True";
             // 
             // ServedDevice07
             // 
-            this.ServedDevice07.AllowConcurrentAccess = (false);
-            this.ServedDevice07.AllowConnectedSetFalse = (false);
-            this.ServedDevice07.AllowConnectedSetTrue = (false);
-            this.ServedDevice07.Description = ("");
-            this.ServedDevice07.DeviceNumber = (0);
-            this.ServedDevice07.DevicesAreConnected = (false);
-            this.ServedDevice07.DeviceType = ("None");
-            this.ServedDevice07.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice07.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice07.Name = ("ServedDevice07");
-            this.ServedDevice07.ProgID = ("");
-            this.ServedDevice07.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice07.TabIndex = (51);
+            ServedDevice07.AllowConcurrentAccess = false;
+            ServedDevice07.AllowConnectedSetFalse = false;
+            ServedDevice07.AllowConnectedSetTrue = false;
+            ServedDevice07.Description = "";
+            ServedDevice07.DeviceNumber = 0;
+            ServedDevice07.DevicesAreConnected = false;
+            ServedDevice07.DeviceType = "None";
+            ServedDevice07.Location = new System.Drawing.Point(9, 272);
+            ServedDevice07.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice07.Name = "ServedDevice07";
+            ServedDevice07.ProgID = "";
+            ServedDevice07.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice07.TabIndex = 51;
             // 
             // label5
             // 
-            this.label5.AutoSize = (true);
-            this.label5.Location = (new global::System.Drawing.Point(915, 28));
-            this.label5.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label5.Name = ("label5");
-            this.label5.Size = (new global::System.Drawing.Size(33, 15));
-            this.label5.TabIndex = (55);
-            this.label5.Text = ("False");
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(915, 28);
+            label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(33, 15);
+            label5.TabIndex = 55;
+            label5.Text = "False";
             // 
             // ServedDevice08
             // 
-            this.ServedDevice08.AllowConcurrentAccess = (false);
-            this.ServedDevice08.AllowConnectedSetFalse = (false);
-            this.ServedDevice08.AllowConnectedSetTrue = (false);
-            this.ServedDevice08.Description = ("");
-            this.ServedDevice08.DeviceNumber = (0);
-            this.ServedDevice08.DevicesAreConnected = (false);
-            this.ServedDevice08.DeviceType = ("None");
-            this.ServedDevice08.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice08.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice08.Name = ("ServedDevice08");
-            this.ServedDevice08.ProgID = ("");
-            this.ServedDevice08.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice08.TabIndex = (52);
+            ServedDevice08.AllowConcurrentAccess = false;
+            ServedDevice08.AllowConnectedSetFalse = false;
+            ServedDevice08.AllowConnectedSetTrue = false;
+            ServedDevice08.Description = "";
+            ServedDevice08.DeviceNumber = 0;
+            ServedDevice08.DevicesAreConnected = false;
+            ServedDevice08.DeviceType = "None";
+            ServedDevice08.Location = new System.Drawing.Point(9, 305);
+            ServedDevice08.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice08.Name = "ServedDevice08";
+            ServedDevice08.ProgID = "";
+            ServedDevice08.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice08.TabIndex = 52;
             // 
             // label4
             // 
-            this.label4.AutoSize = (true);
-            this.label4.Location = (new global::System.Drawing.Point(891, 9));
-            this.label4.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label4.Name = ("label4");
-            this.label4.Size = (new global::System.Drawing.Size(146, 15));
-            this.label4.TabIndex = (54);
-            this.label4.Text = ("Allow Connected to be set");
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(891, 9);
+            label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(146, 15);
+            label4.TabIndex = 54;
+            label4.Text = "Allow Connected to be set";
             // 
             // ServedDevice09
             // 
-            this.ServedDevice09.AllowConcurrentAccess = (false);
-            this.ServedDevice09.AllowConnectedSetFalse = (false);
-            this.ServedDevice09.AllowConnectedSetTrue = (false);
-            this.ServedDevice09.Description = ("");
-            this.ServedDevice09.DeviceNumber = (0);
-            this.ServedDevice09.DevicesAreConnected = (false);
-            this.ServedDevice09.DeviceType = ("None");
-            this.ServedDevice09.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice09.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice09.Name = ("ServedDevice09");
-            this.ServedDevice09.ProgID = ("");
-            this.ServedDevice09.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice09.TabIndex = (53);
+            ServedDevice09.AllowConcurrentAccess = false;
+            ServedDevice09.AllowConnectedSetFalse = false;
+            ServedDevice09.AllowConnectedSetTrue = false;
+            ServedDevice09.Description = "";
+            ServedDevice09.DeviceNumber = 0;
+            ServedDevice09.DevicesAreConnected = false;
+            ServedDevice09.DeviceType = "None";
+            ServedDevice09.Location = new System.Drawing.Point(9, 337);
+            ServedDevice09.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice09.Name = "ServedDevice09";
+            ServedDevice09.ProgID = "";
+            ServedDevice09.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice09.TabIndex = 53;
             // 
             // DeviceTab1
             // 
-            this.DeviceTab1.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.DeviceTab1.Controls.Add(this.label15);
-            this.DeviceTab1.Controls.Add(this.label16);
-            this.DeviceTab1.Controls.Add(this.label17);
-            this.DeviceTab1.Controls.Add(this.label19);
-            this.DeviceTab1.Controls.Add(this.label20);
-            this.DeviceTab1.Controls.Add(this.label21);
-            this.DeviceTab1.Controls.Add(this.label22);
-            this.DeviceTab1.Controls.Add(this.label23);
-            this.DeviceTab1.Controls.Add(this.label24);
-            this.DeviceTab1.Controls.Add(this.ServedDevice10);
-            this.DeviceTab1.Controls.Add(this.ServedDevice11);
-            this.DeviceTab1.Controls.Add(this.ServedDevice12);
-            this.DeviceTab1.Controls.Add(this.ServedDevice13);
-            this.DeviceTab1.Controls.Add(this.ServedDevice14);
-            this.DeviceTab1.Controls.Add(this.ServedDevice15);
-            this.DeviceTab1.Controls.Add(this.ServedDevice16);
-            this.DeviceTab1.Controls.Add(this.ServedDevice17);
-            this.DeviceTab1.Controls.Add(this.ServedDevice18);
-            this.DeviceTab1.Controls.Add(this.ServedDevice19);
-            this.DeviceTab1.Location = (new global::System.Drawing.Point(4, 24));
-            this.DeviceTab1.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceTab1.Name = ("DeviceTab1");
-            this.DeviceTab1.Padding = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceTab1.Size = (new global::System.Drawing.Size(1173, 375));
-            this.DeviceTab1.TabIndex = (0);
-            this.DeviceTab1.Text = ("Devices 10 to 19");
+            DeviceTab1.BackColor = System.Drawing.SystemColors.Control;
+            DeviceTab1.Controls.Add(label15);
+            DeviceTab1.Controls.Add(label16);
+            DeviceTab1.Controls.Add(label17);
+            DeviceTab1.Controls.Add(label19);
+            DeviceTab1.Controls.Add(label20);
+            DeviceTab1.Controls.Add(label21);
+            DeviceTab1.Controls.Add(label22);
+            DeviceTab1.Controls.Add(label23);
+            DeviceTab1.Controls.Add(label24);
+            DeviceTab1.Controls.Add(ServedDevice10);
+            DeviceTab1.Controls.Add(ServedDevice11);
+            DeviceTab1.Controls.Add(ServedDevice12);
+            DeviceTab1.Controls.Add(ServedDevice13);
+            DeviceTab1.Controls.Add(ServedDevice14);
+            DeviceTab1.Controls.Add(ServedDevice15);
+            DeviceTab1.Controls.Add(ServedDevice16);
+            DeviceTab1.Controls.Add(ServedDevice17);
+            DeviceTab1.Controls.Add(ServedDevice18);
+            DeviceTab1.Controls.Add(ServedDevice19);
+            DeviceTab1.Location = new System.Drawing.Point(4, 24);
+            DeviceTab1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceTab1.Name = "DeviceTab1";
+            DeviceTab1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceTab1.Size = new System.Drawing.Size(1173, 375);
+            DeviceTab1.TabIndex = 0;
+            DeviceTab1.Text = "Devices 10 to 19";
             // 
             // label15
             // 
-            this.label15.AutoSize = (true);
-            this.label15.Location = (new global::System.Drawing.Point(1083, 9));
-            this.label15.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label15.Name = ("label15");
-            this.label15.Size = (new global::System.Drawing.Size(42, 15));
-            this.label15.TabIndex = (60);
-            this.label15.Text = ("Enable");
+            label15.AutoSize = true;
+            label15.Location = new System.Drawing.Point(1083, 9);
+            label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label15.Name = "label15";
+            label15.Size = new System.Drawing.Size(42, 15);
+            label15.TabIndex = 60;
+            label15.Text = "Enable";
             // 
             // label16
             // 
-            this.label16.AutoSize = (true);
-            this.label16.Location = (new global::System.Drawing.Point(1049, 28));
-            this.label16.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label16.Name = ("label16");
-            this.label16.Size = (new global::System.Drawing.Size(106, 15));
-            this.label16.TabIndex = (59);
-            this.label16.Text = ("Concurrent Access");
+            label16.AutoSize = true;
+            label16.Location = new System.Drawing.Point(1049, 28);
+            label16.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label16.Name = "label16";
+            label16.Size = new System.Drawing.Size(106, 15);
+            label16.TabIndex = 59;
+            label16.Text = "Concurrent Access";
             // 
             // label17
             // 
-            this.label17.AutoSize = (true);
-            this.label17.Location = (new global::System.Drawing.Point(65, 28));
-            this.label17.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label17.Name = ("label17");
-            this.label17.Size = (new global::System.Drawing.Size(69, 15));
-            this.label17.TabIndex = (43);
-            this.label17.Text = ("Device Type");
+            label17.AutoSize = true;
+            label17.Location = new System.Drawing.Point(65, 28);
+            label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label17.Name = "label17";
+            label17.Size = new System.Drawing.Size(69, 15);
+            label17.TabIndex = 43;
+            label17.Text = "Device Type";
             // 
             // label19
             // 
-            this.label19.AutoSize = (true);
-            this.label19.Location = (new global::System.Drawing.Point(497, 28));
-            this.label19.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label19.Name = ("label19");
-            this.label19.Size = (new global::System.Drawing.Size(42, 15));
-            this.label19.TabIndex = (45);
-            this.label19.Text = ("Device");
+            label19.AutoSize = true;
+            label19.Location = new System.Drawing.Point(497, 28);
+            label19.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label19.Name = "label19";
+            label19.Size = new System.Drawing.Size(42, 15);
+            label19.TabIndex = 45;
+            label19.Text = "Device";
             // 
             // label20
             // 
-            this.label20.AutoSize = (true);
-            this.label20.Location = (new global::System.Drawing.Point(756, 28));
-            this.label20.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label20.Name = ("label20");
-            this.label20.Size = (new global::System.Drawing.Size(98, 15));
-            this.label20.TabIndex = (57);
-            this.label20.Text = ("Configure Device");
+            label20.AutoSize = true;
+            label20.Location = new System.Drawing.Point(756, 28);
+            label20.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label20.Name = "label20";
+            label20.Size = new System.Drawing.Size(98, 15);
+            label20.TabIndex = 57;
+            label20.Text = "Configure Device";
             // 
             // label21
             // 
-            this.label21.AutoSize = (true);
-            this.label21.Location = (new global::System.Drawing.Point(218, 28));
-            this.label21.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label21.Name = ("label21");
-            this.label21.Size = (new global::System.Drawing.Size(89, 15));
-            this.label21.TabIndex = (46);
-            this.label21.Text = ("Device Number");
+            label21.AutoSize = true;
+            label21.Location = new System.Drawing.Point(218, 28);
+            label21.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label21.Name = "label21";
+            label21.Size = new System.Drawing.Size(89, 15);
+            label21.TabIndex = 46;
+            label21.Text = "Device Number";
             // 
             // label22
             // 
-            this.label22.AutoSize = (true);
-            this.label22.Location = (new global::System.Drawing.Point(985, 28));
-            this.label22.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label22.Name = ("label22");
-            this.label22.Size = (new global::System.Drawing.Size(29, 15));
-            this.label22.TabIndex = (56);
-            this.label22.Text = ("True");
+            label22.AutoSize = true;
+            label22.Location = new System.Drawing.Point(985, 28);
+            label22.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label22.Name = "label22";
+            label22.Size = new System.Drawing.Size(29, 15);
+            label22.TabIndex = 56;
+            label22.Text = "True";
             // 
             // label23
             // 
-            this.label23.AutoSize = (true);
-            this.label23.Location = (new global::System.Drawing.Point(915, 28));
-            this.label23.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label23.Name = ("label23");
-            this.label23.Size = (new global::System.Drawing.Size(33, 15));
-            this.label23.TabIndex = (55);
-            this.label23.Text = ("False");
+            label23.AutoSize = true;
+            label23.Location = new System.Drawing.Point(915, 28);
+            label23.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label23.Name = "label23";
+            label23.Size = new System.Drawing.Size(33, 15);
+            label23.TabIndex = 55;
+            label23.Text = "False";
             // 
             // label24
             // 
-            this.label24.AutoSize = (true);
-            this.label24.Location = (new global::System.Drawing.Point(891, 9));
-            this.label24.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label24.Name = ("label24");
-            this.label24.Size = (new global::System.Drawing.Size(146, 15));
-            this.label24.TabIndex = (54);
-            this.label24.Text = ("Allow Connected to be set");
+            label24.AutoSize = true;
+            label24.Location = new System.Drawing.Point(891, 9);
+            label24.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label24.Name = "label24";
+            label24.Size = new System.Drawing.Size(146, 15);
+            label24.TabIndex = 54;
+            label24.Text = "Allow Connected to be set";
             // 
             // ServedDevice10
             // 
-            this.ServedDevice10.AllowConcurrentAccess = (false);
-            this.ServedDevice10.AllowConnectedSetFalse = (false);
-            this.ServedDevice10.AllowConnectedSetTrue = (false);
-            this.ServedDevice10.Description = ("");
-            this.ServedDevice10.DeviceNumber = (0);
-            this.ServedDevice10.DevicesAreConnected = (false);
-            this.ServedDevice10.DeviceType = ("None");
-            this.ServedDevice10.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice10.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice10.Name = ("ServedDevice10");
-            this.ServedDevice10.ProgID = ("");
-            this.ServedDevice10.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice10.TabIndex = (41);
+            ServedDevice10.AllowConcurrentAccess = false;
+            ServedDevice10.AllowConnectedSetFalse = false;
+            ServedDevice10.AllowConnectedSetTrue = false;
+            ServedDevice10.Description = "";
+            ServedDevice10.DeviceNumber = 0;
+            ServedDevice10.DevicesAreConnected = false;
+            ServedDevice10.DeviceType = "None";
+            ServedDevice10.Location = new System.Drawing.Point(9, 46);
+            ServedDevice10.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice10.Name = "ServedDevice10";
+            ServedDevice10.ProgID = "";
+            ServedDevice10.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice10.TabIndex = 41;
             // 
             // ServedDevice11
             // 
-            this.ServedDevice11.AllowConcurrentAccess = (false);
-            this.ServedDevice11.AllowConnectedSetFalse = (false);
-            this.ServedDevice11.AllowConnectedSetTrue = (false);
-            this.ServedDevice11.Description = ("");
-            this.ServedDevice11.DeviceNumber = (0);
-            this.ServedDevice11.DevicesAreConnected = (false);
-            this.ServedDevice11.DeviceType = ("None");
-            this.ServedDevice11.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice11.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice11.Name = ("ServedDevice11");
-            this.ServedDevice11.ProgID = ("");
-            this.ServedDevice11.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice11.TabIndex = (42);
+            ServedDevice11.AllowConcurrentAccess = false;
+            ServedDevice11.AllowConnectedSetFalse = false;
+            ServedDevice11.AllowConnectedSetTrue = false;
+            ServedDevice11.Description = "";
+            ServedDevice11.DeviceNumber = 0;
+            ServedDevice11.DevicesAreConnected = false;
+            ServedDevice11.DeviceType = "None";
+            ServedDevice11.Location = new System.Drawing.Point(9, 78);
+            ServedDevice11.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice11.Name = "ServedDevice11";
+            ServedDevice11.ProgID = "";
+            ServedDevice11.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice11.TabIndex = 42;
             // 
             // ServedDevice12
             // 
-            this.ServedDevice12.AllowConcurrentAccess = (false);
-            this.ServedDevice12.AllowConnectedSetFalse = (false);
-            this.ServedDevice12.AllowConnectedSetTrue = (false);
-            this.ServedDevice12.Description = ("");
-            this.ServedDevice12.DeviceNumber = (0);
-            this.ServedDevice12.DevicesAreConnected = (false);
-            this.ServedDevice12.DeviceType = ("None");
-            this.ServedDevice12.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice12.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice12.Name = ("ServedDevice12");
-            this.ServedDevice12.ProgID = ("");
-            this.ServedDevice12.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice12.TabIndex = (44);
+            ServedDevice12.AllowConcurrentAccess = false;
+            ServedDevice12.AllowConnectedSetFalse = false;
+            ServedDevice12.AllowConnectedSetTrue = false;
+            ServedDevice12.Description = "";
+            ServedDevice12.DeviceNumber = 0;
+            ServedDevice12.DevicesAreConnected = false;
+            ServedDevice12.DeviceType = "None";
+            ServedDevice12.Location = new System.Drawing.Point(9, 111);
+            ServedDevice12.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice12.Name = "ServedDevice12";
+            ServedDevice12.ProgID = "";
+            ServedDevice12.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice12.TabIndex = 44;
             // 
             // ServedDevice13
             // 
-            this.ServedDevice13.AllowConcurrentAccess = (false);
-            this.ServedDevice13.AllowConnectedSetFalse = (false);
-            this.ServedDevice13.AllowConnectedSetTrue = (false);
-            this.ServedDevice13.Description = ("");
-            this.ServedDevice13.DeviceNumber = (0);
-            this.ServedDevice13.DevicesAreConnected = (false);
-            this.ServedDevice13.DeviceType = ("None");
-            this.ServedDevice13.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice13.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice13.Name = ("ServedDevice13");
-            this.ServedDevice13.ProgID = ("");
-            this.ServedDevice13.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice13.TabIndex = (47);
+            ServedDevice13.AllowConcurrentAccess = false;
+            ServedDevice13.AllowConnectedSetFalse = false;
+            ServedDevice13.AllowConnectedSetTrue = false;
+            ServedDevice13.Description = "";
+            ServedDevice13.DeviceNumber = 0;
+            ServedDevice13.DevicesAreConnected = false;
+            ServedDevice13.DeviceType = "None";
+            ServedDevice13.Location = new System.Drawing.Point(9, 143);
+            ServedDevice13.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice13.Name = "ServedDevice13";
+            ServedDevice13.ProgID = "";
+            ServedDevice13.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice13.TabIndex = 47;
             // 
             // ServedDevice14
             // 
-            this.ServedDevice14.AllowConcurrentAccess = (false);
-            this.ServedDevice14.AllowConnectedSetFalse = (false);
-            this.ServedDevice14.AllowConnectedSetTrue = (false);
-            this.ServedDevice14.Description = ("");
-            this.ServedDevice14.DeviceNumber = (0);
-            this.ServedDevice14.DevicesAreConnected = (false);
-            this.ServedDevice14.DeviceType = ("None");
-            this.ServedDevice14.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice14.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice14.Name = ("ServedDevice14");
-            this.ServedDevice14.ProgID = ("");
-            this.ServedDevice14.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice14.TabIndex = (48);
+            ServedDevice14.AllowConcurrentAccess = false;
+            ServedDevice14.AllowConnectedSetFalse = false;
+            ServedDevice14.AllowConnectedSetTrue = false;
+            ServedDevice14.Description = "";
+            ServedDevice14.DeviceNumber = 0;
+            ServedDevice14.DevicesAreConnected = false;
+            ServedDevice14.DeviceType = "None";
+            ServedDevice14.Location = new System.Drawing.Point(9, 175);
+            ServedDevice14.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice14.Name = "ServedDevice14";
+            ServedDevice14.ProgID = "";
+            ServedDevice14.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice14.TabIndex = 48;
             // 
             // ServedDevice15
             // 
-            this.ServedDevice15.AllowConcurrentAccess = (false);
-            this.ServedDevice15.AllowConnectedSetFalse = (false);
-            this.ServedDevice15.AllowConnectedSetTrue = (false);
-            this.ServedDevice15.Description = ("");
-            this.ServedDevice15.DeviceNumber = (0);
-            this.ServedDevice15.DevicesAreConnected = (false);
-            this.ServedDevice15.DeviceType = ("None");
-            this.ServedDevice15.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice15.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice15.Name = ("ServedDevice15");
-            this.ServedDevice15.ProgID = ("");
-            this.ServedDevice15.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice15.TabIndex = (49);
+            ServedDevice15.AllowConcurrentAccess = false;
+            ServedDevice15.AllowConnectedSetFalse = false;
+            ServedDevice15.AllowConnectedSetTrue = false;
+            ServedDevice15.Description = "";
+            ServedDevice15.DeviceNumber = 0;
+            ServedDevice15.DevicesAreConnected = false;
+            ServedDevice15.DeviceType = "None";
+            ServedDevice15.Location = new System.Drawing.Point(9, 208);
+            ServedDevice15.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice15.Name = "ServedDevice15";
+            ServedDevice15.ProgID = "";
+            ServedDevice15.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice15.TabIndex = 49;
             // 
             // ServedDevice16
             // 
-            this.ServedDevice16.AllowConcurrentAccess = (false);
-            this.ServedDevice16.AllowConnectedSetFalse = (false);
-            this.ServedDevice16.AllowConnectedSetTrue = (false);
-            this.ServedDevice16.Description = ("");
-            this.ServedDevice16.DeviceNumber = (0);
-            this.ServedDevice16.DevicesAreConnected = (false);
-            this.ServedDevice16.DeviceType = ("None");
-            this.ServedDevice16.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice16.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice16.Name = ("ServedDevice16");
-            this.ServedDevice16.ProgID = ("");
-            this.ServedDevice16.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice16.TabIndex = (50);
+            ServedDevice16.AllowConcurrentAccess = false;
+            ServedDevice16.AllowConnectedSetFalse = false;
+            ServedDevice16.AllowConnectedSetTrue = false;
+            ServedDevice16.Description = "";
+            ServedDevice16.DeviceNumber = 0;
+            ServedDevice16.DevicesAreConnected = false;
+            ServedDevice16.DeviceType = "None";
+            ServedDevice16.Location = new System.Drawing.Point(9, 240);
+            ServedDevice16.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice16.Name = "ServedDevice16";
+            ServedDevice16.ProgID = "";
+            ServedDevice16.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice16.TabIndex = 50;
             // 
             // ServedDevice17
             // 
-            this.ServedDevice17.AllowConcurrentAccess = (false);
-            this.ServedDevice17.AllowConnectedSetFalse = (false);
-            this.ServedDevice17.AllowConnectedSetTrue = (false);
-            this.ServedDevice17.Description = ("");
-            this.ServedDevice17.DeviceNumber = (0);
-            this.ServedDevice17.DevicesAreConnected = (false);
-            this.ServedDevice17.DeviceType = ("None");
-            this.ServedDevice17.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice17.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice17.Name = ("ServedDevice17");
-            this.ServedDevice17.ProgID = ("");
-            this.ServedDevice17.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice17.TabIndex = (51);
+            ServedDevice17.AllowConcurrentAccess = false;
+            ServedDevice17.AllowConnectedSetFalse = false;
+            ServedDevice17.AllowConnectedSetTrue = false;
+            ServedDevice17.Description = "";
+            ServedDevice17.DeviceNumber = 0;
+            ServedDevice17.DevicesAreConnected = false;
+            ServedDevice17.DeviceType = "None";
+            ServedDevice17.Location = new System.Drawing.Point(9, 272);
+            ServedDevice17.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice17.Name = "ServedDevice17";
+            ServedDevice17.ProgID = "";
+            ServedDevice17.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice17.TabIndex = 51;
             // 
             // ServedDevice18
             // 
-            this.ServedDevice18.AllowConcurrentAccess = (false);
-            this.ServedDevice18.AllowConnectedSetFalse = (false);
-            this.ServedDevice18.AllowConnectedSetTrue = (false);
-            this.ServedDevice18.Description = ("");
-            this.ServedDevice18.DeviceNumber = (0);
-            this.ServedDevice18.DevicesAreConnected = (false);
-            this.ServedDevice18.DeviceType = ("None");
-            this.ServedDevice18.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice18.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice18.Name = ("ServedDevice18");
-            this.ServedDevice18.ProgID = ("");
-            this.ServedDevice18.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice18.TabIndex = (52);
+            ServedDevice18.AllowConcurrentAccess = false;
+            ServedDevice18.AllowConnectedSetFalse = false;
+            ServedDevice18.AllowConnectedSetTrue = false;
+            ServedDevice18.Description = "";
+            ServedDevice18.DeviceNumber = 0;
+            ServedDevice18.DevicesAreConnected = false;
+            ServedDevice18.DeviceType = "None";
+            ServedDevice18.Location = new System.Drawing.Point(9, 305);
+            ServedDevice18.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice18.Name = "ServedDevice18";
+            ServedDevice18.ProgID = "";
+            ServedDevice18.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice18.TabIndex = 52;
             // 
             // ServedDevice19
             // 
-            this.ServedDevice19.AllowConcurrentAccess = (false);
-            this.ServedDevice19.AllowConnectedSetFalse = (false);
-            this.ServedDevice19.AllowConnectedSetTrue = (false);
-            this.ServedDevice19.Description = ("");
-            this.ServedDevice19.DeviceNumber = (0);
-            this.ServedDevice19.DevicesAreConnected = (false);
-            this.ServedDevice19.DeviceType = ("None");
-            this.ServedDevice19.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice19.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice19.Name = ("ServedDevice19");
-            this.ServedDevice19.ProgID = ("");
-            this.ServedDevice19.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice19.TabIndex = (53);
+            ServedDevice19.AllowConcurrentAccess = false;
+            ServedDevice19.AllowConnectedSetFalse = false;
+            ServedDevice19.AllowConnectedSetTrue = false;
+            ServedDevice19.Description = "";
+            ServedDevice19.DeviceNumber = 0;
+            ServedDevice19.DevicesAreConnected = false;
+            ServedDevice19.DeviceType = "None";
+            ServedDevice19.Location = new System.Drawing.Point(9, 337);
+            ServedDevice19.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice19.Name = "ServedDevice19";
+            ServedDevice19.ProgID = "";
+            ServedDevice19.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice19.TabIndex = 53;
             // 
             // DeviceTab2
             // 
-            this.DeviceTab2.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.DeviceTab2.Controls.Add(this.label18);
-            this.DeviceTab2.Controls.Add(this.label25);
-            this.DeviceTab2.Controls.Add(this.label26);
-            this.DeviceTab2.Controls.Add(this.label27);
-            this.DeviceTab2.Controls.Add(this.label28);
-            this.DeviceTab2.Controls.Add(this.label29);
-            this.DeviceTab2.Controls.Add(this.label30);
-            this.DeviceTab2.Controls.Add(this.label31);
-            this.DeviceTab2.Controls.Add(this.label32);
-            this.DeviceTab2.Controls.Add(this.ServedDevice20);
-            this.DeviceTab2.Controls.Add(this.ServedDevice21);
-            this.DeviceTab2.Controls.Add(this.ServedDevice22);
-            this.DeviceTab2.Controls.Add(this.ServedDevice23);
-            this.DeviceTab2.Controls.Add(this.ServedDevice24);
-            this.DeviceTab2.Controls.Add(this.ServedDevice25);
-            this.DeviceTab2.Controls.Add(this.ServedDevice26);
-            this.DeviceTab2.Controls.Add(this.ServedDevice27);
-            this.DeviceTab2.Controls.Add(this.ServedDevice28);
-            this.DeviceTab2.Controls.Add(this.ServedDevice29);
-            this.DeviceTab2.Location = (new global::System.Drawing.Point(4, 24));
-            this.DeviceTab2.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceTab2.Name = ("DeviceTab2");
-            this.DeviceTab2.Padding = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceTab2.Size = (new global::System.Drawing.Size(1173, 375));
-            this.DeviceTab2.TabIndex = (1);
-            this.DeviceTab2.Text = ("Devices 20 to 29");
+            DeviceTab2.BackColor = System.Drawing.SystemColors.Control;
+            DeviceTab2.Controls.Add(label18);
+            DeviceTab2.Controls.Add(label25);
+            DeviceTab2.Controls.Add(label26);
+            DeviceTab2.Controls.Add(label27);
+            DeviceTab2.Controls.Add(label28);
+            DeviceTab2.Controls.Add(label29);
+            DeviceTab2.Controls.Add(label30);
+            DeviceTab2.Controls.Add(label31);
+            DeviceTab2.Controls.Add(label32);
+            DeviceTab2.Controls.Add(ServedDevice20);
+            DeviceTab2.Controls.Add(ServedDevice21);
+            DeviceTab2.Controls.Add(ServedDevice22);
+            DeviceTab2.Controls.Add(ServedDevice23);
+            DeviceTab2.Controls.Add(ServedDevice24);
+            DeviceTab2.Controls.Add(ServedDevice25);
+            DeviceTab2.Controls.Add(ServedDevice26);
+            DeviceTab2.Controls.Add(ServedDevice27);
+            DeviceTab2.Controls.Add(ServedDevice28);
+            DeviceTab2.Controls.Add(ServedDevice29);
+            DeviceTab2.Location = new System.Drawing.Point(4, 24);
+            DeviceTab2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceTab2.Name = "DeviceTab2";
+            DeviceTab2.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceTab2.Size = new System.Drawing.Size(1173, 375);
+            DeviceTab2.TabIndex = 1;
+            DeviceTab2.Text = "Devices 20 to 29";
             // 
             // label18
             // 
-            this.label18.AutoSize = (true);
-            this.label18.Location = (new global::System.Drawing.Point(1083, 9));
-            this.label18.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label18.Name = ("label18");
-            this.label18.Size = (new global::System.Drawing.Size(42, 15));
-            this.label18.TabIndex = (79);
-            this.label18.Text = ("Enable");
+            label18.AutoSize = true;
+            label18.Location = new System.Drawing.Point(1083, 9);
+            label18.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label18.Name = "label18";
+            label18.Size = new System.Drawing.Size(42, 15);
+            label18.TabIndex = 79;
+            label18.Text = "Enable";
             // 
             // label25
             // 
-            this.label25.AutoSize = (true);
-            this.label25.Location = (new global::System.Drawing.Point(1049, 28));
-            this.label25.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label25.Name = ("label25");
-            this.label25.Size = (new global::System.Drawing.Size(106, 15));
-            this.label25.TabIndex = (78);
-            this.label25.Text = ("Concurrent Access");
+            label25.AutoSize = true;
+            label25.Location = new System.Drawing.Point(1049, 28);
+            label25.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label25.Name = "label25";
+            label25.Size = new System.Drawing.Size(106, 15);
+            label25.TabIndex = 78;
+            label25.Text = "Concurrent Access";
             // 
             // label26
             // 
-            this.label26.AutoSize = (true);
-            this.label26.Location = (new global::System.Drawing.Point(65, 28));
-            this.label26.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label26.Name = ("label26");
-            this.label26.Size = (new global::System.Drawing.Size(69, 15));
-            this.label26.TabIndex = (63);
-            this.label26.Text = ("Device Type");
+            label26.AutoSize = true;
+            label26.Location = new System.Drawing.Point(65, 28);
+            label26.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label26.Name = "label26";
+            label26.Size = new System.Drawing.Size(69, 15);
+            label26.TabIndex = 63;
+            label26.Text = "Device Type";
             // 
             // label27
             // 
-            this.label27.AutoSize = (true);
-            this.label27.Location = (new global::System.Drawing.Point(497, 28));
-            this.label27.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label27.Name = ("label27");
-            this.label27.Size = (new global::System.Drawing.Size(42, 15));
-            this.label27.TabIndex = (65);
-            this.label27.Text = ("Device");
+            label27.AutoSize = true;
+            label27.Location = new System.Drawing.Point(497, 28);
+            label27.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label27.Name = "label27";
+            label27.Size = new System.Drawing.Size(42, 15);
+            label27.TabIndex = 65;
+            label27.Text = "Device";
             // 
             // label28
             // 
-            this.label28.AutoSize = (true);
-            this.label28.Location = (new global::System.Drawing.Point(756, 28));
-            this.label28.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label28.Name = ("label28");
-            this.label28.Size = (new global::System.Drawing.Size(98, 15));
-            this.label28.TabIndex = (77);
-            this.label28.Text = ("Configure Device");
+            label28.AutoSize = true;
+            label28.Location = new System.Drawing.Point(756, 28);
+            label28.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label28.Name = "label28";
+            label28.Size = new System.Drawing.Size(98, 15);
+            label28.TabIndex = 77;
+            label28.Text = "Configure Device";
             // 
             // label29
             // 
-            this.label29.AutoSize = (true);
-            this.label29.Location = (new global::System.Drawing.Point(218, 28));
-            this.label29.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label29.Name = ("label29");
-            this.label29.Size = (new global::System.Drawing.Size(89, 15));
-            this.label29.TabIndex = (66);
-            this.label29.Text = ("Device Number");
+            label29.AutoSize = true;
+            label29.Location = new System.Drawing.Point(218, 28);
+            label29.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label29.Name = "label29";
+            label29.Size = new System.Drawing.Size(89, 15);
+            label29.TabIndex = 66;
+            label29.Text = "Device Number";
             // 
             // label30
             // 
-            this.label30.AutoSize = (true);
-            this.label30.Location = (new global::System.Drawing.Point(985, 28));
-            this.label30.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label30.Name = ("label30");
-            this.label30.Size = (new global::System.Drawing.Size(29, 15));
-            this.label30.TabIndex = (76);
-            this.label30.Text = ("True");
+            label30.AutoSize = true;
+            label30.Location = new System.Drawing.Point(985, 28);
+            label30.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label30.Name = "label30";
+            label30.Size = new System.Drawing.Size(29, 15);
+            label30.TabIndex = 76;
+            label30.Text = "True";
             // 
             // label31
             // 
-            this.label31.AutoSize = (true);
-            this.label31.Location = (new global::System.Drawing.Point(915, 28));
-            this.label31.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label31.Name = ("label31");
-            this.label31.Size = (new global::System.Drawing.Size(33, 15));
-            this.label31.TabIndex = (75);
-            this.label31.Text = ("False");
+            label31.AutoSize = true;
+            label31.Location = new System.Drawing.Point(915, 28);
+            label31.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label31.Name = "label31";
+            label31.Size = new System.Drawing.Size(33, 15);
+            label31.TabIndex = 75;
+            label31.Text = "False";
             // 
             // label32
             // 
-            this.label32.AutoSize = (true);
-            this.label32.Location = (new global::System.Drawing.Point(891, 9));
-            this.label32.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label32.Name = ("label32");
-            this.label32.Size = (new global::System.Drawing.Size(146, 15));
-            this.label32.TabIndex = (74);
-            this.label32.Text = ("Allow Connected to be set");
+            label32.AutoSize = true;
+            label32.Location = new System.Drawing.Point(891, 9);
+            label32.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label32.Name = "label32";
+            label32.Size = new System.Drawing.Size(146, 15);
+            label32.TabIndex = 74;
+            label32.Text = "Allow Connected to be set";
             // 
             // ServedDevice20
             // 
-            this.ServedDevice20.AllowConcurrentAccess = (false);
-            this.ServedDevice20.AllowConnectedSetFalse = (false);
-            this.ServedDevice20.AllowConnectedSetTrue = (false);
-            this.ServedDevice20.Description = ("");
-            this.ServedDevice20.DeviceNumber = (0);
-            this.ServedDevice20.DevicesAreConnected = (false);
-            this.ServedDevice20.DeviceType = ("None");
-            this.ServedDevice20.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice20.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice20.Name = ("ServedDevice20");
-            this.ServedDevice20.ProgID = ("");
-            this.ServedDevice20.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice20.TabIndex = (61);
+            ServedDevice20.AllowConcurrentAccess = false;
+            ServedDevice20.AllowConnectedSetFalse = false;
+            ServedDevice20.AllowConnectedSetTrue = false;
+            ServedDevice20.Description = "";
+            ServedDevice20.DeviceNumber = 0;
+            ServedDevice20.DevicesAreConnected = false;
+            ServedDevice20.DeviceType = "None";
+            ServedDevice20.Location = new System.Drawing.Point(9, 46);
+            ServedDevice20.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice20.Name = "ServedDevice20";
+            ServedDevice20.ProgID = "";
+            ServedDevice20.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice20.TabIndex = 61;
             // 
             // ServedDevice21
             // 
-            this.ServedDevice21.AllowConcurrentAccess = (false);
-            this.ServedDevice21.AllowConnectedSetFalse = (false);
-            this.ServedDevice21.AllowConnectedSetTrue = (false);
-            this.ServedDevice21.Description = ("");
-            this.ServedDevice21.DeviceNumber = (0);
-            this.ServedDevice21.DevicesAreConnected = (false);
-            this.ServedDevice21.DeviceType = ("None");
-            this.ServedDevice21.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice21.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice21.Name = ("ServedDevice21");
-            this.ServedDevice21.ProgID = ("");
-            this.ServedDevice21.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice21.TabIndex = (62);
+            ServedDevice21.AllowConcurrentAccess = false;
+            ServedDevice21.AllowConnectedSetFalse = false;
+            ServedDevice21.AllowConnectedSetTrue = false;
+            ServedDevice21.Description = "";
+            ServedDevice21.DeviceNumber = 0;
+            ServedDevice21.DevicesAreConnected = false;
+            ServedDevice21.DeviceType = "None";
+            ServedDevice21.Location = new System.Drawing.Point(9, 78);
+            ServedDevice21.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice21.Name = "ServedDevice21";
+            ServedDevice21.ProgID = "";
+            ServedDevice21.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice21.TabIndex = 62;
             // 
             // ServedDevice22
             // 
-            this.ServedDevice22.AllowConcurrentAccess = (false);
-            this.ServedDevice22.AllowConnectedSetFalse = (false);
-            this.ServedDevice22.AllowConnectedSetTrue = (false);
-            this.ServedDevice22.Description = ("");
-            this.ServedDevice22.DeviceNumber = (0);
-            this.ServedDevice22.DevicesAreConnected = (false);
-            this.ServedDevice22.DeviceType = ("None");
-            this.ServedDevice22.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice22.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice22.Name = ("ServedDevice22");
-            this.ServedDevice22.ProgID = ("");
-            this.ServedDevice22.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice22.TabIndex = (64);
+            ServedDevice22.AllowConcurrentAccess = false;
+            ServedDevice22.AllowConnectedSetFalse = false;
+            ServedDevice22.AllowConnectedSetTrue = false;
+            ServedDevice22.Description = "";
+            ServedDevice22.DeviceNumber = 0;
+            ServedDevice22.DevicesAreConnected = false;
+            ServedDevice22.DeviceType = "None";
+            ServedDevice22.Location = new System.Drawing.Point(9, 111);
+            ServedDevice22.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice22.Name = "ServedDevice22";
+            ServedDevice22.ProgID = "";
+            ServedDevice22.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice22.TabIndex = 64;
             // 
             // ServedDevice23
             // 
-            this.ServedDevice23.AllowConcurrentAccess = (false);
-            this.ServedDevice23.AllowConnectedSetFalse = (false);
-            this.ServedDevice23.AllowConnectedSetTrue = (false);
-            this.ServedDevice23.Description = ("");
-            this.ServedDevice23.DeviceNumber = (0);
-            this.ServedDevice23.DevicesAreConnected = (false);
-            this.ServedDevice23.DeviceType = ("None");
-            this.ServedDevice23.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice23.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice23.Name = ("ServedDevice23");
-            this.ServedDevice23.ProgID = ("");
-            this.ServedDevice23.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice23.TabIndex = (67);
+            ServedDevice23.AllowConcurrentAccess = false;
+            ServedDevice23.AllowConnectedSetFalse = false;
+            ServedDevice23.AllowConnectedSetTrue = false;
+            ServedDevice23.Description = "";
+            ServedDevice23.DeviceNumber = 0;
+            ServedDevice23.DevicesAreConnected = false;
+            ServedDevice23.DeviceType = "None";
+            ServedDevice23.Location = new System.Drawing.Point(9, 143);
+            ServedDevice23.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice23.Name = "ServedDevice23";
+            ServedDevice23.ProgID = "";
+            ServedDevice23.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice23.TabIndex = 67;
             // 
             // ServedDevice24
             // 
-            this.ServedDevice24.AllowConcurrentAccess = (false);
-            this.ServedDevice24.AllowConnectedSetFalse = (false);
-            this.ServedDevice24.AllowConnectedSetTrue = (false);
-            this.ServedDevice24.Description = ("");
-            this.ServedDevice24.DeviceNumber = (0);
-            this.ServedDevice24.DevicesAreConnected = (false);
-            this.ServedDevice24.DeviceType = ("None");
-            this.ServedDevice24.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice24.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice24.Name = ("ServedDevice24");
-            this.ServedDevice24.ProgID = ("");
-            this.ServedDevice24.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice24.TabIndex = (68);
+            ServedDevice24.AllowConcurrentAccess = false;
+            ServedDevice24.AllowConnectedSetFalse = false;
+            ServedDevice24.AllowConnectedSetTrue = false;
+            ServedDevice24.Description = "";
+            ServedDevice24.DeviceNumber = 0;
+            ServedDevice24.DevicesAreConnected = false;
+            ServedDevice24.DeviceType = "None";
+            ServedDevice24.Location = new System.Drawing.Point(9, 175);
+            ServedDevice24.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice24.Name = "ServedDevice24";
+            ServedDevice24.ProgID = "";
+            ServedDevice24.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice24.TabIndex = 68;
             // 
             // ServedDevice25
             // 
-            this.ServedDevice25.AllowConcurrentAccess = (false);
-            this.ServedDevice25.AllowConnectedSetFalse = (false);
-            this.ServedDevice25.AllowConnectedSetTrue = (false);
-            this.ServedDevice25.Description = ("");
-            this.ServedDevice25.DeviceNumber = (0);
-            this.ServedDevice25.DevicesAreConnected = (false);
-            this.ServedDevice25.DeviceType = ("None");
-            this.ServedDevice25.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice25.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice25.Name = ("ServedDevice25");
-            this.ServedDevice25.ProgID = ("");
-            this.ServedDevice25.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice25.TabIndex = (69);
+            ServedDevice25.AllowConcurrentAccess = false;
+            ServedDevice25.AllowConnectedSetFalse = false;
+            ServedDevice25.AllowConnectedSetTrue = false;
+            ServedDevice25.Description = "";
+            ServedDevice25.DeviceNumber = 0;
+            ServedDevice25.DevicesAreConnected = false;
+            ServedDevice25.DeviceType = "None";
+            ServedDevice25.Location = new System.Drawing.Point(9, 208);
+            ServedDevice25.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice25.Name = "ServedDevice25";
+            ServedDevice25.ProgID = "";
+            ServedDevice25.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice25.TabIndex = 69;
             // 
             // ServedDevice26
             // 
-            this.ServedDevice26.AllowConcurrentAccess = (false);
-            this.ServedDevice26.AllowConnectedSetFalse = (false);
-            this.ServedDevice26.AllowConnectedSetTrue = (false);
-            this.ServedDevice26.Description = ("");
-            this.ServedDevice26.DeviceNumber = (0);
-            this.ServedDevice26.DevicesAreConnected = (false);
-            this.ServedDevice26.DeviceType = ("None");
-            this.ServedDevice26.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice26.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice26.Name = ("ServedDevice26");
-            this.ServedDevice26.ProgID = ("");
-            this.ServedDevice26.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice26.TabIndex = (70);
+            ServedDevice26.AllowConcurrentAccess = false;
+            ServedDevice26.AllowConnectedSetFalse = false;
+            ServedDevice26.AllowConnectedSetTrue = false;
+            ServedDevice26.Description = "";
+            ServedDevice26.DeviceNumber = 0;
+            ServedDevice26.DevicesAreConnected = false;
+            ServedDevice26.DeviceType = "None";
+            ServedDevice26.Location = new System.Drawing.Point(9, 240);
+            ServedDevice26.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice26.Name = "ServedDevice26";
+            ServedDevice26.ProgID = "";
+            ServedDevice26.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice26.TabIndex = 70;
             // 
             // ServedDevice27
             // 
-            this.ServedDevice27.AllowConcurrentAccess = (false);
-            this.ServedDevice27.AllowConnectedSetFalse = (false);
-            this.ServedDevice27.AllowConnectedSetTrue = (false);
-            this.ServedDevice27.Description = ("");
-            this.ServedDevice27.DeviceNumber = (0);
-            this.ServedDevice27.DevicesAreConnected = (false);
-            this.ServedDevice27.DeviceType = ("None");
-            this.ServedDevice27.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice27.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice27.Name = ("ServedDevice27");
-            this.ServedDevice27.ProgID = ("");
-            this.ServedDevice27.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice27.TabIndex = (71);
+            ServedDevice27.AllowConcurrentAccess = false;
+            ServedDevice27.AllowConnectedSetFalse = false;
+            ServedDevice27.AllowConnectedSetTrue = false;
+            ServedDevice27.Description = "";
+            ServedDevice27.DeviceNumber = 0;
+            ServedDevice27.DevicesAreConnected = false;
+            ServedDevice27.DeviceType = "None";
+            ServedDevice27.Location = new System.Drawing.Point(9, 272);
+            ServedDevice27.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice27.Name = "ServedDevice27";
+            ServedDevice27.ProgID = "";
+            ServedDevice27.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice27.TabIndex = 71;
             // 
             // ServedDevice28
             // 
-            this.ServedDevice28.AllowConcurrentAccess = (false);
-            this.ServedDevice28.AllowConnectedSetFalse = (false);
-            this.ServedDevice28.AllowConnectedSetTrue = (false);
-            this.ServedDevice28.Description = ("");
-            this.ServedDevice28.DeviceNumber = (0);
-            this.ServedDevice28.DevicesAreConnected = (false);
-            this.ServedDevice28.DeviceType = ("None");
-            this.ServedDevice28.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice28.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice28.Name = ("ServedDevice28");
-            this.ServedDevice28.ProgID = ("");
-            this.ServedDevice28.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice28.TabIndex = (72);
+            ServedDevice28.AllowConcurrentAccess = false;
+            ServedDevice28.AllowConnectedSetFalse = false;
+            ServedDevice28.AllowConnectedSetTrue = false;
+            ServedDevice28.Description = "";
+            ServedDevice28.DeviceNumber = 0;
+            ServedDevice28.DevicesAreConnected = false;
+            ServedDevice28.DeviceType = "None";
+            ServedDevice28.Location = new System.Drawing.Point(9, 305);
+            ServedDevice28.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice28.Name = "ServedDevice28";
+            ServedDevice28.ProgID = "";
+            ServedDevice28.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice28.TabIndex = 72;
             // 
             // ServedDevice29
             // 
-            this.ServedDevice29.AllowConcurrentAccess = (false);
-            this.ServedDevice29.AllowConnectedSetFalse = (false);
-            this.ServedDevice29.AllowConnectedSetTrue = (false);
-            this.ServedDevice29.Description = ("");
-            this.ServedDevice29.DeviceNumber = (0);
-            this.ServedDevice29.DevicesAreConnected = (false);
-            this.ServedDevice29.DeviceType = ("None");
-            this.ServedDevice29.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice29.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice29.Name = ("ServedDevice29");
-            this.ServedDevice29.ProgID = ("");
-            this.ServedDevice29.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice29.TabIndex = (73);
+            ServedDevice29.AllowConcurrentAccess = false;
+            ServedDevice29.AllowConnectedSetFalse = false;
+            ServedDevice29.AllowConnectedSetTrue = false;
+            ServedDevice29.Description = "";
+            ServedDevice29.DeviceNumber = 0;
+            ServedDevice29.DevicesAreConnected = false;
+            ServedDevice29.DeviceType = "None";
+            ServedDevice29.Location = new System.Drawing.Point(9, 337);
+            ServedDevice29.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice29.Name = "ServedDevice29";
+            ServedDevice29.ProgID = "";
+            ServedDevice29.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice29.TabIndex = 73;
             // 
             // DeviceTab3
             // 
-            this.DeviceTab3.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.DeviceTab3.Controls.Add(this.label33);
-            this.DeviceTab3.Controls.Add(this.label34);
-            this.DeviceTab3.Controls.Add(this.label35);
-            this.DeviceTab3.Controls.Add(this.label36);
-            this.DeviceTab3.Controls.Add(this.label37);
-            this.DeviceTab3.Controls.Add(this.label38);
-            this.DeviceTab3.Controls.Add(this.label39);
-            this.DeviceTab3.Controls.Add(this.label40);
-            this.DeviceTab3.Controls.Add(this.label41);
-            this.DeviceTab3.Controls.Add(this.ServedDevice30);
-            this.DeviceTab3.Controls.Add(this.ServedDevice31);
-            this.DeviceTab3.Controls.Add(this.ServedDevice32);
-            this.DeviceTab3.Controls.Add(this.ServedDevice33);
-            this.DeviceTab3.Controls.Add(this.ServedDevice34);
-            this.DeviceTab3.Controls.Add(this.ServedDevice35);
-            this.DeviceTab3.Controls.Add(this.ServedDevice36);
-            this.DeviceTab3.Controls.Add(this.ServedDevice37);
-            this.DeviceTab3.Controls.Add(this.ServedDevice38);
-            this.DeviceTab3.Controls.Add(this.ServedDevice39);
-            this.DeviceTab3.Location = (new global::System.Drawing.Point(4, 24));
-            this.DeviceTab3.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceTab3.Name = ("DeviceTab3");
-            this.DeviceTab3.Size = (new global::System.Drawing.Size(1173, 375));
-            this.DeviceTab3.TabIndex = (3);
-            this.DeviceTab3.Text = ("Devices 30 to 39");
+            DeviceTab3.BackColor = System.Drawing.SystemColors.Control;
+            DeviceTab3.Controls.Add(label33);
+            DeviceTab3.Controls.Add(label34);
+            DeviceTab3.Controls.Add(label35);
+            DeviceTab3.Controls.Add(label36);
+            DeviceTab3.Controls.Add(label37);
+            DeviceTab3.Controls.Add(label38);
+            DeviceTab3.Controls.Add(label39);
+            DeviceTab3.Controls.Add(label40);
+            DeviceTab3.Controls.Add(label41);
+            DeviceTab3.Controls.Add(ServedDevice30);
+            DeviceTab3.Controls.Add(ServedDevice31);
+            DeviceTab3.Controls.Add(ServedDevice32);
+            DeviceTab3.Controls.Add(ServedDevice33);
+            DeviceTab3.Controls.Add(ServedDevice34);
+            DeviceTab3.Controls.Add(ServedDevice35);
+            DeviceTab3.Controls.Add(ServedDevice36);
+            DeviceTab3.Controls.Add(ServedDevice37);
+            DeviceTab3.Controls.Add(ServedDevice38);
+            DeviceTab3.Controls.Add(ServedDevice39);
+            DeviceTab3.Location = new System.Drawing.Point(4, 24);
+            DeviceTab3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceTab3.Name = "DeviceTab3";
+            DeviceTab3.Size = new System.Drawing.Size(1173, 375);
+            DeviceTab3.TabIndex = 3;
+            DeviceTab3.Text = "Devices 30 to 39";
             // 
             // label33
             // 
-            this.label33.AutoSize = (true);
-            this.label33.Location = (new global::System.Drawing.Point(1083, 9));
-            this.label33.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label33.Name = ("label33");
-            this.label33.Size = (new global::System.Drawing.Size(42, 15));
-            this.label33.TabIndex = (79);
-            this.label33.Text = ("Enable");
+            label33.AutoSize = true;
+            label33.Location = new System.Drawing.Point(1083, 9);
+            label33.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label33.Name = "label33";
+            label33.Size = new System.Drawing.Size(42, 15);
+            label33.TabIndex = 79;
+            label33.Text = "Enable";
             // 
             // label34
             // 
-            this.label34.AutoSize = (true);
-            this.label34.Location = (new global::System.Drawing.Point(1049, 28));
-            this.label34.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label34.Name = ("label34");
-            this.label34.Size = (new global::System.Drawing.Size(106, 15));
-            this.label34.TabIndex = (78);
-            this.label34.Text = ("Concurrent Access");
+            label34.AutoSize = true;
+            label34.Location = new System.Drawing.Point(1049, 28);
+            label34.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label34.Name = "label34";
+            label34.Size = new System.Drawing.Size(106, 15);
+            label34.TabIndex = 78;
+            label34.Text = "Concurrent Access";
             // 
             // label35
             // 
-            this.label35.AutoSize = (true);
-            this.label35.Location = (new global::System.Drawing.Point(65, 28));
-            this.label35.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label35.Name = ("label35");
-            this.label35.Size = (new global::System.Drawing.Size(69, 15));
-            this.label35.TabIndex = (63);
-            this.label35.Text = ("Device Type");
+            label35.AutoSize = true;
+            label35.Location = new System.Drawing.Point(65, 28);
+            label35.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label35.Name = "label35";
+            label35.Size = new System.Drawing.Size(69, 15);
+            label35.TabIndex = 63;
+            label35.Text = "Device Type";
             // 
             // label36
             // 
-            this.label36.AutoSize = (true);
-            this.label36.Location = (new global::System.Drawing.Point(497, 28));
-            this.label36.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label36.Name = ("label36");
-            this.label36.Size = (new global::System.Drawing.Size(42, 15));
-            this.label36.TabIndex = (65);
-            this.label36.Text = ("Device");
+            label36.AutoSize = true;
+            label36.Location = new System.Drawing.Point(497, 28);
+            label36.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label36.Name = "label36";
+            label36.Size = new System.Drawing.Size(42, 15);
+            label36.TabIndex = 65;
+            label36.Text = "Device";
             // 
             // label37
             // 
-            this.label37.AutoSize = (true);
-            this.label37.Location = (new global::System.Drawing.Point(756, 28));
-            this.label37.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label37.Name = ("label37");
-            this.label37.Size = (new global::System.Drawing.Size(98, 15));
-            this.label37.TabIndex = (77);
-            this.label37.Text = ("Configure Device");
+            label37.AutoSize = true;
+            label37.Location = new System.Drawing.Point(756, 28);
+            label37.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label37.Name = "label37";
+            label37.Size = new System.Drawing.Size(98, 15);
+            label37.TabIndex = 77;
+            label37.Text = "Configure Device";
             // 
             // label38
             // 
-            this.label38.AutoSize = (true);
-            this.label38.Location = (new global::System.Drawing.Point(218, 28));
-            this.label38.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label38.Name = ("label38");
-            this.label38.Size = (new global::System.Drawing.Size(89, 15));
-            this.label38.TabIndex = (66);
-            this.label38.Text = ("Device Number");
+            label38.AutoSize = true;
+            label38.Location = new System.Drawing.Point(218, 28);
+            label38.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label38.Name = "label38";
+            label38.Size = new System.Drawing.Size(89, 15);
+            label38.TabIndex = 66;
+            label38.Text = "Device Number";
             // 
             // label39
             // 
-            this.label39.AutoSize = (true);
-            this.label39.Location = (new global::System.Drawing.Point(985, 28));
-            this.label39.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label39.Name = ("label39");
-            this.label39.Size = (new global::System.Drawing.Size(29, 15));
-            this.label39.TabIndex = (76);
-            this.label39.Text = ("True");
+            label39.AutoSize = true;
+            label39.Location = new System.Drawing.Point(985, 28);
+            label39.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label39.Name = "label39";
+            label39.Size = new System.Drawing.Size(29, 15);
+            label39.TabIndex = 76;
+            label39.Text = "True";
             // 
             // label40
             // 
-            this.label40.AutoSize = (true);
-            this.label40.Location = (new global::System.Drawing.Point(915, 28));
-            this.label40.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label40.Name = ("label40");
-            this.label40.Size = (new global::System.Drawing.Size(33, 15));
-            this.label40.TabIndex = (75);
-            this.label40.Text = ("False");
+            label40.AutoSize = true;
+            label40.Location = new System.Drawing.Point(915, 28);
+            label40.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label40.Name = "label40";
+            label40.Size = new System.Drawing.Size(33, 15);
+            label40.TabIndex = 75;
+            label40.Text = "False";
             // 
             // label41
             // 
-            this.label41.AutoSize = (true);
-            this.label41.Location = (new global::System.Drawing.Point(891, 9));
-            this.label41.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label41.Name = ("label41");
-            this.label41.Size = (new global::System.Drawing.Size(146, 15));
-            this.label41.TabIndex = (74);
-            this.label41.Text = ("Allow Connected to be set");
+            label41.AutoSize = true;
+            label41.Location = new System.Drawing.Point(891, 9);
+            label41.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label41.Name = "label41";
+            label41.Size = new System.Drawing.Size(146, 15);
+            label41.TabIndex = 74;
+            label41.Text = "Allow Connected to be set";
             // 
             // ServedDevice30
             // 
-            this.ServedDevice30.AllowConcurrentAccess = (false);
-            this.ServedDevice30.AllowConnectedSetFalse = (false);
-            this.ServedDevice30.AllowConnectedSetTrue = (false);
-            this.ServedDevice30.Description = ("");
-            this.ServedDevice30.DeviceNumber = (0);
-            this.ServedDevice30.DevicesAreConnected = (false);
-            this.ServedDevice30.DeviceType = ("None");
-            this.ServedDevice30.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice30.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice30.Name = ("ServedDevice30");
-            this.ServedDevice30.ProgID = ("");
-            this.ServedDevice30.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice30.TabIndex = (61);
+            ServedDevice30.AllowConcurrentAccess = false;
+            ServedDevice30.AllowConnectedSetFalse = false;
+            ServedDevice30.AllowConnectedSetTrue = false;
+            ServedDevice30.Description = "";
+            ServedDevice30.DeviceNumber = 0;
+            ServedDevice30.DevicesAreConnected = false;
+            ServedDevice30.DeviceType = "None";
+            ServedDevice30.Location = new System.Drawing.Point(9, 46);
+            ServedDevice30.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice30.Name = "ServedDevice30";
+            ServedDevice30.ProgID = "";
+            ServedDevice30.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice30.TabIndex = 61;
             // 
             // ServedDevice31
             // 
-            this.ServedDevice31.AllowConcurrentAccess = (false);
-            this.ServedDevice31.AllowConnectedSetFalse = (false);
-            this.ServedDevice31.AllowConnectedSetTrue = (false);
-            this.ServedDevice31.Description = ("");
-            this.ServedDevice31.DeviceNumber = (0);
-            this.ServedDevice31.DevicesAreConnected = (false);
-            this.ServedDevice31.DeviceType = ("None");
-            this.ServedDevice31.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice31.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice31.Name = ("ServedDevice31");
-            this.ServedDevice31.ProgID = ("");
-            this.ServedDevice31.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice31.TabIndex = (62);
+            ServedDevice31.AllowConcurrentAccess = false;
+            ServedDevice31.AllowConnectedSetFalse = false;
+            ServedDevice31.AllowConnectedSetTrue = false;
+            ServedDevice31.Description = "";
+            ServedDevice31.DeviceNumber = 0;
+            ServedDevice31.DevicesAreConnected = false;
+            ServedDevice31.DeviceType = "None";
+            ServedDevice31.Location = new System.Drawing.Point(9, 78);
+            ServedDevice31.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice31.Name = "ServedDevice31";
+            ServedDevice31.ProgID = "";
+            ServedDevice31.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice31.TabIndex = 62;
             // 
             // ServedDevice32
             // 
-            this.ServedDevice32.AllowConcurrentAccess = (false);
-            this.ServedDevice32.AllowConnectedSetFalse = (false);
-            this.ServedDevice32.AllowConnectedSetTrue = (false);
-            this.ServedDevice32.Description = ("");
-            this.ServedDevice32.DeviceNumber = (0);
-            this.ServedDevice32.DevicesAreConnected = (false);
-            this.ServedDevice32.DeviceType = ("None");
-            this.ServedDevice32.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice32.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice32.Name = ("ServedDevice32");
-            this.ServedDevice32.ProgID = ("");
-            this.ServedDevice32.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice32.TabIndex = (64);
+            ServedDevice32.AllowConcurrentAccess = false;
+            ServedDevice32.AllowConnectedSetFalse = false;
+            ServedDevice32.AllowConnectedSetTrue = false;
+            ServedDevice32.Description = "";
+            ServedDevice32.DeviceNumber = 0;
+            ServedDevice32.DevicesAreConnected = false;
+            ServedDevice32.DeviceType = "None";
+            ServedDevice32.Location = new System.Drawing.Point(9, 111);
+            ServedDevice32.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice32.Name = "ServedDevice32";
+            ServedDevice32.ProgID = "";
+            ServedDevice32.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice32.TabIndex = 64;
             // 
             // ServedDevice33
             // 
-            this.ServedDevice33.AllowConcurrentAccess = (false);
-            this.ServedDevice33.AllowConnectedSetFalse = (false);
-            this.ServedDevice33.AllowConnectedSetTrue = (false);
-            this.ServedDevice33.Description = ("");
-            this.ServedDevice33.DeviceNumber = (0);
-            this.ServedDevice33.DevicesAreConnected = (false);
-            this.ServedDevice33.DeviceType = ("None");
-            this.ServedDevice33.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice33.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice33.Name = ("ServedDevice33");
-            this.ServedDevice33.ProgID = ("");
-            this.ServedDevice33.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice33.TabIndex = (67);
+            ServedDevice33.AllowConcurrentAccess = false;
+            ServedDevice33.AllowConnectedSetFalse = false;
+            ServedDevice33.AllowConnectedSetTrue = false;
+            ServedDevice33.Description = "";
+            ServedDevice33.DeviceNumber = 0;
+            ServedDevice33.DevicesAreConnected = false;
+            ServedDevice33.DeviceType = "None";
+            ServedDevice33.Location = new System.Drawing.Point(9, 143);
+            ServedDevice33.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice33.Name = "ServedDevice33";
+            ServedDevice33.ProgID = "";
+            ServedDevice33.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice33.TabIndex = 67;
             // 
             // ServedDevice34
             // 
-            this.ServedDevice34.AllowConcurrentAccess = (false);
-            this.ServedDevice34.AllowConnectedSetFalse = (false);
-            this.ServedDevice34.AllowConnectedSetTrue = (false);
-            this.ServedDevice34.Description = ("");
-            this.ServedDevice34.DeviceNumber = (0);
-            this.ServedDevice34.DevicesAreConnected = (false);
-            this.ServedDevice34.DeviceType = ("None");
-            this.ServedDevice34.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice34.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice34.Name = ("ServedDevice34");
-            this.ServedDevice34.ProgID = ("");
-            this.ServedDevice34.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice34.TabIndex = (68);
+            ServedDevice34.AllowConcurrentAccess = false;
+            ServedDevice34.AllowConnectedSetFalse = false;
+            ServedDevice34.AllowConnectedSetTrue = false;
+            ServedDevice34.Description = "";
+            ServedDevice34.DeviceNumber = 0;
+            ServedDevice34.DevicesAreConnected = false;
+            ServedDevice34.DeviceType = "None";
+            ServedDevice34.Location = new System.Drawing.Point(9, 175);
+            ServedDevice34.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice34.Name = "ServedDevice34";
+            ServedDevice34.ProgID = "";
+            ServedDevice34.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice34.TabIndex = 68;
             // 
             // ServedDevice35
             // 
-            this.ServedDevice35.AllowConcurrentAccess = (false);
-            this.ServedDevice35.AllowConnectedSetFalse = (false);
-            this.ServedDevice35.AllowConnectedSetTrue = (false);
-            this.ServedDevice35.Description = ("");
-            this.ServedDevice35.DeviceNumber = (0);
-            this.ServedDevice35.DevicesAreConnected = (false);
-            this.ServedDevice35.DeviceType = ("None");
-            this.ServedDevice35.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice35.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice35.Name = ("ServedDevice35");
-            this.ServedDevice35.ProgID = ("");
-            this.ServedDevice35.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice35.TabIndex = (69);
+            ServedDevice35.AllowConcurrentAccess = false;
+            ServedDevice35.AllowConnectedSetFalse = false;
+            ServedDevice35.AllowConnectedSetTrue = false;
+            ServedDevice35.Description = "";
+            ServedDevice35.DeviceNumber = 0;
+            ServedDevice35.DevicesAreConnected = false;
+            ServedDevice35.DeviceType = "None";
+            ServedDevice35.Location = new System.Drawing.Point(9, 208);
+            ServedDevice35.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice35.Name = "ServedDevice35";
+            ServedDevice35.ProgID = "";
+            ServedDevice35.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice35.TabIndex = 69;
             // 
             // ServedDevice36
             // 
-            this.ServedDevice36.AllowConcurrentAccess = (false);
-            this.ServedDevice36.AllowConnectedSetFalse = (false);
-            this.ServedDevice36.AllowConnectedSetTrue = (false);
-            this.ServedDevice36.Description = ("");
-            this.ServedDevice36.DeviceNumber = (0);
-            this.ServedDevice36.DevicesAreConnected = (false);
-            this.ServedDevice36.DeviceType = ("None");
-            this.ServedDevice36.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice36.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice36.Name = ("ServedDevice36");
-            this.ServedDevice36.ProgID = ("");
-            this.ServedDevice36.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice36.TabIndex = (70);
+            ServedDevice36.AllowConcurrentAccess = false;
+            ServedDevice36.AllowConnectedSetFalse = false;
+            ServedDevice36.AllowConnectedSetTrue = false;
+            ServedDevice36.Description = "";
+            ServedDevice36.DeviceNumber = 0;
+            ServedDevice36.DevicesAreConnected = false;
+            ServedDevice36.DeviceType = "None";
+            ServedDevice36.Location = new System.Drawing.Point(9, 240);
+            ServedDevice36.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice36.Name = "ServedDevice36";
+            ServedDevice36.ProgID = "";
+            ServedDevice36.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice36.TabIndex = 70;
             // 
             // ServedDevice37
             // 
-            this.ServedDevice37.AllowConcurrentAccess = (false);
-            this.ServedDevice37.AllowConnectedSetFalse = (false);
-            this.ServedDevice37.AllowConnectedSetTrue = (false);
-            this.ServedDevice37.Description = ("");
-            this.ServedDevice37.DeviceNumber = (0);
-            this.ServedDevice37.DevicesAreConnected = (false);
-            this.ServedDevice37.DeviceType = ("None");
-            this.ServedDevice37.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice37.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice37.Name = ("ServedDevice37");
-            this.ServedDevice37.ProgID = ("");
-            this.ServedDevice37.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice37.TabIndex = (71);
+            ServedDevice37.AllowConcurrentAccess = false;
+            ServedDevice37.AllowConnectedSetFalse = false;
+            ServedDevice37.AllowConnectedSetTrue = false;
+            ServedDevice37.Description = "";
+            ServedDevice37.DeviceNumber = 0;
+            ServedDevice37.DevicesAreConnected = false;
+            ServedDevice37.DeviceType = "None";
+            ServedDevice37.Location = new System.Drawing.Point(9, 272);
+            ServedDevice37.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice37.Name = "ServedDevice37";
+            ServedDevice37.ProgID = "";
+            ServedDevice37.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice37.TabIndex = 71;
             // 
             // ServedDevice38
             // 
-            this.ServedDevice38.AllowConcurrentAccess = (false);
-            this.ServedDevice38.AllowConnectedSetFalse = (false);
-            this.ServedDevice38.AllowConnectedSetTrue = (false);
-            this.ServedDevice38.Description = ("");
-            this.ServedDevice38.DeviceNumber = (0);
-            this.ServedDevice38.DevicesAreConnected = (false);
-            this.ServedDevice38.DeviceType = ("None");
-            this.ServedDevice38.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice38.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice38.Name = ("ServedDevice38");
-            this.ServedDevice38.ProgID = ("");
-            this.ServedDevice38.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice38.TabIndex = (72);
+            ServedDevice38.AllowConcurrentAccess = false;
+            ServedDevice38.AllowConnectedSetFalse = false;
+            ServedDevice38.AllowConnectedSetTrue = false;
+            ServedDevice38.Description = "";
+            ServedDevice38.DeviceNumber = 0;
+            ServedDevice38.DevicesAreConnected = false;
+            ServedDevice38.DeviceType = "None";
+            ServedDevice38.Location = new System.Drawing.Point(9, 305);
+            ServedDevice38.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice38.Name = "ServedDevice38";
+            ServedDevice38.ProgID = "";
+            ServedDevice38.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice38.TabIndex = 72;
             // 
             // ServedDevice39
             // 
-            this.ServedDevice39.AllowConcurrentAccess = (false);
-            this.ServedDevice39.AllowConnectedSetFalse = (false);
-            this.ServedDevice39.AllowConnectedSetTrue = (false);
-            this.ServedDevice39.Description = ("");
-            this.ServedDevice39.DeviceNumber = (0);
-            this.ServedDevice39.DevicesAreConnected = (false);
-            this.ServedDevice39.DeviceType = ("None");
-            this.ServedDevice39.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice39.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice39.Name = ("ServedDevice39");
-            this.ServedDevice39.ProgID = ("");
-            this.ServedDevice39.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice39.TabIndex = (73);
+            ServedDevice39.AllowConcurrentAccess = false;
+            ServedDevice39.AllowConnectedSetFalse = false;
+            ServedDevice39.AllowConnectedSetTrue = false;
+            ServedDevice39.Description = "";
+            ServedDevice39.DeviceNumber = 0;
+            ServedDevice39.DevicesAreConnected = false;
+            ServedDevice39.DeviceType = "None";
+            ServedDevice39.Location = new System.Drawing.Point(9, 337);
+            ServedDevice39.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice39.Name = "ServedDevice39";
+            ServedDevice39.ProgID = "";
+            ServedDevice39.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice39.TabIndex = 73;
             // 
             // DeviceTab4
             // 
-            this.DeviceTab4.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.DeviceTab4.Controls.Add(this.label42);
-            this.DeviceTab4.Controls.Add(this.label43);
-            this.DeviceTab4.Controls.Add(this.label44);
-            this.DeviceTab4.Controls.Add(this.label45);
-            this.DeviceTab4.Controls.Add(this.label46);
-            this.DeviceTab4.Controls.Add(this.label47);
-            this.DeviceTab4.Controls.Add(this.label48);
-            this.DeviceTab4.Controls.Add(this.label49);
-            this.DeviceTab4.Controls.Add(this.label50);
-            this.DeviceTab4.Controls.Add(this.ServedDevice40);
-            this.DeviceTab4.Controls.Add(this.ServedDevice41);
-            this.DeviceTab4.Controls.Add(this.ServedDevice42);
-            this.DeviceTab4.Controls.Add(this.ServedDevice43);
-            this.DeviceTab4.Controls.Add(this.ServedDevice44);
-            this.DeviceTab4.Controls.Add(this.ServedDevice45);
-            this.DeviceTab4.Controls.Add(this.ServedDevice46);
-            this.DeviceTab4.Controls.Add(this.ServedDevice47);
-            this.DeviceTab4.Controls.Add(this.ServedDevice48);
-            this.DeviceTab4.Controls.Add(this.ServedDevice49);
-            this.DeviceTab4.Location = (new global::System.Drawing.Point(4, 24));
-            this.DeviceTab4.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceTab4.Name = ("DeviceTab4");
-            this.DeviceTab4.Size = (new global::System.Drawing.Size(1173, 375));
-            this.DeviceTab4.TabIndex = (4);
-            this.DeviceTab4.Text = ("Devices 40 to 49");
+            DeviceTab4.BackColor = System.Drawing.SystemColors.Control;
+            DeviceTab4.Controls.Add(label42);
+            DeviceTab4.Controls.Add(label43);
+            DeviceTab4.Controls.Add(label44);
+            DeviceTab4.Controls.Add(label45);
+            DeviceTab4.Controls.Add(label46);
+            DeviceTab4.Controls.Add(label47);
+            DeviceTab4.Controls.Add(label48);
+            DeviceTab4.Controls.Add(label49);
+            DeviceTab4.Controls.Add(label50);
+            DeviceTab4.Controls.Add(ServedDevice40);
+            DeviceTab4.Controls.Add(ServedDevice41);
+            DeviceTab4.Controls.Add(ServedDevice42);
+            DeviceTab4.Controls.Add(ServedDevice43);
+            DeviceTab4.Controls.Add(ServedDevice44);
+            DeviceTab4.Controls.Add(ServedDevice45);
+            DeviceTab4.Controls.Add(ServedDevice46);
+            DeviceTab4.Controls.Add(ServedDevice47);
+            DeviceTab4.Controls.Add(ServedDevice48);
+            DeviceTab4.Controls.Add(ServedDevice49);
+            DeviceTab4.Location = new System.Drawing.Point(4, 24);
+            DeviceTab4.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceTab4.Name = "DeviceTab4";
+            DeviceTab4.Size = new System.Drawing.Size(1173, 375);
+            DeviceTab4.TabIndex = 4;
+            DeviceTab4.Text = "Devices 40 to 49";
             // 
             // label42
             // 
-            this.label42.AutoSize = (true);
-            this.label42.Location = (new global::System.Drawing.Point(1083, 9));
-            this.label42.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label42.Name = ("label42");
-            this.label42.Size = (new global::System.Drawing.Size(42, 15));
-            this.label42.TabIndex = (79);
-            this.label42.Text = ("Enable");
+            label42.AutoSize = true;
+            label42.Location = new System.Drawing.Point(1083, 9);
+            label42.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label42.Name = "label42";
+            label42.Size = new System.Drawing.Size(42, 15);
+            label42.TabIndex = 79;
+            label42.Text = "Enable";
             // 
             // label43
             // 
-            this.label43.AutoSize = (true);
-            this.label43.Location = (new global::System.Drawing.Point(1049, 28));
-            this.label43.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label43.Name = ("label43");
-            this.label43.Size = (new global::System.Drawing.Size(106, 15));
-            this.label43.TabIndex = (78);
-            this.label43.Text = ("Concurrent Access");
+            label43.AutoSize = true;
+            label43.Location = new System.Drawing.Point(1049, 28);
+            label43.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label43.Name = "label43";
+            label43.Size = new System.Drawing.Size(106, 15);
+            label43.TabIndex = 78;
+            label43.Text = "Concurrent Access";
             // 
             // label44
             // 
-            this.label44.AutoSize = (true);
-            this.label44.Location = (new global::System.Drawing.Point(65, 28));
-            this.label44.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label44.Name = ("label44");
-            this.label44.Size = (new global::System.Drawing.Size(69, 15));
-            this.label44.TabIndex = (63);
-            this.label44.Text = ("Device Type");
+            label44.AutoSize = true;
+            label44.Location = new System.Drawing.Point(65, 28);
+            label44.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label44.Name = "label44";
+            label44.Size = new System.Drawing.Size(69, 15);
+            label44.TabIndex = 63;
+            label44.Text = "Device Type";
             // 
             // label45
             // 
-            this.label45.AutoSize = (true);
-            this.label45.Location = (new global::System.Drawing.Point(497, 28));
-            this.label45.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label45.Name = ("label45");
-            this.label45.Size = (new global::System.Drawing.Size(42, 15));
-            this.label45.TabIndex = (65);
-            this.label45.Text = ("Device");
+            label45.AutoSize = true;
+            label45.Location = new System.Drawing.Point(497, 28);
+            label45.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label45.Name = "label45";
+            label45.Size = new System.Drawing.Size(42, 15);
+            label45.TabIndex = 65;
+            label45.Text = "Device";
             // 
             // label46
             // 
-            this.label46.AutoSize = (true);
-            this.label46.Location = (new global::System.Drawing.Point(756, 28));
-            this.label46.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label46.Name = ("label46");
-            this.label46.Size = (new global::System.Drawing.Size(98, 15));
-            this.label46.TabIndex = (77);
-            this.label46.Text = ("Configure Device");
+            label46.AutoSize = true;
+            label46.Location = new System.Drawing.Point(756, 28);
+            label46.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label46.Name = "label46";
+            label46.Size = new System.Drawing.Size(98, 15);
+            label46.TabIndex = 77;
+            label46.Text = "Configure Device";
             // 
             // label47
             // 
-            this.label47.AutoSize = (true);
-            this.label47.Location = (new global::System.Drawing.Point(218, 28));
-            this.label47.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label47.Name = ("label47");
-            this.label47.Size = (new global::System.Drawing.Size(89, 15));
-            this.label47.TabIndex = (66);
-            this.label47.Text = ("Device Number");
+            label47.AutoSize = true;
+            label47.Location = new System.Drawing.Point(218, 28);
+            label47.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label47.Name = "label47";
+            label47.Size = new System.Drawing.Size(89, 15);
+            label47.TabIndex = 66;
+            label47.Text = "Device Number";
             // 
             // label48
             // 
-            this.label48.AutoSize = (true);
-            this.label48.Location = (new global::System.Drawing.Point(985, 28));
-            this.label48.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label48.Name = ("label48");
-            this.label48.Size = (new global::System.Drawing.Size(29, 15));
-            this.label48.TabIndex = (76);
-            this.label48.Text = ("True");
+            label48.AutoSize = true;
+            label48.Location = new System.Drawing.Point(985, 28);
+            label48.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label48.Name = "label48";
+            label48.Size = new System.Drawing.Size(29, 15);
+            label48.TabIndex = 76;
+            label48.Text = "True";
             // 
             // label49
             // 
-            this.label49.AutoSize = (true);
-            this.label49.Location = (new global::System.Drawing.Point(915, 28));
-            this.label49.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label49.Name = ("label49");
-            this.label49.Size = (new global::System.Drawing.Size(33, 15));
-            this.label49.TabIndex = (75);
-            this.label49.Text = ("False");
+            label49.AutoSize = true;
+            label49.Location = new System.Drawing.Point(915, 28);
+            label49.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label49.Name = "label49";
+            label49.Size = new System.Drawing.Size(33, 15);
+            label49.TabIndex = 75;
+            label49.Text = "False";
             // 
             // label50
             // 
-            this.label50.AutoSize = (true);
-            this.label50.Location = (new global::System.Drawing.Point(891, 9));
-            this.label50.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label50.Name = ("label50");
-            this.label50.Size = (new global::System.Drawing.Size(146, 15));
-            this.label50.TabIndex = (74);
-            this.label50.Text = ("Allow Connected to be set");
+            label50.AutoSize = true;
+            label50.Location = new System.Drawing.Point(891, 9);
+            label50.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label50.Name = "label50";
+            label50.Size = new System.Drawing.Size(146, 15);
+            label50.TabIndex = 74;
+            label50.Text = "Allow Connected to be set";
             // 
             // ServedDevice40
             // 
-            this.ServedDevice40.AllowConcurrentAccess = (false);
-            this.ServedDevice40.AllowConnectedSetFalse = (false);
-            this.ServedDevice40.AllowConnectedSetTrue = (false);
-            this.ServedDevice40.Description = ("");
-            this.ServedDevice40.DeviceNumber = (0);
-            this.ServedDevice40.DevicesAreConnected = (false);
-            this.ServedDevice40.DeviceType = ("None");
-            this.ServedDevice40.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice40.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice40.Name = ("ServedDevice40");
-            this.ServedDevice40.ProgID = ("");
-            this.ServedDevice40.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice40.TabIndex = (61);
+            ServedDevice40.AllowConcurrentAccess = false;
+            ServedDevice40.AllowConnectedSetFalse = false;
+            ServedDevice40.AllowConnectedSetTrue = false;
+            ServedDevice40.Description = "";
+            ServedDevice40.DeviceNumber = 0;
+            ServedDevice40.DevicesAreConnected = false;
+            ServedDevice40.DeviceType = "None";
+            ServedDevice40.Location = new System.Drawing.Point(9, 46);
+            ServedDevice40.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice40.Name = "ServedDevice40";
+            ServedDevice40.ProgID = "";
+            ServedDevice40.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice40.TabIndex = 61;
             // 
             // ServedDevice41
             // 
-            this.ServedDevice41.AllowConcurrentAccess = (false);
-            this.ServedDevice41.AllowConnectedSetFalse = (false);
-            this.ServedDevice41.AllowConnectedSetTrue = (false);
-            this.ServedDevice41.Description = ("");
-            this.ServedDevice41.DeviceNumber = (0);
-            this.ServedDevice41.DevicesAreConnected = (false);
-            this.ServedDevice41.DeviceType = ("None");
-            this.ServedDevice41.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice41.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice41.Name = ("ServedDevice41");
-            this.ServedDevice41.ProgID = ("");
-            this.ServedDevice41.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice41.TabIndex = (62);
+            ServedDevice41.AllowConcurrentAccess = false;
+            ServedDevice41.AllowConnectedSetFalse = false;
+            ServedDevice41.AllowConnectedSetTrue = false;
+            ServedDevice41.Description = "";
+            ServedDevice41.DeviceNumber = 0;
+            ServedDevice41.DevicesAreConnected = false;
+            ServedDevice41.DeviceType = "None";
+            ServedDevice41.Location = new System.Drawing.Point(9, 78);
+            ServedDevice41.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice41.Name = "ServedDevice41";
+            ServedDevice41.ProgID = "";
+            ServedDevice41.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice41.TabIndex = 62;
             // 
             // ServedDevice42
             // 
-            this.ServedDevice42.AllowConcurrentAccess = (false);
-            this.ServedDevice42.AllowConnectedSetFalse = (false);
-            this.ServedDevice42.AllowConnectedSetTrue = (false);
-            this.ServedDevice42.Description = ("");
-            this.ServedDevice42.DeviceNumber = (0);
-            this.ServedDevice42.DevicesAreConnected = (false);
-            this.ServedDevice42.DeviceType = ("None");
-            this.ServedDevice42.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice42.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice42.Name = ("ServedDevice42");
-            this.ServedDevice42.ProgID = ("");
-            this.ServedDevice42.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice42.TabIndex = (64);
+            ServedDevice42.AllowConcurrentAccess = false;
+            ServedDevice42.AllowConnectedSetFalse = false;
+            ServedDevice42.AllowConnectedSetTrue = false;
+            ServedDevice42.Description = "";
+            ServedDevice42.DeviceNumber = 0;
+            ServedDevice42.DevicesAreConnected = false;
+            ServedDevice42.DeviceType = "None";
+            ServedDevice42.Location = new System.Drawing.Point(9, 111);
+            ServedDevice42.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice42.Name = "ServedDevice42";
+            ServedDevice42.ProgID = "";
+            ServedDevice42.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice42.TabIndex = 64;
             // 
             // ServedDevice43
             // 
-            this.ServedDevice43.AllowConcurrentAccess = (false);
-            this.ServedDevice43.AllowConnectedSetFalse = (false);
-            this.ServedDevice43.AllowConnectedSetTrue = (false);
-            this.ServedDevice43.Description = ("");
-            this.ServedDevice43.DeviceNumber = (0);
-            this.ServedDevice43.DevicesAreConnected = (false);
-            this.ServedDevice43.DeviceType = ("None");
-            this.ServedDevice43.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice43.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice43.Name = ("ServedDevice43");
-            this.ServedDevice43.ProgID = ("");
-            this.ServedDevice43.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice43.TabIndex = (67);
+            ServedDevice43.AllowConcurrentAccess = false;
+            ServedDevice43.AllowConnectedSetFalse = false;
+            ServedDevice43.AllowConnectedSetTrue = false;
+            ServedDevice43.Description = "";
+            ServedDevice43.DeviceNumber = 0;
+            ServedDevice43.DevicesAreConnected = false;
+            ServedDevice43.DeviceType = "None";
+            ServedDevice43.Location = new System.Drawing.Point(9, 143);
+            ServedDevice43.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice43.Name = "ServedDevice43";
+            ServedDevice43.ProgID = "";
+            ServedDevice43.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice43.TabIndex = 67;
             // 
             // ServedDevice44
             // 
-            this.ServedDevice44.AllowConcurrentAccess = (false);
-            this.ServedDevice44.AllowConnectedSetFalse = (false);
-            this.ServedDevice44.AllowConnectedSetTrue = (false);
-            this.ServedDevice44.Description = ("");
-            this.ServedDevice44.DeviceNumber = (0);
-            this.ServedDevice44.DevicesAreConnected = (false);
-            this.ServedDevice44.DeviceType = ("None");
-            this.ServedDevice44.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice44.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice44.Name = ("ServedDevice44");
-            this.ServedDevice44.ProgID = ("");
-            this.ServedDevice44.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice44.TabIndex = (68);
+            ServedDevice44.AllowConcurrentAccess = false;
+            ServedDevice44.AllowConnectedSetFalse = false;
+            ServedDevice44.AllowConnectedSetTrue = false;
+            ServedDevice44.Description = "";
+            ServedDevice44.DeviceNumber = 0;
+            ServedDevice44.DevicesAreConnected = false;
+            ServedDevice44.DeviceType = "None";
+            ServedDevice44.Location = new System.Drawing.Point(9, 175);
+            ServedDevice44.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice44.Name = "ServedDevice44";
+            ServedDevice44.ProgID = "";
+            ServedDevice44.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice44.TabIndex = 68;
             // 
             // ServedDevice45
             // 
-            this.ServedDevice45.AllowConcurrentAccess = (false);
-            this.ServedDevice45.AllowConnectedSetFalse = (false);
-            this.ServedDevice45.AllowConnectedSetTrue = (false);
-            this.ServedDevice45.Description = ("");
-            this.ServedDevice45.DeviceNumber = (0);
-            this.ServedDevice45.DevicesAreConnected = (false);
-            this.ServedDevice45.DeviceType = ("None");
-            this.ServedDevice45.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice45.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice45.Name = ("ServedDevice45");
-            this.ServedDevice45.ProgID = ("");
-            this.ServedDevice45.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice45.TabIndex = (69);
+            ServedDevice45.AllowConcurrentAccess = false;
+            ServedDevice45.AllowConnectedSetFalse = false;
+            ServedDevice45.AllowConnectedSetTrue = false;
+            ServedDevice45.Description = "";
+            ServedDevice45.DeviceNumber = 0;
+            ServedDevice45.DevicesAreConnected = false;
+            ServedDevice45.DeviceType = "None";
+            ServedDevice45.Location = new System.Drawing.Point(9, 208);
+            ServedDevice45.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice45.Name = "ServedDevice45";
+            ServedDevice45.ProgID = "";
+            ServedDevice45.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice45.TabIndex = 69;
             // 
             // ServedDevice46
             // 
-            this.ServedDevice46.AllowConcurrentAccess = (false);
-            this.ServedDevice46.AllowConnectedSetFalse = (false);
-            this.ServedDevice46.AllowConnectedSetTrue = (false);
-            this.ServedDevice46.Description = ("");
-            this.ServedDevice46.DeviceNumber = (0);
-            this.ServedDevice46.DevicesAreConnected = (false);
-            this.ServedDevice46.DeviceType = ("None");
-            this.ServedDevice46.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice46.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice46.Name = ("ServedDevice46");
-            this.ServedDevice46.ProgID = ("");
-            this.ServedDevice46.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice46.TabIndex = (70);
+            ServedDevice46.AllowConcurrentAccess = false;
+            ServedDevice46.AllowConnectedSetFalse = false;
+            ServedDevice46.AllowConnectedSetTrue = false;
+            ServedDevice46.Description = "";
+            ServedDevice46.DeviceNumber = 0;
+            ServedDevice46.DevicesAreConnected = false;
+            ServedDevice46.DeviceType = "None";
+            ServedDevice46.Location = new System.Drawing.Point(9, 240);
+            ServedDevice46.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice46.Name = "ServedDevice46";
+            ServedDevice46.ProgID = "";
+            ServedDevice46.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice46.TabIndex = 70;
             // 
             // ServedDevice47
             // 
-            this.ServedDevice47.AllowConcurrentAccess = (false);
-            this.ServedDevice47.AllowConnectedSetFalse = (false);
-            this.ServedDevice47.AllowConnectedSetTrue = (false);
-            this.ServedDevice47.Description = ("");
-            this.ServedDevice47.DeviceNumber = (0);
-            this.ServedDevice47.DevicesAreConnected = (false);
-            this.ServedDevice47.DeviceType = ("None");
-            this.ServedDevice47.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice47.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice47.Name = ("ServedDevice47");
-            this.ServedDevice47.ProgID = ("");
-            this.ServedDevice47.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice47.TabIndex = (71);
+            ServedDevice47.AllowConcurrentAccess = false;
+            ServedDevice47.AllowConnectedSetFalse = false;
+            ServedDevice47.AllowConnectedSetTrue = false;
+            ServedDevice47.Description = "";
+            ServedDevice47.DeviceNumber = 0;
+            ServedDevice47.DevicesAreConnected = false;
+            ServedDevice47.DeviceType = "None";
+            ServedDevice47.Location = new System.Drawing.Point(9, 272);
+            ServedDevice47.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice47.Name = "ServedDevice47";
+            ServedDevice47.ProgID = "";
+            ServedDevice47.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice47.TabIndex = 71;
             // 
             // ServedDevice48
             // 
-            this.ServedDevice48.AllowConcurrentAccess = (false);
-            this.ServedDevice48.AllowConnectedSetFalse = (false);
-            this.ServedDevice48.AllowConnectedSetTrue = (false);
-            this.ServedDevice48.Description = ("");
-            this.ServedDevice48.DeviceNumber = (0);
-            this.ServedDevice48.DevicesAreConnected = (false);
-            this.ServedDevice48.DeviceType = ("None");
-            this.ServedDevice48.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice48.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice48.Name = ("ServedDevice48");
-            this.ServedDevice48.ProgID = ("");
-            this.ServedDevice48.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice48.TabIndex = (72);
+            ServedDevice48.AllowConcurrentAccess = false;
+            ServedDevice48.AllowConnectedSetFalse = false;
+            ServedDevice48.AllowConnectedSetTrue = false;
+            ServedDevice48.Description = "";
+            ServedDevice48.DeviceNumber = 0;
+            ServedDevice48.DevicesAreConnected = false;
+            ServedDevice48.DeviceType = "None";
+            ServedDevice48.Location = new System.Drawing.Point(9, 305);
+            ServedDevice48.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice48.Name = "ServedDevice48";
+            ServedDevice48.ProgID = "";
+            ServedDevice48.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice48.TabIndex = 72;
             // 
             // ServedDevice49
             // 
-            this.ServedDevice49.AllowConcurrentAccess = (false);
-            this.ServedDevice49.AllowConnectedSetFalse = (false);
-            this.ServedDevice49.AllowConnectedSetTrue = (false);
-            this.ServedDevice49.Description = ("");
-            this.ServedDevice49.DeviceNumber = (0);
-            this.ServedDevice49.DevicesAreConnected = (false);
-            this.ServedDevice49.DeviceType = ("None");
-            this.ServedDevice49.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice49.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice49.Name = ("ServedDevice49");
-            this.ServedDevice49.ProgID = ("");
-            this.ServedDevice49.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice49.TabIndex = (73);
+            ServedDevice49.AllowConcurrentAccess = false;
+            ServedDevice49.AllowConnectedSetFalse = false;
+            ServedDevice49.AllowConnectedSetTrue = false;
+            ServedDevice49.Description = "";
+            ServedDevice49.DeviceNumber = 0;
+            ServedDevice49.DevicesAreConnected = false;
+            ServedDevice49.DeviceType = "None";
+            ServedDevice49.Location = new System.Drawing.Point(9, 337);
+            ServedDevice49.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice49.Name = "ServedDevice49";
+            ServedDevice49.ProgID = "";
+            ServedDevice49.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice49.TabIndex = 73;
             // 
             // DeviceTab5
             // 
-            this.DeviceTab5.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.DeviceTab5.Controls.Add(this.label51);
-            this.DeviceTab5.Controls.Add(this.label52);
-            this.DeviceTab5.Controls.Add(this.label53);
-            this.DeviceTab5.Controls.Add(this.label54);
-            this.DeviceTab5.Controls.Add(this.label55);
-            this.DeviceTab5.Controls.Add(this.label56);
-            this.DeviceTab5.Controls.Add(this.label57);
-            this.DeviceTab5.Controls.Add(this.label58);
-            this.DeviceTab5.Controls.Add(this.label59);
-            this.DeviceTab5.Controls.Add(this.ServedDevice50);
-            this.DeviceTab5.Controls.Add(this.ServedDevice51);
-            this.DeviceTab5.Controls.Add(this.ServedDevice52);
-            this.DeviceTab5.Controls.Add(this.ServedDevice53);
-            this.DeviceTab5.Controls.Add(this.ServedDevice54);
-            this.DeviceTab5.Controls.Add(this.ServedDevice55);
-            this.DeviceTab5.Controls.Add(this.ServedDevice56);
-            this.DeviceTab5.Controls.Add(this.ServedDevice57);
-            this.DeviceTab5.Controls.Add(this.ServedDevice58);
-            this.DeviceTab5.Controls.Add(this.ServedDevice59);
-            this.DeviceTab5.Location = (new global::System.Drawing.Point(4, 24));
-            this.DeviceTab5.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceTab5.Name = ("DeviceTab5");
-            this.DeviceTab5.Size = (new global::System.Drawing.Size(1173, 375));
-            this.DeviceTab5.TabIndex = (5);
-            this.DeviceTab5.Text = ("Devices 50 to 59");
+            DeviceTab5.BackColor = System.Drawing.SystemColors.Control;
+            DeviceTab5.Controls.Add(label51);
+            DeviceTab5.Controls.Add(label52);
+            DeviceTab5.Controls.Add(label53);
+            DeviceTab5.Controls.Add(label54);
+            DeviceTab5.Controls.Add(label55);
+            DeviceTab5.Controls.Add(label56);
+            DeviceTab5.Controls.Add(label57);
+            DeviceTab5.Controls.Add(label58);
+            DeviceTab5.Controls.Add(label59);
+            DeviceTab5.Controls.Add(ServedDevice50);
+            DeviceTab5.Controls.Add(ServedDevice51);
+            DeviceTab5.Controls.Add(ServedDevice52);
+            DeviceTab5.Controls.Add(ServedDevice53);
+            DeviceTab5.Controls.Add(ServedDevice54);
+            DeviceTab5.Controls.Add(ServedDevice55);
+            DeviceTab5.Controls.Add(ServedDevice56);
+            DeviceTab5.Controls.Add(ServedDevice57);
+            DeviceTab5.Controls.Add(ServedDevice58);
+            DeviceTab5.Controls.Add(ServedDevice59);
+            DeviceTab5.Location = new System.Drawing.Point(4, 24);
+            DeviceTab5.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceTab5.Name = "DeviceTab5";
+            DeviceTab5.Size = new System.Drawing.Size(1173, 375);
+            DeviceTab5.TabIndex = 5;
+            DeviceTab5.Text = "Devices 50 to 59";
             // 
             // label51
             // 
-            this.label51.AutoSize = (true);
-            this.label51.Location = (new global::System.Drawing.Point(1083, 9));
-            this.label51.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label51.Name = ("label51");
-            this.label51.Size = (new global::System.Drawing.Size(42, 15));
-            this.label51.TabIndex = (79);
-            this.label51.Text = ("Enable");
+            label51.AutoSize = true;
+            label51.Location = new System.Drawing.Point(1083, 9);
+            label51.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label51.Name = "label51";
+            label51.Size = new System.Drawing.Size(42, 15);
+            label51.TabIndex = 79;
+            label51.Text = "Enable";
             // 
             // label52
             // 
-            this.label52.AutoSize = (true);
-            this.label52.Location = (new global::System.Drawing.Point(1049, 28));
-            this.label52.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label52.Name = ("label52");
-            this.label52.Size = (new global::System.Drawing.Size(106, 15));
-            this.label52.TabIndex = (78);
-            this.label52.Text = ("Concurrent Access");
+            label52.AutoSize = true;
+            label52.Location = new System.Drawing.Point(1049, 28);
+            label52.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label52.Name = "label52";
+            label52.Size = new System.Drawing.Size(106, 15);
+            label52.TabIndex = 78;
+            label52.Text = "Concurrent Access";
             // 
             // label53
             // 
-            this.label53.AutoSize = (true);
-            this.label53.Location = (new global::System.Drawing.Point(65, 28));
-            this.label53.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label53.Name = ("label53");
-            this.label53.Size = (new global::System.Drawing.Size(69, 15));
-            this.label53.TabIndex = (63);
-            this.label53.Text = ("Device Type");
+            label53.AutoSize = true;
+            label53.Location = new System.Drawing.Point(65, 28);
+            label53.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label53.Name = "label53";
+            label53.Size = new System.Drawing.Size(69, 15);
+            label53.TabIndex = 63;
+            label53.Text = "Device Type";
             // 
             // label54
             // 
-            this.label54.AutoSize = (true);
-            this.label54.Location = (new global::System.Drawing.Point(497, 28));
-            this.label54.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label54.Name = ("label54");
-            this.label54.Size = (new global::System.Drawing.Size(42, 15));
-            this.label54.TabIndex = (65);
-            this.label54.Text = ("Device");
+            label54.AutoSize = true;
+            label54.Location = new System.Drawing.Point(497, 28);
+            label54.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label54.Name = "label54";
+            label54.Size = new System.Drawing.Size(42, 15);
+            label54.TabIndex = 65;
+            label54.Text = "Device";
             // 
             // label55
             // 
-            this.label55.AutoSize = (true);
-            this.label55.Location = (new global::System.Drawing.Point(756, 28));
-            this.label55.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label55.Name = ("label55");
-            this.label55.Size = (new global::System.Drawing.Size(98, 15));
-            this.label55.TabIndex = (77);
-            this.label55.Text = ("Configure Device");
+            label55.AutoSize = true;
+            label55.Location = new System.Drawing.Point(756, 28);
+            label55.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label55.Name = "label55";
+            label55.Size = new System.Drawing.Size(98, 15);
+            label55.TabIndex = 77;
+            label55.Text = "Configure Device";
             // 
             // label56
             // 
-            this.label56.AutoSize = (true);
-            this.label56.Location = (new global::System.Drawing.Point(218, 28));
-            this.label56.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label56.Name = ("label56");
-            this.label56.Size = (new global::System.Drawing.Size(89, 15));
-            this.label56.TabIndex = (66);
-            this.label56.Text = ("Device Number");
+            label56.AutoSize = true;
+            label56.Location = new System.Drawing.Point(218, 28);
+            label56.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label56.Name = "label56";
+            label56.Size = new System.Drawing.Size(89, 15);
+            label56.TabIndex = 66;
+            label56.Text = "Device Number";
             // 
             // label57
             // 
-            this.label57.AutoSize = (true);
-            this.label57.Location = (new global::System.Drawing.Point(985, 28));
-            this.label57.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label57.Name = ("label57");
-            this.label57.Size = (new global::System.Drawing.Size(29, 15));
-            this.label57.TabIndex = (76);
-            this.label57.Text = ("True");
+            label57.AutoSize = true;
+            label57.Location = new System.Drawing.Point(985, 28);
+            label57.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label57.Name = "label57";
+            label57.Size = new System.Drawing.Size(29, 15);
+            label57.TabIndex = 76;
+            label57.Text = "True";
             // 
             // label58
             // 
-            this.label58.AutoSize = (true);
-            this.label58.Location = (new global::System.Drawing.Point(915, 28));
-            this.label58.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label58.Name = ("label58");
-            this.label58.Size = (new global::System.Drawing.Size(33, 15));
-            this.label58.TabIndex = (75);
-            this.label58.Text = ("False");
+            label58.AutoSize = true;
+            label58.Location = new System.Drawing.Point(915, 28);
+            label58.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label58.Name = "label58";
+            label58.Size = new System.Drawing.Size(33, 15);
+            label58.TabIndex = 75;
+            label58.Text = "False";
             // 
             // label59
             // 
-            this.label59.AutoSize = (true);
-            this.label59.Location = (new global::System.Drawing.Point(891, 9));
-            this.label59.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label59.Name = ("label59");
-            this.label59.Size = (new global::System.Drawing.Size(146, 15));
-            this.label59.TabIndex = (74);
-            this.label59.Text = ("Allow Connected to be set");
+            label59.AutoSize = true;
+            label59.Location = new System.Drawing.Point(891, 9);
+            label59.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label59.Name = "label59";
+            label59.Size = new System.Drawing.Size(146, 15);
+            label59.TabIndex = 74;
+            label59.Text = "Allow Connected to be set";
             // 
             // ServedDevice50
             // 
-            this.ServedDevice50.AllowConcurrentAccess = (false);
-            this.ServedDevice50.AllowConnectedSetFalse = (false);
-            this.ServedDevice50.AllowConnectedSetTrue = (false);
-            this.ServedDevice50.Description = ("");
-            this.ServedDevice50.DeviceNumber = (0);
-            this.ServedDevice50.DevicesAreConnected = (false);
-            this.ServedDevice50.DeviceType = ("None");
-            this.ServedDevice50.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice50.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice50.Name = ("ServedDevice50");
-            this.ServedDevice50.ProgID = ("");
-            this.ServedDevice50.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice50.TabIndex = (61);
+            ServedDevice50.AllowConcurrentAccess = false;
+            ServedDevice50.AllowConnectedSetFalse = false;
+            ServedDevice50.AllowConnectedSetTrue = false;
+            ServedDevice50.Description = "";
+            ServedDevice50.DeviceNumber = 0;
+            ServedDevice50.DevicesAreConnected = false;
+            ServedDevice50.DeviceType = "None";
+            ServedDevice50.Location = new System.Drawing.Point(9, 46);
+            ServedDevice50.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice50.Name = "ServedDevice50";
+            ServedDevice50.ProgID = "";
+            ServedDevice50.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice50.TabIndex = 61;
             // 
             // ServedDevice51
             // 
-            this.ServedDevice51.AllowConcurrentAccess = (false);
-            this.ServedDevice51.AllowConnectedSetFalse = (false);
-            this.ServedDevice51.AllowConnectedSetTrue = (false);
-            this.ServedDevice51.Description = ("");
-            this.ServedDevice51.DeviceNumber = (0);
-            this.ServedDevice51.DevicesAreConnected = (false);
-            this.ServedDevice51.DeviceType = ("None");
-            this.ServedDevice51.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice51.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice51.Name = ("ServedDevice51");
-            this.ServedDevice51.ProgID = ("");
-            this.ServedDevice51.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice51.TabIndex = (62);
+            ServedDevice51.AllowConcurrentAccess = false;
+            ServedDevice51.AllowConnectedSetFalse = false;
+            ServedDevice51.AllowConnectedSetTrue = false;
+            ServedDevice51.Description = "";
+            ServedDevice51.DeviceNumber = 0;
+            ServedDevice51.DevicesAreConnected = false;
+            ServedDevice51.DeviceType = "None";
+            ServedDevice51.Location = new System.Drawing.Point(9, 78);
+            ServedDevice51.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice51.Name = "ServedDevice51";
+            ServedDevice51.ProgID = "";
+            ServedDevice51.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice51.TabIndex = 62;
             // 
             // ServedDevice52
             // 
-            this.ServedDevice52.AllowConcurrentAccess = (false);
-            this.ServedDevice52.AllowConnectedSetFalse = (false);
-            this.ServedDevice52.AllowConnectedSetTrue = (false);
-            this.ServedDevice52.Description = ("");
-            this.ServedDevice52.DeviceNumber = (0);
-            this.ServedDevice52.DevicesAreConnected = (false);
-            this.ServedDevice52.DeviceType = ("None");
-            this.ServedDevice52.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice52.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice52.Name = ("ServedDevice52");
-            this.ServedDevice52.ProgID = ("");
-            this.ServedDevice52.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice52.TabIndex = (64);
+            ServedDevice52.AllowConcurrentAccess = false;
+            ServedDevice52.AllowConnectedSetFalse = false;
+            ServedDevice52.AllowConnectedSetTrue = false;
+            ServedDevice52.Description = "";
+            ServedDevice52.DeviceNumber = 0;
+            ServedDevice52.DevicesAreConnected = false;
+            ServedDevice52.DeviceType = "None";
+            ServedDevice52.Location = new System.Drawing.Point(9, 111);
+            ServedDevice52.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice52.Name = "ServedDevice52";
+            ServedDevice52.ProgID = "";
+            ServedDevice52.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice52.TabIndex = 64;
             // 
             // ServedDevice53
             // 
-            this.ServedDevice53.AllowConcurrentAccess = (false);
-            this.ServedDevice53.AllowConnectedSetFalse = (false);
-            this.ServedDevice53.AllowConnectedSetTrue = (false);
-            this.ServedDevice53.Description = ("");
-            this.ServedDevice53.DeviceNumber = (0);
-            this.ServedDevice53.DevicesAreConnected = (false);
-            this.ServedDevice53.DeviceType = ("None");
-            this.ServedDevice53.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice53.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice53.Name = ("ServedDevice53");
-            this.ServedDevice53.ProgID = ("");
-            this.ServedDevice53.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice53.TabIndex = (67);
+            ServedDevice53.AllowConcurrentAccess = false;
+            ServedDevice53.AllowConnectedSetFalse = false;
+            ServedDevice53.AllowConnectedSetTrue = false;
+            ServedDevice53.Description = "";
+            ServedDevice53.DeviceNumber = 0;
+            ServedDevice53.DevicesAreConnected = false;
+            ServedDevice53.DeviceType = "None";
+            ServedDevice53.Location = new System.Drawing.Point(9, 143);
+            ServedDevice53.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice53.Name = "ServedDevice53";
+            ServedDevice53.ProgID = "";
+            ServedDevice53.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice53.TabIndex = 67;
             // 
             // ServedDevice54
             // 
-            this.ServedDevice54.AllowConcurrentAccess = (false);
-            this.ServedDevice54.AllowConnectedSetFalse = (false);
-            this.ServedDevice54.AllowConnectedSetTrue = (false);
-            this.ServedDevice54.Description = ("");
-            this.ServedDevice54.DeviceNumber = (0);
-            this.ServedDevice54.DevicesAreConnected = (false);
-            this.ServedDevice54.DeviceType = ("None");
-            this.ServedDevice54.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice54.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice54.Name = ("ServedDevice54");
-            this.ServedDevice54.ProgID = ("");
-            this.ServedDevice54.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice54.TabIndex = (68);
+            ServedDevice54.AllowConcurrentAccess = false;
+            ServedDevice54.AllowConnectedSetFalse = false;
+            ServedDevice54.AllowConnectedSetTrue = false;
+            ServedDevice54.Description = "";
+            ServedDevice54.DeviceNumber = 0;
+            ServedDevice54.DevicesAreConnected = false;
+            ServedDevice54.DeviceType = "None";
+            ServedDevice54.Location = new System.Drawing.Point(9, 175);
+            ServedDevice54.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice54.Name = "ServedDevice54";
+            ServedDevice54.ProgID = "";
+            ServedDevice54.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice54.TabIndex = 68;
             // 
             // ServedDevice55
             // 
-            this.ServedDevice55.AllowConcurrentAccess = (false);
-            this.ServedDevice55.AllowConnectedSetFalse = (false);
-            this.ServedDevice55.AllowConnectedSetTrue = (false);
-            this.ServedDevice55.Description = ("");
-            this.ServedDevice55.DeviceNumber = (0);
-            this.ServedDevice55.DevicesAreConnected = (false);
-            this.ServedDevice55.DeviceType = ("None");
-            this.ServedDevice55.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice55.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice55.Name = ("ServedDevice55");
-            this.ServedDevice55.ProgID = ("");
-            this.ServedDevice55.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice55.TabIndex = (69);
+            ServedDevice55.AllowConcurrentAccess = false;
+            ServedDevice55.AllowConnectedSetFalse = false;
+            ServedDevice55.AllowConnectedSetTrue = false;
+            ServedDevice55.Description = "";
+            ServedDevice55.DeviceNumber = 0;
+            ServedDevice55.DevicesAreConnected = false;
+            ServedDevice55.DeviceType = "None";
+            ServedDevice55.Location = new System.Drawing.Point(9, 208);
+            ServedDevice55.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice55.Name = "ServedDevice55";
+            ServedDevice55.ProgID = "";
+            ServedDevice55.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice55.TabIndex = 69;
             // 
             // ServedDevice56
             // 
-            this.ServedDevice56.AllowConcurrentAccess = (false);
-            this.ServedDevice56.AllowConnectedSetFalse = (false);
-            this.ServedDevice56.AllowConnectedSetTrue = (false);
-            this.ServedDevice56.Description = ("");
-            this.ServedDevice56.DeviceNumber = (0);
-            this.ServedDevice56.DevicesAreConnected = (false);
-            this.ServedDevice56.DeviceType = ("None");
-            this.ServedDevice56.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice56.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice56.Name = ("ServedDevice56");
-            this.ServedDevice56.ProgID = ("");
-            this.ServedDevice56.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice56.TabIndex = (70);
+            ServedDevice56.AllowConcurrentAccess = false;
+            ServedDevice56.AllowConnectedSetFalse = false;
+            ServedDevice56.AllowConnectedSetTrue = false;
+            ServedDevice56.Description = "";
+            ServedDevice56.DeviceNumber = 0;
+            ServedDevice56.DevicesAreConnected = false;
+            ServedDevice56.DeviceType = "None";
+            ServedDevice56.Location = new System.Drawing.Point(9, 240);
+            ServedDevice56.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice56.Name = "ServedDevice56";
+            ServedDevice56.ProgID = "";
+            ServedDevice56.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice56.TabIndex = 70;
             // 
             // ServedDevice57
             // 
-            this.ServedDevice57.AllowConcurrentAccess = (false);
-            this.ServedDevice57.AllowConnectedSetFalse = (false);
-            this.ServedDevice57.AllowConnectedSetTrue = (false);
-            this.ServedDevice57.Description = ("");
-            this.ServedDevice57.DeviceNumber = (0);
-            this.ServedDevice57.DevicesAreConnected = (false);
-            this.ServedDevice57.DeviceType = ("None");
-            this.ServedDevice57.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice57.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice57.Name = ("ServedDevice57");
-            this.ServedDevice57.ProgID = ("");
-            this.ServedDevice57.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice57.TabIndex = (71);
+            ServedDevice57.AllowConcurrentAccess = false;
+            ServedDevice57.AllowConnectedSetFalse = false;
+            ServedDevice57.AllowConnectedSetTrue = false;
+            ServedDevice57.Description = "";
+            ServedDevice57.DeviceNumber = 0;
+            ServedDevice57.DevicesAreConnected = false;
+            ServedDevice57.DeviceType = "None";
+            ServedDevice57.Location = new System.Drawing.Point(9, 272);
+            ServedDevice57.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice57.Name = "ServedDevice57";
+            ServedDevice57.ProgID = "";
+            ServedDevice57.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice57.TabIndex = 71;
             // 
             // ServedDevice58
             // 
-            this.ServedDevice58.AllowConcurrentAccess = (false);
-            this.ServedDevice58.AllowConnectedSetFalse = (false);
-            this.ServedDevice58.AllowConnectedSetTrue = (false);
-            this.ServedDevice58.Description = ("");
-            this.ServedDevice58.DeviceNumber = (0);
-            this.ServedDevice58.DevicesAreConnected = (false);
-            this.ServedDevice58.DeviceType = ("None");
-            this.ServedDevice58.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice58.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice58.Name = ("ServedDevice58");
-            this.ServedDevice58.ProgID = ("");
-            this.ServedDevice58.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice58.TabIndex = (72);
+            ServedDevice58.AllowConcurrentAccess = false;
+            ServedDevice58.AllowConnectedSetFalse = false;
+            ServedDevice58.AllowConnectedSetTrue = false;
+            ServedDevice58.Description = "";
+            ServedDevice58.DeviceNumber = 0;
+            ServedDevice58.DevicesAreConnected = false;
+            ServedDevice58.DeviceType = "None";
+            ServedDevice58.Location = new System.Drawing.Point(9, 305);
+            ServedDevice58.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice58.Name = "ServedDevice58";
+            ServedDevice58.ProgID = "";
+            ServedDevice58.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice58.TabIndex = 72;
             // 
             // ServedDevice59
             // 
-            this.ServedDevice59.AllowConcurrentAccess = (false);
-            this.ServedDevice59.AllowConnectedSetFalse = (false);
-            this.ServedDevice59.AllowConnectedSetTrue = (false);
-            this.ServedDevice59.Description = ("");
-            this.ServedDevice59.DeviceNumber = (0);
-            this.ServedDevice59.DevicesAreConnected = (false);
-            this.ServedDevice59.DeviceType = ("None");
-            this.ServedDevice59.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice59.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice59.Name = ("ServedDevice59");
-            this.ServedDevice59.ProgID = ("");
-            this.ServedDevice59.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice59.TabIndex = (73);
+            ServedDevice59.AllowConcurrentAccess = false;
+            ServedDevice59.AllowConnectedSetFalse = false;
+            ServedDevice59.AllowConnectedSetTrue = false;
+            ServedDevice59.Description = "";
+            ServedDevice59.DeviceNumber = 0;
+            ServedDevice59.DevicesAreConnected = false;
+            ServedDevice59.DeviceType = "None";
+            ServedDevice59.Location = new System.Drawing.Point(9, 337);
+            ServedDevice59.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice59.Name = "ServedDevice59";
+            ServedDevice59.ProgID = "";
+            ServedDevice59.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice59.TabIndex = 73;
             // 
             // DeviceTab6
             // 
-            this.DeviceTab6.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.DeviceTab6.Controls.Add(this.label60);
-            this.DeviceTab6.Controls.Add(this.label61);
-            this.DeviceTab6.Controls.Add(this.label62);
-            this.DeviceTab6.Controls.Add(this.label63);
-            this.DeviceTab6.Controls.Add(this.label64);
-            this.DeviceTab6.Controls.Add(this.label65);
-            this.DeviceTab6.Controls.Add(this.label66);
-            this.DeviceTab6.Controls.Add(this.label67);
-            this.DeviceTab6.Controls.Add(this.label68);
-            this.DeviceTab6.Controls.Add(this.ServedDevice60);
-            this.DeviceTab6.Controls.Add(this.ServedDevice61);
-            this.DeviceTab6.Controls.Add(this.ServedDevice62);
-            this.DeviceTab6.Controls.Add(this.ServedDevice63);
-            this.DeviceTab6.Controls.Add(this.ServedDevice64);
-            this.DeviceTab6.Controls.Add(this.ServedDevice65);
-            this.DeviceTab6.Controls.Add(this.ServedDevice66);
-            this.DeviceTab6.Controls.Add(this.ServedDevice67);
-            this.DeviceTab6.Controls.Add(this.ServedDevice68);
-            this.DeviceTab6.Controls.Add(this.ServedDevice69);
-            this.DeviceTab6.Location = (new global::System.Drawing.Point(4, 24));
-            this.DeviceTab6.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceTab6.Name = ("DeviceTab6");
-            this.DeviceTab6.Size = (new global::System.Drawing.Size(1173, 375));
-            this.DeviceTab6.TabIndex = (6);
-            this.DeviceTab6.Text = ("Devices 60 to 69");
+            DeviceTab6.BackColor = System.Drawing.SystemColors.Control;
+            DeviceTab6.Controls.Add(label60);
+            DeviceTab6.Controls.Add(label61);
+            DeviceTab6.Controls.Add(label62);
+            DeviceTab6.Controls.Add(label63);
+            DeviceTab6.Controls.Add(label64);
+            DeviceTab6.Controls.Add(label65);
+            DeviceTab6.Controls.Add(label66);
+            DeviceTab6.Controls.Add(label67);
+            DeviceTab6.Controls.Add(label68);
+            DeviceTab6.Controls.Add(ServedDevice60);
+            DeviceTab6.Controls.Add(ServedDevice61);
+            DeviceTab6.Controls.Add(ServedDevice62);
+            DeviceTab6.Controls.Add(ServedDevice63);
+            DeviceTab6.Controls.Add(ServedDevice64);
+            DeviceTab6.Controls.Add(ServedDevice65);
+            DeviceTab6.Controls.Add(ServedDevice66);
+            DeviceTab6.Controls.Add(ServedDevice67);
+            DeviceTab6.Controls.Add(ServedDevice68);
+            DeviceTab6.Controls.Add(ServedDevice69);
+            DeviceTab6.Location = new System.Drawing.Point(4, 24);
+            DeviceTab6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceTab6.Name = "DeviceTab6";
+            DeviceTab6.Size = new System.Drawing.Size(1173, 375);
+            DeviceTab6.TabIndex = 6;
+            DeviceTab6.Text = "Devices 60 to 69";
             // 
             // label60
             // 
-            this.label60.AutoSize = (true);
-            this.label60.Location = (new global::System.Drawing.Point(1083, 9));
-            this.label60.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label60.Name = ("label60");
-            this.label60.Size = (new global::System.Drawing.Size(42, 15));
-            this.label60.TabIndex = (79);
-            this.label60.Text = ("Enable");
+            label60.AutoSize = true;
+            label60.Location = new System.Drawing.Point(1083, 9);
+            label60.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label60.Name = "label60";
+            label60.Size = new System.Drawing.Size(42, 15);
+            label60.TabIndex = 79;
+            label60.Text = "Enable";
             // 
             // label61
             // 
-            this.label61.AutoSize = (true);
-            this.label61.Location = (new global::System.Drawing.Point(1049, 28));
-            this.label61.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label61.Name = ("label61");
-            this.label61.Size = (new global::System.Drawing.Size(106, 15));
-            this.label61.TabIndex = (78);
-            this.label61.Text = ("Concurrent Access");
+            label61.AutoSize = true;
+            label61.Location = new System.Drawing.Point(1049, 28);
+            label61.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label61.Name = "label61";
+            label61.Size = new System.Drawing.Size(106, 15);
+            label61.TabIndex = 78;
+            label61.Text = "Concurrent Access";
             // 
             // label62
             // 
-            this.label62.AutoSize = (true);
-            this.label62.Location = (new global::System.Drawing.Point(65, 28));
-            this.label62.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label62.Name = ("label62");
-            this.label62.Size = (new global::System.Drawing.Size(69, 15));
-            this.label62.TabIndex = (63);
-            this.label62.Text = ("Device Type");
+            label62.AutoSize = true;
+            label62.Location = new System.Drawing.Point(65, 28);
+            label62.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label62.Name = "label62";
+            label62.Size = new System.Drawing.Size(69, 15);
+            label62.TabIndex = 63;
+            label62.Text = "Device Type";
             // 
             // label63
             // 
-            this.label63.AutoSize = (true);
-            this.label63.Location = (new global::System.Drawing.Point(497, 28));
-            this.label63.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label63.Name = ("label63");
-            this.label63.Size = (new global::System.Drawing.Size(42, 15));
-            this.label63.TabIndex = (65);
-            this.label63.Text = ("Device");
+            label63.AutoSize = true;
+            label63.Location = new System.Drawing.Point(497, 28);
+            label63.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label63.Name = "label63";
+            label63.Size = new System.Drawing.Size(42, 15);
+            label63.TabIndex = 65;
+            label63.Text = "Device";
             // 
             // label64
             // 
-            this.label64.AutoSize = (true);
-            this.label64.Location = (new global::System.Drawing.Point(756, 28));
-            this.label64.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label64.Name = ("label64");
-            this.label64.Size = (new global::System.Drawing.Size(98, 15));
-            this.label64.TabIndex = (77);
-            this.label64.Text = ("Configure Device");
+            label64.AutoSize = true;
+            label64.Location = new System.Drawing.Point(756, 28);
+            label64.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label64.Name = "label64";
+            label64.Size = new System.Drawing.Size(98, 15);
+            label64.TabIndex = 77;
+            label64.Text = "Configure Device";
             // 
             // label65
             // 
-            this.label65.AutoSize = (true);
-            this.label65.Location = (new global::System.Drawing.Point(218, 28));
-            this.label65.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label65.Name = ("label65");
-            this.label65.Size = (new global::System.Drawing.Size(89, 15));
-            this.label65.TabIndex = (66);
-            this.label65.Text = ("Device Number");
+            label65.AutoSize = true;
+            label65.Location = new System.Drawing.Point(218, 28);
+            label65.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label65.Name = "label65";
+            label65.Size = new System.Drawing.Size(89, 15);
+            label65.TabIndex = 66;
+            label65.Text = "Device Number";
             // 
             // label66
             // 
-            this.label66.AutoSize = (true);
-            this.label66.Location = (new global::System.Drawing.Point(985, 28));
-            this.label66.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label66.Name = ("label66");
-            this.label66.Size = (new global::System.Drawing.Size(29, 15));
-            this.label66.TabIndex = (76);
-            this.label66.Text = ("True");
+            label66.AutoSize = true;
+            label66.Location = new System.Drawing.Point(985, 28);
+            label66.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label66.Name = "label66";
+            label66.Size = new System.Drawing.Size(29, 15);
+            label66.TabIndex = 76;
+            label66.Text = "True";
             // 
             // label67
             // 
-            this.label67.AutoSize = (true);
-            this.label67.Location = (new global::System.Drawing.Point(915, 28));
-            this.label67.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label67.Name = ("label67");
-            this.label67.Size = (new global::System.Drawing.Size(33, 15));
-            this.label67.TabIndex = (75);
-            this.label67.Text = ("False");
+            label67.AutoSize = true;
+            label67.Location = new System.Drawing.Point(915, 28);
+            label67.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label67.Name = "label67";
+            label67.Size = new System.Drawing.Size(33, 15);
+            label67.TabIndex = 75;
+            label67.Text = "False";
             // 
             // label68
             // 
-            this.label68.AutoSize = (true);
-            this.label68.Location = (new global::System.Drawing.Point(891, 9));
-            this.label68.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label68.Name = ("label68");
-            this.label68.Size = (new global::System.Drawing.Size(146, 15));
-            this.label68.TabIndex = (74);
-            this.label68.Text = ("Allow Connected to be set");
+            label68.AutoSize = true;
+            label68.Location = new System.Drawing.Point(891, 9);
+            label68.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label68.Name = "label68";
+            label68.Size = new System.Drawing.Size(146, 15);
+            label68.TabIndex = 74;
+            label68.Text = "Allow Connected to be set";
             // 
             // ServedDevice60
             // 
-            this.ServedDevice60.AllowConcurrentAccess = (false);
-            this.ServedDevice60.AllowConnectedSetFalse = (false);
-            this.ServedDevice60.AllowConnectedSetTrue = (false);
-            this.ServedDevice60.Description = ("");
-            this.ServedDevice60.DeviceNumber = (0);
-            this.ServedDevice60.DevicesAreConnected = (false);
-            this.ServedDevice60.DeviceType = ("None");
-            this.ServedDevice60.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice60.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice60.Name = ("ServedDevice60");
-            this.ServedDevice60.ProgID = ("");
-            this.ServedDevice60.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice60.TabIndex = (61);
+            ServedDevice60.AllowConcurrentAccess = false;
+            ServedDevice60.AllowConnectedSetFalse = false;
+            ServedDevice60.AllowConnectedSetTrue = false;
+            ServedDevice60.Description = "";
+            ServedDevice60.DeviceNumber = 0;
+            ServedDevice60.DevicesAreConnected = false;
+            ServedDevice60.DeviceType = "None";
+            ServedDevice60.Location = new System.Drawing.Point(9, 46);
+            ServedDevice60.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice60.Name = "ServedDevice60";
+            ServedDevice60.ProgID = "";
+            ServedDevice60.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice60.TabIndex = 61;
             // 
             // ServedDevice61
             // 
-            this.ServedDevice61.AllowConcurrentAccess = (false);
-            this.ServedDevice61.AllowConnectedSetFalse = (false);
-            this.ServedDevice61.AllowConnectedSetTrue = (false);
-            this.ServedDevice61.Description = ("");
-            this.ServedDevice61.DeviceNumber = (0);
-            this.ServedDevice61.DevicesAreConnected = (false);
-            this.ServedDevice61.DeviceType = ("None");
-            this.ServedDevice61.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice61.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice61.Name = ("ServedDevice61");
-            this.ServedDevice61.ProgID = ("");
-            this.ServedDevice61.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice61.TabIndex = (62);
+            ServedDevice61.AllowConcurrentAccess = false;
+            ServedDevice61.AllowConnectedSetFalse = false;
+            ServedDevice61.AllowConnectedSetTrue = false;
+            ServedDevice61.Description = "";
+            ServedDevice61.DeviceNumber = 0;
+            ServedDevice61.DevicesAreConnected = false;
+            ServedDevice61.DeviceType = "None";
+            ServedDevice61.Location = new System.Drawing.Point(9, 78);
+            ServedDevice61.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice61.Name = "ServedDevice61";
+            ServedDevice61.ProgID = "";
+            ServedDevice61.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice61.TabIndex = 62;
             // 
             // ServedDevice62
             // 
-            this.ServedDevice62.AllowConcurrentAccess = (false);
-            this.ServedDevice62.AllowConnectedSetFalse = (false);
-            this.ServedDevice62.AllowConnectedSetTrue = (false);
-            this.ServedDevice62.Description = ("");
-            this.ServedDevice62.DeviceNumber = (0);
-            this.ServedDevice62.DevicesAreConnected = (false);
-            this.ServedDevice62.DeviceType = ("None");
-            this.ServedDevice62.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice62.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice62.Name = ("ServedDevice62");
-            this.ServedDevice62.ProgID = ("");
-            this.ServedDevice62.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice62.TabIndex = (64);
+            ServedDevice62.AllowConcurrentAccess = false;
+            ServedDevice62.AllowConnectedSetFalse = false;
+            ServedDevice62.AllowConnectedSetTrue = false;
+            ServedDevice62.Description = "";
+            ServedDevice62.DeviceNumber = 0;
+            ServedDevice62.DevicesAreConnected = false;
+            ServedDevice62.DeviceType = "None";
+            ServedDevice62.Location = new System.Drawing.Point(9, 111);
+            ServedDevice62.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice62.Name = "ServedDevice62";
+            ServedDevice62.ProgID = "";
+            ServedDevice62.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice62.TabIndex = 64;
             // 
             // ServedDevice63
             // 
-            this.ServedDevice63.AllowConcurrentAccess = (false);
-            this.ServedDevice63.AllowConnectedSetFalse = (false);
-            this.ServedDevice63.AllowConnectedSetTrue = (false);
-            this.ServedDevice63.Description = ("");
-            this.ServedDevice63.DeviceNumber = (0);
-            this.ServedDevice63.DevicesAreConnected = (false);
-            this.ServedDevice63.DeviceType = ("None");
-            this.ServedDevice63.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice63.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice63.Name = ("ServedDevice63");
-            this.ServedDevice63.ProgID = ("");
-            this.ServedDevice63.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice63.TabIndex = (67);
+            ServedDevice63.AllowConcurrentAccess = false;
+            ServedDevice63.AllowConnectedSetFalse = false;
+            ServedDevice63.AllowConnectedSetTrue = false;
+            ServedDevice63.Description = "";
+            ServedDevice63.DeviceNumber = 0;
+            ServedDevice63.DevicesAreConnected = false;
+            ServedDevice63.DeviceType = "None";
+            ServedDevice63.Location = new System.Drawing.Point(9, 143);
+            ServedDevice63.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice63.Name = "ServedDevice63";
+            ServedDevice63.ProgID = "";
+            ServedDevice63.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice63.TabIndex = 67;
             // 
             // ServedDevice64
             // 
-            this.ServedDevice64.AllowConcurrentAccess = (false);
-            this.ServedDevice64.AllowConnectedSetFalse = (false);
-            this.ServedDevice64.AllowConnectedSetTrue = (false);
-            this.ServedDevice64.Description = ("");
-            this.ServedDevice64.DeviceNumber = (0);
-            this.ServedDevice64.DevicesAreConnected = (false);
-            this.ServedDevice64.DeviceType = ("None");
-            this.ServedDevice64.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice64.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice64.Name = ("ServedDevice64");
-            this.ServedDevice64.ProgID = ("");
-            this.ServedDevice64.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice64.TabIndex = (68);
+            ServedDevice64.AllowConcurrentAccess = false;
+            ServedDevice64.AllowConnectedSetFalse = false;
+            ServedDevice64.AllowConnectedSetTrue = false;
+            ServedDevice64.Description = "";
+            ServedDevice64.DeviceNumber = 0;
+            ServedDevice64.DevicesAreConnected = false;
+            ServedDevice64.DeviceType = "None";
+            ServedDevice64.Location = new System.Drawing.Point(9, 175);
+            ServedDevice64.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice64.Name = "ServedDevice64";
+            ServedDevice64.ProgID = "";
+            ServedDevice64.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice64.TabIndex = 68;
             // 
             // ServedDevice65
             // 
-            this.ServedDevice65.AllowConcurrentAccess = (false);
-            this.ServedDevice65.AllowConnectedSetFalse = (false);
-            this.ServedDevice65.AllowConnectedSetTrue = (false);
-            this.ServedDevice65.Description = ("");
-            this.ServedDevice65.DeviceNumber = (0);
-            this.ServedDevice65.DevicesAreConnected = (false);
-            this.ServedDevice65.DeviceType = ("None");
-            this.ServedDevice65.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice65.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice65.Name = ("ServedDevice65");
-            this.ServedDevice65.ProgID = ("");
-            this.ServedDevice65.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice65.TabIndex = (69);
+            ServedDevice65.AllowConcurrentAccess = false;
+            ServedDevice65.AllowConnectedSetFalse = false;
+            ServedDevice65.AllowConnectedSetTrue = false;
+            ServedDevice65.Description = "";
+            ServedDevice65.DeviceNumber = 0;
+            ServedDevice65.DevicesAreConnected = false;
+            ServedDevice65.DeviceType = "None";
+            ServedDevice65.Location = new System.Drawing.Point(9, 208);
+            ServedDevice65.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice65.Name = "ServedDevice65";
+            ServedDevice65.ProgID = "";
+            ServedDevice65.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice65.TabIndex = 69;
             // 
             // ServedDevice66
             // 
-            this.ServedDevice66.AllowConcurrentAccess = (false);
-            this.ServedDevice66.AllowConnectedSetFalse = (false);
-            this.ServedDevice66.AllowConnectedSetTrue = (false);
-            this.ServedDevice66.Description = ("");
-            this.ServedDevice66.DeviceNumber = (0);
-            this.ServedDevice66.DevicesAreConnected = (false);
-            this.ServedDevice66.DeviceType = ("None");
-            this.ServedDevice66.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice66.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice66.Name = ("ServedDevice66");
-            this.ServedDevice66.ProgID = ("");
-            this.ServedDevice66.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice66.TabIndex = (70);
+            ServedDevice66.AllowConcurrentAccess = false;
+            ServedDevice66.AllowConnectedSetFalse = false;
+            ServedDevice66.AllowConnectedSetTrue = false;
+            ServedDevice66.Description = "";
+            ServedDevice66.DeviceNumber = 0;
+            ServedDevice66.DevicesAreConnected = false;
+            ServedDevice66.DeviceType = "None";
+            ServedDevice66.Location = new System.Drawing.Point(9, 240);
+            ServedDevice66.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice66.Name = "ServedDevice66";
+            ServedDevice66.ProgID = "";
+            ServedDevice66.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice66.TabIndex = 70;
             // 
             // ServedDevice67
             // 
-            this.ServedDevice67.AllowConcurrentAccess = (false);
-            this.ServedDevice67.AllowConnectedSetFalse = (false);
-            this.ServedDevice67.AllowConnectedSetTrue = (false);
-            this.ServedDevice67.Description = ("");
-            this.ServedDevice67.DeviceNumber = (0);
-            this.ServedDevice67.DevicesAreConnected = (false);
-            this.ServedDevice67.DeviceType = ("None");
-            this.ServedDevice67.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice67.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice67.Name = ("ServedDevice67");
-            this.ServedDevice67.ProgID = ("");
-            this.ServedDevice67.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice67.TabIndex = (71);
+            ServedDevice67.AllowConcurrentAccess = false;
+            ServedDevice67.AllowConnectedSetFalse = false;
+            ServedDevice67.AllowConnectedSetTrue = false;
+            ServedDevice67.Description = "";
+            ServedDevice67.DeviceNumber = 0;
+            ServedDevice67.DevicesAreConnected = false;
+            ServedDevice67.DeviceType = "None";
+            ServedDevice67.Location = new System.Drawing.Point(9, 272);
+            ServedDevice67.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice67.Name = "ServedDevice67";
+            ServedDevice67.ProgID = "";
+            ServedDevice67.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice67.TabIndex = 71;
             // 
             // ServedDevice68
             // 
-            this.ServedDevice68.AllowConcurrentAccess = (false);
-            this.ServedDevice68.AllowConnectedSetFalse = (false);
-            this.ServedDevice68.AllowConnectedSetTrue = (false);
-            this.ServedDevice68.Description = ("");
-            this.ServedDevice68.DeviceNumber = (0);
-            this.ServedDevice68.DevicesAreConnected = (false);
-            this.ServedDevice68.DeviceType = ("None");
-            this.ServedDevice68.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice68.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice68.Name = ("ServedDevice68");
-            this.ServedDevice68.ProgID = ("");
-            this.ServedDevice68.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice68.TabIndex = (72);
+            ServedDevice68.AllowConcurrentAccess = false;
+            ServedDevice68.AllowConnectedSetFalse = false;
+            ServedDevice68.AllowConnectedSetTrue = false;
+            ServedDevice68.Description = "";
+            ServedDevice68.DeviceNumber = 0;
+            ServedDevice68.DevicesAreConnected = false;
+            ServedDevice68.DeviceType = "None";
+            ServedDevice68.Location = new System.Drawing.Point(9, 305);
+            ServedDevice68.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice68.Name = "ServedDevice68";
+            ServedDevice68.ProgID = "";
+            ServedDevice68.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice68.TabIndex = 72;
             // 
             // ServedDevice69
             // 
-            this.ServedDevice69.AllowConcurrentAccess = (false);
-            this.ServedDevice69.AllowConnectedSetFalse = (false);
-            this.ServedDevice69.AllowConnectedSetTrue = (false);
-            this.ServedDevice69.Description = ("");
-            this.ServedDevice69.DeviceNumber = (0);
-            this.ServedDevice69.DevicesAreConnected = (false);
-            this.ServedDevice69.DeviceType = ("None");
-            this.ServedDevice69.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice69.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice69.Name = ("ServedDevice69");
-            this.ServedDevice69.ProgID = ("");
-            this.ServedDevice69.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice69.TabIndex = (73);
+            ServedDevice69.AllowConcurrentAccess = false;
+            ServedDevice69.AllowConnectedSetFalse = false;
+            ServedDevice69.AllowConnectedSetTrue = false;
+            ServedDevice69.Description = "";
+            ServedDevice69.DeviceNumber = 0;
+            ServedDevice69.DevicesAreConnected = false;
+            ServedDevice69.DeviceType = "None";
+            ServedDevice69.Location = new System.Drawing.Point(9, 337);
+            ServedDevice69.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice69.Name = "ServedDevice69";
+            ServedDevice69.ProgID = "";
+            ServedDevice69.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice69.TabIndex = 73;
             // 
             // DeviceTab7
             // 
-            this.DeviceTab7.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.DeviceTab7.Controls.Add(this.label69);
-            this.DeviceTab7.Controls.Add(this.label70);
-            this.DeviceTab7.Controls.Add(this.label71);
-            this.DeviceTab7.Controls.Add(this.label72);
-            this.DeviceTab7.Controls.Add(this.label73);
-            this.DeviceTab7.Controls.Add(this.label74);
-            this.DeviceTab7.Controls.Add(this.label75);
-            this.DeviceTab7.Controls.Add(this.label76);
-            this.DeviceTab7.Controls.Add(this.label77);
-            this.DeviceTab7.Controls.Add(this.ServedDevice70);
-            this.DeviceTab7.Controls.Add(this.ServedDevice71);
-            this.DeviceTab7.Controls.Add(this.ServedDevice72);
-            this.DeviceTab7.Controls.Add(this.ServedDevice73);
-            this.DeviceTab7.Controls.Add(this.ServedDevice74);
-            this.DeviceTab7.Controls.Add(this.ServedDevice75);
-            this.DeviceTab7.Controls.Add(this.ServedDevice76);
-            this.DeviceTab7.Controls.Add(this.ServedDevice77);
-            this.DeviceTab7.Controls.Add(this.ServedDevice78);
-            this.DeviceTab7.Controls.Add(this.ServedDevice79);
-            this.DeviceTab7.Location = (new global::System.Drawing.Point(4, 24));
-            this.DeviceTab7.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceTab7.Name = ("DeviceTab7");
-            this.DeviceTab7.Size = (new global::System.Drawing.Size(1173, 375));
-            this.DeviceTab7.TabIndex = (7);
-            this.DeviceTab7.Text = ("Devices 70 to 79");
+            DeviceTab7.BackColor = System.Drawing.SystemColors.Control;
+            DeviceTab7.Controls.Add(label69);
+            DeviceTab7.Controls.Add(label70);
+            DeviceTab7.Controls.Add(label71);
+            DeviceTab7.Controls.Add(label72);
+            DeviceTab7.Controls.Add(label73);
+            DeviceTab7.Controls.Add(label74);
+            DeviceTab7.Controls.Add(label75);
+            DeviceTab7.Controls.Add(label76);
+            DeviceTab7.Controls.Add(label77);
+            DeviceTab7.Controls.Add(ServedDevice70);
+            DeviceTab7.Controls.Add(ServedDevice71);
+            DeviceTab7.Controls.Add(ServedDevice72);
+            DeviceTab7.Controls.Add(ServedDevice73);
+            DeviceTab7.Controls.Add(ServedDevice74);
+            DeviceTab7.Controls.Add(ServedDevice75);
+            DeviceTab7.Controls.Add(ServedDevice76);
+            DeviceTab7.Controls.Add(ServedDevice77);
+            DeviceTab7.Controls.Add(ServedDevice78);
+            DeviceTab7.Controls.Add(ServedDevice79);
+            DeviceTab7.Location = new System.Drawing.Point(4, 24);
+            DeviceTab7.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceTab7.Name = "DeviceTab7";
+            DeviceTab7.Size = new System.Drawing.Size(1173, 375);
+            DeviceTab7.TabIndex = 7;
+            DeviceTab7.Text = "Devices 70 to 79";
             // 
             // label69
             // 
-            this.label69.AutoSize = (true);
-            this.label69.Location = (new global::System.Drawing.Point(1083, 9));
-            this.label69.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label69.Name = ("label69");
-            this.label69.Size = (new global::System.Drawing.Size(42, 15));
-            this.label69.TabIndex = (79);
-            this.label69.Text = ("Enable");
+            label69.AutoSize = true;
+            label69.Location = new System.Drawing.Point(1083, 9);
+            label69.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label69.Name = "label69";
+            label69.Size = new System.Drawing.Size(42, 15);
+            label69.TabIndex = 79;
+            label69.Text = "Enable";
             // 
             // label70
             // 
-            this.label70.AutoSize = (true);
-            this.label70.Location = (new global::System.Drawing.Point(1049, 28));
-            this.label70.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label70.Name = ("label70");
-            this.label70.Size = (new global::System.Drawing.Size(106, 15));
-            this.label70.TabIndex = (78);
-            this.label70.Text = ("Concurrent Access");
+            label70.AutoSize = true;
+            label70.Location = new System.Drawing.Point(1049, 28);
+            label70.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label70.Name = "label70";
+            label70.Size = new System.Drawing.Size(106, 15);
+            label70.TabIndex = 78;
+            label70.Text = "Concurrent Access";
             // 
             // label71
             // 
-            this.label71.AutoSize = (true);
-            this.label71.Location = (new global::System.Drawing.Point(65, 28));
-            this.label71.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label71.Name = ("label71");
-            this.label71.Size = (new global::System.Drawing.Size(69, 15));
-            this.label71.TabIndex = (63);
-            this.label71.Text = ("Device Type");
+            label71.AutoSize = true;
+            label71.Location = new System.Drawing.Point(65, 28);
+            label71.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label71.Name = "label71";
+            label71.Size = new System.Drawing.Size(69, 15);
+            label71.TabIndex = 63;
+            label71.Text = "Device Type";
             // 
             // label72
             // 
-            this.label72.AutoSize = (true);
-            this.label72.Location = (new global::System.Drawing.Point(497, 28));
-            this.label72.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label72.Name = ("label72");
-            this.label72.Size = (new global::System.Drawing.Size(42, 15));
-            this.label72.TabIndex = (65);
-            this.label72.Text = ("Device");
+            label72.AutoSize = true;
+            label72.Location = new System.Drawing.Point(497, 28);
+            label72.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label72.Name = "label72";
+            label72.Size = new System.Drawing.Size(42, 15);
+            label72.TabIndex = 65;
+            label72.Text = "Device";
             // 
             // label73
             // 
-            this.label73.AutoSize = (true);
-            this.label73.Location = (new global::System.Drawing.Point(756, 28));
-            this.label73.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label73.Name = ("label73");
-            this.label73.Size = (new global::System.Drawing.Size(98, 15));
-            this.label73.TabIndex = (77);
-            this.label73.Text = ("Configure Device");
+            label73.AutoSize = true;
+            label73.Location = new System.Drawing.Point(756, 28);
+            label73.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label73.Name = "label73";
+            label73.Size = new System.Drawing.Size(98, 15);
+            label73.TabIndex = 77;
+            label73.Text = "Configure Device";
             // 
             // label74
             // 
-            this.label74.AutoSize = (true);
-            this.label74.Location = (new global::System.Drawing.Point(218, 28));
-            this.label74.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label74.Name = ("label74");
-            this.label74.Size = (new global::System.Drawing.Size(89, 15));
-            this.label74.TabIndex = (66);
-            this.label74.Text = ("Device Number");
+            label74.AutoSize = true;
+            label74.Location = new System.Drawing.Point(218, 28);
+            label74.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label74.Name = "label74";
+            label74.Size = new System.Drawing.Size(89, 15);
+            label74.TabIndex = 66;
+            label74.Text = "Device Number";
             // 
             // label75
             // 
-            this.label75.AutoSize = (true);
-            this.label75.Location = (new global::System.Drawing.Point(985, 28));
-            this.label75.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label75.Name = ("label75");
-            this.label75.Size = (new global::System.Drawing.Size(29, 15));
-            this.label75.TabIndex = (76);
-            this.label75.Text = ("True");
+            label75.AutoSize = true;
+            label75.Location = new System.Drawing.Point(985, 28);
+            label75.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label75.Name = "label75";
+            label75.Size = new System.Drawing.Size(29, 15);
+            label75.TabIndex = 76;
+            label75.Text = "True";
             // 
             // label76
             // 
-            this.label76.AutoSize = (true);
-            this.label76.Location = (new global::System.Drawing.Point(915, 28));
-            this.label76.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label76.Name = ("label76");
-            this.label76.Size = (new global::System.Drawing.Size(33, 15));
-            this.label76.TabIndex = (75);
-            this.label76.Text = ("False");
+            label76.AutoSize = true;
+            label76.Location = new System.Drawing.Point(915, 28);
+            label76.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label76.Name = "label76";
+            label76.Size = new System.Drawing.Size(33, 15);
+            label76.TabIndex = 75;
+            label76.Text = "False";
             // 
             // label77
             // 
-            this.label77.AutoSize = (true);
-            this.label77.Location = (new global::System.Drawing.Point(891, 9));
-            this.label77.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label77.Name = ("label77");
-            this.label77.Size = (new global::System.Drawing.Size(146, 15));
-            this.label77.TabIndex = (74);
-            this.label77.Text = ("Allow Connected to be set");
+            label77.AutoSize = true;
+            label77.Location = new System.Drawing.Point(891, 9);
+            label77.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label77.Name = "label77";
+            label77.Size = new System.Drawing.Size(146, 15);
+            label77.TabIndex = 74;
+            label77.Text = "Allow Connected to be set";
             // 
             // ServedDevice70
             // 
-            this.ServedDevice70.AllowConcurrentAccess = (false);
-            this.ServedDevice70.AllowConnectedSetFalse = (false);
-            this.ServedDevice70.AllowConnectedSetTrue = (false);
-            this.ServedDevice70.Description = ("");
-            this.ServedDevice70.DeviceNumber = (0);
-            this.ServedDevice70.DevicesAreConnected = (false);
-            this.ServedDevice70.DeviceType = ("None");
-            this.ServedDevice70.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice70.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice70.Name = ("ServedDevice70");
-            this.ServedDevice70.ProgID = ("");
-            this.ServedDevice70.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice70.TabIndex = (61);
+            ServedDevice70.AllowConcurrentAccess = false;
+            ServedDevice70.AllowConnectedSetFalse = false;
+            ServedDevice70.AllowConnectedSetTrue = false;
+            ServedDevice70.Description = "";
+            ServedDevice70.DeviceNumber = 0;
+            ServedDevice70.DevicesAreConnected = false;
+            ServedDevice70.DeviceType = "None";
+            ServedDevice70.Location = new System.Drawing.Point(9, 46);
+            ServedDevice70.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice70.Name = "ServedDevice70";
+            ServedDevice70.ProgID = "";
+            ServedDevice70.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice70.TabIndex = 61;
             // 
             // ServedDevice71
             // 
-            this.ServedDevice71.AllowConcurrentAccess = (false);
-            this.ServedDevice71.AllowConnectedSetFalse = (false);
-            this.ServedDevice71.AllowConnectedSetTrue = (false);
-            this.ServedDevice71.Description = ("");
-            this.ServedDevice71.DeviceNumber = (0);
-            this.ServedDevice71.DevicesAreConnected = (false);
-            this.ServedDevice71.DeviceType = ("None");
-            this.ServedDevice71.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice71.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice71.Name = ("ServedDevice71");
-            this.ServedDevice71.ProgID = ("");
-            this.ServedDevice71.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice71.TabIndex = (62);
+            ServedDevice71.AllowConcurrentAccess = false;
+            ServedDevice71.AllowConnectedSetFalse = false;
+            ServedDevice71.AllowConnectedSetTrue = false;
+            ServedDevice71.Description = "";
+            ServedDevice71.DeviceNumber = 0;
+            ServedDevice71.DevicesAreConnected = false;
+            ServedDevice71.DeviceType = "None";
+            ServedDevice71.Location = new System.Drawing.Point(9, 78);
+            ServedDevice71.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice71.Name = "ServedDevice71";
+            ServedDevice71.ProgID = "";
+            ServedDevice71.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice71.TabIndex = 62;
             // 
             // ServedDevice72
             // 
-            this.ServedDevice72.AllowConcurrentAccess = (false);
-            this.ServedDevice72.AllowConnectedSetFalse = (false);
-            this.ServedDevice72.AllowConnectedSetTrue = (false);
-            this.ServedDevice72.Description = ("");
-            this.ServedDevice72.DeviceNumber = (0);
-            this.ServedDevice72.DevicesAreConnected = (false);
-            this.ServedDevice72.DeviceType = ("None");
-            this.ServedDevice72.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice72.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice72.Name = ("ServedDevice72");
-            this.ServedDevice72.ProgID = ("");
-            this.ServedDevice72.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice72.TabIndex = (64);
+            ServedDevice72.AllowConcurrentAccess = false;
+            ServedDevice72.AllowConnectedSetFalse = false;
+            ServedDevice72.AllowConnectedSetTrue = false;
+            ServedDevice72.Description = "";
+            ServedDevice72.DeviceNumber = 0;
+            ServedDevice72.DevicesAreConnected = false;
+            ServedDevice72.DeviceType = "None";
+            ServedDevice72.Location = new System.Drawing.Point(9, 111);
+            ServedDevice72.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice72.Name = "ServedDevice72";
+            ServedDevice72.ProgID = "";
+            ServedDevice72.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice72.TabIndex = 64;
             // 
             // ServedDevice73
             // 
-            this.ServedDevice73.AllowConcurrentAccess = (false);
-            this.ServedDevice73.AllowConnectedSetFalse = (false);
-            this.ServedDevice73.AllowConnectedSetTrue = (false);
-            this.ServedDevice73.Description = ("");
-            this.ServedDevice73.DeviceNumber = (0);
-            this.ServedDevice73.DevicesAreConnected = (false);
-            this.ServedDevice73.DeviceType = ("None");
-            this.ServedDevice73.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice73.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice73.Name = ("ServedDevice73");
-            this.ServedDevice73.ProgID = ("");
-            this.ServedDevice73.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice73.TabIndex = (67);
+            ServedDevice73.AllowConcurrentAccess = false;
+            ServedDevice73.AllowConnectedSetFalse = false;
+            ServedDevice73.AllowConnectedSetTrue = false;
+            ServedDevice73.Description = "";
+            ServedDevice73.DeviceNumber = 0;
+            ServedDevice73.DevicesAreConnected = false;
+            ServedDevice73.DeviceType = "None";
+            ServedDevice73.Location = new System.Drawing.Point(9, 143);
+            ServedDevice73.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice73.Name = "ServedDevice73";
+            ServedDevice73.ProgID = "";
+            ServedDevice73.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice73.TabIndex = 67;
             // 
             // ServedDevice74
             // 
-            this.ServedDevice74.AllowConcurrentAccess = (false);
-            this.ServedDevice74.AllowConnectedSetFalse = (false);
-            this.ServedDevice74.AllowConnectedSetTrue = (false);
-            this.ServedDevice74.Description = ("");
-            this.ServedDevice74.DeviceNumber = (0);
-            this.ServedDevice74.DevicesAreConnected = (false);
-            this.ServedDevice74.DeviceType = ("None");
-            this.ServedDevice74.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice74.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice74.Name = ("ServedDevice74");
-            this.ServedDevice74.ProgID = ("");
-            this.ServedDevice74.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice74.TabIndex = (68);
+            ServedDevice74.AllowConcurrentAccess = false;
+            ServedDevice74.AllowConnectedSetFalse = false;
+            ServedDevice74.AllowConnectedSetTrue = false;
+            ServedDevice74.Description = "";
+            ServedDevice74.DeviceNumber = 0;
+            ServedDevice74.DevicesAreConnected = false;
+            ServedDevice74.DeviceType = "None";
+            ServedDevice74.Location = new System.Drawing.Point(9, 175);
+            ServedDevice74.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice74.Name = "ServedDevice74";
+            ServedDevice74.ProgID = "";
+            ServedDevice74.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice74.TabIndex = 68;
             // 
             // ServedDevice75
             // 
-            this.ServedDevice75.AllowConcurrentAccess = (false);
-            this.ServedDevice75.AllowConnectedSetFalse = (false);
-            this.ServedDevice75.AllowConnectedSetTrue = (false);
-            this.ServedDevice75.Description = ("");
-            this.ServedDevice75.DeviceNumber = (0);
-            this.ServedDevice75.DevicesAreConnected = (false);
-            this.ServedDevice75.DeviceType = ("None");
-            this.ServedDevice75.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice75.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice75.Name = ("ServedDevice75");
-            this.ServedDevice75.ProgID = ("");
-            this.ServedDevice75.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice75.TabIndex = (69);
+            ServedDevice75.AllowConcurrentAccess = false;
+            ServedDevice75.AllowConnectedSetFalse = false;
+            ServedDevice75.AllowConnectedSetTrue = false;
+            ServedDevice75.Description = "";
+            ServedDevice75.DeviceNumber = 0;
+            ServedDevice75.DevicesAreConnected = false;
+            ServedDevice75.DeviceType = "None";
+            ServedDevice75.Location = new System.Drawing.Point(9, 208);
+            ServedDevice75.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice75.Name = "ServedDevice75";
+            ServedDevice75.ProgID = "";
+            ServedDevice75.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice75.TabIndex = 69;
             // 
             // ServedDevice76
             // 
-            this.ServedDevice76.AllowConcurrentAccess = (false);
-            this.ServedDevice76.AllowConnectedSetFalse = (false);
-            this.ServedDevice76.AllowConnectedSetTrue = (false);
-            this.ServedDevice76.Description = ("");
-            this.ServedDevice76.DeviceNumber = (0);
-            this.ServedDevice76.DevicesAreConnected = (false);
-            this.ServedDevice76.DeviceType = ("None");
-            this.ServedDevice76.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice76.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice76.Name = ("ServedDevice76");
-            this.ServedDevice76.ProgID = ("");
-            this.ServedDevice76.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice76.TabIndex = (70);
+            ServedDevice76.AllowConcurrentAccess = false;
+            ServedDevice76.AllowConnectedSetFalse = false;
+            ServedDevice76.AllowConnectedSetTrue = false;
+            ServedDevice76.Description = "";
+            ServedDevice76.DeviceNumber = 0;
+            ServedDevice76.DevicesAreConnected = false;
+            ServedDevice76.DeviceType = "None";
+            ServedDevice76.Location = new System.Drawing.Point(9, 240);
+            ServedDevice76.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice76.Name = "ServedDevice76";
+            ServedDevice76.ProgID = "";
+            ServedDevice76.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice76.TabIndex = 70;
             // 
             // ServedDevice77
             // 
-            this.ServedDevice77.AllowConcurrentAccess = (false);
-            this.ServedDevice77.AllowConnectedSetFalse = (false);
-            this.ServedDevice77.AllowConnectedSetTrue = (false);
-            this.ServedDevice77.Description = ("");
-            this.ServedDevice77.DeviceNumber = (0);
-            this.ServedDevice77.DevicesAreConnected = (false);
-            this.ServedDevice77.DeviceType = ("None");
-            this.ServedDevice77.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice77.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice77.Name = ("ServedDevice77");
-            this.ServedDevice77.ProgID = ("");
-            this.ServedDevice77.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice77.TabIndex = (71);
+            ServedDevice77.AllowConcurrentAccess = false;
+            ServedDevice77.AllowConnectedSetFalse = false;
+            ServedDevice77.AllowConnectedSetTrue = false;
+            ServedDevice77.Description = "";
+            ServedDevice77.DeviceNumber = 0;
+            ServedDevice77.DevicesAreConnected = false;
+            ServedDevice77.DeviceType = "None";
+            ServedDevice77.Location = new System.Drawing.Point(9, 272);
+            ServedDevice77.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice77.Name = "ServedDevice77";
+            ServedDevice77.ProgID = "";
+            ServedDevice77.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice77.TabIndex = 71;
             // 
             // ServedDevice78
             // 
-            this.ServedDevice78.AllowConcurrentAccess = (false);
-            this.ServedDevice78.AllowConnectedSetFalse = (false);
-            this.ServedDevice78.AllowConnectedSetTrue = (false);
-            this.ServedDevice78.Description = ("");
-            this.ServedDevice78.DeviceNumber = (0);
-            this.ServedDevice78.DevicesAreConnected = (false);
-            this.ServedDevice78.DeviceType = ("None");
-            this.ServedDevice78.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice78.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice78.Name = ("ServedDevice78");
-            this.ServedDevice78.ProgID = ("");
-            this.ServedDevice78.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice78.TabIndex = (72);
+            ServedDevice78.AllowConcurrentAccess = false;
+            ServedDevice78.AllowConnectedSetFalse = false;
+            ServedDevice78.AllowConnectedSetTrue = false;
+            ServedDevice78.Description = "";
+            ServedDevice78.DeviceNumber = 0;
+            ServedDevice78.DevicesAreConnected = false;
+            ServedDevice78.DeviceType = "None";
+            ServedDevice78.Location = new System.Drawing.Point(9, 305);
+            ServedDevice78.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice78.Name = "ServedDevice78";
+            ServedDevice78.ProgID = "";
+            ServedDevice78.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice78.TabIndex = 72;
             // 
             // ServedDevice79
             // 
-            this.ServedDevice79.AllowConcurrentAccess = (false);
-            this.ServedDevice79.AllowConnectedSetFalse = (false);
-            this.ServedDevice79.AllowConnectedSetTrue = (false);
-            this.ServedDevice79.Description = ("");
-            this.ServedDevice79.DeviceNumber = (0);
-            this.ServedDevice79.DevicesAreConnected = (false);
-            this.ServedDevice79.DeviceType = ("None");
-            this.ServedDevice79.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice79.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice79.Name = ("ServedDevice79");
-            this.ServedDevice79.ProgID = ("");
-            this.ServedDevice79.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice79.TabIndex = (73);
+            ServedDevice79.AllowConcurrentAccess = false;
+            ServedDevice79.AllowConnectedSetFalse = false;
+            ServedDevice79.AllowConnectedSetTrue = false;
+            ServedDevice79.Description = "";
+            ServedDevice79.DeviceNumber = 0;
+            ServedDevice79.DevicesAreConnected = false;
+            ServedDevice79.DeviceType = "None";
+            ServedDevice79.Location = new System.Drawing.Point(9, 337);
+            ServedDevice79.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice79.Name = "ServedDevice79";
+            ServedDevice79.ProgID = "";
+            ServedDevice79.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice79.TabIndex = 73;
             // 
             // DeviceTab8
             // 
-            this.DeviceTab8.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.DeviceTab8.Controls.Add(this.label78);
-            this.DeviceTab8.Controls.Add(this.label79);
-            this.DeviceTab8.Controls.Add(this.label80);
-            this.DeviceTab8.Controls.Add(this.label81);
-            this.DeviceTab8.Controls.Add(this.label82);
-            this.DeviceTab8.Controls.Add(this.label83);
-            this.DeviceTab8.Controls.Add(this.label84);
-            this.DeviceTab8.Controls.Add(this.label85);
-            this.DeviceTab8.Controls.Add(this.label86);
-            this.DeviceTab8.Controls.Add(this.ServedDevice80);
-            this.DeviceTab8.Controls.Add(this.ServedDevice81);
-            this.DeviceTab8.Controls.Add(this.ServedDevice82);
-            this.DeviceTab8.Controls.Add(this.ServedDevice83);
-            this.DeviceTab8.Controls.Add(this.ServedDevice84);
-            this.DeviceTab8.Controls.Add(this.ServedDevice85);
-            this.DeviceTab8.Controls.Add(this.ServedDevice86);
-            this.DeviceTab8.Controls.Add(this.ServedDevice87);
-            this.DeviceTab8.Controls.Add(this.ServedDevice88);
-            this.DeviceTab8.Controls.Add(this.ServedDevice89);
-            this.DeviceTab8.Location = (new global::System.Drawing.Point(4, 24));
-            this.DeviceTab8.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceTab8.Name = ("DeviceTab8");
-            this.DeviceTab8.Size = (new global::System.Drawing.Size(1173, 375));
-            this.DeviceTab8.TabIndex = (8);
-            this.DeviceTab8.Text = ("Devices 80 to 89");
+            DeviceTab8.BackColor = System.Drawing.SystemColors.Control;
+            DeviceTab8.Controls.Add(label78);
+            DeviceTab8.Controls.Add(label79);
+            DeviceTab8.Controls.Add(label80);
+            DeviceTab8.Controls.Add(label81);
+            DeviceTab8.Controls.Add(label82);
+            DeviceTab8.Controls.Add(label83);
+            DeviceTab8.Controls.Add(label84);
+            DeviceTab8.Controls.Add(label85);
+            DeviceTab8.Controls.Add(label86);
+            DeviceTab8.Controls.Add(ServedDevice80);
+            DeviceTab8.Controls.Add(ServedDevice81);
+            DeviceTab8.Controls.Add(ServedDevice82);
+            DeviceTab8.Controls.Add(ServedDevice83);
+            DeviceTab8.Controls.Add(ServedDevice84);
+            DeviceTab8.Controls.Add(ServedDevice85);
+            DeviceTab8.Controls.Add(ServedDevice86);
+            DeviceTab8.Controls.Add(ServedDevice87);
+            DeviceTab8.Controls.Add(ServedDevice88);
+            DeviceTab8.Controls.Add(ServedDevice89);
+            DeviceTab8.Location = new System.Drawing.Point(4, 24);
+            DeviceTab8.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceTab8.Name = "DeviceTab8";
+            DeviceTab8.Size = new System.Drawing.Size(1173, 375);
+            DeviceTab8.TabIndex = 8;
+            DeviceTab8.Text = "Devices 80 to 89";
             // 
             // label78
             // 
-            this.label78.AutoSize = (true);
-            this.label78.Location = (new global::System.Drawing.Point(1083, 9));
-            this.label78.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label78.Name = ("label78");
-            this.label78.Size = (new global::System.Drawing.Size(42, 15));
-            this.label78.TabIndex = (79);
-            this.label78.Text = ("Enable");
+            label78.AutoSize = true;
+            label78.Location = new System.Drawing.Point(1083, 9);
+            label78.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label78.Name = "label78";
+            label78.Size = new System.Drawing.Size(42, 15);
+            label78.TabIndex = 79;
+            label78.Text = "Enable";
             // 
             // label79
             // 
-            this.label79.AutoSize = (true);
-            this.label79.Location = (new global::System.Drawing.Point(1049, 28));
-            this.label79.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label79.Name = ("label79");
-            this.label79.Size = (new global::System.Drawing.Size(106, 15));
-            this.label79.TabIndex = (78);
-            this.label79.Text = ("Concurrent Access");
+            label79.AutoSize = true;
+            label79.Location = new System.Drawing.Point(1049, 28);
+            label79.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label79.Name = "label79";
+            label79.Size = new System.Drawing.Size(106, 15);
+            label79.TabIndex = 78;
+            label79.Text = "Concurrent Access";
             // 
             // label80
             // 
-            this.label80.AutoSize = (true);
-            this.label80.Location = (new global::System.Drawing.Point(65, 28));
-            this.label80.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label80.Name = ("label80");
-            this.label80.Size = (new global::System.Drawing.Size(69, 15));
-            this.label80.TabIndex = (63);
-            this.label80.Text = ("Device Type");
+            label80.AutoSize = true;
+            label80.Location = new System.Drawing.Point(65, 28);
+            label80.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label80.Name = "label80";
+            label80.Size = new System.Drawing.Size(69, 15);
+            label80.TabIndex = 63;
+            label80.Text = "Device Type";
             // 
             // label81
             // 
-            this.label81.AutoSize = (true);
-            this.label81.Location = (new global::System.Drawing.Point(497, 28));
-            this.label81.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label81.Name = ("label81");
-            this.label81.Size = (new global::System.Drawing.Size(42, 15));
-            this.label81.TabIndex = (65);
-            this.label81.Text = ("Device");
+            label81.AutoSize = true;
+            label81.Location = new System.Drawing.Point(497, 28);
+            label81.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label81.Name = "label81";
+            label81.Size = new System.Drawing.Size(42, 15);
+            label81.TabIndex = 65;
+            label81.Text = "Device";
             // 
             // label82
             // 
-            this.label82.AutoSize = (true);
-            this.label82.Location = (new global::System.Drawing.Point(756, 28));
-            this.label82.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label82.Name = ("label82");
-            this.label82.Size = (new global::System.Drawing.Size(98, 15));
-            this.label82.TabIndex = (77);
-            this.label82.Text = ("Configure Device");
+            label82.AutoSize = true;
+            label82.Location = new System.Drawing.Point(756, 28);
+            label82.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label82.Name = "label82";
+            label82.Size = new System.Drawing.Size(98, 15);
+            label82.TabIndex = 77;
+            label82.Text = "Configure Device";
             // 
             // label83
             // 
-            this.label83.AutoSize = (true);
-            this.label83.Location = (new global::System.Drawing.Point(218, 28));
-            this.label83.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label83.Name = ("label83");
-            this.label83.Size = (new global::System.Drawing.Size(89, 15));
-            this.label83.TabIndex = (66);
-            this.label83.Text = ("Device Number");
+            label83.AutoSize = true;
+            label83.Location = new System.Drawing.Point(218, 28);
+            label83.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label83.Name = "label83";
+            label83.Size = new System.Drawing.Size(89, 15);
+            label83.TabIndex = 66;
+            label83.Text = "Device Number";
             // 
             // label84
             // 
-            this.label84.AutoSize = (true);
-            this.label84.Location = (new global::System.Drawing.Point(985, 28));
-            this.label84.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label84.Name = ("label84");
-            this.label84.Size = (new global::System.Drawing.Size(29, 15));
-            this.label84.TabIndex = (76);
-            this.label84.Text = ("True");
+            label84.AutoSize = true;
+            label84.Location = new System.Drawing.Point(985, 28);
+            label84.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label84.Name = "label84";
+            label84.Size = new System.Drawing.Size(29, 15);
+            label84.TabIndex = 76;
+            label84.Text = "True";
             // 
             // label85
             // 
-            this.label85.AutoSize = (true);
-            this.label85.Location = (new global::System.Drawing.Point(915, 28));
-            this.label85.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label85.Name = ("label85");
-            this.label85.Size = (new global::System.Drawing.Size(33, 15));
-            this.label85.TabIndex = (75);
-            this.label85.Text = ("False");
+            label85.AutoSize = true;
+            label85.Location = new System.Drawing.Point(915, 28);
+            label85.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label85.Name = "label85";
+            label85.Size = new System.Drawing.Size(33, 15);
+            label85.TabIndex = 75;
+            label85.Text = "False";
             // 
             // label86
             // 
-            this.label86.AutoSize = (true);
-            this.label86.Location = (new global::System.Drawing.Point(891, 9));
-            this.label86.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label86.Name = ("label86");
-            this.label86.Size = (new global::System.Drawing.Size(146, 15));
-            this.label86.TabIndex = (74);
-            this.label86.Text = ("Allow Connected to be set");
+            label86.AutoSize = true;
+            label86.Location = new System.Drawing.Point(891, 9);
+            label86.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label86.Name = "label86";
+            label86.Size = new System.Drawing.Size(146, 15);
+            label86.TabIndex = 74;
+            label86.Text = "Allow Connected to be set";
             // 
             // ServedDevice80
             // 
-            this.ServedDevice80.AllowConcurrentAccess = (false);
-            this.ServedDevice80.AllowConnectedSetFalse = (false);
-            this.ServedDevice80.AllowConnectedSetTrue = (false);
-            this.ServedDevice80.Description = ("");
-            this.ServedDevice80.DeviceNumber = (0);
-            this.ServedDevice80.DevicesAreConnected = (false);
-            this.ServedDevice80.DeviceType = ("None");
-            this.ServedDevice80.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice80.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice80.Name = ("ServedDevice80");
-            this.ServedDevice80.ProgID = ("");
-            this.ServedDevice80.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice80.TabIndex = (61);
+            ServedDevice80.AllowConcurrentAccess = false;
+            ServedDevice80.AllowConnectedSetFalse = false;
+            ServedDevice80.AllowConnectedSetTrue = false;
+            ServedDevice80.Description = "";
+            ServedDevice80.DeviceNumber = 0;
+            ServedDevice80.DevicesAreConnected = false;
+            ServedDevice80.DeviceType = "None";
+            ServedDevice80.Location = new System.Drawing.Point(9, 46);
+            ServedDevice80.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice80.Name = "ServedDevice80";
+            ServedDevice80.ProgID = "";
+            ServedDevice80.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice80.TabIndex = 61;
             // 
             // ServedDevice81
             // 
-            this.ServedDevice81.AllowConcurrentAccess = (false);
-            this.ServedDevice81.AllowConnectedSetFalse = (false);
-            this.ServedDevice81.AllowConnectedSetTrue = (false);
-            this.ServedDevice81.Description = ("");
-            this.ServedDevice81.DeviceNumber = (0);
-            this.ServedDevice81.DevicesAreConnected = (false);
-            this.ServedDevice81.DeviceType = ("None");
-            this.ServedDevice81.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice81.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice81.Name = ("ServedDevice81");
-            this.ServedDevice81.ProgID = ("");
-            this.ServedDevice81.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice81.TabIndex = (62);
+            ServedDevice81.AllowConcurrentAccess = false;
+            ServedDevice81.AllowConnectedSetFalse = false;
+            ServedDevice81.AllowConnectedSetTrue = false;
+            ServedDevice81.Description = "";
+            ServedDevice81.DeviceNumber = 0;
+            ServedDevice81.DevicesAreConnected = false;
+            ServedDevice81.DeviceType = "None";
+            ServedDevice81.Location = new System.Drawing.Point(9, 78);
+            ServedDevice81.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice81.Name = "ServedDevice81";
+            ServedDevice81.ProgID = "";
+            ServedDevice81.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice81.TabIndex = 62;
             // 
             // ServedDevice82
             // 
-            this.ServedDevice82.AllowConcurrentAccess = (false);
-            this.ServedDevice82.AllowConnectedSetFalse = (false);
-            this.ServedDevice82.AllowConnectedSetTrue = (false);
-            this.ServedDevice82.Description = ("");
-            this.ServedDevice82.DeviceNumber = (0);
-            this.ServedDevice82.DevicesAreConnected = (false);
-            this.ServedDevice82.DeviceType = ("None");
-            this.ServedDevice82.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice82.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice82.Name = ("ServedDevice82");
-            this.ServedDevice82.ProgID = ("");
-            this.ServedDevice82.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice82.TabIndex = (64);
+            ServedDevice82.AllowConcurrentAccess = false;
+            ServedDevice82.AllowConnectedSetFalse = false;
+            ServedDevice82.AllowConnectedSetTrue = false;
+            ServedDevice82.Description = "";
+            ServedDevice82.DeviceNumber = 0;
+            ServedDevice82.DevicesAreConnected = false;
+            ServedDevice82.DeviceType = "None";
+            ServedDevice82.Location = new System.Drawing.Point(9, 111);
+            ServedDevice82.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice82.Name = "ServedDevice82";
+            ServedDevice82.ProgID = "";
+            ServedDevice82.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice82.TabIndex = 64;
             // 
             // ServedDevice83
             // 
-            this.ServedDevice83.AllowConcurrentAccess = (false);
-            this.ServedDevice83.AllowConnectedSetFalse = (false);
-            this.ServedDevice83.AllowConnectedSetTrue = (false);
-            this.ServedDevice83.Description = ("");
-            this.ServedDevice83.DeviceNumber = (0);
-            this.ServedDevice83.DevicesAreConnected = (false);
-            this.ServedDevice83.DeviceType = ("None");
-            this.ServedDevice83.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice83.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice83.Name = ("ServedDevice83");
-            this.ServedDevice83.ProgID = ("");
-            this.ServedDevice83.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice83.TabIndex = (67);
+            ServedDevice83.AllowConcurrentAccess = false;
+            ServedDevice83.AllowConnectedSetFalse = false;
+            ServedDevice83.AllowConnectedSetTrue = false;
+            ServedDevice83.Description = "";
+            ServedDevice83.DeviceNumber = 0;
+            ServedDevice83.DevicesAreConnected = false;
+            ServedDevice83.DeviceType = "None";
+            ServedDevice83.Location = new System.Drawing.Point(9, 143);
+            ServedDevice83.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice83.Name = "ServedDevice83";
+            ServedDevice83.ProgID = "";
+            ServedDevice83.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice83.TabIndex = 67;
             // 
             // ServedDevice84
             // 
-            this.ServedDevice84.AllowConcurrentAccess = (false);
-            this.ServedDevice84.AllowConnectedSetFalse = (false);
-            this.ServedDevice84.AllowConnectedSetTrue = (false);
-            this.ServedDevice84.Description = ("");
-            this.ServedDevice84.DeviceNumber = (0);
-            this.ServedDevice84.DevicesAreConnected = (false);
-            this.ServedDevice84.DeviceType = ("None");
-            this.ServedDevice84.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice84.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice84.Name = ("ServedDevice84");
-            this.ServedDevice84.ProgID = ("");
-            this.ServedDevice84.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice84.TabIndex = (68);
+            ServedDevice84.AllowConcurrentAccess = false;
+            ServedDevice84.AllowConnectedSetFalse = false;
+            ServedDevice84.AllowConnectedSetTrue = false;
+            ServedDevice84.Description = "";
+            ServedDevice84.DeviceNumber = 0;
+            ServedDevice84.DevicesAreConnected = false;
+            ServedDevice84.DeviceType = "None";
+            ServedDevice84.Location = new System.Drawing.Point(9, 175);
+            ServedDevice84.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice84.Name = "ServedDevice84";
+            ServedDevice84.ProgID = "";
+            ServedDevice84.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice84.TabIndex = 68;
             // 
             // ServedDevice85
             // 
-            this.ServedDevice85.AllowConcurrentAccess = (false);
-            this.ServedDevice85.AllowConnectedSetFalse = (false);
-            this.ServedDevice85.AllowConnectedSetTrue = (false);
-            this.ServedDevice85.Description = ("");
-            this.ServedDevice85.DeviceNumber = (0);
-            this.ServedDevice85.DevicesAreConnected = (false);
-            this.ServedDevice85.DeviceType = ("None");
-            this.ServedDevice85.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice85.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice85.Name = ("ServedDevice85");
-            this.ServedDevice85.ProgID = ("");
-            this.ServedDevice85.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice85.TabIndex = (69);
+            ServedDevice85.AllowConcurrentAccess = false;
+            ServedDevice85.AllowConnectedSetFalse = false;
+            ServedDevice85.AllowConnectedSetTrue = false;
+            ServedDevice85.Description = "";
+            ServedDevice85.DeviceNumber = 0;
+            ServedDevice85.DevicesAreConnected = false;
+            ServedDevice85.DeviceType = "None";
+            ServedDevice85.Location = new System.Drawing.Point(9, 208);
+            ServedDevice85.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice85.Name = "ServedDevice85";
+            ServedDevice85.ProgID = "";
+            ServedDevice85.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice85.TabIndex = 69;
             // 
             // ServedDevice86
             // 
-            this.ServedDevice86.AllowConcurrentAccess = (false);
-            this.ServedDevice86.AllowConnectedSetFalse = (false);
-            this.ServedDevice86.AllowConnectedSetTrue = (false);
-            this.ServedDevice86.Description = ("");
-            this.ServedDevice86.DeviceNumber = (0);
-            this.ServedDevice86.DevicesAreConnected = (false);
-            this.ServedDevice86.DeviceType = ("None");
-            this.ServedDevice86.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice86.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice86.Name = ("ServedDevice86");
-            this.ServedDevice86.ProgID = ("");
-            this.ServedDevice86.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice86.TabIndex = (70);
+            ServedDevice86.AllowConcurrentAccess = false;
+            ServedDevice86.AllowConnectedSetFalse = false;
+            ServedDevice86.AllowConnectedSetTrue = false;
+            ServedDevice86.Description = "";
+            ServedDevice86.DeviceNumber = 0;
+            ServedDevice86.DevicesAreConnected = false;
+            ServedDevice86.DeviceType = "None";
+            ServedDevice86.Location = new System.Drawing.Point(9, 240);
+            ServedDevice86.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice86.Name = "ServedDevice86";
+            ServedDevice86.ProgID = "";
+            ServedDevice86.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice86.TabIndex = 70;
             // 
             // ServedDevice87
             // 
-            this.ServedDevice87.AllowConcurrentAccess = (false);
-            this.ServedDevice87.AllowConnectedSetFalse = (false);
-            this.ServedDevice87.AllowConnectedSetTrue = (false);
-            this.ServedDevice87.Description = ("");
-            this.ServedDevice87.DeviceNumber = (0);
-            this.ServedDevice87.DevicesAreConnected = (false);
-            this.ServedDevice87.DeviceType = ("None");
-            this.ServedDevice87.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice87.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice87.Name = ("ServedDevice87");
-            this.ServedDevice87.ProgID = ("");
-            this.ServedDevice87.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice87.TabIndex = (71);
+            ServedDevice87.AllowConcurrentAccess = false;
+            ServedDevice87.AllowConnectedSetFalse = false;
+            ServedDevice87.AllowConnectedSetTrue = false;
+            ServedDevice87.Description = "";
+            ServedDevice87.DeviceNumber = 0;
+            ServedDevice87.DevicesAreConnected = false;
+            ServedDevice87.DeviceType = "None";
+            ServedDevice87.Location = new System.Drawing.Point(9, 272);
+            ServedDevice87.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice87.Name = "ServedDevice87";
+            ServedDevice87.ProgID = "";
+            ServedDevice87.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice87.TabIndex = 71;
             // 
             // ServedDevice88
             // 
-            this.ServedDevice88.AllowConcurrentAccess = (false);
-            this.ServedDevice88.AllowConnectedSetFalse = (false);
-            this.ServedDevice88.AllowConnectedSetTrue = (false);
-            this.ServedDevice88.Description = ("");
-            this.ServedDevice88.DeviceNumber = (0);
-            this.ServedDevice88.DevicesAreConnected = (false);
-            this.ServedDevice88.DeviceType = ("None");
-            this.ServedDevice88.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice88.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice88.Name = ("ServedDevice88");
-            this.ServedDevice88.ProgID = ("");
-            this.ServedDevice88.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice88.TabIndex = (72);
+            ServedDevice88.AllowConcurrentAccess = false;
+            ServedDevice88.AllowConnectedSetFalse = false;
+            ServedDevice88.AllowConnectedSetTrue = false;
+            ServedDevice88.Description = "";
+            ServedDevice88.DeviceNumber = 0;
+            ServedDevice88.DevicesAreConnected = false;
+            ServedDevice88.DeviceType = "None";
+            ServedDevice88.Location = new System.Drawing.Point(9, 305);
+            ServedDevice88.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice88.Name = "ServedDevice88";
+            ServedDevice88.ProgID = "";
+            ServedDevice88.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice88.TabIndex = 72;
             // 
             // ServedDevice89
             // 
-            this.ServedDevice89.AllowConcurrentAccess = (false);
-            this.ServedDevice89.AllowConnectedSetFalse = (false);
-            this.ServedDevice89.AllowConnectedSetTrue = (false);
-            this.ServedDevice89.Description = ("");
-            this.ServedDevice89.DeviceNumber = (0);
-            this.ServedDevice89.DevicesAreConnected = (false);
-            this.ServedDevice89.DeviceType = ("None");
-            this.ServedDevice89.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice89.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice89.Name = ("ServedDevice89");
-            this.ServedDevice89.ProgID = ("");
-            this.ServedDevice89.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice89.TabIndex = (73);
+            ServedDevice89.AllowConcurrentAccess = false;
+            ServedDevice89.AllowConnectedSetFalse = false;
+            ServedDevice89.AllowConnectedSetTrue = false;
+            ServedDevice89.Description = "";
+            ServedDevice89.DeviceNumber = 0;
+            ServedDevice89.DevicesAreConnected = false;
+            ServedDevice89.DeviceType = "None";
+            ServedDevice89.Location = new System.Drawing.Point(9, 337);
+            ServedDevice89.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice89.Name = "ServedDevice89";
+            ServedDevice89.ProgID = "";
+            ServedDevice89.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice89.TabIndex = 73;
             // 
             // DeviceTab9
             // 
-            this.DeviceTab9.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.DeviceTab9.Controls.Add(this.label87);
-            this.DeviceTab9.Controls.Add(this.label88);
-            this.DeviceTab9.Controls.Add(this.label89);
-            this.DeviceTab9.Controls.Add(this.label90);
-            this.DeviceTab9.Controls.Add(this.label91);
-            this.DeviceTab9.Controls.Add(this.label92);
-            this.DeviceTab9.Controls.Add(this.label93);
-            this.DeviceTab9.Controls.Add(this.label94);
-            this.DeviceTab9.Controls.Add(this.label95);
-            this.DeviceTab9.Controls.Add(this.ServedDevice90);
-            this.DeviceTab9.Controls.Add(this.ServedDevice91);
-            this.DeviceTab9.Controls.Add(this.ServedDevice92);
-            this.DeviceTab9.Controls.Add(this.ServedDevice93);
-            this.DeviceTab9.Controls.Add(this.ServedDevice94);
-            this.DeviceTab9.Controls.Add(this.ServedDevice95);
-            this.DeviceTab9.Controls.Add(this.ServedDevice96);
-            this.DeviceTab9.Controls.Add(this.ServedDevice97);
-            this.DeviceTab9.Controls.Add(this.ServedDevice98);
-            this.DeviceTab9.Controls.Add(this.ServedDevice99);
-            this.DeviceTab9.Location = (new global::System.Drawing.Point(4, 24));
-            this.DeviceTab9.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DeviceTab9.Name = ("DeviceTab9");
-            this.DeviceTab9.Size = (new global::System.Drawing.Size(1173, 375));
-            this.DeviceTab9.TabIndex = (9);
-            this.DeviceTab9.Text = ("Devices 90 to 99");
+            DeviceTab9.BackColor = System.Drawing.SystemColors.Control;
+            DeviceTab9.Controls.Add(label87);
+            DeviceTab9.Controls.Add(label88);
+            DeviceTab9.Controls.Add(label89);
+            DeviceTab9.Controls.Add(label90);
+            DeviceTab9.Controls.Add(label91);
+            DeviceTab9.Controls.Add(label92);
+            DeviceTab9.Controls.Add(label93);
+            DeviceTab9.Controls.Add(label94);
+            DeviceTab9.Controls.Add(label95);
+            DeviceTab9.Controls.Add(ServedDevice90);
+            DeviceTab9.Controls.Add(ServedDevice91);
+            DeviceTab9.Controls.Add(ServedDevice92);
+            DeviceTab9.Controls.Add(ServedDevice93);
+            DeviceTab9.Controls.Add(ServedDevice94);
+            DeviceTab9.Controls.Add(ServedDevice95);
+            DeviceTab9.Controls.Add(ServedDevice96);
+            DeviceTab9.Controls.Add(ServedDevice97);
+            DeviceTab9.Controls.Add(ServedDevice98);
+            DeviceTab9.Controls.Add(ServedDevice99);
+            DeviceTab9.Location = new System.Drawing.Point(4, 24);
+            DeviceTab9.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DeviceTab9.Name = "DeviceTab9";
+            DeviceTab9.Size = new System.Drawing.Size(1173, 375);
+            DeviceTab9.TabIndex = 9;
+            DeviceTab9.Text = "Devices 90 to 99";
             // 
             // label87
             // 
-            this.label87.AutoSize = (true);
-            this.label87.Location = (new global::System.Drawing.Point(1083, 9));
-            this.label87.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label87.Name = ("label87");
-            this.label87.Size = (new global::System.Drawing.Size(42, 15));
-            this.label87.TabIndex = (79);
-            this.label87.Text = ("Enable");
+            label87.AutoSize = true;
+            label87.Location = new System.Drawing.Point(1083, 9);
+            label87.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label87.Name = "label87";
+            label87.Size = new System.Drawing.Size(42, 15);
+            label87.TabIndex = 79;
+            label87.Text = "Enable";
             // 
             // label88
             // 
-            this.label88.AutoSize = (true);
-            this.label88.Location = (new global::System.Drawing.Point(1049, 28));
-            this.label88.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label88.Name = ("label88");
-            this.label88.Size = (new global::System.Drawing.Size(106, 15));
-            this.label88.TabIndex = (78);
-            this.label88.Text = ("Concurrent Access");
+            label88.AutoSize = true;
+            label88.Location = new System.Drawing.Point(1049, 28);
+            label88.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label88.Name = "label88";
+            label88.Size = new System.Drawing.Size(106, 15);
+            label88.TabIndex = 78;
+            label88.Text = "Concurrent Access";
             // 
             // label89
             // 
-            this.label89.AutoSize = (true);
-            this.label89.Location = (new global::System.Drawing.Point(65, 28));
-            this.label89.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label89.Name = ("label89");
-            this.label89.Size = (new global::System.Drawing.Size(69, 15));
-            this.label89.TabIndex = (63);
-            this.label89.Text = ("Device Type");
+            label89.AutoSize = true;
+            label89.Location = new System.Drawing.Point(65, 28);
+            label89.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label89.Name = "label89";
+            label89.Size = new System.Drawing.Size(69, 15);
+            label89.TabIndex = 63;
+            label89.Text = "Device Type";
             // 
             // label90
             // 
-            this.label90.AutoSize = (true);
-            this.label90.Location = (new global::System.Drawing.Point(497, 28));
-            this.label90.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label90.Name = ("label90");
-            this.label90.Size = (new global::System.Drawing.Size(42, 15));
-            this.label90.TabIndex = (65);
-            this.label90.Text = ("Device");
+            label90.AutoSize = true;
+            label90.Location = new System.Drawing.Point(497, 28);
+            label90.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label90.Name = "label90";
+            label90.Size = new System.Drawing.Size(42, 15);
+            label90.TabIndex = 65;
+            label90.Text = "Device";
             // 
             // label91
             // 
-            this.label91.AutoSize = (true);
-            this.label91.Location = (new global::System.Drawing.Point(756, 28));
-            this.label91.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label91.Name = ("label91");
-            this.label91.Size = (new global::System.Drawing.Size(98, 15));
-            this.label91.TabIndex = (77);
-            this.label91.Text = ("Configure Device");
+            label91.AutoSize = true;
+            label91.Location = new System.Drawing.Point(756, 28);
+            label91.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label91.Name = "label91";
+            label91.Size = new System.Drawing.Size(98, 15);
+            label91.TabIndex = 77;
+            label91.Text = "Configure Device";
             // 
             // label92
             // 
-            this.label92.AutoSize = (true);
-            this.label92.Location = (new global::System.Drawing.Point(218, 28));
-            this.label92.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label92.Name = ("label92");
-            this.label92.Size = (new global::System.Drawing.Size(89, 15));
-            this.label92.TabIndex = (66);
-            this.label92.Text = ("Device Number");
+            label92.AutoSize = true;
+            label92.Location = new System.Drawing.Point(218, 28);
+            label92.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label92.Name = "label92";
+            label92.Size = new System.Drawing.Size(89, 15);
+            label92.TabIndex = 66;
+            label92.Text = "Device Number";
             // 
             // label93
             // 
-            this.label93.AutoSize = (true);
-            this.label93.Location = (new global::System.Drawing.Point(985, 28));
-            this.label93.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label93.Name = ("label93");
-            this.label93.Size = (new global::System.Drawing.Size(29, 15));
-            this.label93.TabIndex = (76);
-            this.label93.Text = ("True");
+            label93.AutoSize = true;
+            label93.Location = new System.Drawing.Point(985, 28);
+            label93.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label93.Name = "label93";
+            label93.Size = new System.Drawing.Size(29, 15);
+            label93.TabIndex = 76;
+            label93.Text = "True";
             // 
             // label94
             // 
-            this.label94.AutoSize = (true);
-            this.label94.Location = (new global::System.Drawing.Point(915, 28));
-            this.label94.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label94.Name = ("label94");
-            this.label94.Size = (new global::System.Drawing.Size(33, 15));
-            this.label94.TabIndex = (75);
-            this.label94.Text = ("False");
+            label94.AutoSize = true;
+            label94.Location = new System.Drawing.Point(915, 28);
+            label94.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label94.Name = "label94";
+            label94.Size = new System.Drawing.Size(33, 15);
+            label94.TabIndex = 75;
+            label94.Text = "False";
             // 
             // label95
             // 
-            this.label95.AutoSize = (true);
-            this.label95.Location = (new global::System.Drawing.Point(891, 9));
-            this.label95.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label95.Name = ("label95");
-            this.label95.Size = (new global::System.Drawing.Size(146, 15));
-            this.label95.TabIndex = (74);
-            this.label95.Text = ("Allow Connected to be set");
+            label95.AutoSize = true;
+            label95.Location = new System.Drawing.Point(891, 9);
+            label95.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label95.Name = "label95";
+            label95.Size = new System.Drawing.Size(146, 15);
+            label95.TabIndex = 74;
+            label95.Text = "Allow Connected to be set";
             // 
             // ServedDevice90
             // 
-            this.ServedDevice90.AllowConcurrentAccess = (false);
-            this.ServedDevice90.AllowConnectedSetFalse = (false);
-            this.ServedDevice90.AllowConnectedSetTrue = (false);
-            this.ServedDevice90.Description = ("");
-            this.ServedDevice90.DeviceNumber = (0);
-            this.ServedDevice90.DevicesAreConnected = (false);
-            this.ServedDevice90.DeviceType = ("None");
-            this.ServedDevice90.Location = (new global::System.Drawing.Point(9, 46));
-            this.ServedDevice90.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice90.Name = ("ServedDevice90");
-            this.ServedDevice90.ProgID = ("");
-            this.ServedDevice90.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice90.TabIndex = (61);
+            ServedDevice90.AllowConcurrentAccess = false;
+            ServedDevice90.AllowConnectedSetFalse = false;
+            ServedDevice90.AllowConnectedSetTrue = false;
+            ServedDevice90.Description = "";
+            ServedDevice90.DeviceNumber = 0;
+            ServedDevice90.DevicesAreConnected = false;
+            ServedDevice90.DeviceType = "None";
+            ServedDevice90.Location = new System.Drawing.Point(9, 46);
+            ServedDevice90.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice90.Name = "ServedDevice90";
+            ServedDevice90.ProgID = "";
+            ServedDevice90.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice90.TabIndex = 61;
             // 
             // ServedDevice91
             // 
-            this.ServedDevice91.AllowConcurrentAccess = (false);
-            this.ServedDevice91.AllowConnectedSetFalse = (false);
-            this.ServedDevice91.AllowConnectedSetTrue = (false);
-            this.ServedDevice91.Description = ("");
-            this.ServedDevice91.DeviceNumber = (0);
-            this.ServedDevice91.DevicesAreConnected = (false);
-            this.ServedDevice91.DeviceType = ("None");
-            this.ServedDevice91.Location = (new global::System.Drawing.Point(9, 78));
-            this.ServedDevice91.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice91.Name = ("ServedDevice91");
-            this.ServedDevice91.ProgID = ("");
-            this.ServedDevice91.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice91.TabIndex = (62);
+            ServedDevice91.AllowConcurrentAccess = false;
+            ServedDevice91.AllowConnectedSetFalse = false;
+            ServedDevice91.AllowConnectedSetTrue = false;
+            ServedDevice91.Description = "";
+            ServedDevice91.DeviceNumber = 0;
+            ServedDevice91.DevicesAreConnected = false;
+            ServedDevice91.DeviceType = "None";
+            ServedDevice91.Location = new System.Drawing.Point(9, 78);
+            ServedDevice91.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice91.Name = "ServedDevice91";
+            ServedDevice91.ProgID = "";
+            ServedDevice91.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice91.TabIndex = 62;
             // 
             // ServedDevice92
             // 
-            this.ServedDevice92.AllowConcurrentAccess = (false);
-            this.ServedDevice92.AllowConnectedSetFalse = (false);
-            this.ServedDevice92.AllowConnectedSetTrue = (false);
-            this.ServedDevice92.Description = ("");
-            this.ServedDevice92.DeviceNumber = (0);
-            this.ServedDevice92.DevicesAreConnected = (false);
-            this.ServedDevice92.DeviceType = ("None");
-            this.ServedDevice92.Location = (new global::System.Drawing.Point(9, 111));
-            this.ServedDevice92.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice92.Name = ("ServedDevice92");
-            this.ServedDevice92.ProgID = ("");
-            this.ServedDevice92.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice92.TabIndex = (64);
+            ServedDevice92.AllowConcurrentAccess = false;
+            ServedDevice92.AllowConnectedSetFalse = false;
+            ServedDevice92.AllowConnectedSetTrue = false;
+            ServedDevice92.Description = "";
+            ServedDevice92.DeviceNumber = 0;
+            ServedDevice92.DevicesAreConnected = false;
+            ServedDevice92.DeviceType = "None";
+            ServedDevice92.Location = new System.Drawing.Point(9, 111);
+            ServedDevice92.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice92.Name = "ServedDevice92";
+            ServedDevice92.ProgID = "";
+            ServedDevice92.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice92.TabIndex = 64;
             // 
             // ServedDevice93
             // 
-            this.ServedDevice93.AllowConcurrentAccess = (false);
-            this.ServedDevice93.AllowConnectedSetFalse = (false);
-            this.ServedDevice93.AllowConnectedSetTrue = (false);
-            this.ServedDevice93.Description = ("");
-            this.ServedDevice93.DeviceNumber = (0);
-            this.ServedDevice93.DevicesAreConnected = (false);
-            this.ServedDevice93.DeviceType = ("None");
-            this.ServedDevice93.Location = (new global::System.Drawing.Point(9, 143));
-            this.ServedDevice93.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice93.Name = ("ServedDevice93");
-            this.ServedDevice93.ProgID = ("");
-            this.ServedDevice93.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice93.TabIndex = (67);
+            ServedDevice93.AllowConcurrentAccess = false;
+            ServedDevice93.AllowConnectedSetFalse = false;
+            ServedDevice93.AllowConnectedSetTrue = false;
+            ServedDevice93.Description = "";
+            ServedDevice93.DeviceNumber = 0;
+            ServedDevice93.DevicesAreConnected = false;
+            ServedDevice93.DeviceType = "None";
+            ServedDevice93.Location = new System.Drawing.Point(9, 143);
+            ServedDevice93.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice93.Name = "ServedDevice93";
+            ServedDevice93.ProgID = "";
+            ServedDevice93.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice93.TabIndex = 67;
             // 
             // ServedDevice94
             // 
-            this.ServedDevice94.AllowConcurrentAccess = (false);
-            this.ServedDevice94.AllowConnectedSetFalse = (false);
-            this.ServedDevice94.AllowConnectedSetTrue = (false);
-            this.ServedDevice94.Description = ("");
-            this.ServedDevice94.DeviceNumber = (0);
-            this.ServedDevice94.DevicesAreConnected = (false);
-            this.ServedDevice94.DeviceType = ("None");
-            this.ServedDevice94.Location = (new global::System.Drawing.Point(9, 175));
-            this.ServedDevice94.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice94.Name = ("ServedDevice94");
-            this.ServedDevice94.ProgID = ("");
-            this.ServedDevice94.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice94.TabIndex = (68);
+            ServedDevice94.AllowConcurrentAccess = false;
+            ServedDevice94.AllowConnectedSetFalse = false;
+            ServedDevice94.AllowConnectedSetTrue = false;
+            ServedDevice94.Description = "";
+            ServedDevice94.DeviceNumber = 0;
+            ServedDevice94.DevicesAreConnected = false;
+            ServedDevice94.DeviceType = "None";
+            ServedDevice94.Location = new System.Drawing.Point(9, 175);
+            ServedDevice94.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice94.Name = "ServedDevice94";
+            ServedDevice94.ProgID = "";
+            ServedDevice94.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice94.TabIndex = 68;
             // 
             // ServedDevice95
             // 
-            this.ServedDevice95.AllowConcurrentAccess = (false);
-            this.ServedDevice95.AllowConnectedSetFalse = (false);
-            this.ServedDevice95.AllowConnectedSetTrue = (false);
-            this.ServedDevice95.Description = ("");
-            this.ServedDevice95.DeviceNumber = (0);
-            this.ServedDevice95.DevicesAreConnected = (false);
-            this.ServedDevice95.DeviceType = ("None");
-            this.ServedDevice95.Location = (new global::System.Drawing.Point(9, 208));
-            this.ServedDevice95.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice95.Name = ("ServedDevice95");
-            this.ServedDevice95.ProgID = ("");
-            this.ServedDevice95.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice95.TabIndex = (69);
+            ServedDevice95.AllowConcurrentAccess = false;
+            ServedDevice95.AllowConnectedSetFalse = false;
+            ServedDevice95.AllowConnectedSetTrue = false;
+            ServedDevice95.Description = "";
+            ServedDevice95.DeviceNumber = 0;
+            ServedDevice95.DevicesAreConnected = false;
+            ServedDevice95.DeviceType = "None";
+            ServedDevice95.Location = new System.Drawing.Point(9, 208);
+            ServedDevice95.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice95.Name = "ServedDevice95";
+            ServedDevice95.ProgID = "";
+            ServedDevice95.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice95.TabIndex = 69;
             // 
             // ServedDevice96
             // 
-            this.ServedDevice96.AllowConcurrentAccess = (false);
-            this.ServedDevice96.AllowConnectedSetFalse = (false);
-            this.ServedDevice96.AllowConnectedSetTrue = (false);
-            this.ServedDevice96.Description = ("");
-            this.ServedDevice96.DeviceNumber = (0);
-            this.ServedDevice96.DevicesAreConnected = (false);
-            this.ServedDevice96.DeviceType = ("None");
-            this.ServedDevice96.Location = (new global::System.Drawing.Point(9, 240));
-            this.ServedDevice96.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice96.Name = ("ServedDevice96");
-            this.ServedDevice96.ProgID = ("");
-            this.ServedDevice96.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice96.TabIndex = (70);
+            ServedDevice96.AllowConcurrentAccess = false;
+            ServedDevice96.AllowConnectedSetFalse = false;
+            ServedDevice96.AllowConnectedSetTrue = false;
+            ServedDevice96.Description = "";
+            ServedDevice96.DeviceNumber = 0;
+            ServedDevice96.DevicesAreConnected = false;
+            ServedDevice96.DeviceType = "None";
+            ServedDevice96.Location = new System.Drawing.Point(9, 240);
+            ServedDevice96.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice96.Name = "ServedDevice96";
+            ServedDevice96.ProgID = "";
+            ServedDevice96.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice96.TabIndex = 70;
             // 
             // ServedDevice97
             // 
-            this.ServedDevice97.AllowConcurrentAccess = (false);
-            this.ServedDevice97.AllowConnectedSetFalse = (false);
-            this.ServedDevice97.AllowConnectedSetTrue = (false);
-            this.ServedDevice97.Description = ("");
-            this.ServedDevice97.DeviceNumber = (0);
-            this.ServedDevice97.DevicesAreConnected = (false);
-            this.ServedDevice97.DeviceType = ("None");
-            this.ServedDevice97.Location = (new global::System.Drawing.Point(9, 272));
-            this.ServedDevice97.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice97.Name = ("ServedDevice97");
-            this.ServedDevice97.ProgID = ("");
-            this.ServedDevice97.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice97.TabIndex = (71);
+            ServedDevice97.AllowConcurrentAccess = false;
+            ServedDevice97.AllowConnectedSetFalse = false;
+            ServedDevice97.AllowConnectedSetTrue = false;
+            ServedDevice97.Description = "";
+            ServedDevice97.DeviceNumber = 0;
+            ServedDevice97.DevicesAreConnected = false;
+            ServedDevice97.DeviceType = "None";
+            ServedDevice97.Location = new System.Drawing.Point(9, 272);
+            ServedDevice97.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice97.Name = "ServedDevice97";
+            ServedDevice97.ProgID = "";
+            ServedDevice97.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice97.TabIndex = 71;
             // 
             // ServedDevice98
             // 
-            this.ServedDevice98.AllowConcurrentAccess = (false);
-            this.ServedDevice98.AllowConnectedSetFalse = (false);
-            this.ServedDevice98.AllowConnectedSetTrue = (false);
-            this.ServedDevice98.Description = ("");
-            this.ServedDevice98.DeviceNumber = (0);
-            this.ServedDevice98.DevicesAreConnected = (false);
-            this.ServedDevice98.DeviceType = ("None");
-            this.ServedDevice98.Location = (new global::System.Drawing.Point(9, 305));
-            this.ServedDevice98.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice98.Name = ("ServedDevice98");
-            this.ServedDevice98.ProgID = ("");
-            this.ServedDevice98.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice98.TabIndex = (72);
+            ServedDevice98.AllowConcurrentAccess = false;
+            ServedDevice98.AllowConnectedSetFalse = false;
+            ServedDevice98.AllowConnectedSetTrue = false;
+            ServedDevice98.Description = "";
+            ServedDevice98.DeviceNumber = 0;
+            ServedDevice98.DevicesAreConnected = false;
+            ServedDevice98.DeviceType = "None";
+            ServedDevice98.Location = new System.Drawing.Point(9, 305);
+            ServedDevice98.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice98.Name = "ServedDevice98";
+            ServedDevice98.ProgID = "";
+            ServedDevice98.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice98.TabIndex = 72;
             // 
             // ServedDevice99
             // 
-            this.ServedDevice99.AllowConcurrentAccess = (false);
-            this.ServedDevice99.AllowConnectedSetFalse = (false);
-            this.ServedDevice99.AllowConnectedSetTrue = (false);
-            this.ServedDevice99.Description = ("");
-            this.ServedDevice99.DeviceNumber = (0);
-            this.ServedDevice99.DevicesAreConnected = (false);
-            this.ServedDevice99.DeviceType = ("None");
-            this.ServedDevice99.Location = (new global::System.Drawing.Point(9, 337));
-            this.ServedDevice99.Margin = (new global::System.Windows.Forms.Padding(5));
-            this.ServedDevice99.Name = ("ServedDevice99");
-            this.ServedDevice99.ProgID = ("");
-            this.ServedDevice99.Size = (new global::System.Drawing.Size(1120, 25));
-            this.ServedDevice99.TabIndex = (73);
+            ServedDevice99.AllowConcurrentAccess = false;
+            ServedDevice99.AllowConnectedSetFalse = false;
+            ServedDevice99.AllowConnectedSetTrue = false;
+            ServedDevice99.Description = "";
+            ServedDevice99.DeviceNumber = 0;
+            ServedDevice99.DevicesAreConnected = false;
+            ServedDevice99.DeviceType = "None";
+            ServedDevice99.Location = new System.Drawing.Point(9, 337);
+            ServedDevice99.Margin = new System.Windows.Forms.Padding(5);
+            ServedDevice99.Name = "ServedDevice99";
+            ServedDevice99.ProgID = "";
+            ServedDevice99.Size = new System.Drawing.Size(1120, 25);
+            ServedDevice99.TabIndex = 73;
             // 
             // LblDevicesNotDisconnoected
             // 
-            this.LblDevicesNotDisconnoected.AutoSize = (true);
-            this.LblDevicesNotDisconnoected.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point));
-            this.LblDevicesNotDisconnoected.ForeColor = (global::System.Drawing.Color.Red);
-            this.LblDevicesNotDisconnoected.Location = (new global::System.Drawing.Point(666, 413));
-            this.LblDevicesNotDisconnoected.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.LblDevicesNotDisconnoected.Name = ("LblDevicesNotDisconnoected");
-            this.LblDevicesNotDisconnoected.Size = (new global::System.Drawing.Size(257, 26));
-            this.LblDevicesNotDisconnoected.TabIndex = (58);
-            this.LblDevicesNotDisconnoected.Text = ("Devices are Connected\r\nConfiguration requires that devices are Disconnected");
-            this.LblDevicesNotDisconnoected.TextAlign = (global::System.Drawing.ContentAlignment.MiddleCenter);
+            LblDevicesNotDisconnoected.AutoSize = true;
+            LblDevicesNotDisconnoected.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            LblDevicesNotDisconnoected.ForeColor = System.Drawing.Color.Red;
+            LblDevicesNotDisconnoected.Location = new System.Drawing.Point(666, 413);
+            LblDevicesNotDisconnoected.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            LblDevicesNotDisconnoected.Name = "LblDevicesNotDisconnoected";
+            LblDevicesNotDisconnoected.Size = new System.Drawing.Size(257, 26);
+            LblDevicesNotDisconnoected.TabIndex = 58;
+            LblDevicesNotDisconnoected.Text = "Devices are Connected\r\nConfiguration requires that devices are Disconnected";
+            LblDevicesNotDisconnoected.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // ServerConfigurationTab
             // 
-            this.ServerConfigurationTab.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.ServerConfigurationTab.Controls.Add(this.chkStartMinimised);
-            this.ServerConfigurationTab.Controls.Add(this.chkConfirmExit);
-            this.ServerConfigurationTab.Controls.Add(this.textBox1);
-            this.ServerConfigurationTab.Controls.Add(this.GrpIpVersionSelector);
-            this.ServerConfigurationTab.Controls.Add(this.label13);
-            this.ServerConfigurationTab.Controls.Add(this.NumDiscoveryPort);
-            this.ServerConfigurationTab.Controls.Add(this.ChkEnableDiscovery);
-            this.ServerConfigurationTab.Controls.Add(this.label10);
-            this.ServerConfigurationTab.Controls.Add(this.addressList);
-            this.ServerConfigurationTab.Controls.Add(this.TxtRemoteServerLocation);
-            this.ServerConfigurationTab.Controls.Add(this.numPort);
-            this.ServerConfigurationTab.Controls.Add(this.label8);
-            this.ServerConfigurationTab.Controls.Add(this.label7);
-            this.ServerConfigurationTab.Controls.Add(this.chkManagementInterfaceEnabled);
-            this.ServerConfigurationTab.Controls.Add(this.ChkIncludeDriverExceptionsInJsonResponses);
-            this.ServerConfigurationTab.Controls.Add(this.chkAutoConnect);
-            this.ServerConfigurationTab.Controls.Add(this.ChkRunDriversInSeparateThreadss);
-            this.ServerConfigurationTab.Controls.Add(this.ChkStartWithApiEnabled);
-            this.ServerConfigurationTab.Location = (new global::System.Drawing.Point(4, 24));
-            this.ServerConfigurationTab.Margin = (new global::System.Windows.Forms.Padding(0));
-            this.ServerConfigurationTab.Name = ("ServerConfigurationTab");
-            this.ServerConfigurationTab.Padding = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.ServerConfigurationTab.Size = (new global::System.Drawing.Size(1198, 457));
-            this.ServerConfigurationTab.TabIndex = (1);
-            this.ServerConfigurationTab.Text = ("Server Configuration");
+            ServerConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
+            ServerConfigurationTab.Controls.Add(chkStartMinimised);
+            ServerConfigurationTab.Controls.Add(textBox1);
+            ServerConfigurationTab.Controls.Add(GrpIpVersionSelector);
+            ServerConfigurationTab.Controls.Add(label13);
+            ServerConfigurationTab.Controls.Add(NumDiscoveryPort);
+            ServerConfigurationTab.Controls.Add(ChkEnableDiscovery);
+            ServerConfigurationTab.Controls.Add(label10);
+            ServerConfigurationTab.Controls.Add(addressList);
+            ServerConfigurationTab.Controls.Add(TxtRemoteServerLocation);
+            ServerConfigurationTab.Controls.Add(numPort);
+            ServerConfigurationTab.Controls.Add(label8);
+            ServerConfigurationTab.Controls.Add(label7);
+            ServerConfigurationTab.Controls.Add(chkManagementInterfaceEnabled);
+            ServerConfigurationTab.Controls.Add(ChkIncludeDriverExceptionsInJsonResponses);
+            ServerConfigurationTab.Controls.Add(chkAutoConnect);
+            ServerConfigurationTab.Controls.Add(ChkRunDriversInSeparateThreadss);
+            ServerConfigurationTab.Controls.Add(ChkStartWithApiEnabled);
+            ServerConfigurationTab.Location = new System.Drawing.Point(4, 24);
+            ServerConfigurationTab.Margin = new System.Windows.Forms.Padding(0);
+            ServerConfigurationTab.Name = "ServerConfigurationTab";
+            ServerConfigurationTab.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ServerConfigurationTab.Size = new System.Drawing.Size(1198, 457);
+            ServerConfigurationTab.TabIndex = 1;
+            ServerConfigurationTab.Text = "Server Configuration";
             // 
             // chkStartMinimised
             // 
-            this.chkStartMinimised.AutoSize = (true);
-            this.chkStartMinimised.Location = (new global::System.Drawing.Point(560, 365));
-            this.chkStartMinimised.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.chkStartMinimised.Name = ("chkStartMinimised");
-            this.chkStartMinimised.Size = (new global::System.Drawing.Size(204, 19));
-            this.chkStartMinimised.TabIndex = (55);
-            this.chkStartMinimised.Text = ("Start the remote server minimised");
-            this.chkStartMinimised.UseVisualStyleBackColor = (true);
-            // 
-            // chkConfirmExit
-            // 
-            this.chkConfirmExit.AutoSize = (true);
-            this.chkConfirmExit.Location = (new global::System.Drawing.Point(311, 365));
-            this.chkConfirmExit.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.chkConfirmExit.Name = ("chkConfirmExit");
-            this.chkConfirmExit.Size = (new global::System.Drawing.Size(205, 19));
-            this.chkConfirmExit.TabIndex = (54);
-            this.chkConfirmExit.Text = ("Confirm Remote Server shutdown");
-            this.chkConfirmExit.UseVisualStyleBackColor = (true);
+            chkStartMinimised.AutoSize = true;
+            chkStartMinimised.Location = new System.Drawing.Point(311, 363);
+            chkStartMinimised.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkStartMinimised.Name = "chkStartMinimised";
+            chkStartMinimised.Size = new System.Drawing.Size(204, 19);
+            chkStartMinimised.TabIndex = 55;
+            chkStartMinimised.Text = "Start the remote server minimised";
+            chkStartMinimised.UseVisualStyleBackColor = true;
             // 
             // textBox1
             // 
-            this.textBox1.BackColor = (global::System.Drawing.Color.Yellow);
-            this.textBox1.BorderStyle = (global::System.Windows.Forms.BorderStyle.None);
-            this.textBox1.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.textBox1.ForeColor = (global::System.Drawing.SystemColors.ActiveCaptionText);
-            this.textBox1.Location = (new global::System.Drawing.Point(22, 42));
-            this.textBox1.Margin = (new global::System.Windows.Forms.Padding(6));
-            this.textBox1.Multiline = (true);
-            this.textBox1.Name = ("textBox1");
-            this.textBox1.ReadOnly = (true);
-            this.textBox1.Size = (new global::System.Drawing.Size(270, 169));
-            this.textBox1.TabIndex = (51);
-            this.textBox1.Text = (resources.GetString("textBox1.Text"));
+            textBox1.BackColor = System.Drawing.Color.Yellow;
+            textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            textBox1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            textBox1.Location = new System.Drawing.Point(22, 42);
+            textBox1.Margin = new System.Windows.Forms.Padding(6);
+            textBox1.Multiline = true;
+            textBox1.Name = "textBox1";
+            textBox1.ReadOnly = true;
+            textBox1.Size = new System.Drawing.Size(270, 169);
+            textBox1.TabIndex = 51;
+            textBox1.Text = resources.GetString("textBox1.Text");
             // 
             // GrpIpVersionSelector
             // 
-            this.GrpIpVersionSelector.Controls.Add(this.RadIpV4AndV6);
-            this.GrpIpVersionSelector.Controls.Add(this.RadIpV6);
-            this.GrpIpVersionSelector.Controls.Add(this.RadIpV4);
-            this.GrpIpVersionSelector.Location = (new global::System.Drawing.Point(981, 107));
-            this.GrpIpVersionSelector.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.GrpIpVersionSelector.Name = ("GrpIpVersionSelector");
-            this.GrpIpVersionSelector.Padding = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.GrpIpVersionSelector.Size = (new global::System.Drawing.Size(155, 119));
-            this.GrpIpVersionSelector.TabIndex = (50);
-            this.GrpIpVersionSelector.TabStop = (false);
-            this.GrpIpVersionSelector.Text = ("Supported IP Version(s)");
+            GrpIpVersionSelector.Controls.Add(RadIpV4AndV6);
+            GrpIpVersionSelector.Controls.Add(RadIpV6);
+            GrpIpVersionSelector.Controls.Add(RadIpV4);
+            GrpIpVersionSelector.Location = new System.Drawing.Point(981, 107);
+            GrpIpVersionSelector.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            GrpIpVersionSelector.Name = "GrpIpVersionSelector";
+            GrpIpVersionSelector.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            GrpIpVersionSelector.Size = new System.Drawing.Size(155, 119);
+            GrpIpVersionSelector.TabIndex = 50;
+            GrpIpVersionSelector.TabStop = false;
+            GrpIpVersionSelector.Text = "Supported IP Version(s)";
             // 
             // RadIpV4AndV6
             // 
-            this.RadIpV4AndV6.AutoSize = (true);
-            this.RadIpV4AndV6.Location = (new global::System.Drawing.Point(7, 87));
-            this.RadIpV4AndV6.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.RadIpV4AndV6.Name = ("RadIpV4AndV6");
-            this.RadIpV4AndV6.Size = (new global::System.Drawing.Size(90, 19));
-            this.RadIpV4AndV6.TabIndex = (2);
-            this.RadIpV4AndV6.TabStop = (true);
-            this.RadIpV4AndV6.Text = ("IP V4 and V6");
-            this.RadIpV4AndV6.UseVisualStyleBackColor = (true);
-            this.RadIpV4AndV6.CheckedChanged += (this.RadIpV4AndV6_CheckedChanged);
+            RadIpV4AndV6.AutoSize = true;
+            RadIpV4AndV6.Location = new System.Drawing.Point(7, 87);
+            RadIpV4AndV6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadIpV4AndV6.Name = "RadIpV4AndV6";
+            RadIpV4AndV6.Size = new System.Drawing.Size(90, 19);
+            RadIpV4AndV6.TabIndex = 2;
+            RadIpV4AndV6.TabStop = true;
+            RadIpV4AndV6.Text = "IP V4 and V6";
+            RadIpV4AndV6.UseVisualStyleBackColor = true;
+            RadIpV4AndV6.CheckedChanged += RadIpV4AndV6_CheckedChanged;
             // 
             // RadIpV6
             // 
-            this.RadIpV6.AutoSize = (true);
-            this.RadIpV6.Location = (new global::System.Drawing.Point(7, 57));
-            this.RadIpV6.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.RadIpV6.Name = ("RadIpV6");
-            this.RadIpV6.Size = (new global::System.Drawing.Size(79, 19));
-            this.RadIpV6.TabIndex = (1);
-            this.RadIpV6.TabStop = (true);
-            this.RadIpV6.Text = ("IP V6 Only");
-            this.RadIpV6.UseVisualStyleBackColor = (true);
-            this.RadIpV6.CheckedChanged += (this.RadIpV6_CheckedChanged);
+            RadIpV6.AutoSize = true;
+            RadIpV6.Location = new System.Drawing.Point(7, 57);
+            RadIpV6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadIpV6.Name = "RadIpV6";
+            RadIpV6.Size = new System.Drawing.Size(79, 19);
+            RadIpV6.TabIndex = 1;
+            RadIpV6.TabStop = true;
+            RadIpV6.Text = "IP V6 Only";
+            RadIpV6.UseVisualStyleBackColor = true;
+            RadIpV6.CheckedChanged += RadIpV6_CheckedChanged;
             // 
             // RadIpV4
             // 
-            this.RadIpV4.AutoSize = (true);
-            this.RadIpV4.Location = (new global::System.Drawing.Point(7, 27));
-            this.RadIpV4.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.RadIpV4.Name = ("RadIpV4");
-            this.RadIpV4.Size = (new global::System.Drawing.Size(79, 19));
-            this.RadIpV4.TabIndex = (0);
-            this.RadIpV4.TabStop = (true);
-            this.RadIpV4.Text = ("IP V4 Only");
-            this.RadIpV4.UseVisualStyleBackColor = (true);
-            this.RadIpV4.CheckedChanged += (this.RadIpV4_CheckedChanged);
+            RadIpV4.AutoSize = true;
+            RadIpV4.Location = new System.Drawing.Point(7, 27);
+            RadIpV4.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            RadIpV4.Name = "RadIpV4";
+            RadIpV4.Size = new System.Drawing.Size(79, 19);
+            RadIpV4.TabIndex = 0;
+            RadIpV4.TabStop = true;
+            RadIpV4.Text = "IP V4 Only";
+            RadIpV4.UseVisualStyleBackColor = true;
+            RadIpV4.CheckedChanged += RadIpV4_CheckedChanged;
             // 
             // label13
             // 
-            this.label13.AutoSize = (true);
-            this.label13.Location = (new global::System.Drawing.Point(701, 196));
-            this.label13.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label13.Name = ("label13");
-            this.label13.Size = (new global::System.Drawing.Size(209, 15));
-            this.label13.TabIndex = (47);
-            this.label13.Text = ("Discovery Listener Port (Default 32227)");
+            label13.AutoSize = true;
+            label13.Location = new System.Drawing.Point(701, 196);
+            label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label13.Name = "label13";
+            label13.Size = new System.Drawing.Size(209, 15);
+            label13.TabIndex = 47;
+            label13.Text = "Discovery Listener Port (Default 32227)";
             // 
             // NumDiscoveryPort
             // 
-            this.NumDiscoveryPort.Location = (new global::System.Drawing.Point(596, 194));
-            this.NumDiscoveryPort.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.NumDiscoveryPort.Maximum = (new global::System.Decimal(new global::System.Int32[] { 65535, 0, 0, 0 }));
-            this.NumDiscoveryPort.Minimum = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.NumDiscoveryPort.Name = ("NumDiscoveryPort");
-            this.NumDiscoveryPort.Size = (new global::System.Drawing.Size(102, 23));
-            this.NumDiscoveryPort.TabIndex = (46);
-            this.NumDiscoveryPort.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
+            NumDiscoveryPort.Location = new System.Drawing.Point(596, 194);
+            NumDiscoveryPort.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            NumDiscoveryPort.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
+            NumDiscoveryPort.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            NumDiscoveryPort.Name = "NumDiscoveryPort";
+            NumDiscoveryPort.Size = new System.Drawing.Size(102, 23);
+            NumDiscoveryPort.TabIndex = 46;
+            NumDiscoveryPort.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // ChkEnableDiscovery
             // 
-            this.ChkEnableDiscovery.AutoSize = (true);
-            this.ChkEnableDiscovery.Location = (new global::System.Drawing.Point(560, 312));
-            this.ChkEnableDiscovery.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.ChkEnableDiscovery.Name = ("ChkEnableDiscovery");
-            this.ChkEnableDiscovery.Size = (new global::System.Drawing.Size(300, 19));
-            this.ChkEnableDiscovery.TabIndex = (45);
-            this.ChkEnableDiscovery.Text = ("Enable Alpaca Discovery and Management Interface");
-            this.ChkEnableDiscovery.UseVisualStyleBackColor = (true);
-            this.ChkEnableDiscovery.CheckedChanged += (this.ChkEnableDiscovery_CheckedChanged);
+            ChkEnableDiscovery.AutoSize = true;
+            ChkEnableDiscovery.Location = new System.Drawing.Point(560, 312);
+            ChkEnableDiscovery.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ChkEnableDiscovery.Name = "ChkEnableDiscovery";
+            ChkEnableDiscovery.Size = new System.Drawing.Size(300, 19);
+            ChkEnableDiscovery.TabIndex = 45;
+            ChkEnableDiscovery.Text = "Enable Alpaca Discovery and Management Interface";
+            ChkEnableDiscovery.UseVisualStyleBackColor = true;
+            ChkEnableDiscovery.CheckedChanged += ChkEnableDiscovery_CheckedChanged;
             // 
             // label10
             // 
-            this.label10.AutoSize = (true);
-            this.label10.Location = (new global::System.Drawing.Point(701, 78));
-            this.label10.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label10.Name = ("label10");
-            this.label10.Size = (new global::System.Drawing.Size(88, 15));
-            this.label10.TabIndex = (44);
-            this.label10.Text = ("Server Location");
+            label10.AutoSize = true;
+            label10.Location = new System.Drawing.Point(701, 78);
+            label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label10.Name = "label10";
+            label10.Size = new System.Drawing.Size(88, 15);
+            label10.TabIndex = 44;
+            label10.Text = "Server Location";
             // 
             // addressList
             // 
-            this.addressList.FormattingEnabled = (true);
-            this.addressList.Location = (new global::System.Drawing.Point(315, 133));
-            this.addressList.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.addressList.Name = ("addressList");
-            this.addressList.Size = (new global::System.Drawing.Size(382, 23));
-            this.addressList.TabIndex = (39);
+            addressList.FormattingEnabled = true;
+            addressList.Location = new System.Drawing.Point(315, 133);
+            addressList.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            addressList.Name = "addressList";
+            addressList.Size = new System.Drawing.Size(382, 23);
+            addressList.TabIndex = 39;
             // 
             // TxtRemoteServerLocation
             // 
-            this.TxtRemoteServerLocation.BorderStyle = (global::System.Windows.Forms.BorderStyle.FixedSingle);
-            this.TxtRemoteServerLocation.Location = (new global::System.Drawing.Point(315, 75));
-            this.TxtRemoteServerLocation.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.TxtRemoteServerLocation.Name = ("TxtRemoteServerLocation");
-            this.TxtRemoteServerLocation.Size = (new global::System.Drawing.Size(382, 23));
-            this.TxtRemoteServerLocation.TabIndex = (43);
+            TxtRemoteServerLocation.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            TxtRemoteServerLocation.Location = new System.Drawing.Point(315, 75);
+            TxtRemoteServerLocation.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            TxtRemoteServerLocation.Name = "TxtRemoteServerLocation";
+            TxtRemoteServerLocation.Size = new System.Drawing.Size(382, 23);
+            TxtRemoteServerLocation.TabIndex = 43;
             // 
             // numPort
             // 
-            this.numPort.Location = (new global::System.Drawing.Point(596, 164));
-            this.numPort.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.numPort.Maximum = (new global::System.Decimal(new global::System.Int32[] { 65535, 0, 0, 0 }));
-            this.numPort.Minimum = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
-            this.numPort.Name = ("numPort");
-            this.numPort.Size = (new global::System.Drawing.Size(102, 23));
-            this.numPort.TabIndex = (40);
-            this.numPort.Value = (new global::System.Decimal(new global::System.Int32[] { 1, 0, 0, 0 }));
+            numPort.Location = new System.Drawing.Point(596, 164);
+            numPort.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            numPort.Maximum = new decimal(new int[] { 65535, 0, 0, 0 });
+            numPort.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numPort.Name = "numPort";
+            numPort.Size = new System.Drawing.Size(102, 23);
+            numPort.TabIndex = 40;
+            numPort.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // label8
             // 
-            this.label8.AutoSize = (true);
-            this.label8.Location = (new global::System.Drawing.Point(701, 166));
-            this.label8.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label8.Name = ("label8");
-            this.label8.Size = (new global::System.Drawing.Size(77, 15));
-            this.label8.TabIndex = (42);
-            this.label8.Text = ("Server IP Port");
+            label8.AutoSize = true;
+            label8.Location = new System.Drawing.Point(701, 166);
+            label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(77, 15);
+            label8.TabIndex = 42;
+            label8.Text = "Server IP Port";
             // 
             // label7
             // 
-            this.label7.AutoSize = (true);
-            this.label7.Location = (new global::System.Drawing.Point(701, 136));
-            this.label7.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label7.Name = ("label7");
-            this.label7.Size = (new global::System.Drawing.Size(95, 15));
-            this.label7.TabIndex = (41);
-            this.label7.Text = ("Server IP address");
+            label7.AutoSize = true;
+            label7.Location = new System.Drawing.Point(701, 136);
+            label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(95, 15);
+            label7.TabIndex = 41;
+            label7.Text = "Server IP address";
             // 
             // ServerConfigurationTab2
             // 
-            this.ServerConfigurationTab2.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.ServerConfigurationTab2.Controls.Add(this.ChkRunAs64BitApplication);
-            this.ServerConfigurationTab2.Controls.Add(this.groupBox4);
-            this.ServerConfigurationTab2.Controls.Add(this.lblMinimisationBehaviour);
-            this.ServerConfigurationTab2.Controls.Add(this.cmbMinimiseOptions);
-            this.ServerConfigurationTab2.Controls.Add(this.label96);
-            this.ServerConfigurationTab2.Controls.Add(this.NumMaxDevices);
-            this.ServerConfigurationTab2.Location = (new global::System.Drawing.Point(4, 24));
-            this.ServerConfigurationTab2.Name = ("ServerConfigurationTab2");
-            this.ServerConfigurationTab2.Padding = (new global::System.Windows.Forms.Padding(3));
-            this.ServerConfigurationTab2.Size = (new global::System.Drawing.Size(1198, 457));
-            this.ServerConfigurationTab2.TabIndex = (5);
-            this.ServerConfigurationTab2.Text = ("Server Configuration 2");
+            ServerConfigurationTab2.BackColor = System.Drawing.SystemColors.Control;
+            ServerConfigurationTab2.Controls.Add(groupBox5);
+            ServerConfigurationTab2.Controls.Add(ChkRunAs64BitApplication);
+            ServerConfigurationTab2.Controls.Add(groupBox4);
+            ServerConfigurationTab2.Controls.Add(lblMinimisationBehaviour);
+            ServerConfigurationTab2.Controls.Add(cmbMinimiseOptions);
+            ServerConfigurationTab2.Controls.Add(label96);
+            ServerConfigurationTab2.Controls.Add(NumMaxDevices);
+            ServerConfigurationTab2.Location = new System.Drawing.Point(4, 24);
+            ServerConfigurationTab2.Name = "ServerConfigurationTab2";
+            ServerConfigurationTab2.Padding = new System.Windows.Forms.Padding(3);
+            ServerConfigurationTab2.Size = new System.Drawing.Size(1198, 457);
+            ServerConfigurationTab2.TabIndex = 5;
+            ServerConfigurationTab2.Text = "Server Configuration 2";
+            // 
+            // groupBox5
+            // 
+            groupBox5.Controls.Add(chkSuppressConformationOnWindowsClose);
+            groupBox5.Controls.Add(chkConfirmExit);
+            groupBox5.Location = new System.Drawing.Point(591, 128);
+            groupBox5.Name = "groupBox5";
+            groupBox5.Size = new System.Drawing.Size(335, 77);
+            groupBox5.TabIndex = 65;
+            groupBox5.TabStop = false;
+            groupBox5.Text = "Remote Server Shutdown Confirmation";
+            // 
+            // chkSuppressConformationOnWindowsClose
+            // 
+            chkSuppressConformationOnWindowsClose.AutoSize = true;
+            chkSuppressConformationOnWindowsClose.Location = new System.Drawing.Point(7, 47);
+            chkSuppressConformationOnWindowsClose.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkSuppressConformationOnWindowsClose.Name = "chkSuppressConformationOnWindowsClose";
+            chkSuppressConformationOnWindowsClose.Size = new System.Drawing.Size(320, 19);
+            chkSuppressConformationOnWindowsClose.TabIndex = 67;
+            chkSuppressConformationOnWindowsClose.Text = "Suppress confirmation when Windows is shutting down";
+            chkSuppressConformationOnWindowsClose.UseVisualStyleBackColor = true;
+            // 
+            // chkConfirmExit
+            // 
+            chkConfirmExit.AutoSize = true;
+            chkConfirmExit.Location = new System.Drawing.Point(7, 22);
+            chkConfirmExit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkConfirmExit.Name = "chkConfirmExit";
+            chkConfirmExit.Size = new System.Drawing.Size(232, 19);
+            chkConfirmExit.TabIndex = 66;
+            chkConfirmExit.Text = "Show shutdown confirmation dialogue";
+            chkConfirmExit.UseVisualStyleBackColor = true;
+            chkConfirmExit.CheckedChanged += chkConfirmExit_CheckedChanged;
             // 
             // ChkRunAs64BitApplication
             // 
-            this.ChkRunAs64BitApplication.AutoSize = (true);
-            this.ChkRunAs64BitApplication.Location = (new global::System.Drawing.Point(414, 359));
-            this.ChkRunAs64BitApplication.Name = ("ChkRunAs64BitApplication");
-            this.ChkRunAs64BitApplication.Size = (new global::System.Drawing.Size(233, 19));
-            this.ChkRunAs64BitApplication.TabIndex = (64);
-            this.ChkRunAs64BitApplication.Text = ("Run as 64bit application (64bit OS only)");
-            this.ChkRunAs64BitApplication.UseVisualStyleBackColor = (true);
-            this.ChkRunAs64BitApplication.CheckedChanged += (this.ChkRunAs64BitApplication_CheckedChanged);
+            ChkRunAs64BitApplication.AutoSize = true;
+            ChkRunAs64BitApplication.Location = new System.Drawing.Point(348, 359);
+            ChkRunAs64BitApplication.Name = "ChkRunAs64BitApplication";
+            ChkRunAs64BitApplication.Size = new System.Drawing.Size(233, 19);
+            ChkRunAs64BitApplication.TabIndex = 64;
+            ChkRunAs64BitApplication.Text = "Run as 64bit application (64bit OS only)";
+            ChkRunAs64BitApplication.UseVisualStyleBackColor = true;
+            ChkRunAs64BitApplication.CheckedChanged += ChkRunAs64BitApplication_CheckedChanged;
             // 
             // groupBox4
             // 
-            this.groupBox4.Controls.Add(this.ChkCheckForUpdates);
-            this.groupBox4.Controls.Add(this.ChkCheckForPreReleaseUpdates);
-            this.groupBox4.Location = (new global::System.Drawing.Point(414, 128));
-            this.groupBox4.Name = ("groupBox4");
-            this.groupBox4.Size = (new global::System.Drawing.Size(199, 77));
-            this.groupBox4.TabIndex = (63);
-            this.groupBox4.TabStop = (false);
-            this.groupBox4.Text = ("Update Checks");
+            groupBox4.Controls.Add(ChkCheckForUpdates);
+            groupBox4.Controls.Add(ChkCheckForPreReleaseUpdates);
+            groupBox4.Location = new System.Drawing.Point(348, 128);
+            groupBox4.Name = "groupBox4";
+            groupBox4.Size = new System.Drawing.Size(199, 77);
+            groupBox4.TabIndex = 63;
+            groupBox4.TabStop = false;
+            groupBox4.Text = "Update Checks";
             // 
             // ChkCheckForUpdates
             // 
-            this.ChkCheckForUpdates.AutoSize = (true);
-            this.ChkCheckForUpdates.Location = (new global::System.Drawing.Point(6, 22));
-            this.ChkCheckForUpdates.Name = ("ChkCheckForUpdates");
-            this.ChkCheckForUpdates.Size = (new global::System.Drawing.Size(122, 19));
-            this.ChkCheckForUpdates.TabIndex = (61);
-            this.ChkCheckForUpdates.Text = ("Check for updates");
-            this.ChkCheckForUpdates.UseVisualStyleBackColor = (true);
+            ChkCheckForUpdates.AutoSize = true;
+            ChkCheckForUpdates.Location = new System.Drawing.Point(6, 22);
+            ChkCheckForUpdates.Name = "ChkCheckForUpdates";
+            ChkCheckForUpdates.Size = new System.Drawing.Size(122, 19);
+            ChkCheckForUpdates.TabIndex = 61;
+            ChkCheckForUpdates.Text = "Check for updates";
+            ChkCheckForUpdates.UseVisualStyleBackColor = true;
             // 
             // ChkCheckForPreReleaseUpdates
             // 
-            this.ChkCheckForPreReleaseUpdates.AutoSize = (true);
-            this.ChkCheckForPreReleaseUpdates.Location = (new global::System.Drawing.Point(6, 47));
-            this.ChkCheckForPreReleaseUpdates.Name = ("ChkCheckForPreReleaseUpdates");
-            this.ChkCheckForPreReleaseUpdates.Size = (new global::System.Drawing.Size(183, 19));
-            this.ChkCheckForPreReleaseUpdates.TabIndex = (62);
-            this.ChkCheckForPreReleaseUpdates.Text = ("Check for pre-release updates");
-            this.ChkCheckForPreReleaseUpdates.UseVisualStyleBackColor = (true);
+            ChkCheckForPreReleaseUpdates.AutoSize = true;
+            ChkCheckForPreReleaseUpdates.Location = new System.Drawing.Point(6, 47);
+            ChkCheckForPreReleaseUpdates.Name = "ChkCheckForPreReleaseUpdates";
+            ChkCheckForPreReleaseUpdates.Size = new System.Drawing.Size(183, 19);
+            ChkCheckForPreReleaseUpdates.TabIndex = 62;
+            ChkCheckForPreReleaseUpdates.Text = "Check for pre-release updates";
+            ChkCheckForPreReleaseUpdates.UseVisualStyleBackColor = true;
             // 
             // lblMinimisationBehaviour
             // 
-            this.lblMinimisationBehaviour.AutoSize = (true);
-            this.lblMinimisationBehaviour.Location = (new global::System.Drawing.Point(621, 250));
-            this.lblMinimisationBehaviour.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.lblMinimisationBehaviour.Name = ("lblMinimisationBehaviour");
-            this.lblMinimisationBehaviour.Size = (new global::System.Drawing.Size(195, 15));
-            this.lblMinimisationBehaviour.TabIndex = (60);
-            this.lblMinimisationBehaviour.Text = ("Minimisation behaviour description");
+            lblMinimisationBehaviour.AutoSize = true;
+            lblMinimisationBehaviour.Location = new System.Drawing.Point(555, 250);
+            lblMinimisationBehaviour.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblMinimisationBehaviour.Name = "lblMinimisationBehaviour";
+            lblMinimisationBehaviour.Size = new System.Drawing.Size(195, 15);
+            lblMinimisationBehaviour.TabIndex = 60;
+            lblMinimisationBehaviour.Text = "Minimisation behaviour description";
             // 
             // cmbMinimiseOptions
             // 
-            this.cmbMinimiseOptions.DropDownStyle = (global::System.Windows.Forms.ComboBoxStyle.DropDownList);
-            this.cmbMinimiseOptions.FlatStyle = (global::System.Windows.Forms.FlatStyle.Flat);
-            this.cmbMinimiseOptions.FormattingEnabled = (true);
-            this.cmbMinimiseOptions.Location = (new global::System.Drawing.Point(414, 247));
-            this.cmbMinimiseOptions.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.cmbMinimiseOptions.Name = ("cmbMinimiseOptions");
-            this.cmbMinimiseOptions.Size = (new global::System.Drawing.Size(199, 23));
-            this.cmbMinimiseOptions.TabIndex = (59);
+            cmbMinimiseOptions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbMinimiseOptions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            cmbMinimiseOptions.FormattingEnabled = true;
+            cmbMinimiseOptions.Location = new System.Drawing.Point(348, 247);
+            cmbMinimiseOptions.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cmbMinimiseOptions.Name = "cmbMinimiseOptions";
+            cmbMinimiseOptions.Size = new System.Drawing.Size(199, 23);
+            cmbMinimiseOptions.TabIndex = 59;
             // 
             // label96
             // 
-            this.label96.AutoSize = (true);
-            this.label96.Location = (new global::System.Drawing.Point(621, 296));
-            this.label96.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label96.Name = ("label96");
-            this.label96.Size = (new global::System.Drawing.Size(312, 15));
-            this.label96.TabIndex = (58);
-            this.label96.Text = ("Maximum number of served devices (in increments of 10)");
+            label96.AutoSize = true;
+            label96.Location = new System.Drawing.Point(555, 296);
+            label96.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label96.Name = "label96";
+            label96.Size = new System.Drawing.Size(312, 15);
+            label96.TabIndex = 58;
+            label96.Text = "Maximum number of served devices (in increments of 10)";
             // 
             // NumMaxDevices
             // 
-            this.NumMaxDevices.Increment = (new global::System.Decimal(new global::System.Int32[] { 10, 0, 0, 0 }));
-            this.NumMaxDevices.Location = (new global::System.Drawing.Point(414, 294));
-            this.NumMaxDevices.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.NumMaxDevices.Minimum = (new global::System.Decimal(new global::System.Int32[] { 10, 0, 0, 0 }));
-            this.NumMaxDevices.Name = ("NumMaxDevices");
-            this.NumMaxDevices.ReadOnly = (true);
-            this.NumMaxDevices.Size = (new global::System.Drawing.Size(199, 23));
-            this.NumMaxDevices.TabIndex = (57);
-            this.NumMaxDevices.TextAlign = (global::System.Windows.Forms.HorizontalAlignment.Right);
-            this.NumMaxDevices.Value = (new global::System.Decimal(new global::System.Int32[] { 10, 0, 0, 0 }));
+            NumMaxDevices.Increment = new decimal(new int[] { 10, 0, 0, 0 });
+            NumMaxDevices.Location = new System.Drawing.Point(348, 294);
+            NumMaxDevices.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            NumMaxDevices.Minimum = new decimal(new int[] { 10, 0, 0, 0 });
+            NumMaxDevices.Name = "NumMaxDevices";
+            NumMaxDevices.ReadOnly = true;
+            NumMaxDevices.Size = new System.Drawing.Size(199, 23);
+            NumMaxDevices.TabIndex = 57;
+            NumMaxDevices.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            NumMaxDevices.Value = new decimal(new int[] { 10, 0, 0, 0 });
             // 
             // LoggingConfigurationTab
             // 
-            this.LoggingConfigurationTab.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.LoggingConfigurationTab.Controls.Add(this.groupBox3);
-            this.LoggingConfigurationTab.Controls.Add(this.groupBox2);
-            this.LoggingConfigurationTab.Controls.Add(this.groupBox1);
-            this.LoggingConfigurationTab.Location = (new global::System.Drawing.Point(4, 24));
-            this.LoggingConfigurationTab.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.LoggingConfigurationTab.Name = ("LoggingConfigurationTab");
-            this.LoggingConfigurationTab.Padding = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.LoggingConfigurationTab.Size = (new global::System.Drawing.Size(1198, 457));
-            this.LoggingConfigurationTab.TabIndex = (4);
-            this.LoggingConfigurationTab.Text = ("Logging Configuration");
+            LoggingConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
+            LoggingConfigurationTab.Controls.Add(groupBox3);
+            LoggingConfigurationTab.Controls.Add(groupBox2);
+            LoggingConfigurationTab.Controls.Add(groupBox1);
+            LoggingConfigurationTab.Location = new System.Drawing.Point(4, 24);
+            LoggingConfigurationTab.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            LoggingConfigurationTab.Name = "LoggingConfigurationTab";
+            LoggingConfigurationTab.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            LoggingConfigurationTab.Size = new System.Drawing.Size(1198, 457);
+            LoggingConfigurationTab.TabIndex = 4;
+            LoggingConfigurationTab.Text = "Logging Configuration";
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.chkTrace);
-            this.groupBox3.Controls.Add(this.chkAccessLog);
-            this.groupBox3.Controls.Add(this.chkDebugTrace);
-            this.groupBox3.Controls.Add(this.ChkUseUtcTime);
-            this.groupBox3.Controls.Add(this.ChkLogClientIPAddress);
-            this.groupBox3.Location = (new global::System.Drawing.Point(442, 37));
-            this.groupBox3.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.groupBox3.Name = ("groupBox3");
-            this.groupBox3.Padding = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.groupBox3.Size = (new global::System.Drawing.Size(304, 156));
-            this.groupBox3.TabIndex = (72);
-            this.groupBox3.TabStop = (false);
-            this.groupBox3.Text = ("Logging Configuration");
+            groupBox3.Controls.Add(chkTrace);
+            groupBox3.Controls.Add(chkAccessLog);
+            groupBox3.Controls.Add(chkDebugTrace);
+            groupBox3.Controls.Add(ChkUseUtcTime);
+            groupBox3.Controls.Add(ChkLogClientIPAddress);
+            groupBox3.Location = new System.Drawing.Point(442, 37);
+            groupBox3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox3.Name = "groupBox3";
+            groupBox3.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox3.Size = new System.Drawing.Size(304, 156);
+            groupBox3.TabIndex = 72;
+            groupBox3.TabStop = false;
+            groupBox3.Text = "Logging Configuration";
             // 
             // chkTrace
             // 
-            this.chkTrace.AutoSize = (true);
-            this.chkTrace.Location = (new global::System.Drawing.Point(7, 22));
-            this.chkTrace.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.chkTrace.Name = ("chkTrace");
-            this.chkTrace.Size = (new global::System.Drawing.Size(103, 19));
-            this.chkTrace.TabIndex = (60);
-            this.chkTrace.Text = ("Write Log Files");
-            this.chkTrace.UseVisualStyleBackColor = (true);
+            chkTrace.AutoSize = true;
+            chkTrace.Location = new System.Drawing.Point(7, 22);
+            chkTrace.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkTrace.Name = "chkTrace";
+            chkTrace.Size = new System.Drawing.Size(103, 19);
+            chkTrace.TabIndex = 60;
+            chkTrace.Text = "Write Log Files";
+            chkTrace.UseVisualStyleBackColor = true;
             // 
             // chkAccessLog
             // 
-            this.chkAccessLog.AutoSize = (true);
-            this.chkAccessLog.Location = (new global::System.Drawing.Point(7, 75));
-            this.chkAccessLog.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.chkAccessLog.Name = ("chkAccessLog");
-            this.chkAccessLog.Size = (new global::System.Drawing.Size(123, 19));
-            this.chkAccessLog.TabIndex = (59);
-            this.chkAccessLog.Text = ("Enable Access Log");
-            this.chkAccessLog.UseVisualStyleBackColor = (true);
+            chkAccessLog.AutoSize = true;
+            chkAccessLog.Location = new System.Drawing.Point(7, 75);
+            chkAccessLog.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkAccessLog.Name = "chkAccessLog";
+            chkAccessLog.Size = new System.Drawing.Size(123, 19);
+            chkAccessLog.TabIndex = 59;
+            chkAccessLog.Text = "Enable Access Log";
+            chkAccessLog.UseVisualStyleBackColor = true;
             // 
             // chkDebugTrace
             // 
-            this.chkDebugTrace.AutoSize = (true);
-            this.chkDebugTrace.Location = (new global::System.Drawing.Point(7, 48));
-            this.chkDebugTrace.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.chkDebugTrace.Name = ("chkDebugTrace");
-            this.chkDebugTrace.Size = (new global::System.Drawing.Size(146, 19));
-            this.chkDebugTrace.TabIndex = (61);
-            this.chkDebugTrace.Text = ("Enable Debug Logging");
-            this.chkDebugTrace.UseVisualStyleBackColor = (true);
+            chkDebugTrace.AutoSize = true;
+            chkDebugTrace.Location = new System.Drawing.Point(7, 48);
+            chkDebugTrace.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkDebugTrace.Name = "chkDebugTrace";
+            chkDebugTrace.Size = new System.Drawing.Size(146, 19);
+            chkDebugTrace.TabIndex = 61;
+            chkDebugTrace.Text = "Enable Debug Logging";
+            chkDebugTrace.UseVisualStyleBackColor = true;
             // 
             // ChkUseUtcTime
             // 
-            this.ChkUseUtcTime.AutoSize = (true);
-            this.ChkUseUtcTime.Location = (new global::System.Drawing.Point(7, 128));
-            this.ChkUseUtcTime.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.ChkUseUtcTime.Name = ("ChkUseUtcTime");
-            this.ChkUseUtcTime.Size = (new global::System.Drawing.Size(134, 19));
-            this.ChkUseUtcTime.TabIndex = (69);
-            this.ChkUseUtcTime.Text = ("Use UTC time in logs");
-            this.ChkUseUtcTime.UseVisualStyleBackColor = (true);
+            ChkUseUtcTime.AutoSize = true;
+            ChkUseUtcTime.Location = new System.Drawing.Point(7, 128);
+            ChkUseUtcTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ChkUseUtcTime.Name = "ChkUseUtcTime";
+            ChkUseUtcTime.Size = new System.Drawing.Size(134, 19);
+            ChkUseUtcTime.TabIndex = 69;
+            ChkUseUtcTime.Text = "Use UTC time in logs";
+            ChkUseUtcTime.UseVisualStyleBackColor = true;
             // 
             // ChkLogClientIPAddress
             // 
-            this.ChkLogClientIPAddress.AutoSize = (true);
-            this.ChkLogClientIPAddress.Location = (new global::System.Drawing.Point(7, 102));
-            this.ChkLogClientIPAddress.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.ChkLogClientIPAddress.Name = ("ChkLogClientIPAddress");
-            this.ChkLogClientIPAddress.Size = (new global::System.Drawing.Size(146, 19));
-            this.ChkLogClientIPAddress.TabIndex = (62);
-            this.ChkLogClientIPAddress.Text = ("Log Client's IP Address");
-            this.ChkLogClientIPAddress.UseVisualStyleBackColor = (true);
+            ChkLogClientIPAddress.AutoSize = true;
+            ChkLogClientIPAddress.Location = new System.Drawing.Point(7, 102);
+            ChkLogClientIPAddress.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ChkLogClientIPAddress.Name = "ChkLogClientIPAddress";
+            ChkLogClientIPAddress.Size = new System.Drawing.Size(146, 19);
+            ChkLogClientIPAddress.TabIndex = 62;
+            ChkLogClientIPAddress.Text = "Log Client's IP Address";
+            ChkLogClientIPAddress.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.BtnSelectLogFileFolder);
-            this.groupBox2.Controls.Add(this.label98);
-            this.groupBox2.Controls.Add(this.label99);
-            this.groupBox2.Location = (new global::System.Drawing.Point(442, 322));
-            this.groupBox2.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.groupBox2.Name = ("groupBox2");
-            this.groupBox2.Padding = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.groupBox2.Size = (new global::System.Drawing.Size(304, 85));
-            this.groupBox2.TabIndex = (71);
-            this.groupBox2.TabStop = (false);
-            this.groupBox2.Text = ("Log File Location");
+            groupBox2.Controls.Add(BtnSelectLogFileFolder);
+            groupBox2.Controls.Add(label98);
+            groupBox2.Controls.Add(label99);
+            groupBox2.Location = new System.Drawing.Point(442, 322);
+            groupBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox2.Size = new System.Drawing.Size(304, 85);
+            groupBox2.TabIndex = 71;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Log File Location";
             // 
             // BtnSelectLogFileFolder
             // 
-            this.BtnSelectLogFileFolder.Location = (new global::System.Drawing.Point(7, 22));
-            this.BtnSelectLogFileFolder.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.BtnSelectLogFileFolder.Name = ("BtnSelectLogFileFolder");
-            this.BtnSelectLogFileFolder.Size = (new global::System.Drawing.Size(88, 46));
-            this.BtnSelectLogFileFolder.TabIndex = (63);
-            this.BtnSelectLogFileFolder.Text = ("Set Log File Base Folder");
-            this.BtnSelectLogFileFolder.UseVisualStyleBackColor = (true);
-            this.BtnSelectLogFileFolder.Click += (this.BtnSelectLogFileFolder_Click);
+            BtnSelectLogFileFolder.Location = new System.Drawing.Point(7, 22);
+            BtnSelectLogFileFolder.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            BtnSelectLogFileFolder.Name = "BtnSelectLogFileFolder";
+            BtnSelectLogFileFolder.Size = new System.Drawing.Size(88, 46);
+            BtnSelectLogFileFolder.TabIndex = 63;
+            BtnSelectLogFileFolder.Text = "Set Log File Base Folder";
+            BtnSelectLogFileFolder.UseVisualStyleBackColor = true;
+            BtnSelectLogFileFolder.Click += BtnSelectLogFileFolder_Click;
             // 
             // label98
             // 
-            this.label98.AutoSize = (true);
-            this.label98.ForeColor = (global::System.Drawing.SystemColors.Highlight);
-            this.label98.Location = (new global::System.Drawing.Point(102, 30));
-            this.label98.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label98.Name = ("label98");
-            this.label98.Size = (new global::System.Drawing.Size(184, 15));
-            this.label98.TabIndex = (64);
-            this.label98.Text = ("Change only takes effect after the");
+            label98.AutoSize = true;
+            label98.ForeColor = System.Drawing.SystemColors.Highlight;
+            label98.Location = new System.Drawing.Point(102, 30);
+            label98.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label98.Name = "label98";
+            label98.Size = new System.Drawing.Size(184, 15);
+            label98.TabIndex = 64;
+            label98.Text = "Change only takes effect after the";
             // 
             // label99
             // 
-            this.label99.AutoSize = (true);
-            this.label99.ForeColor = (global::System.Drawing.SystemColors.Highlight);
-            this.label99.Location = (new global::System.Drawing.Point(102, 45));
-            this.label99.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label99.Name = ("label99");
-            this.label99.Size = (new global::System.Drawing.Size(143, 15));
-            this.label99.TabIndex = (65);
-            this.label99.Text = ("Remote Server is restarted");
+            label99.AutoSize = true;
+            label99.ForeColor = System.Drawing.SystemColors.Highlight;
+            label99.Location = new System.Drawing.Point(102, 45);
+            label99.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label99.Name = "label99";
+            label99.Size = new System.Drawing.Size(143, 15);
+            label99.TabIndex = 65;
+            label99.Text = "Remote Server is restarted";
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.ChkRollOverLogs);
-            this.groupBox1.Controls.Add(this.DateTimeLogRolloverTime);
-            this.groupBox1.Controls.Add(this.LblLogRolloverTime);
-            this.groupBox1.Location = (new global::System.Drawing.Point(442, 213));
-            this.groupBox1.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.groupBox1.Name = ("groupBox1");
-            this.groupBox1.Padding = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.groupBox1.Size = (new global::System.Drawing.Size(304, 85));
-            this.groupBox1.TabIndex = (70);
-            this.groupBox1.TabStop = (false);
-            this.groupBox1.Text = ("Log Roll-over");
+            groupBox1.Controls.Add(ChkRollOverLogs);
+            groupBox1.Controls.Add(DateTimeLogRolloverTime);
+            groupBox1.Controls.Add(LblLogRolloverTime);
+            groupBox1.Location = new System.Drawing.Point(442, 213);
+            groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Size = new System.Drawing.Size(304, 85);
+            groupBox1.TabIndex = 70;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Log Roll-over";
             // 
             // ChkRollOverLogs
             // 
-            this.ChkRollOverLogs.AutoSize = (true);
-            this.ChkRollOverLogs.Location = (new global::System.Drawing.Point(7, 22));
-            this.ChkRollOverLogs.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.ChkRollOverLogs.Name = ("ChkRollOverLogs");
-            this.ChkRollOverLogs.Size = (new global::System.Drawing.Size(216, 19));
-            this.ChkRollOverLogs.TabIndex = (67);
-            this.ChkRollOverLogs.Text = ("Make logs roll over at specified time");
-            this.ChkRollOverLogs.UseVisualStyleBackColor = (true);
-            this.ChkRollOverLogs.CheckedChanged += (this.ChkRollOverLogs_CheckedChanged);
+            ChkRollOverLogs.AutoSize = true;
+            ChkRollOverLogs.Location = new System.Drawing.Point(7, 22);
+            ChkRollOverLogs.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ChkRollOverLogs.Name = "ChkRollOverLogs";
+            ChkRollOverLogs.Size = new System.Drawing.Size(216, 19);
+            ChkRollOverLogs.TabIndex = 67;
+            ChkRollOverLogs.Text = "Make logs roll over at specified time";
+            ChkRollOverLogs.UseVisualStyleBackColor = true;
+            ChkRollOverLogs.CheckedChanged += ChkRollOverLogs_CheckedChanged;
             // 
             // DateTimeLogRolloverTime
             // 
-            this.DateTimeLogRolloverTime.Format = (global::System.Windows.Forms.DateTimePickerFormat.Time);
-            this.DateTimeLogRolloverTime.Location = (new global::System.Drawing.Point(7, 48));
-            this.DateTimeLogRolloverTime.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DateTimeLogRolloverTime.Name = ("DateTimeLogRolloverTime");
-            this.DateTimeLogRolloverTime.ShowUpDown = (true);
-            this.DateTimeLogRolloverTime.Size = (new global::System.Drawing.Size(79, 23));
-            this.DateTimeLogRolloverTime.TabIndex = (66);
+            DateTimeLogRolloverTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
+            DateTimeLogRolloverTime.Location = new System.Drawing.Point(7, 48);
+            DateTimeLogRolloverTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DateTimeLogRolloverTime.Name = "DateTimeLogRolloverTime";
+            DateTimeLogRolloverTime.ShowUpDown = true;
+            DateTimeLogRolloverTime.Size = new System.Drawing.Size(79, 23);
+            DateTimeLogRolloverTime.TabIndex = 66;
             // 
             // LblLogRolloverTime
             // 
-            this.LblLogRolloverTime.AutoSize = (true);
-            this.LblLogRolloverTime.Location = (new global::System.Drawing.Point(93, 52));
-            this.LblLogRolloverTime.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.LblLogRolloverTime.Name = ("LblLogRolloverTime");
-            this.LblLogRolloverTime.Size = (new global::System.Drawing.Size(160, 15));
-            this.LblLogRolloverTime.TabIndex = (68);
-            this.LblLogRolloverTime.Text = ("Log rollover time (local time)");
+            LblLogRolloverTime.AutoSize = true;
+            LblLogRolloverTime.Location = new System.Drawing.Point(93, 52);
+            LblLogRolloverTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            LblLogRolloverTime.Name = "LblLogRolloverTime";
+            LblLogRolloverTime.Size = new System.Drawing.Size(160, 15);
+            LblLogRolloverTime.TabIndex = 68;
+            LblLogRolloverTime.Text = "Log rollover time (local time)";
             // 
             // CorsConfigurationTab
             // 
-            this.CorsConfigurationTab.BackColor = (global::System.Drawing.SystemColors.Control);
-            this.CorsConfigurationTab.Controls.Add(this.label97);
-            this.CorsConfigurationTab.Controls.Add(this.ChkCorsSupportCredentials);
-            this.CorsConfigurationTab.Controls.Add(this.LabMaxAge);
-            this.CorsConfigurationTab.Controls.Add(this.NumCorsMaxAge);
-            this.CorsConfigurationTab.Controls.Add(this.ChkEnableCors);
-            this.CorsConfigurationTab.Controls.Add(this.label14);
-            this.CorsConfigurationTab.Controls.Add(this.LabHelp2);
-            this.CorsConfigurationTab.Controls.Add(this.LabHelp1);
-            this.CorsConfigurationTab.Controls.Add(this.DataGridCorsOrigins);
-            this.CorsConfigurationTab.Location = (new global::System.Drawing.Point(4, 24));
-            this.CorsConfigurationTab.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.CorsConfigurationTab.Name = ("CorsConfigurationTab");
-            this.CorsConfigurationTab.Padding = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.CorsConfigurationTab.Size = (new global::System.Drawing.Size(1198, 457));
-            this.CorsConfigurationTab.TabIndex = (2);
-            this.CorsConfigurationTab.Text = ("CORS Configuration");
+            CorsConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
+            CorsConfigurationTab.Controls.Add(label97);
+            CorsConfigurationTab.Controls.Add(ChkCorsSupportCredentials);
+            CorsConfigurationTab.Controls.Add(LabMaxAge);
+            CorsConfigurationTab.Controls.Add(NumCorsMaxAge);
+            CorsConfigurationTab.Controls.Add(ChkEnableCors);
+            CorsConfigurationTab.Controls.Add(label14);
+            CorsConfigurationTab.Controls.Add(LabHelp2);
+            CorsConfigurationTab.Controls.Add(LabHelp1);
+            CorsConfigurationTab.Controls.Add(DataGridCorsOrigins);
+            CorsConfigurationTab.Location = new System.Drawing.Point(4, 24);
+            CorsConfigurationTab.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            CorsConfigurationTab.Name = "CorsConfigurationTab";
+            CorsConfigurationTab.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            CorsConfigurationTab.Size = new System.Drawing.Size(1198, 457);
+            CorsConfigurationTab.TabIndex = 2;
+            CorsConfigurationTab.Text = "CORS Configuration";
             // 
             // label97
             // 
-            this.label97.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label97.ForeColor = (global::System.Drawing.SystemColors.Highlight);
-            this.label97.Location = (new global::System.Drawing.Point(57, 392));
-            this.label97.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label97.Name = ("label97");
-            this.label97.Size = (new global::System.Drawing.Size(1078, 23));
-            this.label97.TabIndex = (11);
-            this.label97.Text = ("Use a single value of = to reflect the supplied origin value back to the client.");
-            this.label97.TextAlign = (global::System.Drawing.ContentAlignment.TopCenter);
+            label97.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label97.ForeColor = System.Drawing.SystemColors.Highlight;
+            label97.Location = new System.Drawing.Point(57, 392);
+            label97.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label97.Name = "label97";
+            label97.Size = new System.Drawing.Size(1078, 23);
+            label97.TabIndex = 11;
+            label97.Text = "Use a single value of = to reflect the supplied origin value back to the client.";
+            label97.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // ChkCorsSupportCredentials
             // 
-            this.ChkCorsSupportCredentials.AutoSize = (true);
-            this.ChkCorsSupportCredentials.Location = (new global::System.Drawing.Point(965, 192));
-            this.ChkCorsSupportCredentials.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.ChkCorsSupportCredentials.Name = ("ChkCorsSupportCredentials");
-            this.ChkCorsSupportCredentials.Size = (new global::System.Drawing.Size(130, 19));
-            this.ChkCorsSupportCredentials.TabIndex = (10);
-            this.ChkCorsSupportCredentials.Text = ("Support Credentials");
-            this.ChkCorsSupportCredentials.UseVisualStyleBackColor = (true);
+            ChkCorsSupportCredentials.AutoSize = true;
+            ChkCorsSupportCredentials.Location = new System.Drawing.Point(965, 192);
+            ChkCorsSupportCredentials.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ChkCorsSupportCredentials.Name = "ChkCorsSupportCredentials";
+            ChkCorsSupportCredentials.Size = new System.Drawing.Size(130, 19);
+            ChkCorsSupportCredentials.TabIndex = 10;
+            ChkCorsSupportCredentials.Text = "Support Credentials";
+            ChkCorsSupportCredentials.UseVisualStyleBackColor = true;
             // 
             // LabMaxAge
             // 
-            this.LabMaxAge.AutoSize = (true);
-            this.LabMaxAge.Location = (new global::System.Drawing.Point(578, 330));
-            this.LabMaxAge.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.LabMaxAge.Name = ("LabMaxAge");
-            this.LabMaxAge.Size = (new global::System.Drawing.Size(182, 15));
-            this.LabMaxAge.TabIndex = (9);
-            this.LabMaxAge.Text = ("CORS Max Age Header (seconds)");
+            LabMaxAge.AutoSize = true;
+            LabMaxAge.Location = new System.Drawing.Point(578, 330);
+            LabMaxAge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            LabMaxAge.Name = "LabMaxAge";
+            LabMaxAge.Size = new System.Drawing.Size(182, 15);
+            LabMaxAge.TabIndex = 9;
+            LabMaxAge.Text = "CORS Max Age Header (seconds)";
             // 
             // NumCorsMaxAge
             // 
-            this.NumCorsMaxAge.Increment = (new global::System.Decimal(new global::System.Int32[] { 1000, 0, 0, 0 }));
-            this.NumCorsMaxAge.Location = (new global::System.Drawing.Point(430, 328));
-            this.NumCorsMaxAge.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.NumCorsMaxAge.Maximum = (new global::System.Decimal(new global::System.Int32[] { 100000000, 0, 0, 0 }));
-            this.NumCorsMaxAge.Name = ("NumCorsMaxAge");
-            this.NumCorsMaxAge.Size = (new global::System.Drawing.Size(140, 23));
-            this.NumCorsMaxAge.TabIndex = (8);
-            this.NumCorsMaxAge.TextAlign = (global::System.Windows.Forms.HorizontalAlignment.Right);
-            this.NumCorsMaxAge.Value = (new global::System.Decimal(new global::System.Int32[] { 3600, 0, 0, 0 }));
+            NumCorsMaxAge.Increment = new decimal(new int[] { 1000, 0, 0, 0 });
+            NumCorsMaxAge.Location = new System.Drawing.Point(430, 328);
+            NumCorsMaxAge.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            NumCorsMaxAge.Maximum = new decimal(new int[] { 100000000, 0, 0, 0 });
+            NumCorsMaxAge.Name = "NumCorsMaxAge";
+            NumCorsMaxAge.Size = new System.Drawing.Size(140, 23);
+            NumCorsMaxAge.TabIndex = 8;
+            NumCorsMaxAge.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            NumCorsMaxAge.Value = new decimal(new int[] { 3600, 0, 0, 0 });
             // 
             // ChkEnableCors
             // 
-            this.ChkEnableCors.AutoSize = (true);
-            this.ChkEnableCors.Location = (new global::System.Drawing.Point(965, 164));
-            this.ChkEnableCors.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.ChkEnableCors.Name = ("ChkEnableCors");
-            this.ChkEnableCors.Size = (new global::System.Drawing.Size(139, 19));
-            this.ChkEnableCors.TabIndex = (7);
-            this.ChkEnableCors.Text = ("Enable CORS Support");
-            this.ChkEnableCors.UseVisualStyleBackColor = (true);
+            ChkEnableCors.AutoSize = true;
+            ChkEnableCors.Location = new System.Drawing.Point(965, 164);
+            ChkEnableCors.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ChkEnableCors.Name = "ChkEnableCors";
+            ChkEnableCors.Size = new System.Drawing.Size(139, 19);
+            ChkEnableCors.TabIndex = 7;
+            ChkEnableCors.Text = "Enable CORS Support";
+            ChkEnableCors.UseVisualStyleBackColor = true;
             // 
             // label14
             // 
-            this.label14.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.label14.Location = (new global::System.Drawing.Point(61, 21));
-            this.label14.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.label14.Name = ("label14");
-            this.label14.Size = (new global::System.Drawing.Size(1074, 27));
-            this.label14.TabIndex = (6);
-            this.label14.Text = ("CORS support is not required by most users. It only needs to be enabled when ASCOM Remote is used within a cross site scripting environment.");
-            this.label14.TextAlign = (global::System.Drawing.ContentAlignment.TopCenter);
+            label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label14.Location = new System.Drawing.Point(61, 21);
+            label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label14.Name = "label14";
+            label14.Size = new System.Drawing.Size(1074, 27);
+            label14.TabIndex = 6;
+            label14.Text = "CORS support is not required by most users. It only needs to be enabled when ASCOM Remote is used within a cross site scripting environment.";
+            label14.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // LabHelp2
             // 
-            this.LabHelp2.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.LabHelp2.ForeColor = (global::System.Drawing.SystemColors.Highlight);
-            this.LabHelp2.Location = (new global::System.Drawing.Point(64, 418));
-            this.LabHelp2.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.LabHelp2.Name = ("LabHelp2");
-            this.LabHelp2.Size = (new global::System.Drawing.Size(1071, 23));
-            this.LabHelp2.TabIndex = (5);
-            this.LabHelp2.Text = ("Otherwise enter a list of permitted origins.");
-            this.LabHelp2.TextAlign = (global::System.Drawing.ContentAlignment.TopCenter);
+            LabHelp2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            LabHelp2.ForeColor = System.Drawing.SystemColors.Highlight;
+            LabHelp2.Location = new System.Drawing.Point(64, 418);
+            LabHelp2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            LabHelp2.Name = "LabHelp2";
+            LabHelp2.Size = new System.Drawing.Size(1071, 23);
+            LabHelp2.TabIndex = 5;
+            LabHelp2.Text = "Otherwise enter a list of permitted origins.";
+            LabHelp2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // LabHelp1
             // 
-            this.LabHelp1.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            this.LabHelp1.ForeColor = (global::System.Drawing.SystemColors.Highlight);
-            this.LabHelp1.Location = (new global::System.Drawing.Point(57, 369));
-            this.LabHelp1.Margin = (new global::System.Windows.Forms.Padding(4, 0, 4, 0));
-            this.LabHelp1.Name = ("LabHelp1");
-            this.LabHelp1.Size = (new global::System.Drawing.Size(1078, 23));
-            this.LabHelp1.TabIndex = (2);
-            this.LabHelp1.Text = ("The default origin * indicates that all hosts are permitted to access the Remote Server");
-            this.LabHelp1.TextAlign = (global::System.Drawing.ContentAlignment.TopCenter);
+            LabHelp1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            LabHelp1.ForeColor = System.Drawing.SystemColors.Highlight;
+            LabHelp1.Location = new System.Drawing.Point(57, 369);
+            LabHelp1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            LabHelp1.Name = "LabHelp1";
+            LabHelp1.Size = new System.Drawing.Size(1078, 23);
+            LabHelp1.TabIndex = 2;
+            LabHelp1.Text = "The default origin * indicates that all hosts are permitted to access the Remote Server";
+            LabHelp1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // DataGridCorsOrigins
             // 
-            this.DataGridCorsOrigins.AutoSizeColumnsMode = (global::System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill);
-            dataGridViewCellStyle1.Alignment = (global::System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter);
-            dataGridViewCellStyle1.BackColor = (global::System.Drawing.SystemColors.Control);
-            dataGridViewCellStyle1.Font = (new global::System.Drawing.Font("Microsoft Sans Serif", 8.25F, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point));
-            dataGridViewCellStyle1.ForeColor = (global::System.Drawing.SystemColors.Highlight);
-            dataGridViewCellStyle1.SelectionBackColor = (global::System.Drawing.SystemColors.Highlight);
-            dataGridViewCellStyle1.SelectionForeColor = (global::System.Drawing.SystemColors.HighlightText);
-            dataGridViewCellStyle1.WrapMode = (global::System.Windows.Forms.DataGridViewTriState.True);
-            this.DataGridCorsOrigins.ColumnHeadersDefaultCellStyle = (dataGridViewCellStyle1);
-            this.DataGridCorsOrigins.ColumnHeadersHeightSizeMode = (global::System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize);
-            this.DataGridCorsOrigins.EnableHeadersVisualStyles = (false);
-            this.DataGridCorsOrigins.Location = (new global::System.Drawing.Point(255, 58));
-            this.DataGridCorsOrigins.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.DataGridCorsOrigins.Name = ("DataGridCorsOrigins");
-            this.DataGridCorsOrigins.RowHeadersWidth = (51);
-            this.DataGridCorsOrigins.Size = (new global::System.Drawing.Size(684, 250));
-            this.DataGridCorsOrigins.TabIndex = (0);
+            DataGridCorsOrigins.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            DataGridCorsOrigins.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            DataGridCorsOrigins.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            DataGridCorsOrigins.EnableHeadersVisualStyles = false;
+            DataGridCorsOrigins.Location = new System.Drawing.Point(255, 58);
+            DataGridCorsOrigins.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            DataGridCorsOrigins.Name = "DataGridCorsOrigins";
+            DataGridCorsOrigins.RowHeadersWidth = 51;
+            DataGridCorsOrigins.Size = new System.Drawing.Size(684, 250);
+            DataGridCorsOrigins.TabIndex = 0;
             // 
             // SetupForm
             // 
-            this.AcceptButton = (this.BtnCancel);
-            this.AutoScaleDimensions = (new global::System.Drawing.SizeF(7F, 15F));
-            this.AutoScaleMode = (global::System.Windows.Forms.AutoScaleMode.Font);
-            this.CancelButton = (this.BtnCancel);
-            this.ClientSize = (new global::System.Drawing.Size(1233, 553));
-            this.Controls.Add(this.SetupTabControl);
-            this.Controls.Add(this.BtnOK);
-            this.Controls.Add(this.BtnCancel);
-            this.FormBorderStyle = (global::System.Windows.Forms.FormBorderStyle.FixedSingle);
-            this.Icon = ((global::System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = (new global::System.Windows.Forms.Padding(4, 3, 4, 3));
-            this.Name = ("SetupForm");
-            this.Text = ("ASCOM Remote Server Configuration");
-            this.Load += (this.Form_Load);
-            ((global::System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
-            this.SetupTabControl.ResumeLayout(false);
-            this.DeviceConfigurationTab.ResumeLayout(false);
-            this.DeviceConfigurationTab.PerformLayout();
-            this.DeviceTabs.ResumeLayout(false);
-            this.DeviceTab0.ResumeLayout(false);
-            this.DeviceTab0.PerformLayout();
-            this.DeviceTab1.ResumeLayout(false);
-            this.DeviceTab1.PerformLayout();
-            this.DeviceTab2.ResumeLayout(false);
-            this.DeviceTab2.PerformLayout();
-            this.DeviceTab3.ResumeLayout(false);
-            this.DeviceTab3.PerformLayout();
-            this.DeviceTab4.ResumeLayout(false);
-            this.DeviceTab4.PerformLayout();
-            this.DeviceTab5.ResumeLayout(false);
-            this.DeviceTab5.PerformLayout();
-            this.DeviceTab6.ResumeLayout(false);
-            this.DeviceTab6.PerformLayout();
-            this.DeviceTab7.ResumeLayout(false);
-            this.DeviceTab7.PerformLayout();
-            this.DeviceTab8.ResumeLayout(false);
-            this.DeviceTab8.PerformLayout();
-            this.DeviceTab9.ResumeLayout(false);
-            this.DeviceTab9.PerformLayout();
-            this.ServerConfigurationTab.ResumeLayout(false);
-            this.ServerConfigurationTab.PerformLayout();
-            this.GrpIpVersionSelector.ResumeLayout(false);
-            this.GrpIpVersionSelector.PerformLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.NumDiscoveryPort)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.numPort)).EndInit();
-            this.ServerConfigurationTab2.ResumeLayout(false);
-            this.ServerConfigurationTab2.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.NumMaxDevices)).EndInit();
-            this.LoggingConfigurationTab.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.CorsConfigurationTab.ResumeLayout(false);
-            this.CorsConfigurationTab.PerformLayout();
-            ((global::System.ComponentModel.ISupportInitialize)(this.NumCorsMaxAge)).EndInit();
-            ((global::System.ComponentModel.ISupportInitialize)(this.DataGridCorsOrigins)).EndInit();
-            this.ResumeLayout(false);
+            AcceptButton = BtnCancel;
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            CancelButton = BtnCancel;
+            ClientSize = new System.Drawing.Size(1233, 553);
+            Controls.Add(SetupTabControl);
+            Controls.Add(BtnOK);
+            Controls.Add(BtnCancel);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "SetupForm";
+            Text = "ASCOM Remote Server Configuration";
+            Load += Form_Load;
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
+            SetupTabControl.ResumeLayout(false);
+            DeviceConfigurationTab.ResumeLayout(false);
+            DeviceConfigurationTab.PerformLayout();
+            DeviceTabs.ResumeLayout(false);
+            DeviceTab0.ResumeLayout(false);
+            DeviceTab0.PerformLayout();
+            DeviceTab1.ResumeLayout(false);
+            DeviceTab1.PerformLayout();
+            DeviceTab2.ResumeLayout(false);
+            DeviceTab2.PerformLayout();
+            DeviceTab3.ResumeLayout(false);
+            DeviceTab3.PerformLayout();
+            DeviceTab4.ResumeLayout(false);
+            DeviceTab4.PerformLayout();
+            DeviceTab5.ResumeLayout(false);
+            DeviceTab5.PerformLayout();
+            DeviceTab6.ResumeLayout(false);
+            DeviceTab6.PerformLayout();
+            DeviceTab7.ResumeLayout(false);
+            DeviceTab7.PerformLayout();
+            DeviceTab8.ResumeLayout(false);
+            DeviceTab8.PerformLayout();
+            DeviceTab9.ResumeLayout(false);
+            DeviceTab9.PerformLayout();
+            ServerConfigurationTab.ResumeLayout(false);
+            ServerConfigurationTab.PerformLayout();
+            GrpIpVersionSelector.ResumeLayout(false);
+            GrpIpVersionSelector.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)NumDiscoveryPort).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numPort).EndInit();
+            ServerConfigurationTab2.ResumeLayout(false);
+            ServerConfigurationTab2.PerformLayout();
+            groupBox5.ResumeLayout(false);
+            groupBox5.PerformLayout();
+            groupBox4.ResumeLayout(false);
+            groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)NumMaxDevices).EndInit();
+            LoggingConfigurationTab.ResumeLayout(false);
+            groupBox3.ResumeLayout(false);
+            groupBox3.PerformLayout();
+            groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            CorsConfigurationTab.ResumeLayout(false);
+            CorsConfigurationTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)NumCorsMaxAge).EndInit();
+            ((System.ComponentModel.ISupportInitialize)DataGridCorsOrigins).EndInit();
+            ResumeLayout(false);
         }
 
         #endregion
@@ -4186,7 +4214,6 @@
         private System.Windows.Forms.CheckBox ChkUseUtcTime;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.CheckBox chkConfirmExit;
         private System.Windows.Forms.CheckBox chkStartMinimised;
         private System.Windows.Forms.Label label97;
         private System.Windows.Forms.Label LabHelp2;
@@ -4199,5 +4226,8 @@
         private global::System.Windows.Forms.NumericUpDown NumMaxDevices;
         private global::System.Windows.Forms.GroupBox groupBox4;
         private global::System.Windows.Forms.CheckBox ChkRunAs64BitApplication;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.CheckBox chkSuppressConformationOnWindowsClose;
+        private System.Windows.Forms.CheckBox chkConfirmExit;
     }
 }

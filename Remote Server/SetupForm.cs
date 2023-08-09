@@ -122,6 +122,8 @@ namespace ASCOM.Remote
                 chkStartMinimised.Checked = ServerForm.StartMinimised;
                 ChkCheckForUpdates.Checked = ServerForm.CheckForUpdates;
                 ChkCheckForPreReleaseUpdates.Checked = ServerForm.CheckForPreReleaseUpdates;
+                chkSuppressConformationOnWindowsClose.Checked = ServerForm.SuppressConfirmationOnWindowsClose;
+                chkSuppressConformationOnWindowsClose.Enabled = chkConfirmExit.Checked;
 
                 // Initialise the application minimise options combo box
                 cmbMinimiseOptions.Items.AddRange(new object[] { ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY, ServerForm.MINIMISE_TO_TASK_BAR_KEY });
@@ -595,6 +597,7 @@ namespace ASCOM.Remote
                 ServerForm.StartMinimised = chkStartMinimised.Checked;
                 ServerForm.CheckForUpdates = ChkCheckForUpdates.Checked;
                 ServerForm.CheckForPreReleaseUpdates = ChkCheckForPreReleaseUpdates.Checked;
+                ServerForm.SuppressConfirmationOnWindowsClose = chkSuppressConformationOnWindowsClose.Checked;
 
                 // Update the minimise to system tray value
                 ServerForm.MinimiseToSystemTray = (string)cmbMinimiseOptions.SelectedItem == ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY; // Expression evaluates to True if minimise to tray is selected, otherwise false
@@ -946,6 +949,11 @@ namespace ASCOM.Remote
         private void ChkRunAs64BitApplication_CheckedChanged(object sender, EventArgs e)
         {
             configurationManager.Settings.RunAs64Bit = ((CheckBox)sender).Checked;
+        }
+
+        private void chkConfirmExit_CheckedChanged(object sender, EventArgs e)
+        {
+            chkSuppressConformationOnWindowsClose.Enabled = chkConfirmExit.Checked;
         }
     }
 }

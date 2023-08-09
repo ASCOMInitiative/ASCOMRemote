@@ -161,6 +161,7 @@ namespace ASCOM.Remote
         internal const string MINIMISE_ON_START_PROFILENAME = "Minimise On Start"; public const bool MINIMISE_ON_START_DEFAULT = false;
         internal const string CHECK_FOR_UPDATES = "Check For Updates"; public const bool CHECK_FOR_UPDATES_DEFAULT = true;
         internal const string CHECK_FOR_PRE_RELEASE = "Check For Pre-release Updates"; public const bool CHECK_FOR_PRE_RELEASE_DEFAULT = true;
+        internal const string SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE = "Suppress Confirmation On Windows Close"; public const bool SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE_DEFAULT = false;
 
         // Minimise behaviour strings
         internal const string MINIMISE_TO_SYSTEM_TRAY_KEY = "Minimise to system tray";
@@ -282,6 +283,7 @@ namespace ASCOM.Remote
         internal static bool StartMinimised;
         internal static bool CheckForUpdates;
         internal static bool CheckForPreReleaseUpdates;
+        internal static bool SuppressConfirmationOnWindowsClose;
 
         #endregion
 
@@ -1654,6 +1656,7 @@ namespace ASCOM.Remote
                 StartMinimised = driverProfile.GetValue<bool>(MINIMISE_ON_START_PROFILENAME, string.Empty, MINIMISE_ON_START_DEFAULT);
                 CheckForUpdates = driverProfile.GetValue<bool>(CHECK_FOR_UPDATES, string.Empty, CHECK_FOR_UPDATES_DEFAULT);
                 CheckForPreReleaseUpdates = driverProfile.GetValue<bool>(CHECK_FOR_PRE_RELEASE, string.Empty, CHECK_FOR_PRE_RELEASE_DEFAULT);
+                SuppressConfirmationOnWindowsClose = driverProfile.GetValue<bool>(SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE, string.Empty, SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE_DEFAULT);
 
                 // Set the next log roll-over time using the persisted roll-over time value
                 SetNextRolloverTime();
@@ -1775,6 +1778,7 @@ namespace ASCOM.Remote
                 driverProfile.SetValueInvariant<bool>(MINIMISE_ON_START_PROFILENAME, string.Empty, StartMinimised);
                 driverProfile.SetValueInvariant<bool>(CHECK_FOR_UPDATES, string.Empty, CheckForUpdates);
                 driverProfile.SetValueInvariant<bool>(CHECK_FOR_PRE_RELEASE, string.Empty, CheckForPreReleaseUpdates);
+                driverProfile.SetValueInvariant<bool>(SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE, string.Empty, SuppressConfirmationOnWindowsClose);
 
                 // Update the next roll-over time in case the time has changed
                 //TL.LogMessage("WriteProfile", $"NextRolloverTime Before: {NextRolloverTime}");
@@ -1973,21 +1977,29 @@ namespace ASCOM.Remote
         /// <param name="e"></param>
         private void ServerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Check whether the server is configured to ask for shutdown confirmation
+            LogMessage(0, 0, 0, "ServerForm_FormClosing", $"Confirm exit: {ConfirmExit}, Suppress on Windows shutdown: {SuppressConfirmationOnWindowsClose}, Shutdown reason: {e.CloseReason}");
+            // Check whether the Remote server is configured to ask for shutdown confirmation
             if (ConfirmExit) // Confirmation is required
-            {
-                // Ask the user whether they want to close the remote server
-                DialogResult result = MessageBox.Show("Are you sure you want to close the Remote Server?", "ASCOM Remote Server", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                {
+                    // Check whether the system is shutting down and whether or not we are suppressing the close dialogue on Windows shutdown
+                    if (e.CloseReason == CloseReason.WindowsShutDown & SuppressConfirmationOnWindowsClose) // Windows is shutting down and we are suppressing the close dialogue
+                    {
+                        // No action required
+                    }
+                    else // A close down confirmation dialogue is required.
+                    {
+                        // Ask the user whether they want to close the remote server
+                        DialogResult result = MessageBox.Show("Are you sure you want to close the Remote Server?", "ASCOM Remote Server", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
 
-                // An OK result means the user wants to shut down the Remote Server so allow the form to close, otherwise cancel the close.
-                if (result != DialogResult.OK)
-                    e.Cancel = true;
-            }
-            else // No confirmation is required so go ahead and let the application shut down.
-            {
-                // No action required
-            }
-
+                        // An OK result means the user wants to shut down the Remote Server so allow the form to close, otherwise cancel the close.
+                        if (result != DialogResult.OK)
+                            e.Cancel = true;
+                    }
+                }
+                else // No confirmation is required so go ahead and let the application shut down.
+                {
+                    // No action required
+                }
         }
 
         /// <summary>
