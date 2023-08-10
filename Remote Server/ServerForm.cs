@@ -5415,7 +5415,7 @@ namespace ASCOM.Remote
                 {
                     // COMMON METHODS
                     case "*.interfaceversion":
-                        deviceResponse = device.InterfaceVersion; deviceResponse = 3; break;
+                        deviceResponse = device.InterfaceVersion; break;
                     // TELESCOPE
                     case "telescope.slewsettletime":
                         deviceResponse = device.SlewSettleTime; break;
