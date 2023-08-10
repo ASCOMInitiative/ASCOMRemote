@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
-using ASCOM.Tools;
-using System.Text.RegularExpressions;
 using System.Drawing;
 using ASCOM.Com;
 using ASCOM.Common;

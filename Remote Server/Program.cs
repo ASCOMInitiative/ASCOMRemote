@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.ExceptionServices;
-using System.Security;
 using System.Threading;
 using System.Windows.Forms;
 using ASCOM.Tools;

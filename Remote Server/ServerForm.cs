@@ -17,7 +17,6 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
-using System.Security.Policy;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -299,6 +298,10 @@ namespace ASCOM.Remote
         internal static bool allowConnectedSetTrue; // Shortcut to a flag indicating whether Connected can be set True
         [ThreadStatic]
         internal static bool allowConcurrentAccess; // Shortcut to a flag indicating whether the driver can handle concurrent calls
+        [ThreadStatic]
+        internal static ActiveObject activeObject; // Shortcut to the current active object
+        [ThreadStatic]
+        internal static ConfiguredDevice configuredDevice; // Shortcut to the associated configured device
 
         #endregion
 
@@ -535,6 +538,62 @@ namespace ASCOM.Remote
         #endregion
 
         #region Utility methods
+
+        /// <summary>
+        /// Validate that the current device has an interface that exposes the DeviceState and Connect / Disconnect / Connecting members.
+        /// </summary>
+        /// <param name="memberName">Name of member being accessed.</param>
+        /// <param name="memberType">Flag indicating whether the member is a Property or Method</param>
+        /// <exception cref="MethodNotImplementedException">When a method is not supported by the device interface version.</exception>
+        /// <exception cref="PropertyNotImplementedException">When a property is not supported by the device interface version.</exception>
+        /// <exception cref="InvalidValueException">When a member type other than Property or method is supplied. Only developers should see this exception.</exception>
+        private void ValidatConnectAndDeviceStatePresent(string memberName, MemberTypes memberType)
+        {
+            if (DeviceCapabilities.HasConnectAndDeviceState(configuredDevice.DeviceType.ToDeviceType(), activeObject.InterfaceVersion))
+                return;
+            else
+            {
+                switch (memberType)
+                {
+                    case MemberTypes.Method:
+                        throw new MethodNotImplementedException(memberName, $"The {memberName} method is not implemented in {configuredDevice.DeviceType} interface version {activeObject.InterfaceVersion}.");
+
+                    case MemberTypes.Property:
+                        throw new PropertyNotImplementedException(memberName, $"The {memberName} property is not implemented in {configuredDevice.DeviceType} interface version {activeObject.InterfaceVersion}.");
+
+                    default:
+                        throw new InvalidValueException($"{nameof(ValidatConnectAndDeviceStatePresent)} - INTERNAL ASCOM Remote Error - The {memberType} member is not supported, please report this on the ASCOM Talk support forum.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Validate that a Switch device has an interface that exposes async functionality.
+        /// </summary>
+        /// <param name="memberName">Name of member being accessed.</param>
+        /// <param name="memberType">Flag indicating whether the member is a Property or Method</param>
+        /// <exception cref="MethodNotImplementedException">When a method is not supported by the device interface version.</exception>
+        /// <exception cref="PropertyNotImplementedException">When a property is not supported by the device interface version.</exception>
+        /// <exception cref="InvalidValueException">When a member type other than Property or method is supplied. Only developers should see this exception.</exception>
+        private void ValidatAsyncSwitchStatePresent(string memberName, MemberTypes memberType)
+        {
+            if (DeviceCapabilities.HasAsyncSwitch(activeObject.InterfaceVersion))
+                return;
+            else
+            {
+                switch (memberType)
+                {
+                    case MemberTypes.Method:
+                        throw new MethodNotImplementedException(memberName, $"The {memberName} method is not implemented in Switch interface version {activeObject.InterfaceVersion}.");
+
+                    case MemberTypes.Property:
+                        throw new PropertyNotImplementedException(memberName, $"The {memberName} property is not implemented in Switch interface version {activeObject.InterfaceVersion}.");
+
+                    default:
+                        throw new InvalidValueException($"{nameof(ValidatAsyncSwitchStatePresent)} - INTERNAL ASCOM Remote Error - The {memberType} member is not supported, please report this on the ASCOM Talk support forum.");
+                }
+            }
+        }
 
         /// <summary>
         /// Restore the server form when minimised
@@ -1980,26 +2039,26 @@ namespace ASCOM.Remote
             LogMessage(0, 0, 0, "ServerForm_FormClosing", $"Confirm exit: {ConfirmExit}, Suppress on Windows shutdown: {SuppressConfirmationOnWindowsClose}, Shutdown reason: {e.CloseReason}");
             // Check whether the Remote server is configured to ask for shutdown confirmation
             if (ConfirmExit) // Confirmation is required
-                {
-                    // Check whether the system is shutting down and whether or not we are suppressing the close dialogue on Windows shutdown
-                    if (e.CloseReason == CloseReason.WindowsShutDown & SuppressConfirmationOnWindowsClose) // Windows is shutting down and we are suppressing the close dialogue
-                    {
-                        // No action required
-                    }
-                    else // A close down confirmation dialogue is required.
-                    {
-                        // Ask the user whether they want to close the remote server
-                        DialogResult result = MessageBox.Show("Are you sure you want to close the Remote Server?", "ASCOM Remote Server", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-
-                        // An OK result means the user wants to shut down the Remote Server so allow the form to close, otherwise cancel the close.
-                        if (result != DialogResult.OK)
-                            e.Cancel = true;
-                    }
-                }
-                else // No confirmation is required so go ahead and let the application shut down.
+            {
+                // Check whether the system is shutting down and whether or not we are suppressing the close dialogue on Windows shutdown
+                if (e.CloseReason == CloseReason.WindowsShutDown & SuppressConfirmationOnWindowsClose) // Windows is shutting down and we are suppressing the close dialogue
                 {
                     // No action required
                 }
+                else // A close down confirmation dialogue is required.
+                {
+                    // Ask the user whether they want to close the remote server
+                    DialogResult result = MessageBox.Show("Are you sure you want to close the Remote Server?", "ASCOM Remote Server", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+
+                    // An OK result means the user wants to shut down the Remote Server so allow the form to close, otherwise cancel the close.
+                    if (result != DialogResult.OK)
+                        e.Cancel = true;
+                }
+            }
+            else // No confirmation is required so go ahead and let the application shut down.
+            {
+                // No action required
+            }
         }
 
         /// <summary>
@@ -2215,6 +2274,14 @@ namespace ASCOM.Remote
             try
             {
                 if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Setting up new call back to wait for next request ", Environment.CurrentManagedThreadId.ToString()));
+
+                // Exit if httpListener is null because we are shutting down.
+                if (httpListener is null)
+                {
+                    if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - BeginGetContext - httpListener is null so taking no action and just returning.", Environment.CurrentManagedThreadId.ToString()));
+                    return;
+                }
+
                 httpListener.BeginGetContext(new AsyncCallback(RestRequestReceivedHandler), httpListener);
             }
             catch (NullReferenceException) // httpListener is null because we are closing down or because of some other error so just log the event
@@ -3326,6 +3393,8 @@ namespace ASCOM.Remote
                 allowConnectedSetFalse = ActiveObjects[requestData.DeviceKey].AllowConnectedSetFalse; // If we get here then the user has requestData.Requested a device that does exist
                 allowConnectedSetTrue = ActiveObjects[requestData.DeviceKey].AllowConnectedSetTrue;
                 allowConcurrentAccess = ActiveObjects[requestData.DeviceKey].AllowConcurrentAccess;
+                activeObject = ActiveObjects[requestData.DeviceKey];
+                configuredDevice = ConfiguredDevices[activeObject.ConfiguredDeviceKey];
 
                 // Log a message showing the thread number on which we are running
                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Processing driver command on WORKER thread {Environment.CurrentManagedThreadId}");
@@ -3336,6 +3405,7 @@ namespace ASCOM.Remote
                         switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                         {
                             #region Common methods
+
                             // Common methods are indicated in ReturnXXX methods by having the device type parameter set to "*" rather than the name of one of the ASCOM device types
                             // STRING Get Values
                             case "description":
@@ -3356,9 +3426,17 @@ namespace ASCOM.Remote
 
                             // BOOL Get Values
                             case "connected":
+                            case "connecting":
                                 ReturnBool("*", requestData);
                                 break;
+
+                            // LIST<DEVICESTATE> Get Values
+                            case "devicestate":
+                                ReturnStateValueList("*", requestData);
+                                break;
+
                             #endregion
+
                             default: // Not a common method so check for device specific methods
                                 switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE])
                                 {
@@ -3733,8 +3811,10 @@ namespace ASCOM.Remote
                                         switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             // BOOL Get Values
+                                            case "canasync":
                                             case "canwrite":
                                             case "getswitch":
+                                            case "statechangecomplete":
                                                 ReturnShortIndexedBool(requestData); break;
                                             // SHORT Get Values
                                             case "maxswitch":
@@ -3768,9 +3848,13 @@ namespace ASCOM.Remote
                     case "PUT": // Write or action methods
                         switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                         {
+
                             #region Common methods
+
                             // Process common methods shared by all drivers
                             case "commandblind":
+                            case "connect":
+                            case "disconnect":
                                 CallMethod("*", requestData);
                                 break;
                             case "commandbool":
@@ -3785,7 +3869,9 @@ namespace ASCOM.Remote
                             case "connected":
                                 WriteBool("*", requestData);
                                 break;
+
                             #endregion
+
                             default:
                                 switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE])
                                 {
@@ -4026,6 +4112,9 @@ namespace ASCOM.Remote
                                         switch (requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                                         {
                                             // METHODS
+                                            case "cancelasync":
+                                            case "setasync":
+                                            case "setasyncvalue":
                                             case "setswitchname":
                                             case "setswitch":
                                             case "setswitchvalue":
@@ -4349,6 +4438,45 @@ namespace ASCOM.Remote
         }
 
         // Return device responses to clients
+
+        private void ReturnStateValueList(string deviceType, RequestData requestData)
+        {
+            IEnumerable deviceResponse;
+            List<StateValue> responseList = new();
+            Exception exReturn = null;
+
+            try
+            {
+                switch (deviceType + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
+                {
+                    case "*.devicestate":
+                        ValidatConnectAndDeviceStatePresent("DeviceState", MemberTypes.Property);
+                        deviceResponse = (IEnumerable)device.DeviceState;
+                        foreach (dynamic stateValue in deviceResponse)
+                        {
+                            responseList.Add(new StateValue(stateValue.Name, stateValue.Value));
+                        }
+                        break;
+
+                    default:
+                        LogMessage1(requestData, "ReturnStateValueList", "Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                        throw new InvalidValueException("ReturnStateValueList - Unsupported requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
+                }
+            }
+            catch (Exception ex)
+            {
+                exReturn = ex;
+            }
+
+            DeviceStateResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, responseList)
+            {
+                DriverException = exReturn,
+            };
+
+            string responseJson = JsonConvert.SerializeObject(responseClass);
+            SendResponseValueToClient(requestData, exReturn, responseJson);
+        }
+
         private void ReturnBool(string deviceType, RequestData requestData)
         {
             bool deviceResponse = false;
@@ -4361,8 +4489,14 @@ namespace ASCOM.Remote
                 switch (deviceType + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     #region Common methods
+
                     case "*.connected":
                         deviceResponse = device.Connected; break;
+
+                    case "*.connecting":
+                        ValidatConnectAndDeviceStatePresent("Connecting", MemberTypes.Property);
+                        deviceResponse = device.Connecting; break;
+
                     #endregion
 
                     #region Telescope Methods
@@ -4545,10 +4679,16 @@ namespace ASCOM.Remote
                 {
                     #region Switch Methods
 
+                    case "switch.canasync":
+                        ValidatAsyncSwitchStatePresent("CanAsync", MemberTypes.Method);
+                        deviceResponse = device.CanAsync(index); break;
                     case "switch.canwrite":
                         deviceResponse = device.CanWrite(index); break;
                     case "switch.getswitch":
                         deviceResponse = device.GetSwitch(index); break;
+                    case "switch.statechangecomplete":
+                        ValidatAsyncSwitchStatePresent("StateChangeComplete", MemberTypes.Method);
+                        deviceResponse = device.StateChangeComplete(index); break;
 
                     #endregion
 
@@ -5275,7 +5415,7 @@ namespace ASCOM.Remote
                 {
                     // COMMON METHODS
                     case "*.interfaceversion":
-                        deviceResponse = device.InterfaceVersion; break;
+                        deviceResponse = device.InterfaceVersion; deviceResponse = 3; break;
                     // TELESCOPE
                     case "telescope.slewsettletime":
                         deviceResponse = device.SlewSettleTime; break;
@@ -6729,6 +6869,14 @@ namespace ASCOM.Remote
                         raw = GetParameter<bool>(requestData, SharedConstants.RAW_PARAMETER_NAME);
                         device.CommandBlind(command, raw);
                         break;
+                    case "*.connect":
+                        ValidatConnectAndDeviceStatePresent("Connect", MemberTypes.Method);
+                        device.Connect();
+                        break;
+                    case "*.disonnect":
+                        ValidatConnectAndDeviceStatePresent("Disconnect", MemberTypes.Method);
+                        device.Disconnect();
+                        break;
 
                     //COVERCALIBRATOR
                     case "covercalibrator.calibratoroff":
@@ -6861,6 +7009,23 @@ namespace ASCOM.Remote
                         device.Refresh(); break;
 
                     // SWITCH
+                    case "switch.cancelasync":
+                        ValidatAsyncSwitchStatePresent("CancelAsync", MemberTypes.Method);
+                        switchIndex = GetParameter<short>(requestData, SharedConstants.ID_PARAMETER_NAME);
+                        device.CancelAsync(switchIndex);
+                        break;
+                    case "switch.setasync":
+                        ValidatAsyncSwitchStatePresent("SetAsync", MemberTypes.Method);
+                        switchIndex = GetParameter<short>(requestData, SharedConstants.ID_PARAMETER_NAME);
+                        switchState = GetParameter<bool>(requestData, SharedConstants.STATE_PARAMETER_NAME);
+                        device.SetAsync(switchIndex, switchState);
+                        break;
+                    case "switch.setasyncvalue":
+                        ValidatAsyncSwitchStatePresent("SetAsyncValue", MemberTypes.Method);
+                        switchIndex = GetParameter<short>(requestData, SharedConstants.ID_PARAMETER_NAME);
+                        switchValue = GetParameter<double>(requestData, SharedConstants.VALUE_PARAMETER_NAME);
+                        device.SetAsyncValue(switchIndex, switchValue);
+                        break;
                     case "switch.setswitchname":
                         switchIndex = GetParameter<short>(requestData, SharedConstants.ID_PARAMETER_NAME);
                         switchName = GetParameter<string>(requestData, SharedConstants.NAME_PARAMETER_NAME);

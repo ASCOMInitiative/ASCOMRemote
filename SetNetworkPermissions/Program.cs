@@ -9,7 +9,6 @@ using CommandLine;
 using WindowsFirewallHelper;
 
 using System.Net;
-using System.Runtime.ExceptionServices;
 using System.Reflection;
 using WindowsFirewallHelper.Collections;
 using WindowsFirewallHelper.FirewallRules;

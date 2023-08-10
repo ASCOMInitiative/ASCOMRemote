@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using ASCOM.Tools;
-using System.Collections;
 using System.Runtime.InteropServices;
 using ASCOM.Com;
 using ASCOM.Common;
