@@ -6873,7 +6873,7 @@ namespace ASCOM.Remote
                         ValidatConnectAndDeviceStatePresent("Connect", MemberTypes.Method);
                         device.Connect();
                         break;
-                    case "*.disonnect":
+                    case "*.disconnect":
                         ValidatConnectAndDeviceStatePresent("Disconnect", MemberTypes.Method);
                         device.Disconnect();
                         break;
