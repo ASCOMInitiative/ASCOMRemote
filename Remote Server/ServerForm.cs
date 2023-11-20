@@ -698,7 +698,7 @@ namespace ASCOM.Remote
 
 #if PLATFORM_BUILD
                                         // Get the directory from which the Remote Server was loaded and append the location of the Platform version of SetNetworkPermissions
-                                        const string PERMISSIONS_EXE_PATH = "SetNetworkPermissions\\SetNetworkPermissions.exe";
+                                        const string PERMISSIONS_EXE_PATH = "SetNetworkPermissions\\ASCOM.SetNetworkPermissions.exe";
                                         LogMessage(0, 0, 0, "StartRESTServer", $"AppDomain.CurrentDomain.BaseDirectory: {AppDomain.CurrentDomain.BaseDirectory}");
                                         LogMessage(0, 0, 0, "StartRESTServer", $"Permissions EXE path: {PERMISSIONS_EXE_PATH}");
                                         setNetworkPermissionsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PERMISSIONS_EXE_PATH);
