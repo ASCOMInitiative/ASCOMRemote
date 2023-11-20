@@ -11,6 +11,7 @@
 		<Copyright>Copyright © 2023 Peter Simpson</Copyright>
 		<OutputPath>bin\$(Configuration)\</OutputPath>
 		<Platforms>AnyCPU;x86</Platforms>
+		<DefineConstants>PLATFORM_BUILD</DefineConstants>
 	</PropertyGroup>
 	<Target Name="Test" AfterTargets="AfterBuild">
 		<Message Importance="High" Text=" Version: $(ProductMajor).$(ProductMinor).$(ProductPatch).$(BuildNumber)" />
