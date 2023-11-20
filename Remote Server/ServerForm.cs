@@ -699,7 +699,9 @@ namespace ASCOM.Remote
 #if PLATFORM_BUILD
                                         // Get the directory from which the Remote Server was loaded and append the location of the Platform version of SetNetworkPermissions
                                         setNetworkPermissionsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"\SetNetworkPermissions\SetNetworkPermissions.exe");
+                                        LogMessage(0, 0, 0, "StartRESTServer", $"PLATFORM_BUILD is SET - {setNetworkPermissionsPath}");
 #else
+                                        LogMessage(0, 0, 0, "StartRESTServer", $"PLATFORM_BUILD is NOT SET");
                                         // Set the path to the permissions EXE depending on whether we are a 32 or 64bit application
                                         if (Environment.Is64BitProcess) // 64bit application
                                         {
