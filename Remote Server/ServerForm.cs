@@ -696,27 +696,19 @@ namespace ASCOM.Remote
                                         string setNetworkPermissionsPath;
                                         // Special handling for Remote Server in the Platform builds because SetNetworkpermissions.exe is in a different place
 
-#if PLATFORM_BUILD
-                                        // Get the directory from which the Remote Server was loaded and append the location of the Platform version of SetNetworkPermissions
-                                        const string PERMISSIONS_EXE_PATH = "SetNetworkPermissions\\ASCOM.SetNetworkPermissions.exe";
-                                        LogMessage(0, 0, 0, "StartRESTServer", $"AppDomain.CurrentDomain.BaseDirectory: {AppDomain.CurrentDomain.BaseDirectory}");
-                                        LogMessage(0, 0, 0, "StartRESTServer", $"Permissions EXE path: {PERMISSIONS_EXE_PATH}");
-                                        setNetworkPermissionsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PERMISSIONS_EXE_PATH);
-                                        LogMessage(0, 0, 0, "StartRESTServer", $"PLATFORM_BUILD is SET - {setNetworkPermissionsPath}");
-#else
-                                        LogMessage(0, 0, 0, "StartRESTServer", $"PLATFORM_BUILD is NOT SET");
                                         // Set the path to the permissions EXE depending on whether we are a 32 or 64bit application
+                                        const string PERMISSIONS_EXE_PATH = @"ASCOM\SetNetworkPermissions\ASCOM.SetNetworkPermissions.exe";
+
                                         if (Environment.Is64BitProcess) // 64bit application
                                         {
                                             // Use the Program Files (x86) folder (32bit folder on a 64bit OS)
-                                            setNetworkPermissionsPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + SharedConstants.SET_NETWORK_PERMISSIONS_EXE_PATH;
+                                            setNetworkPermissionsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), PERMISSIONS_EXE_PATH);
                                         }
                                         else
                                         {
                                             // Use the Program Files folder (32bit folder on a 32bit OS)
-                                            setNetworkPermissionsPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) + SharedConstants.SET_NETWORK_PERMISSIONS_EXE_PATH;
+                                            setNetworkPermissionsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), PERMISSIONS_EXE_PATH);
                                         }
-#endif
 
                                         LogMessage(0, 0, 0, "StartRESTServer", string.Format("SetNetworkPermissionspath: {0}", setNetworkPermissionsPath));
 
