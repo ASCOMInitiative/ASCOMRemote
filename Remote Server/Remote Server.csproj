@@ -10,7 +10,7 @@
 		<Product>ASCOM Remote Server</Product>
 		<Copyright>Copyright © 2023 Peter Simpson</Copyright>
 		<OutputPath>bin\$(Configuration)\</OutputPath>
-		<Platforms>AnyCPU;x86</Platforms>
+		<Platforms>AnyCPU;x86;x64</Platforms>
 	</PropertyGroup>
 	<Target Name="Test" AfterTargets="AfterBuild">
 		<Message Importance="High" Text=" Version: $(ProductMajor).$(ProductMinor).$(ProductPatch).$(BuildNumber)" />
@@ -24,7 +24,7 @@
 
 		<WriteLinesToFile File="$(PublishDir)..\InformationVersion.txt" Overwrite="true" Lines="$(InfoVersion)" />
 	</Target>
-	
+
 	<PropertyGroup>
 		<!-- Set version numbers -->
 		<ProductMajor>6</ProductMajor>
@@ -58,6 +58,10 @@
 		<DebugType>embedded</DebugType>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+	  <DebugType>embedded</DebugType>
+	  <PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
 		<PlatformTarget>x86</PlatformTarget>
 		<DebugType>embedded</DebugType>
@@ -66,6 +70,11 @@
 		<DebugType>embedded</DebugType>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<UseVSHostingProcess>true</UseVSHostingProcess>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+	  <DebugType>embedded</DebugType>
+	  <PlatformTarget>AnyCPU</PlatformTarget>
+	  <UseVSHostingProcess>true</UseVSHostingProcess>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
 		<DebugType>embedded</DebugType>
