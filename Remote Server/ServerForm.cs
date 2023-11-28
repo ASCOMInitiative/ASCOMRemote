@@ -406,8 +406,8 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                LogException(0, 0, 0, "New", ex.ToString());
                 MessageBox.Show(ex.ToString());
+                LogException(0, 0, 0, "New", ex.ToString());
             }
         }
 
