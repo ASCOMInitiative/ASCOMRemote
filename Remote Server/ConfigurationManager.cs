@@ -294,7 +294,6 @@ namespace ASCOM.Remote
             {
                 TL.LogMessage("PersistSettings", ex.ToString());
             }
-
         }
 
         //internal void RaiseUiHasChangedEvent()

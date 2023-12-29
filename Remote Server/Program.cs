@@ -13,9 +13,36 @@ namespace ASCOM.Remote
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] arguments)
         {
-            TraceLoggerPlus TLInit = new("RemoteInit",true);
+            // Check whether any command line arguments were supplied
+            if (arguments.Length > 0) // One or more arguments were supplied
+            {
+                switch (arguments[0].ToLowerInvariant())
+                {
+                    case "-reset":
+                    case "--reset":
+                    case "/reset":
+                        // Reset the configuration
+                        TraceLoggerPlus TLReset = new("RemoteReset", true);
+                        using (ConfigurationManager configurationManager = new ConfigurationManager(TLReset))
+                        {
+                            configurationManager.Reset();
+                            configurationManager.Save();
+                        }
+
+                        Configuration.Reset();
+
+                        MessageBox.Show($"Configuration reset to default values.", "Reset Configuration", MessageBoxButtons.OK);
+                        break;
+
+                    default:
+                        MessageBox.Show($"The parameter: {arguments[0]} is not valid.", "Unrecognised command line parameter", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                }
+            }
+
+            TraceLoggerPlus TLInit = new("RemoteInit", true);
             using (ConfigurationManager configurationManager = new ConfigurationManager(TLInit))
             {
                 // Restart as the other bitness version if required
@@ -117,7 +144,7 @@ namespace ASCOM.Remote
 
         static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
         {
-            TraceLogger TL = new("RemoteAccessServerException",true)
+            TraceLogger TL = new("RemoteAccessServerException", true)
             {
                 Enabled = true
             };
@@ -134,7 +161,7 @@ namespace ASCOM.Remote
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Exception exception = (Exception)e.ExceptionObject;
-            TraceLogger TL = new("RemoteAccessServerException",true)
+            TraceLogger TL = new("RemoteAccessServerException", true)
             {
                 Enabled = true
             };

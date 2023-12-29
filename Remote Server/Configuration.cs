@@ -10,6 +10,19 @@ namespace ASCOM.Remote
 
         private readonly RegistryKey hiveKey, baseRegistryKey;
 
+        public static void Reset()
+        {
+            try
+            {
+                RegistryKey hiveKey = RegistryKey.OpenBaseKey(SharedConstants.ASCOM_REMOTE_CONFIGURATION_HIVE, RegistryView.Default);
+                hiveKey.DeleteSubKeyTree(SharedConstants.ASCOM_REMOTE_CONFIGURATION_KEY);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception reseting configuration:\r\n{ex}");
+            }
+        }
+
         public Configuration()
         {
 
