@@ -3,7 +3,7 @@
 		<OutputType>WinExe</OutputType>
 		<RootNamespace>ASCOM.Remote</RootNamespace>
 		<AssemblyName>RemoteServer</AssemblyName>
-		<TargetFramework>net7.0-windows</TargetFramework>
+		<TargetFramework>net8.0-windows</TargetFramework>
 		<UseWindowsForms>true</UseWindowsForms>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<AssemblyTitle>ASCOM Remote Server</AssemblyTitle>
@@ -137,12 +137,13 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="ASCOM.Com.Components" Version="1.0.109-rc.41" />
-		<PackageReference Include="ASCOM.Common.Components" Version="1.0.109-rc.41" />
-		<PackageReference Include="ASCOM.Exception.Library" Version="6.6.2-rc.3725" />
-		<PackageReference Include="ASCOM.Tools" Version="1.0.109-rc.41" />
+		<PackageReference Include="ASCOM.Com.Components" Version="1.0.113-rc.3" />
+		<PackageReference Include="ASCOM.Common.Components" Version="1.0.113-rc.3" />
+		<PackageReference Include="ASCOM.DeviceInterfaces" Version="7.0.0-rc.16" />
+		<PackageReference Include="ASCOM.Exception.Library" Version="7.0.0-rc.16" />
+		<PackageReference Include="ASCOM.Tools" Version="1.0.113-rc.3" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Octokit" Version="7.1.0" />
+		<PackageReference Include="Octokit" Version="9.0.0" />
 		<PackageReference Include="Semver" Version="2.3.0" />
 	</ItemGroup>
 </Project>
