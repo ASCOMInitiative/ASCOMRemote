@@ -4445,8 +4445,12 @@ namespace ASCOM.Remote
 
         private void ReturnStateValueList(string deviceType, RequestData requestData)
         {
-            IEnumerable deviceResponse;
+            // Define the device response type as the Platform COM compatible IStateValueCollection interface type
+            DeviceInterface.IStateValueCollection deviceResponse;
+
+            // Define the Remote Server response type as List<StateValue> so that it can be serialised to the correct JSON type
             List<StateValue> responseList = new();
+
             Exception exReturn = null;
 
             try
@@ -4455,8 +4459,12 @@ namespace ASCOM.Remote
                 {
                     case "*.devicestate":
                         ValidatConnectAndDeviceStatePresent("DeviceState", MemberTypes.Property);
-                        deviceResponse = (IEnumerable)device.DeviceState;
-                        foreach (dynamic stateValue in deviceResponse)
+            
+                        // Get the device response
+                        deviceResponse = device.DeviceState;
+
+                        // Convert each element in the device response to the Remote Server response type
+                        foreach (DeviceInterface.IStateValue stateValue in deviceResponse)
                         {
                             responseList.Add(new StateValue(stateValue.Name, stateValue.Value));
                         }
@@ -4472,11 +4480,13 @@ namespace ASCOM.Remote
                 exReturn = ex;
             }
 
+            // Create a DeviceStateResponse object containing the device response in the internal Remote Server Lits<StateValue> form
             DeviceStateResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, responseList)
             {
                 DriverException = exReturn,
             };
 
+            // Serialise to an Alpaca JSON response and send to the client
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
         }
