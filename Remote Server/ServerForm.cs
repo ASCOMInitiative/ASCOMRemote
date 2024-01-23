@@ -5961,7 +5961,7 @@ namespace ASCOM.Remote
             {
                 exReturn = ex;
             }
-
+            exReturn = new NotImplementedException("Test message");
             IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn,
@@ -5985,6 +5985,7 @@ namespace ASCOM.Remote
             {
                 exReturn = ex;
             }
+            exReturn = new NotImplementedException("Test message");
 
             IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
