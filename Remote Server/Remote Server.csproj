@@ -137,13 +137,13 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="ASCOM.Com.Components" Version="2.0.0-rc.2" />
-		<PackageReference Include="ASCOM.Common.Components" Version="2.0.0-rc.2" />
+		<PackageReference Include="ASCOM.Com.Components" Version="2.0.0-rc.13" />
+		<PackageReference Include="ASCOM.Common.Components" Version="2.0.0-rc.13" />
 		<PackageReference Include="ASCOM.DeviceInterfaces" Version="7.0.0-rc.16" />
 		<PackageReference Include="ASCOM.Exception.Library" Version="7.0.0-rc.21" />
-		<PackageReference Include="ASCOM.Tools" Version="2.0.0-rc.2" />
+		<PackageReference Include="ASCOM.Tools" Version="2.0.0-rc.13" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Octokit" Version="9.1.0" />
+		<PackageReference Include="Octokit" Version="10.0.0" />
 		<PackageReference Include="Semver" Version="2.3.0" />
 	</ItemGroup>
 </Project>
