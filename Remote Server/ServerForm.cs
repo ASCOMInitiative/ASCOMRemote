@@ -3642,6 +3642,12 @@ namespace ASCOM.Remote
 
                                             case "coverstate":
                                                 ReturnCoverState(requestData); break;
+
+                                            //BOOL get Values
+                                            case "calibratorchanging":
+                                            case "covermoving":
+                                                ReturnBool(requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], requestData); break;
+
                                             #endregion
 
                                             //UNKNOWN METHOD CALL
@@ -4459,7 +4465,7 @@ namespace ASCOM.Remote
                 {
                     case "*.devicestate":
                         ValidatConnectAndDeviceStatePresent("DeviceState", MemberTypes.Property);
-            
+
                         // Get the device response
                         deviceResponse = device.DeviceState;
 
@@ -4506,19 +4512,18 @@ namespace ASCOM.Remote
 
                     case "*.connected":
                         deviceResponse = device.Connected; break;
-
                     case "*.connecting":
                         ValidatConnectAndDeviceStatePresent("Connecting", MemberTypes.Property);
                         deviceResponse = device.Connecting; break;
-
-                    #endregion
-
-                    #region Telescope Methods
                     case "*.commandbool":
                         command = GetParameter<string>(requestData, SharedConstants.COMMAND_PARAMETER_NAME);
                         raw = GetParameter<bool>(requestData, SharedConstants.RAW_PARAMETER_NAME);
                         deviceResponse = device.CommandBool(command, raw);
                         break;
+
+                    #endregion
+
+                    #region Telescope Methods
                     case "telescope.athome":
                         deviceResponse = device.AtHome; break;
                     case "telescope.atpark":
@@ -4591,6 +4596,14 @@ namespace ASCOM.Remote
                         deviceResponse = device.CanFastReadout; break;
                     case "camera.fastreadout":
                         deviceResponse = device.FastReadout; break;
+
+                    #endregion
+
+                    #region CoverCalibrator Methods
+                    case "covercalibrator.calibratorchanging":
+                        deviceResponse = device.CalibratorChanging; break;
+                    case "covercalibrator.covermoving":
+                        deviceResponse = device.CoverMoving; break;
 
                     #endregion
 
@@ -5961,7 +5974,7 @@ namespace ASCOM.Remote
             {
                 exReturn = ex;
             }
-            exReturn = new NotImplementedException("Test message");
+
             IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
                 DriverException = exReturn,
@@ -5985,7 +5998,6 @@ namespace ASCOM.Remote
             {
                 exReturn = ex;
             }
-            exReturn = new NotImplementedException("Test message");
 
             IntResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, (int)deviceResponse)
             {
