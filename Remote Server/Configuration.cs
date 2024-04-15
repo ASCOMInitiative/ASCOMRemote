@@ -25,7 +25,6 @@ namespace ASCOM.Remote
 
         public Configuration()
         {
-
             try
             {
                 if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "Configuration New", "About to create base key");

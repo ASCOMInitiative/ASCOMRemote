@@ -186,8 +186,8 @@ namespace ASCOM.Remote
         internal const int TITLE_OFFSET_FROM_TOP = 22; // Offset of the title from the top of the form
         internal const int TITLE_TRANSITION_POSITION_END = 900; // Form width above which the title position is always centred over the message list
         internal const int LOG_HEIGHT_OFFSET = 123; // Offset from the height of the form so that the log text box just fits within the form when resized
-        internal const int CONTROL_OVERALL_HEIGHT = 103; // Overall height of all control groups
-        internal const int CONTROL_SPACING_MAXIMUM = 45; // Maximum separation between control groups
+        internal const int CONTROL_OVERALL_HEIGHT = 120; // Overall height of all control groups
+        internal const int CONTROL_SPACING_MAXIMUM = 60; // Maximum separation between control groups
         internal const int CONTROL_SPACE_WIDTH = 240; // Size of the free space, to the right of the log messages text box, that must be left clear for server controls
         internal const int CONTROL_LEFT_OFFSET = 206; // Offset from the width of the form to the start of a full sized control
         internal const int CONTROL_CENTRE_OFFSET = 36; // Offset from the CONTROL_LEFT_OFFSET to the start of a centred control
@@ -1889,6 +1889,54 @@ namespace ASCOM.Remote
             bool currentRunAs64Bit;
             bool newRunAs64Bit;
 
+            // Offer the Reset configuration dialogue if the user presses the SHIFT key when clicking the Setup button
+            if (Control.ModifierKeys == Keys.Shift) // the SHIFT key is pressed
+            {
+                // Confirm that reset is actually required
+                DialogResult choice = MessageBox.Show("Are you sure you want to reset ALL  \r\nASCOM Remote configuration?", "Completely Reset ASCOM Remote", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+
+                if (choice == DialogResult.Yes) // User said YES, reset the configuration
+                {
+                    Configuration.Reset();
+                    // Restart the server so that the revised configuration comes into effect
+                    try
+                    {
+                        LogMessage(0, 0, 0, "ResetConfiguration", $"");
+                        LogMessage(0, 0, 0, "ResetConfiguration", $"RESTARTING SERVER TO ENABLE RESET CONFIGURATION TO TAKE EFFECT");
+                        LogMessage(0, 0, 0, "ResetConfiguration", $"");
+
+                        LogToScreen("Stopping REST server...");
+                        LogMessage(0, 0, 0, "ResetConfiguration", $"About to stop REST server...");
+                        StopRESTServer();
+                        LogMessage(0, 0, 0, "ResetConfiguration", $"REST server stopped");
+
+                        LogToScreen("Disconnecting devices...");
+                        LogMessage(0, 0, 0, "ResetConfiguration", $"About to disconnect devices...");
+                        DisconnectDevices();
+                        LogMessage(0, 0, 0, "ResetConfiguration", $"Devices disconnected");
+
+                        LogToScreen("Restarting the Remote Server...");
+                        this.RestartApplication = true;
+                    }
+                    catch (Exception ex2)
+                    {
+                        LogMessage(0, 0, 0, "ResetConfiguration", $"Exception while attempting to restart the server: {ex2.Message}");
+                        LogException(0, 0, 0, "ResetConfiguration", ex2.ToString());
+                    }
+                    finally
+                    {
+                        MessageBox.Show($"Configuration has been reset, press OK to restart ASCOM Remote.");
+                        LogMessage(0, 0, 0, "ResetConfiguration", $"About to close form ...");
+                        this.Close(); // Close the form
+                    }
+
+                    return; // Leave the routine and wait for the form to close
+                }
+                else // User said NO or cancelled the dialogue so just exit.
+                    return;
+            }
+
+            // Normal Setup, SHIFT was not pressed
             LogMessage(0, 0, 0, "SetupButton", Message: string.Format("Saving current server state", apiIsEnabled, devicesAreConnected));
 
             // Save current server state
@@ -2135,6 +2183,12 @@ namespace ASCOM.Remote
 
                 // Control Group 5 - Setup button
                 BtnSetup.Location = new Point(controlCentrePosition, BtnDisconnectDevices.Top + controlSpacing + 2);
+                if (controlSpacing < 37)
+                    LblReset.Visible = false;
+                else
+                    LblReset.Visible = true;
+
+                LblReset.Location = new Point(controlLeftPosition + 3, BtnSetup.Top + 25);
 
                 // Control Group 6 - Exit button
                 BtnExit.Location = new Point(controlCentrePosition, BtnSetup.Top + controlSpacing + 2);
@@ -2218,6 +2272,16 @@ namespace ASCOM.Remote
             systemTrayMenuItems.Items["IPv6"].Text = $"IP v6 enabled: {IpV6Enabled}";
             systemTrayMenuItems.Items["IPAddress"].Text = $"IP Address: {(ServerIPAddressString == "+" ? "All IP addresses" : ServerIPAddressString)}";
             systemTrayMenuItems.Items["Port"].Text = $"Listening on port: {ServerPortNumber}";
+        }
+
+        private void BtnUpdateAvailable_Click(Object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(Updates.ReleaseUrl) { UseShellExecute = true });
+        }
+
+        private void BtnPreviewAvailable_Click(Object sender, EventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(Updates.PreviewURL) { UseShellExecute = true });
         }
 
         #endregion
@@ -7311,15 +7375,6 @@ namespace ASCOM.Remote
 
         #endregion
 
-        private void BtnUpdateAvailable_Click(Object sender, EventArgs e)
-        {
-            Process.Start(new ProcessStartInfo(Updates.ReleaseUrl) { UseShellExecute = true });
-        }
-
-        private void BtnPreviewAvailable_Click(Object sender, EventArgs e)
-        {
-            Process.Start(new ProcessStartInfo(Updates.PreviewURL) { UseShellExecute = true });
-        }
     } // End of ServerForm class
 
 } // End of namespace
