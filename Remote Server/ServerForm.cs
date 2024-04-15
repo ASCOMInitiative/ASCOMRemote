@@ -187,6 +187,7 @@ namespace ASCOM.Remote
         internal const int TITLE_TRANSITION_POSITION_END = 900; // Form width above which the title position is always centred over the message list
         internal const int LOG_HEIGHT_OFFSET = 123; // Offset from the height of the form so that the log text box just fits within the form when resized
         internal const int CONTROL_OVERALL_HEIGHT = 120; // Overall height of all control groups
+        internal const int CONTROL_SPACING_MINIMUM = 27; // Minimum separation between control groups
         internal const int CONTROL_SPACING_MAXIMUM = 60; // Maximum separation between control groups
         internal const int CONTROL_SPACE_WIDTH = 240; // Size of the free space, to the right of the log messages text box, that must be left clear for server controls
         internal const int CONTROL_LEFT_OFFSET = 206; // Offset from the width of the form to the start of a full sized control
@@ -1897,7 +1898,6 @@ namespace ASCOM.Remote
 
                 if (choice == DialogResult.Yes) // User said YES, reset the configuration
                 {
-                    Configuration.Reset();
                     // Restart the server so that the revised configuration comes into effect
                     try
                     {
@@ -1915,6 +1915,11 @@ namespace ASCOM.Remote
                         DisconnectDevices();
                         LogMessage(0, 0, 0, "ResetConfiguration", $"Devices disconnected");
 
+                        LogToScreen("Resetting configuration...");
+                        LogMessage(0, 0, 0, "ResetConfiguration", $"About to reset configuration...");
+                        Configuration.Reset();
+                        LogMessage(0, 0, 0, "ResetConfiguration", $"Configuration reset.");
+
                         LogToScreen("Restarting the Remote Server...");
                         this.RestartApplication = true;
                     }
@@ -1927,12 +1932,15 @@ namespace ASCOM.Remote
                     {
                         MessageBox.Show($"Configuration has been reset, press OK to restart ASCOM Remote.");
                         LogMessage(0, 0, 0, "ResetConfiguration", $"About to close form ...");
-                        this.Close(); // Close the form
+
+                        // Close the form
+                        this.Close();
                     }
 
-                    return; // Leave the routine and wait for the form to close
+                    // Leave the event handler and wait for the form to close
+                    return;
                 }
-                else // User said NO or cancelled the dialogue so just exit.
+                else // User said NO or cancelled the dialogue so just exit and return to the GUI.
                     return;
             }
 
@@ -2135,6 +2143,7 @@ namespace ASCOM.Remote
                 // Pre calculate some items
                 int controlSpacing = (txtLog.Height - CONTROL_OVERALL_HEIGHT) / (NUMBER_OF_CONTROL_GROUPS - 1); // Calculate the vertical distance between controls and control groups. This allows the controls to move closer together when the window is small.
                 if (controlSpacing > CONTROL_SPACING_MAXIMUM) controlSpacing = CONTROL_SPACING_MAXIMUM; // Limit the maximum spacing so that it doesn't get too large and become unsightly
+                if (controlSpacing < CONTROL_SPACING_MINIMUM) controlSpacing = CONTROL_SPACING_MINIMUM; // Limit the minimum spacing so that it doesn't get too small and jumbled
                 int controlsTop = txtLog.Top + (txtLog.Height / 2) - ((CONTROL_OVERALL_HEIGHT + 5 * controlSpacing) / 2); // Calculate the location of the top of the controls
 
                 // Place the form title

@@ -16,6 +16,7 @@
 	<Target Name="Test" AfterTargets="AfterBuild">
 		<Message Importance="High" Text=" Version: $(ProductMajor).$(ProductMinor).$(ProductPatch).$(BuildNumber)" />
 		<Message Importance="High" Text=" InformationalVersion: $(InformationalVersion)" />
+		<Message Importance="High" Text=" Short GIT tag: $(Head)" />
 	</Target>
 
 	<Target Name="WriteInformationVersion" AfterTargets="CopyFilesToOutputDirectory">
@@ -24,6 +25,22 @@
 		</PropertyGroup>
 
 		<WriteLinesToFile File="$(PublishDir)..\InformationVersion.txt" Overwrite="true" Lines="$(InfoVersion)" />
+	</Target>
+	
+	<Target Name="ShortGitId" BeforeTargets="PreBuildEvent">
+		<Exec Command="git rev-parse --short HEAD > head.txt" />
+		<ReadLinesFromFile File="head.txt">
+			<Output TaskParameter="Lines" PropertyName="Head" />
+		</ReadLinesFromFile>
+		<Delete Files="head.txt" />
+		<ItemGroup>
+			<!-- Include must be the fully qualified .NET type name of the Attribute to create. -->
+			<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+				<!-- _Parameter1, _Parameter2, etc. correspond to the matching parameter of a constructor of that .NET attribute type -->
+				<_Parameter1>ShortGitId</_Parameter1>
+				<_Parameter2>$(BuildNumber).$(Head)</_Parameter2>
+			</AssemblyAttribute>
+		</ItemGroup>
 	</Target>
 
 	<PropertyGroup>
