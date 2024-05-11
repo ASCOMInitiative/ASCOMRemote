@@ -77,6 +77,7 @@ namespace ASCOM.Remote
         public const string REMOTE_SERVER_MANGEMENT_GET_CONFIGURATION = "configuration";
         public const string REMOTE_SERVER_MANGEMENT_GET_CONCURRENT_CALLS = "concurrency";
         public const string REMOTE_SERVER_MANGEMENT_RESTART_SERVER = "restart";
+        public const string REMOTE_SERVER_MANGEMENT_REBOOT_SERVER = "reboot";
         public const string REMOTE_SERVER_MANGEMENT_SHUTDOWN_SERVER = "shutdown";
         public const string ALPACA_DEVICE_MANAGEMENT_APIVERSIONS = "apiversions";
         public const string ALPACA_DEVICE_MANAGEMENT_DESCRIPTION = "description";
