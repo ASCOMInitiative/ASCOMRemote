@@ -127,12 +127,12 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="ASCOM.Com.Components" Version="1.0.112" />
-		<PackageReference Include="ASCOM.Common.Components" Version="1.0.112" />
-		<PackageReference Include="ASCOM.Exception.Library" Version="6.6.1" />
-		<PackageReference Include="ASCOM.Tools" Version="1.0.112" />
+		<PackageReference Include="ASCOM.Com.Components" Version="2.0.0-rc.21" />
+		<PackageReference Include="ASCOM.Common.Components" Version="2.0.0-rc.21" />
+		<PackageReference Include="ASCOM.Exception.Library" Version="7.0.0-rc.22" />
+		<PackageReference Include="ASCOM.Tools" Version="2.0.0-rc.21" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Octokit" Version="11.0.1" />
+		<PackageReference Include="Octokit" Version="13.0.1" />
 		<PackageReference Include="Semver" Version="2.3.0" />
 	</ItemGroup>
 </Project>
