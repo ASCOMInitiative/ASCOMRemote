@@ -540,6 +540,24 @@ namespace ASCOM.Remote
 
         #region Utility methods
 
+        private void CloseServer()
+        {
+            // Check whether the server is configured to ask for shutdown confirmation
+            if (ConfirmExit) // Confirmation is required
+            {
+                // Ask the user whether they want to close the remote server
+                DialogResult result = MessageBox.Show("Are you sure you want to close the Remote Server?", "ASCOM Remote Server", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+
+                // An OK result means the user wants to shut down the Remote Server so close the server form, otherwise do nothing
+                if (result == DialogResult.OK)
+                    this.Close();
+            }
+            else // No confirmation is required so go ahead and shut down the application.
+            {
+                this.Close();
+            }
+        }
+
         /// <summary>
         /// Validate that the current device has an interface that exposes the DeviceState and Connect / Disconnect / Connecting members.
         /// </summary>
@@ -2057,7 +2075,7 @@ namespace ASCOM.Remote
         /// <param name="e"></param>
         private void BtnExit_Click(object sender, EventArgs e)
         {
-            this.Close(); // CloseServer();
+            CloseServer();
         }
 
         private void BtnConnectDevices_Click(object sender, EventArgs e)
@@ -2266,7 +2284,7 @@ namespace ASCOM.Remote
         /// <param name="e"></param>
         private void SystemTrayCloseServer_Click(object sender, EventArgs e)
         {
-            this.Close();
+            CloseServer();
         }
 
         /// <summary>
