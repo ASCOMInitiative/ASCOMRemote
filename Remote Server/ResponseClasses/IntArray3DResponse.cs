@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ASCOM.Remote
+﻿namespace ASCOM.Remote
 {
     public class IntArray3DResponse : ImageArrayResponseBase
     {

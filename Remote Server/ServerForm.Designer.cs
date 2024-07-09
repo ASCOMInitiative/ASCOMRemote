@@ -57,6 +57,7 @@
             Exit = new System.Windows.Forms.ToolStripMenuItem();
             BtnUpdateAvailable = new System.Windows.Forms.Button();
             BtnPreviewAvailable = new System.Windows.Forms.Button();
+            LblReset = new System.Windows.Forms.Label();
             systemTrayMenuItems.SuspendLayout();
             SuspendLayout();
             // 
@@ -103,7 +104,7 @@
             // LblDriverStatus
             // 
             LblDriverStatus.BackColor = System.Drawing.Color.Red;
-            LblDriverStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            LblDriverStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
             LblDriverStatus.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             LblDriverStatus.Location = new System.Drawing.Point(734, 309);
             LblDriverStatus.Name = "LblDriverStatus";
@@ -126,7 +127,7 @@
             // lblTitle
             // 
             lblTitle.AutoSize = true;
-            lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold);
             lblTitle.ForeColor = System.Drawing.SystemColors.Highlight;
             lblTitle.Location = new System.Drawing.Point(185, 25);
             lblTitle.Name = "lblTitle";
@@ -179,7 +180,7 @@
             // LblRESTStatus
             // 
             LblRESTStatus.BackColor = System.Drawing.Color.Red;
-            LblRESTStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            LblRESTStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
             LblRESTStatus.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             LblRESTStatus.Location = new System.Drawing.Point(734, 220);
             LblRESTStatus.Name = "LblRESTStatus";
@@ -226,7 +227,7 @@
             // 
             // Title
             // 
-            Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            Title.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             Title.Name = "Title";
             Title.Size = new System.Drawing.Size(205, 22);
             Title.Text = "ASCOM Remote Server";
@@ -277,7 +278,7 @@
             // 
             // Exit
             // 
-            Exit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            Exit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             Exit.Name = "Exit";
             Exit.Size = new System.Drawing.Size(205, 22);
             Exit.Text = "Exit";
@@ -307,10 +308,20 @@
             BtnPreviewAvailable.Visible = false;
             BtnPreviewAvailable.Click += BtnPreviewAvailable_Click;
             // 
+            // LblReset
+            // 
+            LblReset.AutoSize = true;
+            LblReset.Location = new System.Drawing.Point(732, 441);
+            LblReset.Name = "LblReset";
+            LblReset.Size = new System.Drawing.Size(165, 13);
+            LblReset.TabIndex = 19;
+            LblReset.Text = "SHIFT click to reset configuration";
+            // 
             // ServerForm
             // 
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             ClientSize = new System.Drawing.Size(920, 616);
+            Controls.Add(LblReset);
             Controls.Add(BtnPreviewAvailable);
             Controls.Add(BtnUpdateAvailable);
             Controls.Add(BtnStartRESTServer);
@@ -327,7 +338,7 @@
             Controls.Add(BtnDisconnectDevices);
             Controls.Add(BtnConnectDevices);
             Controls.Add(BtnSetup);
-            Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Name = "ServerForm";
             Text = "ASCOM Remote Server";
@@ -366,6 +377,7 @@
         private System.Windows.Forms.ToolStripMenuItem Port;
         private System.Windows.Forms.Button BtnUpdateAvailable;
         private System.Windows.Forms.Button BtnPreviewAvailable;
+        private System.Windows.Forms.Label LblReset;
     }
 }
 

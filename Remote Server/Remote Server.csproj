@@ -10,11 +10,13 @@
 		<Product>ASCOM Remote Server</Product>
 		<Copyright>Copyright © 2023 Peter Simpson</Copyright>
 		<OutputPath>bin\$(Configuration)\</OutputPath>
-		<Platforms>AnyCPU;x86</Platforms>
+		<Platforms>AnyCPU;x86;x64</Platforms>
+		<RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
 	</PropertyGroup>
 	<Target Name="Test" AfterTargets="AfterBuild">
 		<Message Importance="High" Text=" Version: $(ProductMajor).$(ProductMinor).$(ProductPatch).$(BuildNumber)" />
 		<Message Importance="High" Text=" InformationalVersion: $(InformationalVersion)" />
+		<Message Importance="High" Text=" Short GIT tag: $(Head)" />
 	</Target>
 
 	<Target Name="WriteInformationVersion" AfterTargets="CopyFilesToOutputDirectory">
@@ -25,14 +27,30 @@
 		<WriteLinesToFile File="$(PublishDir)..\InformationVersion.txt" Overwrite="true" Lines="$(InfoVersion)" />
 	</Target>
 	
+	<Target Name="ShortGitId" BeforeTargets="PreBuildEvent">
+		<Exec Command="git rev-parse --short HEAD > head.txt" />
+		<ReadLinesFromFile File="head.txt">
+			<Output TaskParameter="Lines" PropertyName="Head" />
+		</ReadLinesFromFile>
+		<Delete Files="head.txt" />
+		<ItemGroup>
+			<!-- Include must be the fully qualified .NET type name of the Attribute to create. -->
+			<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+				<!-- _Parameter1, _Parameter2, etc. correspond to the matching parameter of a constructor of that .NET attribute type -->
+				<_Parameter1>ShortGitId</_Parameter1>
+				<_Parameter2>$(BuildNumber).$(Head)</_Parameter2>
+			</AssemblyAttribute>
+		</ItemGroup>
+	</Target>
+
 	<PropertyGroup>
 		<!-- Set version numbers -->
 		<ProductMajor>6</ProductMajor>
-		<ProductMinor>7</ProductMinor>
-		<ProductPatch>1</ProductPatch>
+		<ProductMinor>8</ProductMinor>
+		<ProductPatch>0</ProductPatch>
 
 		<!-- Set the pre-release string without a leading minus e.g. rc.1 -->
-		<ProductPreRelease></ProductPreRelease>
+		<ProductPreRelease>rc.3</ProductPreRelease>
 
 		<!--Create a dynamic revision number based on time of build
 		 
@@ -58,11 +76,20 @@
 		<DebugType>embedded</DebugType>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+		<DebugType>embedded</DebugType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
 		<PlatformTarget>x86</PlatformTarget>
 		<DebugType>embedded</DebugType>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DebugType>embedded</DebugType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<UseVSHostingProcess>true</UseVSHostingProcess>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
 		<DebugType>embedded</DebugType>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<UseVSHostingProcess>true</UseVSHostingProcess>
@@ -127,12 +154,13 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="ASCOM.Com.Components" Version="2.0.0-rc.21" />
-		<PackageReference Include="ASCOM.Common.Components" Version="2.0.0-rc.21" />
+		<PackageReference Include="ASCOM.Com.Components" Version="2.0.0-rc.14" />
+		<PackageReference Include="ASCOM.Common.Components" Version="2.0.0-rc.14" />
+		<PackageReference Include="ASCOM.DeviceInterfaces" Version="7.0.0-rc.22" />
 		<PackageReference Include="ASCOM.Exception.Library" Version="7.0.0-rc.22" />
-		<PackageReference Include="ASCOM.Tools" Version="2.0.0-rc.21" />
+		<PackageReference Include="ASCOM.Tools" Version="2.0.0-rc.14" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Octokit" Version="13.0.1" />
+		<PackageReference Include="Octokit" Version="10.0.0" />
 		<PackageReference Include="Semver" Version="2.3.0" />
 	</ItemGroup>
 </Project>

@@ -16,25 +16,35 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Debug|x64.ActiveCfg = Debug|x64
+		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Debug|x64.Build.0 = Debug|x64
 		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Debug|x86.ActiveCfg = Debug|x86
 		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Debug|x86.Build.0 = Debug|x86
 		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Release|x64.ActiveCfg = Release|x64
+		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Release|x64.Build.0 = Release|x64
 		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Release|x86.ActiveCfg = Release|x86
 		{FF57CAEA-63F3-4F4F-9252-734796B74731}.Release|x86.Build.0 = Release|x86
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|x64.ActiveCfg = Debug|x64
+		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|x64.Build.0 = Debug|x64
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|x86.ActiveCfg = Debug|x86
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Debug|x86.Build.0 = Debug|x86
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Release|x64.ActiveCfg = Release|x64
+		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Release|x64.Build.0 = Release|x64
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Release|x86.ActiveCfg = Release|x86
 		{15D5962B-2A5E-4B07-98B6-D4D4A888F9B7}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection

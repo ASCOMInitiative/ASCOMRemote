@@ -1,6 +1,4 @@
-﻿using ASCOM.Common.Alpaca;
-using ASCOM.Common;
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -296,7 +294,6 @@ namespace ASCOM.Remote
             {
                 TL.LogMessage("PersistSettings", ex.ToString());
             }
-
         }
 
         //internal void RaiseUiHasChangedEvent()

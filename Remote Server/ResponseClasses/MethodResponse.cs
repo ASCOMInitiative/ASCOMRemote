@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ASCOM.Remote
+﻿namespace ASCOM.Remote
 {
     public enum MethodTypes
     {

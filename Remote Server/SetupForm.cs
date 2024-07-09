@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
-using ASCOM.Tools;
-using System.Text.RegularExpressions;
 using System.Drawing;
 using ASCOM.Com;
 using ASCOM.Common;
@@ -122,6 +118,8 @@ namespace ASCOM.Remote
                 chkStartMinimised.Checked = ServerForm.StartMinimised;
                 ChkCheckForUpdates.Checked = ServerForm.CheckForUpdates;
                 ChkCheckForPreReleaseUpdates.Checked = ServerForm.CheckForPreReleaseUpdates;
+                chkSuppressConformationOnWindowsClose.Checked = ServerForm.SuppressConfirmationOnWindowsClose;
+                chkSuppressConformationOnWindowsClose.Enabled = chkConfirmExit.Checked;
                 ChkEnableReboot.Checked = ServerForm.EnableReboot;
 
                 // Initialise the application minimise options combo box
@@ -596,6 +594,7 @@ namespace ASCOM.Remote
                 ServerForm.StartMinimised = chkStartMinimised.Checked;
                 ServerForm.CheckForUpdates = ChkCheckForUpdates.Checked;
                 ServerForm.CheckForPreReleaseUpdates = ChkCheckForPreReleaseUpdates.Checked;
+                ServerForm.SuppressConfirmationOnWindowsClose = chkSuppressConformationOnWindowsClose.Checked;
                 ServerForm.EnableReboot = ChkEnableReboot.Checked;
 
                 // Update the minimise to system tray value
@@ -948,6 +947,11 @@ namespace ASCOM.Remote
         private void ChkRunAs64BitApplication_CheckedChanged(object sender, EventArgs e)
         {
             configurationManager.Settings.RunAs64Bit = ((CheckBox)sender).Checked;
+        }
+
+        private void chkConfirmExit_CheckedChanged(object sender, EventArgs e)
+        {
+            chkSuppressConformationOnWindowsClose.Enabled = chkConfirmExit.Checked;
         }
     }
 }

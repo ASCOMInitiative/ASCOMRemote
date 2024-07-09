@@ -83,10 +83,11 @@ namespace ASCOM.Remote
             get
             {
                 string informationalVersion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+                string shortGitId = $"{Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyMetadataAttribute>().Value}";
 
                 SemVersion.TryParse(informationalVersion, SemVersionStyles.AllowV, out SemVersion semver);
                 if (semver is not null)
-                    return $"{semver.Major}.{semver.Minor}.{semver.Patch}{(semver.Prerelease == "" ? "" : "-")}{semver.Prerelease} (Build {semver.Metadata})";
+                    return $"{semver.Major}.{semver.Minor}.{semver.Patch}{(semver.Prerelease == "" ? "" : "-")}{semver.Prerelease} (Build {shortGitId})";
                 else
                     return $"Unable to parse version string: {informationalVersion}!";
             }

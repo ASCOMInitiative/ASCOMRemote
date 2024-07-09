@@ -17,7 +17,7 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             BtnCancel = new System.Windows.Forms.Button();
             BtnOK = new System.Windows.Forms.Button();
             chkAutoConnect = new System.Windows.Forms.CheckBox();
@@ -232,7 +232,6 @@
             LblDevicesNotDisconnoected = new System.Windows.Forms.Label();
             ServerConfigurationTab = new System.Windows.Forms.TabPage();
             chkStartMinimised = new System.Windows.Forms.CheckBox();
-            chkConfirmExit = new System.Windows.Forms.CheckBox();
             textBox1 = new System.Windows.Forms.TextBox();
             GrpIpVersionSelector = new System.Windows.Forms.GroupBox();
             RadIpV4AndV6 = new System.Windows.Forms.RadioButton();
@@ -248,6 +247,9 @@
             label8 = new System.Windows.Forms.Label();
             label7 = new System.Windows.Forms.Label();
             ServerConfigurationTab2 = new System.Windows.Forms.TabPage();
+            groupBox5 = new System.Windows.Forms.GroupBox();
+            chkSuppressConformationOnWindowsClose = new System.Windows.Forms.CheckBox();
+            chkConfirmExit = new System.Windows.Forms.CheckBox();
             ChkRunAs64BitApplication = new System.Windows.Forms.CheckBox();
             groupBox4 = new System.Windows.Forms.GroupBox();
             ChkCheckForUpdates = new System.Windows.Forms.CheckBox();
@@ -302,6 +304,7 @@
             ((System.ComponentModel.ISupportInitialize)NumDiscoveryPort).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numPort).BeginInit();
             ServerConfigurationTab2.SuspendLayout();
+            groupBox5.SuspendLayout();
             groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)NumMaxDevices).BeginInit();
             LoggingConfigurationTab.SuspendLayout();
@@ -3252,7 +3255,6 @@
             ServerConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
             ServerConfigurationTab.Controls.Add(ChkEnableReboot);
             ServerConfigurationTab.Controls.Add(chkStartMinimised);
-            ServerConfigurationTab.Controls.Add(chkConfirmExit);
             ServerConfigurationTab.Controls.Add(textBox1);
             ServerConfigurationTab.Controls.Add(GrpIpVersionSelector);
             ServerConfigurationTab.Controls.Add(label13);
@@ -3280,24 +3282,13 @@
             // chkStartMinimised
             // 
             chkStartMinimised.AutoSize = true;
-            chkStartMinimised.Location = new System.Drawing.Point(560, 388);
+            chkStartMinimised.Location = new System.Drawing.Point(311, 363);
             chkStartMinimised.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             chkStartMinimised.Name = "chkStartMinimised";
             chkStartMinimised.Size = new System.Drawing.Size(204, 19);
             chkStartMinimised.TabIndex = 55;
             chkStartMinimised.Text = "Start the remote server minimised";
             chkStartMinimised.UseVisualStyleBackColor = true;
-            // 
-            // chkConfirmExit
-            // 
-            chkConfirmExit.AutoSize = true;
-            chkConfirmExit.Location = new System.Drawing.Point(311, 363);
-            chkConfirmExit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            chkConfirmExit.Name = "chkConfirmExit";
-            chkConfirmExit.Size = new System.Drawing.Size(205, 19);
-            chkConfirmExit.TabIndex = 54;
-            chkConfirmExit.Text = "Confirm Remote Server shutdown";
-            chkConfirmExit.UseVisualStyleBackColor = true;
             // 
             // textBox1
             // 
@@ -3462,6 +3453,7 @@
             // ServerConfigurationTab2
             // 
             ServerConfigurationTab2.BackColor = System.Drawing.SystemColors.Control;
+            ServerConfigurationTab2.Controls.Add(groupBox5);
             ServerConfigurationTab2.Controls.Add(ChkRunAs64BitApplication);
             ServerConfigurationTab2.Controls.Add(groupBox4);
             ServerConfigurationTab2.Controls.Add(lblMinimisationBehaviour);
@@ -3475,10 +3467,44 @@
             ServerConfigurationTab2.TabIndex = 5;
             ServerConfigurationTab2.Text = "Server Configuration 2";
             // 
+            // groupBox5
+            // 
+            groupBox5.Controls.Add(chkSuppressConformationOnWindowsClose);
+            groupBox5.Controls.Add(chkConfirmExit);
+            groupBox5.Location = new System.Drawing.Point(591, 128);
+            groupBox5.Name = "groupBox5";
+            groupBox5.Size = new System.Drawing.Size(335, 77);
+            groupBox5.TabIndex = 65;
+            groupBox5.TabStop = false;
+            groupBox5.Text = "Remote Server Shutdown Confirmation";
+            // 
+            // chkSuppressConformationOnWindowsClose
+            // 
+            chkSuppressConformationOnWindowsClose.AutoSize = true;
+            chkSuppressConformationOnWindowsClose.Location = new System.Drawing.Point(7, 47);
+            chkSuppressConformationOnWindowsClose.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkSuppressConformationOnWindowsClose.Name = "chkSuppressConformationOnWindowsClose";
+            chkSuppressConformationOnWindowsClose.Size = new System.Drawing.Size(320, 19);
+            chkSuppressConformationOnWindowsClose.TabIndex = 67;
+            chkSuppressConformationOnWindowsClose.Text = "Suppress confirmation when Windows is shutting down";
+            chkSuppressConformationOnWindowsClose.UseVisualStyleBackColor = true;
+            // 
+            // chkConfirmExit
+            // 
+            chkConfirmExit.AutoSize = true;
+            chkConfirmExit.Location = new System.Drawing.Point(7, 22);
+            chkConfirmExit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkConfirmExit.Name = "chkConfirmExit";
+            chkConfirmExit.Size = new System.Drawing.Size(232, 19);
+            chkConfirmExit.TabIndex = 66;
+            chkConfirmExit.Text = "Show shutdown confirmation dialogue";
+            chkConfirmExit.UseVisualStyleBackColor = true;
+            chkConfirmExit.CheckedChanged += chkConfirmExit_CheckedChanged;
+            // 
             // ChkRunAs64BitApplication
             // 
             ChkRunAs64BitApplication.AutoSize = true;
-            ChkRunAs64BitApplication.Location = new System.Drawing.Point(414, 359);
+            ChkRunAs64BitApplication.Location = new System.Drawing.Point(348, 359);
             ChkRunAs64BitApplication.Name = "ChkRunAs64BitApplication";
             ChkRunAs64BitApplication.Size = new System.Drawing.Size(233, 19);
             ChkRunAs64BitApplication.TabIndex = 64;
@@ -3490,7 +3516,7 @@
             // 
             groupBox4.Controls.Add(ChkCheckForUpdates);
             groupBox4.Controls.Add(ChkCheckForPreReleaseUpdates);
-            groupBox4.Location = new System.Drawing.Point(414, 128);
+            groupBox4.Location = new System.Drawing.Point(348, 128);
             groupBox4.Name = "groupBox4";
             groupBox4.Size = new System.Drawing.Size(199, 77);
             groupBox4.TabIndex = 63;
@@ -3520,7 +3546,7 @@
             // lblMinimisationBehaviour
             // 
             lblMinimisationBehaviour.AutoSize = true;
-            lblMinimisationBehaviour.Location = new System.Drawing.Point(621, 250);
+            lblMinimisationBehaviour.Location = new System.Drawing.Point(555, 250);
             lblMinimisationBehaviour.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblMinimisationBehaviour.Name = "lblMinimisationBehaviour";
             lblMinimisationBehaviour.Size = new System.Drawing.Size(195, 15);
@@ -3532,7 +3558,7 @@
             cmbMinimiseOptions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbMinimiseOptions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             cmbMinimiseOptions.FormattingEnabled = true;
-            cmbMinimiseOptions.Location = new System.Drawing.Point(414, 247);
+            cmbMinimiseOptions.Location = new System.Drawing.Point(348, 247);
             cmbMinimiseOptions.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             cmbMinimiseOptions.Name = "cmbMinimiseOptions";
             cmbMinimiseOptions.Size = new System.Drawing.Size(199, 23);
@@ -3541,7 +3567,7 @@
             // label96
             // 
             label96.AutoSize = true;
-            label96.Location = new System.Drawing.Point(621, 296);
+            label96.Location = new System.Drawing.Point(555, 296);
             label96.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label96.Name = "label96";
             label96.Size = new System.Drawing.Size(312, 15);
@@ -3551,7 +3577,7 @@
             // NumMaxDevices
             // 
             NumMaxDevices.Increment = new decimal(new int[] { 10, 0, 0, 0 });
-            NumMaxDevices.Location = new System.Drawing.Point(414, 294);
+            NumMaxDevices.Location = new System.Drawing.Point(348, 294);
             NumMaxDevices.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             NumMaxDevices.Minimum = new decimal(new int[] { 10, 0, 0, 0 });
             NumMaxDevices.Name = "NumMaxDevices";
@@ -3853,14 +3879,14 @@
             // DataGridCorsOrigins
             // 
             DataGridCorsOrigins.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            DataGridCorsOrigins.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            DataGridCorsOrigins.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             DataGridCorsOrigins.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             DataGridCorsOrigins.EnableHeadersVisualStyles = false;
             DataGridCorsOrigins.Location = new System.Drawing.Point(255, 58);
@@ -3873,12 +3899,12 @@
             // ChkEnableReboot
             // 
             ChkEnableReboot.AutoSize = true;
-            ChkEnableReboot.Location = new System.Drawing.Point(560, 338);
+            ChkEnableReboot.Location = new System.Drawing.Point(560, 337);
             ChkEnableReboot.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ChkEnableReboot.Name = "ChkEnableReboot";
-            ChkEnableReboot.Size = new System.Drawing.Size(236, 19);
+            ChkEnableReboot.Size = new System.Drawing.Size(329, 19);
             ChkEnableReboot.TabIndex = 56;
-            ChkEnableReboot.Text = "Enable Management Reboot Command";
+            ChkEnableReboot.Text = "Enable Remote Management Interface Reboot Command";
             ChkEnableReboot.UseVisualStyleBackColor = true;
             // 
             // SetupForm
@@ -3930,6 +3956,8 @@
             ((System.ComponentModel.ISupportInitialize)numPort).EndInit();
             ServerConfigurationTab2.ResumeLayout(false);
             ServerConfigurationTab2.PerformLayout();
+            groupBox5.ResumeLayout(false);
+            groupBox5.PerformLayout();
             groupBox4.ResumeLayout(false);
             groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)NumMaxDevices).EndInit();
@@ -4199,7 +4227,6 @@
         private System.Windows.Forms.CheckBox ChkUseUtcTime;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.CheckBox chkConfirmExit;
         private System.Windows.Forms.CheckBox chkStartMinimised;
         private System.Windows.Forms.Label label97;
         private System.Windows.Forms.Label LabHelp2;
@@ -4212,6 +4239,9 @@
         private global::System.Windows.Forms.NumericUpDown NumMaxDevices;
         private global::System.Windows.Forms.GroupBox groupBox4;
         private global::System.Windows.Forms.CheckBox ChkRunAs64BitApplication;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.CheckBox chkSuppressConformationOnWindowsClose;
+        private System.Windows.Forms.CheckBox chkConfirmExit;
         private System.Windows.Forms.CheckBox ChkEnableReboot;
     }
 }

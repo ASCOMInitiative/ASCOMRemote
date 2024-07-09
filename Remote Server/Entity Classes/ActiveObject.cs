@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Threading;
-using System.Windows.Forms;
+﻿using System;
 namespace ASCOM.Remote
 {
     /// <summary>
@@ -8,6 +6,7 @@ namespace ASCOM.Remote
     /// </summary>
     public class ActiveObject
     {
+        private int? interfaceVersion;
 
         /// <summary>
         /// Parameterised initialiser for the main object properties that also initialises the lock object
@@ -75,5 +74,31 @@ namespace ASCOM.Remote
         /// If the device is a Camera, points to the last image array value returned, otherwise null
         /// </summary>
         public object LastImageArray { get; set; }
+
+        /// <summary>
+        /// The device's interface version
+        /// </summary>
+        public int InterfaceVersion
+        {
+            get
+            {
+                // Check whether we have already cached this device's interface version
+                if (interfaceVersion.HasValue) // Cached value available so return it.
+                    return interfaceVersion.Value;
+
+                // No cached value so query it from the device
+                try
+                {
+                    interfaceVersion = DeviceObject.Interfaceversion;
+                }
+                catch // Something went wrong, so most likely this is an old simulator without an InterfceVersion property - Set the property to 1.
+                {
+                    interfaceVersion = 1;
+                }
+
+                // Return the interface version.
+                return interfaceVersion.Value;
+            }
+        }
     }
 }
