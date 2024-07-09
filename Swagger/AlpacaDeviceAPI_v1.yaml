@@ -5351,9 +5351,8 @@ paths:
                 - properties:
                     Axis:
                       description: >-
-                        The axis about which rate information is desired. 0 = axisPrimary, 1 =
-                        axisSecondary, 2 = axisTertiary.
-                      type: integer
+                        The axis about which movement should occur. 0 = axisPrimary, 1 = axisSecondary, 2 = axisTertiary.
+                    type: integer
                       default: 0
                       minimum: 0
                       maximum: 2
