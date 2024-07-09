@@ -161,6 +161,7 @@ namespace ASCOM.Remote
         internal const string CHECK_FOR_UPDATES = "Check For Updates"; public const bool CHECK_FOR_UPDATES_DEFAULT = true;
         internal const string CHECK_FOR_PRE_RELEASE = "Check For Pre-release Updates"; public const bool CHECK_FOR_PRE_RELEASE_DEFAULT = true;
         internal const string SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE = "Suppress Confirmation On Windows Close"; public const bool SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE_DEFAULT = false;
+        internal const string ENABLE_REBOOT = "Enable Remote Server Reboot"; public const bool ENABLE_REBOOT_DEFAULT = false;
 
         // Minimise behaviour strings
         internal const string MINIMISE_TO_SYSTEM_TRAY_KEY = "Minimise to system tray";
@@ -203,7 +204,7 @@ namespace ASCOM.Remote
         internal const int NUMBER_OF_CONTROL_GROUPS = 6; // Number of control groups 
 
         // Management interface constants
-        internal const int MANGEMENT_RESTART_WAIT_TIME = 5000;
+        internal const int MANAGEMENT_RESTART_WAIT_TIME = 2000;
 
         // Run driver in separate thread constants
         internal const int DESTROY_DRIVER = int.MinValue;
@@ -284,6 +285,7 @@ namespace ASCOM.Remote
         internal static bool CheckForUpdates;
         internal static bool CheckForPreReleaseUpdates;
         internal static bool SuppressConfirmationOnWindowsClose;
+        internal static bool EnableReboot;
 
         #endregion
 
@@ -1368,22 +1370,20 @@ namespace ASCOM.Remote
             return RemainingObjectCount;
         }
 
-        internal static void WaitFor(int Duration)
+        internal static void WaitFor(int duration)
         {
             const int SLEEP_TIME = 20;
-            int remainingDuration;
+            Stopwatch sw = Stopwatch.StartNew();
 
-            remainingDuration = Duration;
+            if (DebugTraceState) LogMessage(0, 0, 0, "WaitFor", $"Starting wait for {duration} milli-seconds");
 
-            if (DebugTraceState) LogMessage(0, 0, 0, "WaitFor", string.Format("Starting wait for {0} milli-seconds", Duration));
             do
             {
-                remainingDuration -= SLEEP_TIME;
                 Thread.Sleep(SLEEP_TIME);
                 Application.DoEvents();
 
-            } while (remainingDuration > 0);
-            if (DebugTraceState) LogMessage(0, 0, 0, "WaitFor", string.Format("Completed wait for {0} milli-seconds", Duration));
+            } while (sw.ElapsedMilliseconds < duration);
+            if (DebugTraceState) LogMessage(0, 0, 0, "WaitFor", $"Completed wait for {duration} milli-seconds");
         }
 
         internal static void LogMessage(uint clientID, uint clientTransactionID, uint serverTransactionID, string Method, string Message)
@@ -1739,6 +1739,7 @@ namespace ASCOM.Remote
                 CheckForUpdates = driverProfile.GetValue<bool>(CHECK_FOR_UPDATES, string.Empty, CHECK_FOR_UPDATES_DEFAULT);
                 CheckForPreReleaseUpdates = driverProfile.GetValue<bool>(CHECK_FOR_PRE_RELEASE, string.Empty, CHECK_FOR_PRE_RELEASE_DEFAULT);
                 SuppressConfirmationOnWindowsClose = driverProfile.GetValue<bool>(SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE, string.Empty, SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE_DEFAULT);
+                EnableReboot = driverProfile.GetValue<bool>(ENABLE_REBOOT, string.Empty, ENABLE_REBOOT_DEFAULT);
 
                 // Set the next log roll-over time using the persisted roll-over time value
                 SetNextRolloverTime();
@@ -1861,6 +1862,7 @@ namespace ASCOM.Remote
                 driverProfile.SetValueInvariant<bool>(CHECK_FOR_UPDATES, string.Empty, CheckForUpdates);
                 driverProfile.SetValueInvariant<bool>(CHECK_FOR_PRE_RELEASE, string.Empty, CheckForPreReleaseUpdates);
                 driverProfile.SetValueInvariant<bool>(SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE, string.Empty, SuppressConfirmationOnWindowsClose);
+                driverProfile.SetValueInvariant<bool>(ENABLE_REBOOT, string.Empty, EnableReboot);
 
                 // Update the next roll-over time in case the time has changed
                 //TL.LogMessage("WriteProfile", $"NextRolloverTime Before: {NextRolloverTime}");
@@ -2301,11 +2303,21 @@ namespace ASCOM.Remote
             systemTrayMenuItems.Items["Port"].Text = $"Listening on port: {ServerPortNumber}";
         }
 
+        /// <summary>
+        /// Production update button click handler
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnUpdateAvailable_Click(Object sender, EventArgs e)
         {
             Process.Start(new ProcessStartInfo(Updates.ReleaseUrl) { UseShellExecute = true });
         }
 
+        /// <summary>
+        /// Preview update button click handler
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BtnPreviewAvailable_Click(Object sender, EventArgs e)
         {
             Process.Start(new ProcessStartInfo(Updates.PreviewURL) { UseShellExecute = true });
@@ -2561,6 +2573,8 @@ namespace ASCOM.Remote
                                 }
                             }
 
+                            #region Code no longer in use
+
                             // Extract the client ID and client transaction ID from the form parameters
                             //foreach (string keyName in formParameters)
                             //{
@@ -2596,6 +2610,9 @@ namespace ASCOM.Remote
                             //        }
                             //    }
                             //}
+
+                            #endregion
+
                             clientIDString = formParameters[SharedConstants.CLIENT_ID_PARAMETER_NAME];
                             clientTransactionIDString = formParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME];
                         }
@@ -3409,11 +3426,79 @@ namespace ASCOM.Remote
                                                             LogMessage1(requestData, "Management Restart", string.Format("Unloading drivers - devices are connected: {0}", devicesAreConnected));
                                                             if (devicesAreConnected) DisconnectDevices();
                                                             LogMessage1(requestData, "Management Restart", string.Format("Reloading drivers"));
-                                                            WaitFor(MANGEMENT_RESTART_WAIT_TIME); // Wait for current device activity to complete
+                                                            WaitFor(MANAGEMENT_RESTART_WAIT_TIME); // Wait for current device activity to complete
                                                             ConnectDevices();
                                                             apiIsEnabled = originalAPiIsEnabledState;
                                                             LogMessage1(requestData, "Management Restart", string.Format("Restored API enabled state: {0}, command completed", apiIsEnabled));
                                                             SendEmptyResponseToClient(requestData, null);
+                                                        }
+                                                        break;
+
+                                                    // Reboot the server by closing current drivers and exiting the main form
+                                                    case SharedConstants.REMOTE_SERVER_MANGEMENT_REBOOT_SERVER:
+                                                        // Check whether reboot is enabled
+                                                        if (EnableReboot) // Reboot is enabled
+                                                        {
+                                                            LogMessage1(requestData, "ManagementReboot", "Rebooting server");
+
+                                                            // Start a timed task that will close and reboot the server in case the mechanic below locks up before completing
+                                                            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                                                            CancellationToken cancellationToken = cancellationTokenSource.Token;
+
+                                                            // Start a safety task that will ensure that the server reboots in case the normal shutdown code below locks up for any reason
+                                                            Task.Run(async () =>
+                                                            {
+                                                                const int WAIT_TIME = 5000; // Time to wait before force rebooting the remote server (ms)
+
+                                                                // Wait for 5 seconds
+                                                                LogMessage1(requestData, "RebootTimeoutTask", $"Starting wait for {WAIT_TIME}ms...");
+                                                                await Task.Delay(WAIT_TIME);
+                                                                LogMessage1(requestData, "RebootTimeoutTask", $"Wait for {WAIT_TIME}ms completed!");
+
+                                                                // Test whether the task was cancelled by the normal shutdown code
+                                                                if (!cancellationToken.IsCancellationRequested) // The safety task was not cancelled so force restart the application
+                                                                {
+                                                                    // Set the restart flag and close the form so that control returns to program.cs where the reboot will be effected
+                                                                    LogMessage1(requestData, "RebootTimeoutTask", $"Cancellation NOT requested so forcing a reboot.");
+                                                                    this.RestartApplication = true;
+                                                                    this.Close();
+                                                                }
+                                                            });
+
+                                                            // Normal shutdown and reboot code
+                                                            LogMessage1(requestData, "ManagementReboot", "Getting management lock");
+                                                            lock (managementCommandLock) // Make sure that this command can only run one at a time!
+                                                            {
+                                                                bool originalAPiIsEnabledState = apiIsEnabled;
+                                                                LogMessage1(requestData, "ManagementReboot", $"Got lock - API is currently enabled: {apiIsEnabled}");
+
+                                                                // Disable the device API
+                                                                apiIsEnabled = false;
+                                                                LogMessage1(requestData, "ManagementReboot", $"Unloading drivers - devices are connected: {devicesAreConnected}");
+
+                                                                if (devicesAreConnected) DisconnectDevices();
+                                                                LogMessage1(requestData, "ManagementReboot", $"Waiting for {MANAGEMENT_RESTART_WAIT_TIME}ms before rebooting the Remote Server...");
+                                                                WaitFor(MANAGEMENT_RESTART_WAIT_TIME); // Wait for current device activity to complete
+                                                                LogMessage1(requestData, "ManagementReboot", "Rebooting Remote Server.");
+
+                                                                // Set the restart flag and close the form so that control returns to program.cs where the reboot will be effected
+                                                                this.RestartApplication = true;
+
+                                                                LogMessage1(requestData, "ManagementReboot", $"Starting shutdown task");
+                                                                // This is a "fire and forget" task so the IAsyncresult return value is discarded
+                                                                _ = Task.Run(() => ShutdownTask());
+                                                                LogMessage1(requestData, "ManagementReboot", $"Completed shutdown task");
+
+                                                                // Cancel the safety task started earlier
+                                                                cancellationTokenSource.Cancel();
+
+                                                                SendEmptyResponseToClient(requestData, null);
+                                                            }
+                                                        }
+                                                        else // Reboot is not enabled
+                                                        {
+                                                            // Return a "not permitted" error to the user
+                                                            Return403Error(requestData, $"Reboot has not been enabled on the Remote Server.");
                                                         }
                                                         break;
 
@@ -4252,7 +4337,11 @@ namespace ASCOM.Remote
 
         #region API response methods
 
-        // Return server /setup HTML responses to clients
+        ///<summary>
+        /// Return server /setup HTML responses to clients
+        /// </summary>
+        /// <param name="requestData"></param>
+        /// <param name="htmlPageName"></param>
         private void ReturnHTMLPageOrImage(RequestData requestData, string htmlPageName)
         {
             byte[] bytesToSend; // Array to hold the encoded message
@@ -4464,7 +4553,10 @@ namespace ASCOM.Remote
             }
         }
 
-        // Return an HTTP 200 success response with an empty body to clients
+        /// <summary>
+        /// Return an HTTP 200 success response with an empty body to clients
+        /// </summary>
+        /// <param name="requestData"></param>
         private void ReturnEmpty200Success(RequestData requestData)
         {
             try
@@ -4478,7 +4570,11 @@ namespace ASCOM.Remote
             }
         }
 
-        // Return server error responses to clients
+        /// <summary>
+        /// Return server error responses to clients
+        /// </summary>
+        /// <param name="requestData"></param>
+        /// <param name="message"></param>
         private void Return400Error(RequestData requestData, string message)
         {
 
@@ -4495,6 +4591,11 @@ namespace ASCOM.Remote
             }
         }
 
+        /// <summary>
+        /// Return an access denied error to the client
+        /// </summary>
+        /// <param name="requestData"></param>
+        /// <param name="message"></param>
         private void Return403Error(RequestData requestData, string message)
         {
             try
@@ -4510,6 +4611,11 @@ namespace ASCOM.Remote
             }
         }
 
+        /// <summary>
+        /// Return a not found error to the client
+        /// </summary>
+        /// <param name="requestData"></param>
+        /// <param name="message"></param>
         private void Return404Error(RequestData requestData, string message)
         {
             try
@@ -4525,6 +4631,11 @@ namespace ASCOM.Remote
             }
         }
 
+        /// <summary>
+        /// Return a "server error" error to the client
+        /// </summary>
+        /// <param name="requestData"></param>
+        /// <param name="errorMessage"></param>
         internal void Return500Error(RequestData requestData, string errorMessage)
         {
             try

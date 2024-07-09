@@ -16,8 +16,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupForm));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             BtnCancel = new System.Windows.Forms.Button();
             BtnOK = new System.Windows.Forms.Button();
             chkAutoConnect = new System.Windows.Forms.CheckBox();
@@ -284,6 +284,7 @@
             LabHelp1 = new System.Windows.Forms.Label();
             DataGridCorsOrigins = new System.Windows.Forms.DataGridView();
             DlgSetLogFolderPath = new System.Windows.Forms.FolderBrowserDialog();
+            ChkEnableReboot = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SetupTabControl.SuspendLayout();
             DeviceConfigurationTab.SuspendLayout();
@@ -390,7 +391,7 @@
             // ChkIncludeDriverExceptionsInJsonResponses
             // 
             ChkIncludeDriverExceptionsInJsonResponses.AutoSize = true;
-            ChkIncludeDriverExceptionsInJsonResponses.Location = new System.Drawing.Point(560, 338);
+            ChkIncludeDriverExceptionsInJsonResponses.Location = new System.Drawing.Point(560, 363);
             ChkIncludeDriverExceptionsInJsonResponses.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ChkIncludeDriverExceptionsInJsonResponses.Name = "ChkIncludeDriverExceptionsInJsonResponses";
             ChkIncludeDriverExceptionsInJsonResponses.Size = new System.Drawing.Size(405, 19);
@@ -3239,7 +3240,7 @@
             // LblDevicesNotDisconnoected
             // 
             LblDevicesNotDisconnoected.AutoSize = true;
-            LblDevicesNotDisconnoected.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            LblDevicesNotDisconnoected.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             LblDevicesNotDisconnoected.ForeColor = System.Drawing.Color.Red;
             LblDevicesNotDisconnoected.Location = new System.Drawing.Point(666, 413);
             LblDevicesNotDisconnoected.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -3252,6 +3253,7 @@
             // ServerConfigurationTab
             // 
             ServerConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
+            ServerConfigurationTab.Controls.Add(ChkEnableReboot);
             ServerConfigurationTab.Controls.Add(chkStartMinimised);
             ServerConfigurationTab.Controls.Add(textBox1);
             ServerConfigurationTab.Controls.Add(GrpIpVersionSelector);
@@ -3292,7 +3294,7 @@
             // 
             textBox1.BackColor = System.Drawing.Color.Yellow;
             textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
             textBox1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             textBox1.Location = new System.Drawing.Point(22, 42);
             textBox1.Margin = new System.Windows.Forms.Padding(6);
@@ -3785,7 +3787,7 @@
             // 
             // label97
             // 
-            label97.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label97.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
             label97.ForeColor = System.Drawing.SystemColors.Highlight;
             label97.Location = new System.Drawing.Point(57, 392);
             label97.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -3841,7 +3843,7 @@
             // 
             // label14
             // 
-            label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
             label14.Location = new System.Drawing.Point(61, 21);
             label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label14.Name = "label14";
@@ -3852,7 +3854,7 @@
             // 
             // LabHelp2
             // 
-            LabHelp2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            LabHelp2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
             LabHelp2.ForeColor = System.Drawing.SystemColors.Highlight;
             LabHelp2.Location = new System.Drawing.Point(64, 418);
             LabHelp2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -3864,7 +3866,7 @@
             // 
             // LabHelp1
             // 
-            LabHelp1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            LabHelp1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
             LabHelp1.ForeColor = System.Drawing.SystemColors.Highlight;
             LabHelp1.Location = new System.Drawing.Point(57, 369);
             LabHelp1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -3879,7 +3881,7 @@
             DataGridCorsOrigins.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
             dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -3893,6 +3895,17 @@
             DataGridCorsOrigins.RowHeadersWidth = 51;
             DataGridCorsOrigins.Size = new System.Drawing.Size(684, 250);
             DataGridCorsOrigins.TabIndex = 0;
+            // 
+            // ChkEnableReboot
+            // 
+            ChkEnableReboot.AutoSize = true;
+            ChkEnableReboot.Location = new System.Drawing.Point(560, 337);
+            ChkEnableReboot.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ChkEnableReboot.Name = "ChkEnableReboot";
+            ChkEnableReboot.Size = new System.Drawing.Size(329, 19);
+            ChkEnableReboot.TabIndex = 56;
+            ChkEnableReboot.Text = "Enable Remote Management Interface Reboot Command";
+            ChkEnableReboot.UseVisualStyleBackColor = true;
             // 
             // SetupForm
             // 
@@ -4229,5 +4242,6 @@
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.CheckBox chkSuppressConformationOnWindowsClose;
         private System.Windows.Forms.CheckBox chkConfirmExit;
+        private System.Windows.Forms.CheckBox ChkEnableReboot;
     }
 }

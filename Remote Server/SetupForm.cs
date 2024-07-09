@@ -120,6 +120,7 @@ namespace ASCOM.Remote
                 ChkCheckForPreReleaseUpdates.Checked = ServerForm.CheckForPreReleaseUpdates;
                 chkSuppressConformationOnWindowsClose.Checked = ServerForm.SuppressConfirmationOnWindowsClose;
                 chkSuppressConformationOnWindowsClose.Enabled = chkConfirmExit.Checked;
+                ChkEnableReboot.Checked = ServerForm.EnableReboot;
 
                 // Initialise the application minimise options combo box
                 cmbMinimiseOptions.Items.AddRange(new object[] { ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY, ServerForm.MINIMISE_TO_TASK_BAR_KEY });
@@ -594,6 +595,7 @@ namespace ASCOM.Remote
                 ServerForm.CheckForUpdates = ChkCheckForUpdates.Checked;
                 ServerForm.CheckForPreReleaseUpdates = ChkCheckForPreReleaseUpdates.Checked;
                 ServerForm.SuppressConfirmationOnWindowsClose = chkSuppressConformationOnWindowsClose.Checked;
+                ServerForm.EnableReboot = ChkEnableReboot.Checked;
 
                 // Update the minimise to system tray value
                 ServerForm.MinimiseToSystemTray = (string)cmbMinimiseOptions.SelectedItem == ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY; // Expression evaluates to True if minimise to tray is selected, otherwise false
