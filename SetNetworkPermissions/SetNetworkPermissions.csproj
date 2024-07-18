@@ -3,11 +3,11 @@
 		<OutputType>Exe</OutputType>
 		<RootNamespace>ASCOM.Remote</RootNamespace>
 		<AssemblyName>ASCOM.SetNetworkPermissions</AssemblyName>
-		<TargetFramework>net7.0-windows</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<AssemblyTitle>Set Network Permissions</AssemblyTitle>
 		<Product>SetNetworkPemissions</Product>
-		<Copyright>Copyright ©  2018 ASCOM Initiative</Copyright>
+		<Copyright>Copyright © 2024 ASCOM Initiative</Copyright>
 		<OutputPath>bin\$(Configuration)\</OutputPath>
 		<Platforms>AnyCPU;x86;x64</Platforms>
 	</PropertyGroup>
@@ -48,7 +48,7 @@
 		<None Include="app.manifest" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="ASCOM.Tools" Version="2.0.0-rc.14" />
+		<PackageReference Include="ASCOM.Tools" Version="2.0.0-rc.23" />
 		<PackageReference Include="CommandLineParser" Version="2.9.1" />
 		<PackageReference Include="WindowsFirewallHelper" Version="2.2.0.86" />
 	</ItemGroup>

@@ -28,7 +28,7 @@
 	</Target>
 	
 	<Target Name="ShortGitId" BeforeTargets="PreBuildEvent">
-		<Exec Command="git rev-parse --short HEAD > head.txt" />
+		<Exec Command="git rev-parse --short HEAD &gt; head.txt" />
 		<ReadLinesFromFile File="head.txt">
 			<Output TaskParameter="Lines" PropertyName="Head" />
 		</ReadLinesFromFile>
@@ -154,13 +154,13 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="ASCOM.Com.Components" Version="2.0.0-rc.14" />
-		<PackageReference Include="ASCOM.Common.Components" Version="2.0.0-rc.14" />
-		<PackageReference Include="ASCOM.DeviceInterfaces" Version="7.0.0-rc.22" />
-		<PackageReference Include="ASCOM.Exception.Library" Version="7.0.0-rc.22" />
-		<PackageReference Include="ASCOM.Tools" Version="2.0.0-rc.14" />
+		<PackageReference Include="ASCOM.Com.Components" Version="2.0.0-rc.23" />
+		<PackageReference Include="ASCOM.Common.Components" Version="2.0.0-rc.23" />
+		<PackageReference Include="ASCOM.DeviceInterfaces" Version="7.0.0-rc.24" />
+		<PackageReference Include="ASCOM.Exception.Library" Version="7.0.0-rc.24" />
+		<PackageReference Include="ASCOM.Tools" Version="2.0.0-rc.23" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Octokit" Version="10.0.0" />
+		<PackageReference Include="Octokit" Version="13.0.1" />
 		<PackageReference Include="Semver" Version="2.3.0" />
 	</ItemGroup>
 </Project>
