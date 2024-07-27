@@ -24,6 +24,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
+using System.Windows.Forms.Design;
 using ASCOM.Com;
 using ASCOM.Common;
 using ASCOM.Common.Alpaca;
@@ -247,7 +248,7 @@ namespace ASCOM.Remote
         private static readonly object traceLoggerRolloverLockObject = new();
         private static readonly object accessLogRolloverLockObject = new();
 
-        internal static ConcurrentDictionary<string, ConfiguredDevice> ConfiguredDevices;
+        internal static Dictionary<string, ConfiguredDevice> ConfiguredDevices;
         internal static ConcurrentDictionary<string, ActiveObject> ActiveObjects;
 
         // Configuration variables that can be changed through the Setup dialogue 
@@ -340,7 +341,7 @@ namespace ASCOM.Remote
                 };
 
                 // Initialise lists
-                ConfiguredDevices = new ConcurrentDictionary<string, ConfiguredDevice>();
+                ConfiguredDevices = new Dictionary<string, ConfiguredDevice>();
                 ActiveObjects = new ConcurrentDictionary<string, ActiveObject>();
                 ServerDeviceNames = new SortedSet<string>();
                 ServerDeviceNumbers = new SortedSet<string>();
@@ -1298,8 +1299,11 @@ namespace ASCOM.Remote
                 LblDriverStatus.Text = "Drivers Unloaded";
                 devicesAreConnected = false;
 
-                // Clear all of the current drivers
-                foreach (KeyValuePair<string, ActiveObject> activeObject in ActiveObjects)
+                // Clear all of the current drivers in descending order of ServedDeviceX name e.g. ServedDevice9, ServedDevice8...ServedDevice0
+                // Descending order is used so drivers are destroyed deterministically in the reverse order to that in which they were created.
+                // This is so that dependent drivers are destroyed before their parents.
+                // Without the sort, the order is determined by how quickly the devices initiated rather than the order in which they were created
+                foreach (KeyValuePair<string, ActiveObject> activeObject in ActiveObjects.OrderByDescending(device => device.Key))
                 {
                     try
                     {
@@ -1758,6 +1762,7 @@ namespace ASCOM.Remote
                 // Clear collection before repopulating
                 ConfiguredDevices.Clear();
 
+                // Read configured device settings
                 foreach (string deviceName in ServerDeviceNames)
                 {
                     // Backward compatibility fix for early releases that only hosted 10 devices
@@ -1781,6 +1786,12 @@ namespace ASCOM.Remote
 
                     ConfiguredDevices[deviceName] = new ConfiguredDevice(deviceType, progID, description, deviceNumber, allowConnectedSetFalse, allowConnectedSetTrue, allowConcurrentAccess, uniqueID);
                 }
+
+                // Order the devices from ServedDevice0 upwards so they connect in this order.
+                // This is to ensure deterministic behaviour where devices are initialised in the order in which they appear on the setup form.
+                // This also ensures that parent drivers can be started before any dependent child drivers. 
+                // The reverse order is used when disconnecting, so child drivers are disconnected before parent drivers.
+                ConfiguredDevices = ConfiguredDevices.OrderBy(device => device.Key).ToDictionary<string, ConfiguredDevice>();
             }
         }
 
