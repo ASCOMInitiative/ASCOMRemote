@@ -8,9 +8,9 @@
 #define MyInformationVersion
 
 ; Read the informational SEMVER version string from the file created by the build process
-#define FileHandle = FileOpen("..\publish\remote\InformationVersion.txt"); 
+#define FileHandle = FileOpen("..\publish\remote\InstallerVersion.txt"); 
 #define FileLine = FileRead(FileHandle)
-#pragma message "Informational version number: " + FileLine
+#pragma message "Installer version number: " + FileLine
 
 ; Save the SEMVER version for use in the installer filename
 #define MyInformationVersion FileLine
@@ -120,7 +120,7 @@ Source: "..\publish\remote\x86\*"; DestDir: "{app}"; Flags: ignoreversion; Exclu
 
 ; Install the 32bit exe into the 32bit program files folder structure
 Source: "..\publish\permissions\x86\*.exe"; DestDir: "{autopf32}\{#MyInstallFolder}\SetNetworkPermissions"; Flags: ignoreversion signonce;
-Source: "..\publish\permissions\x86\*.dll"; DestDir: "{autopf32}\{#MyInstallFolder}\SetNetworkPermissions"; Flags: ignoreversion signonce;
+;Source: "..\publish\permissions\x86\*.dll"; DestDir: "{autopf32}\{#MyInstallFolder}\SetNetworkPermissions"; Flags: ignoreversion signonce;
 Source: "..\publish\permissions\x86\*"; DestDir: "{autopf32}\{#MyInstallFolder}\SetNetworkPermissions"; Flags: ignoreversion; Excludes:"*.exe,*.dll";
 
 ; DOCUMENTATION

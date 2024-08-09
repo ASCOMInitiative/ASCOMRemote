@@ -89,7 +89,7 @@ namespace ASCOM.Remote
                 if (semver is not null)
                     return $"{semver.Major}.{semver.Minor}.{semver.Patch}{(semver.Prerelease == "" ? "" : "-")}{semver.Prerelease} (Build {shortGitId})";
                 else
-                    return $"Unable to parse version string: {informationalVersion}!";
+                    return $" Bad informational version string: ##{informationalVersion}##";
             }
         }
         #endregion

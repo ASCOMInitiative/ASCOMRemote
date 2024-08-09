@@ -8,7 +8,7 @@
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<AssemblyTitle>ASCOM Remote Server</AssemblyTitle>
 		<Product>ASCOM Remote Server</Product>
-		<Copyright>Copyright © 2023 Peter Simpson</Copyright>
+		<Copyright>Copyright © 2024 Peter Simpson</Copyright>
 		<OutputPath>bin\$(Configuration)\</OutputPath>
 		<Platforms>AnyCPU;x86;x64</Platforms>
 		<RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
@@ -19,12 +19,12 @@
 		<Message Importance="High" Text=" Short GIT tag: $(Head)" />
 	</Target>
 
-	<Target Name="WriteInformationVersion" AfterTargets="CopyFilesToOutputDirectory">
+	<Target Name="WriteInstallerVersion" AfterTargets="CopyFilesToOutputDirectory">
 		<PropertyGroup>
-			<InfoVersion>$(InformationalVersion)</InfoVersion>
+			<InstallerVersion>$(ProductMajor).$(ProductMinor).$(ProductPatch)$(ProductPreReleaseSeparator)$(ProductPreRelease)+$(BuildNumber).$(Head)</InstallerVersion>
 		</PropertyGroup>
 
-		<WriteLinesToFile File="$(PublishDir)..\InformationVersion.txt" Overwrite="true" Lines="$(InfoVersion)" />
+		<WriteLinesToFile File="$(PublishDir)..\InstallerVersion.txt" Overwrite="true" Lines="$(InstallerVersion)" />
 	</Target>
 	
 	<Target Name="ShortGitId" BeforeTargets="PreBuildEvent">
@@ -50,7 +50,7 @@
 		<ProductPatch>0</ProductPatch>
 
 		<!-- Set the pre-release string without a leading minus e.g. rc.1 -->
-		<ProductPreRelease>rc.3</ProductPreRelease>
+		<ProductPreRelease>rc.4</ProductPreRelease>
 
 		<!--Create a dynamic revision number based on time of build
 		 
