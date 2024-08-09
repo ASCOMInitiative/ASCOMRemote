@@ -3,7 +3,7 @@
 		<OutputType>Exe</OutputType>
 		<RootNamespace>ASCOM.Remote</RootNamespace>
 		<AssemblyName>ASCOM.SetNetworkPermissions</AssemblyName>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net8.0-windows</TargetFramework>
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<AssemblyTitle>Set Network Permissions</AssemblyTitle>
 		<Product>SetNetworkPemissions</Product>
