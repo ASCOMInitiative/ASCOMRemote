@@ -14,6 +14,7 @@
     <!-- .swagger-ui .info hgroup.main a - Remove the Swagger file description -->
     <!-- .json-schema-2020-12-keyword__value--const - Make constant values have same style as range constraints. -->
     <!-- .json-schema-2020-12__attribute--primary - Make `type` and `format` attributes look the same. -->
+    <!-- .response-col_links - Hide the "links" column in the response tables as we don't use that OpenAPI feature and it's always empty. -->
     <style>
       html
       {
@@ -73,6 +74,11 @@
         margin-left: 10px;
         line-height: 1.5;
         font-size: inherit !important;
+      }
+
+      .response-col_links
+      {
+        display:none;
       }
     </style>
   </head>
