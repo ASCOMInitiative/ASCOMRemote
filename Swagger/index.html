@@ -56,11 +56,6 @@
         display:none!important;
       }
 
-      .json-schema-2020-12__attribute--primary
-      {
-        display: none;
-      }
-
       .json-schema-2020-12-keyword__value--const
       {
         background-color: #805ad5;
@@ -78,24 +73,43 @@
       // Custom plugin to add ASCOM logo and text to the top bar
       const ASCOMLogo = {
         components: {
-          Logo: () => {
-            const { createElement, Fragment } = ui.React;
+          Logo: () => createElement(
+            Fragment,
+            null,
+            createElement('img', {
+              src: 'bugt300square.jpg',
+              alt: 'ASCOM logo',
+              width: 70,
+              height: 70
+            }),
+            createElement(
+              'span',
+              { style: { fontSize: '18px' } },
+              'ASCOM Initiative'
+            )
+          )
+        }
+      };
 
-            return createElement(
-              Fragment,
-              null,
-              createElement('img', {
-                src: 'bugt300square.jpg',
-                alt: 'ASCOM logo',
-                width: 70,
-                height: 70
-              }),
-              createElement(
-                'span',
-                { style: { fontSize: '18px' } },
-                'ASCOM Initiative'
-              )
-            );
+      const HIDE_TYPE_IF = [
+        // Don't show the noisy type `integer | integer | integer | ...` for `oneOf` variants as parent will already show the shared type.
+        'oneOf',
+        // Don't show the type if a more precise `format` is already available.
+        'format',
+        // Don't show the type if it's obviously an integer with a range constraint.
+        'minimum',
+        'maximum',
+        'const',
+      ];
+
+      const CleanupTypes = {
+        wrapComponents: {
+          JSONSchema202012KeywordType: (OriginalComponent, system) => props => {
+            if (HIDE_TYPE_IF.some(keyword => keyword in props.schema)) {
+              return null;
+            }
+            // Otherwise use the default formatter.
+            return createElement(OriginalComponent, props);
           }
         }
       };
@@ -116,10 +130,13 @@
         ],
         plugins: [
           SwaggerUIBundle.plugins.DownloadUrl,
-          ASCOMLogo
+          ASCOMLogo,
+          CleanupTypes,
         ],
         layout: "StandaloneLayout"
       });
+
+      const { createElement, Fragment } = ui.React;
     </script>
   </body>
 </html>
