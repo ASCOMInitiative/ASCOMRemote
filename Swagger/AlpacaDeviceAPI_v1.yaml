@@ -6165,6 +6165,8 @@ components:
                 Devices must use ASCOM reserved error numbers whenever appropriate so that clients can take informed actions. E.g. returning 0x401 (1025) to indicate that an invalid value was received (see Alpaca API definition and developer documentation for further information).
               minimum: 0x400
               maximum: 0xFFF
+              # Without this, Swagger reports minimum and maximum as `| number` which is confusing.
+              type: integer
         ErrorMessage:
           type: string
           description: Empty string for a successful transaction, or a message describing the issue that was encountered. If an error message is returned, a non zero error number must also be returned.
