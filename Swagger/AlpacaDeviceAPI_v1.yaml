@@ -30,6 +30,11 @@ info:
     The Alpaca API uses RESTful techniques and TCP/IP to enable ASCOM applications and devices to communicate across modern network environments.
 
 
+    ## Interface Versions
+
+    These interface definitions include the updates introduced in `ASCOM Platform 7`.
+
+
     ## Interface Behaviour
 
     The ASCOM Interface behavioural requirements for Alpaca drivers are the same as for COM based drivers and are documented in the
@@ -88,7 +93,7 @@ info:
 paths:
   '/{device_type}/{device_number}/action':
     put:
-      summary: Invokes the named device-specific action.
+      summary: Invokes the named device-specific action. 
       description:  >-
         Actions and SupportedActions are a standardised means for drivers to extend functionality beyond the built-in capabilities of the ASCOM device interfaces.
         
@@ -207,6 +212,24 @@ paths:
           $ref: '#/components/responses/500'
       requestBody:
         $ref: '#/components/requestBodies/put_devicetype_Devicenumber_commandblind'
+  '/{device_type}/{device_number}/connect':
+    put:
+      summary: Starts an asynchronous connect to the device.
+      description: '`Platform 7 onward` The Connecting property will be true until device initialisation is complete.'
+      parameters:
+        - $ref: '#/components/parameters/device_type'
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        '200':
+          $ref: '#/components/responses/MethodResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
   '/{device_type}/{device_number}/connected':
     get:
       summary: Retrieves the connected state of the device
@@ -254,6 +277,24 @@ paths:
                       type: boolean
                   required:
                     - Connected
+  '/{device_type}/{device_number}/connecting':
+    get:
+      summary: Completion variable for the asynchronous Connect() and Disconnect() methods.
+      description: '`Platform 7 onward` Returns true while the device is connecting or disconnecting.'
+      parameters:
+        - $ref: '#/components/parameters/device_type'
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        '200':
+          $ref: '#/components/responses/BoolResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
   '/{device_type}/{device_number}/description':
     get:
       summary: Device description
@@ -272,6 +313,47 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+  '/{device_type}/{device_number}/devicestate':
+    get:
+      summary: Returns the device's operational state in a single call.
+      description: >-
+        `Platform 7 onward` Devices must return all operational values that are definitively known but can omit entries where values
+        are unknown.Devices must not throw exceptions / return errors when values are not known. An empty list must 
+        be returned if no values are known.
+        Client Applications must expect that, from time to time, some operational state values may not be present
+        in the device response and must be prepared to handle “missing” values. 
+      parameters:
+        - $ref: '#/components/parameters/device_type'
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        '200':
+          $ref: '#/components/responses/DeviceStateResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  '/{device_type}/{device_number}/disconnect':
+    put:
+      summary: Starts an asynchronous disconnect from the device.
+      description: '`Platform 7 onward` The Connecting property will be true until device disconneciton is complete.'
+      parameters:
+        - $ref: '#/components/parameters/device_type'
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - ASCOM Methods Common To All Devices
+      responses:
+        '200':
+          $ref: '#/components/responses/MethodResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
   '/{device_type}/{device_number}/driverinfo':
     get:
       summary: Device driver description
@@ -1854,7 +1936,7 @@ paths:
     get:
       summary: Camera's sub-exposure interval
       description: >-
-        The Camera's sub exposure duration in seconds. Only available in Camera Interface Version 3 and later.
+        `ICameraV3 and later` The Camera's sub exposure duration in seconds.
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1870,7 +1952,8 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the current Sub Exposure Duration
-      description: Sets image sub exposure duration in seconds. Only available in Camera Interface Version 3 and later.
+      description: >-
+        `ICameraV3 and later` Sets image sub exposure duration in seconds.
       tags:
         - Camera Specific Methods
       parameters:
@@ -2018,6 +2101,24 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+  '/covercalibrator/{device_number}/calibratorchanging':
+    get:
+      summary: Completion variable for calibrator brightness changes. 
+      description: >-
+         `ICoverCalibratorV2 and later` True if the calibrator is not yet stable.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - CoverCalibrator Specific Methods
+      responses:
+        '200':
+          $ref: '#/components/responses/BoolResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
   '/covercalibrator/{device_number}/calibratorstate':
     get:
       summary: Returns the state of the calibration device
@@ -2033,7 +2134,25 @@ paths:
         - CoverCalibrator Specific Methods
       responses:
         '200':
-          $ref: '#/components/responses/CalibratorStatusResponse'
+          $ref: '#/components/responses/IntResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  '/covercalibrator/{device_number}/covermoving':
+    get:
+      summary: Completion variable for cover open and close operations.
+      description: >-
+        `ICoverCalibratorV2 and later` True if the cover is moving.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - CoverCalibrator Specific Methods
+      responses:
+        '200':
+          $ref: '#/components/responses/BoolResponse'
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -3777,6 +3896,76 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+  '/switch/{device_number}/setasync':
+    put:
+      summary: Set a boolean switch's state asynchronously
+      description: >-
+        `ISwitchV3 and later` This is an asynchronous method that must return as soon as the state change operation has been successfully started, 
+        with StateChangeComplete(Int16) for the given switch Id = False. 
+        After the state change has completed StateChangeComplete(Int16) becomes True.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          $ref: '#/components/responses/MethodResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/AlpacaRequest'
+                - properties:
+                    Id:
+                      description: The device number (0 to MaxSwitch - 1)
+                      type: integer
+                      format: int32
+                    State:
+                      description: The required control state (True or False)
+                      type: boolean
+                  required:
+                    - Id
+                    - State
+  '/switch/{device_number}/setasyncvalue':
+    put:
+      summary: Set a switch's value asynchronously
+      description: >-
+        `ISwitchV3 and later` This is an asynchronous method that must return as soon as the state change operation has been successfully started, 
+        with StateChangeComplete(Int16) for the given switch Id = False. 
+        After the state change has completed StateChangeComplete(Int16) becomes True.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          $ref: '#/components/responses/MethodResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/AlpacaRequest'
+                - properties:
+                    Id:
+                      description: The device number (0 to MaxSwitch - 1)
+                      type: integer
+                      format: int32
+                    Value:
+                      description: 'The value to be set, between MinSwitchValue and MaxSwitchValue'
+                      type: number
+                  required:
+                    - Id
+                    - Value  
   '/switch/{device_number}/setswitch':
     put:
       summary: 'Sets a switch controller device to the specified state, true or false'
@@ -3873,6 +4062,25 @@ paths:
                   required:
                     - Id
                     - Value
+  '/switch/{device_number}/statechangecomplete':
+    get:
+      summary: Completion variable for asynchronous switch state change operations.
+      description: >-
+        `ISwitchV3 and later` True if the state of the specified switch is changing, otherwise false.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/SwitchNumberQuery'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Switch Specific Methods
+      responses:
+        '200':
+          $ref: '#/components/responses/BoolResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
   '/switch/{device_number}/switchstep':
     get:
       summary: >-
@@ -5723,6 +5931,28 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/AlpacaResponse'
+    DeviceStateResponse:
+      description: Transaction complete or exception.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/AlpacaResponse'
+              - properties:
+                  Value:
+                    description: Array of DeviceState objects
+                    type: array
+                    minItems: 0
+                    uniqueItems: true
+                    format: object array
+                    items:
+                      format: object
+                      anyOf:
+                        - $ref: '#/components/schemas/DeviceStateString'
+                        - $ref: '#/components/schemas/DeviceStateInteger'
+                        - $ref: '#/components/schemas/DeviceStateFloat'
+                        - $ref: '#/components/schemas/DeviceStateBoolean'
+                        - $ref: '#/components/schemas/DeviceStateDateTime'
     '400':
       description: 'The device did not understand which operation was being requested or insufficient information was given to complete the operation. Check the error message for detailed information.'
       content:
@@ -6141,15 +6371,17 @@ components:
         ClientTransactionID:
           type: integer
           format: uint32
-          minimum: 0
+          minimum: 1
           maximum: 4294967295
-          description: Client's transaction ID (1 to 4294967295), as supplied by the client in the command request, or zero indicating that a valid value was not supplied.
+          description: Client's transaction ID (1 to 4294967295), as supplied by the client in the command request. Zero indicates that a valid value was not supplied.
         ServerTransactionID:
           type: integer
           format: uint32
           minimum: 1
           maximum: 4294967295
-          description: Server's transaction ID (1 to 4294967295), must be unique for each client transaction so that log messages on the client can be associated with logs on the device. The server should start this count at 1 and increment by one on each successive transaction. 
+          description: >-
+            Server's transaction ID (1 to 4294967295), must be unique for each client transaction so that log messages on the client can be associated with logs on the device.
+            The server should start this count at 1 and increment by one on each successive transaction. Zero indicates that a valid value was not supplied.
         ErrorNumber:
           type: integer
           format: int32
@@ -6187,6 +6419,86 @@ components:
         - title: King
           description: King tracking rate (15.0369 arcseconds per second).
           const: 3
+    DeviceStateString:
+      description: A DeviceState object that returns a string value.
+      type: object
+      format: object
+      properties:
+        Name:
+          description: The property name. The name casing must match the casing in the relevant interface definition.
+          type: string
+          format: string
+        Value: 
+          description: The string property value.
+          type: string
+          format: string
+      required:
+        - Name
+        - Value
+    DeviceStateInteger:
+      description: A DeviceState object that returns an integer value.
+      type: object
+      properties:
+        Name:
+          description: The property name. The name casing must match the casing in the relevant interface definition.
+          type: string
+          format: string
+        Value: 
+          description: The integer property value.
+          type: integer
+          format: integer
+      required:
+        - Name
+        - Value
+    DeviceStateFloat:
+      description: A DeviceState object that returns a single or double floating point value.
+      type: object
+      properties:
+        Name:
+          description: The property name. The name casing must match the casing in the relevant interface definition.
+          type: string
+          format: string
+        Value: 
+          description: The floating point property value.
+          type: float
+          format: float
+      required:
+        - Name
+        - Value
+    DeviceStateBoolean:
+      description: A DeviceState object that returns a boolean value.
+      type: object
+      properties:
+        Name:
+          description: The property name. The name casing must match the casing in the relevant interface definition.
+          type: string
+          format: string
+        Value: 
+          description: The boolean property value.
+          type: bool
+          format: bool
+      required:
+        - Name
+        - Value
+    DeviceStateDateTime:
+      description: A DeviceState object that returns a date-time value.
+      type: object
+      properties:
+        Name:
+          description: The property name. The name casing must match the casing in the relevant interface definition.
+          type: string
+          format: string
+        Value: 
+          description: "A DateTime value represented as a string in ISO 8601-2:2019 Extended format. e.g. 2016-03-04T17:45:31.1234567Z or 2016-11-14T07:03:08.1234567.\n\n
+            A suitable Microsoft custom date format string is:  yyyy-MM-ddTHH:mm:ss.fffffff"
+          type: string
+          # The described date format is the same as the standard OpenAPI format.
+          # https://swagger.io/docs/specification/data-models/data-types/
+          format: date-time-string
+          pattern: '^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?Z$'
+      required:
+        - Name
+        - Value
     TelescopeAxis:
       description: The axis about which rate information is desired.
       type: integer
@@ -6228,7 +6540,7 @@ components:
       type: string
       # The described date format is the same as the standard OpenAPI format.
       # https://swagger.io/docs/specification/data-models/data-types/
-      format: date-time
+      format: date-time-string
       pattern: '^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?Z$'
       description: >-
         The UTC date/time of the telescope's internal clock in ISO 8601 format including fractional seconds.
@@ -6238,7 +6550,7 @@ components:
       type: string
       # Custom format for FITS standard date-time.
       # Not defined in standard OpenAPI, but used by downstream tooling processing this YAML.
-      format: date-time-fits
+      format: date-time-fits-string
       pattern: '^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?$'
       description: >-
         The UTC date/time of exposure start in the FITS-standard CCYY-MM-DDThh:mm:ss[.sss...] format.

@@ -113,6 +113,8 @@
       const HIDE_TYPE_IF = [
         // Don't show the noisy type `integer | integer | integer | ...` for `oneOf` variants as parent will already show the shared type.
         'oneOf',
+        // Don't show the noisy types from `anyOf` variants as parent will already show the shared type.
+        'anyOf',
         // Don't show the type if a more precise `format` is already available.
         'format',
         // Don't show the type if it's obviously an integer with a range constraint.
