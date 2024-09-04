@@ -6494,7 +6494,7 @@ components:
           type: string
           # The described date format is the same as the standard OpenAPI format.
           # https://swagger.io/docs/specification/data-models/data-types/
-          format: date-time-string
+          format: date-time
           pattern: '^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?Z$'
       required:
         - Name
@@ -6540,7 +6540,7 @@ components:
       type: string
       # The described date format is the same as the standard OpenAPI format.
       # https://swagger.io/docs/specification/data-models/data-types/
-      format: date-time-string
+      format: date-time
       pattern: '^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?Z$'
       description: >-
         The UTC date/time of the telescope's internal clock in ISO 8601 format including fractional seconds.
@@ -6550,7 +6550,7 @@ components:
       type: string
       # Custom format for FITS standard date-time.
       # Not defined in standard OpenAPI, but used by downstream tooling processing this YAML.
-      format: date-time-fits-string
+      format: date-time-fits
       pattern: '^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?$'
       description: >-
         The UTC date/time of exposure start in the FITS-standard CCYY-MM-DDThh:mm:ss[.sss...] format.
