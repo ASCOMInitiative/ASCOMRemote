@@ -32,7 +32,7 @@ info:
 
     ## Interface Versions
 
-    These interface definitions include the updates introduced in `ASCOM Platform 7`.
+    These interface definitions include the updates introduced in **ASCOM Platform 7**.
 
 
     ## Interface Behaviour
@@ -215,7 +215,7 @@ paths:
   '/{device_type}/{device_number}/connect':
     put:
       summary: Starts an asynchronous connect to the device.
-      description: '`Platform 7 onward` The Connecting property will be true until device initialisation is complete.'
+      description: '**Platform 7 onward.** The Connecting property will be true until device initialisation is complete.'
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -280,7 +280,7 @@ paths:
   '/{device_type}/{device_number}/connecting':
     get:
       summary: Completion variable for the asynchronous Connect() and Disconnect() methods.
-      description: '`Platform 7 onward` Returns true while the device is connecting or disconnecting.'
+      description: '**Platform 7 onward.** Returns true while the device is connecting or disconnecting.'
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -317,7 +317,7 @@ paths:
     get:
       summary: Returns the device's operational state in a single call.
       description: >-
-        `Platform 7 onward` Devices must return all operational values that are definitively known but can omit entries where values
+        **Platform 7 onward.** Devices must return all operational values that are definitively known but can omit entries where values
         are unknown.Devices must not throw exceptions / return errors when values are not known. An empty list must 
         be returned if no values are known.
         Client Applications must expect that, from time to time, some operational state values may not be present
@@ -339,7 +339,7 @@ paths:
   '/{device_type}/{device_number}/disconnect':
     put:
       summary: Starts an asynchronous disconnect from the device.
-      description: '`Platform 7 onward` The Connecting property will be true until device disconneciton is complete.'
+      description: '**Platform 7 onward.** The Connecting property will be true until device disconneciton is complete.'
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -5942,17 +5942,22 @@ components:
                   Value:
                     description: Array of DeviceState objects
                     type: array
-                    minItems: 0
                     uniqueItems: true
-                    format: object array
                     items:
-                      format: object
-                      anyOf:
-                        - $ref: '#/components/schemas/DeviceStateString'
-                        - $ref: '#/components/schemas/DeviceStateInteger'
-                        - $ref: '#/components/schemas/DeviceStateFloat'
-                        - $ref: '#/components/schemas/DeviceStateBoolean'
-                        - $ref: '#/components/schemas/DeviceStateDateTime'
+                      type: object
+                      properties:
+                        Name:
+                          description: The property name. The name casing must match the casing in the relevant interface definition.
+                          type: string
+                        Value:
+                          description: The corresponding value of the named operational property. It has a variadic type and should be interpreted according to the property name.
+                          oneOf:
+                            - type: string
+                              description: The string property value.
+                            - type: number
+                              description: The numeric property value (can be either a 32-bit integer or a 64-bit float).
+                            - type: boolean
+                              description: The boolean property value.
     '400':
       description: 'The device did not understand which operation was being requested or insufficient information was given to complete the operation. Check the error message for detailed information.'
       content:
@@ -6419,86 +6424,6 @@ components:
         - title: King
           description: King tracking rate (15.0369 arcseconds per second).
           const: 3
-    DeviceStateString:
-      description: A DeviceState object that returns a string value.
-      type: object
-      format: object
-      properties:
-        Name:
-          description: The property name. The name casing must match the casing in the relevant interface definition.
-          type: string
-          format: string
-        Value: 
-          description: The string property value.
-          type: string
-          format: string
-      required:
-        - Name
-        - Value
-    DeviceStateInteger:
-      description: A DeviceState object that returns an integer value.
-      type: object
-      properties:
-        Name:
-          description: The property name. The name casing must match the casing in the relevant interface definition.
-          type: string
-          format: string
-        Value: 
-          description: The integer property value.
-          type: integer
-          format: integer
-      required:
-        - Name
-        - Value
-    DeviceStateFloat:
-      description: A DeviceState object that returns a single or double floating point value.
-      type: object
-      properties:
-        Name:
-          description: The property name. The name casing must match the casing in the relevant interface definition.
-          type: string
-          format: string
-        Value: 
-          description: The floating point property value.
-          type: float
-          format: float
-      required:
-        - Name
-        - Value
-    DeviceStateBoolean:
-      description: A DeviceState object that returns a boolean value.
-      type: object
-      properties:
-        Name:
-          description: The property name. The name casing must match the casing in the relevant interface definition.
-          type: string
-          format: string
-        Value: 
-          description: The boolean property value.
-          type: bool
-          format: bool
-      required:
-        - Name
-        - Value
-    DeviceStateDateTime:
-      description: A DeviceState object that returns a date-time value.
-      type: object
-      properties:
-        Name:
-          description: The property name. The name casing must match the casing in the relevant interface definition.
-          type: string
-          format: string
-        Value: 
-          description: "A DateTime value represented as a string in ISO 8601-2:2019 Extended format. e.g. 2016-03-04T17:45:31.1234567Z or 2016-11-14T07:03:08.1234567.\n\n
-            A suitable Microsoft custom date format string is:  yyyy-MM-ddTHH:mm:ss.fffffff"
-          type: string
-          # The described date format is the same as the standard OpenAPI format.
-          # https://swagger.io/docs/specification/data-models/data-types/
-          format: date-time-string
-          pattern: '^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?Z$'
-      required:
-        - Name
-        - Value
     TelescopeAxis:
       description: The axis about which rate information is desired.
       type: integer
