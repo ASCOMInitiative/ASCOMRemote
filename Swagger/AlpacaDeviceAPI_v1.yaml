@@ -1842,8 +1842,7 @@ paths:
     get:
       summary: Return the current subframe X axis start position
       description: >-
-        Sets the subframe start position for the X axis (0 based) and returns
-        the current value. If binning is active, value is in binned pixels.
+        Returns the current subframe start position for the X axis (0 based). If binning is active, value is in binned pixels.
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1889,8 +1888,7 @@ paths:
     get:
       summary: Return the current subframe Y axis start position
       description: >-
-        Sets the subframe start position for the Y axis (0 based) and returns
-        the current value. If binning is active, value is in binned pixels.
+        Returns the current subframe start position for the Y axis (0 based). If binning is active, value is in binned pixels.
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
