@@ -5963,6 +5963,7 @@ components:
                     type: array
                     uniqueItems: true
                     items:
+                      description: A DeviceState object representing an operational property of this device
                       type: object
                       properties:
                         Name:
@@ -5970,7 +5971,7 @@ components:
                           type: string
                         Value:
                           description: >-
-                            The corresponding value of the named operational property. This is an object variable that can hold one of several basic types 
+                            The corresponding value of the named operational property. This is dynamically-typed value that can hold one of several basic types 
                             including Int16, Int32, Single, Double, String, Boolean and DateTime (returned as an ISO 8601 format). The 
                             data type must be inferred from the property name.
                           oneOf:
