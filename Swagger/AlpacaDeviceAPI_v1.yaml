@@ -2134,7 +2134,7 @@ paths:
         - CoverCalibrator Specific Methods
       responses:
         '200':
-          $ref: '#/components/responses/IntResponse'
+          $ref: '#/components/responses/CalibratorStatusResponse'
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -5984,6 +5984,9 @@ components:
                               description: A date-time string in ISO 8601 format.
                               format: date-time
                               pattern: '^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?Z$'
+                      required:
+                        - Name
+                        - Value
     '400':
       description: 'The device did not understand which operation was being requested or insufficient information was given to complete the operation. Check the error message for detailed information.'
       content:
