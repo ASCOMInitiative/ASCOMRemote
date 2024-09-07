@@ -3757,7 +3757,7 @@ paths:
     get:
       summary: Flag indicating whether this switch can operate asynchronously. 
       description: >-
-        `ISwitchV3 and later` This endpoint must be implemented and indicates whether the given switch can operate asynchronously.
+        `ISwitchV3 and later.` This endpoint must be implemented and indicates whether the given switch can operate asynchronously.
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/SwitchNumberQuery'
