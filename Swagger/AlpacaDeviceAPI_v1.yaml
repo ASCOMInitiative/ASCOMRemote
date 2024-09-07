@@ -5778,7 +5778,7 @@ paths:
   '/telescope/{device_number}/unpark':
     put:
       summary: Unparks the mount.
-      description: Takes telescope out of the Parked state. )
+      description: Takes telescope out of the Parked state.
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
