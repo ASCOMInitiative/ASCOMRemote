@@ -5968,10 +5968,12 @@ components:
                           description: The property name. The name casing must match the casing in the relevant interface definition.
                           type: string
                         Value:
-                          description: >-
-                            The corresponding value of the named operational property. This is dynamically-typed value that can hold one of several basic types 
-                            including Int16, Int32, Single, Double, String, Boolean and DateTime (returned as an ISO 8601 format). The 
-                            data type must be inferred from the property name.
+                          description: >
+                            The corresponding value of the named operational property. This is a dynamically-typed value that can hold one of several basic types
+                            including Int16, Int32, Single, Double, String, Boolean and DateTime (returned as an ISO 8601 format string).
+                            
+                            
+                            **NOTE** The data type must be the same as that returned by the operational property.
                           oneOf:
                             - type: string
                               description: A string property value.
