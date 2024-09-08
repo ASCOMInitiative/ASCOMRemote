@@ -318,7 +318,7 @@ paths:
       summary: Returns the device's operational state in a single call.
       description: >-
         `Platform 7 onward.` Devices must return all operational values that are definitively known but can omit entries where values
-        are unknown.Devices must not throw exceptions / return errors when values are not known. An empty list must 
+        are unknown. Devices must not throw exceptions / return errors when values are not known. An empty list must 
         be returned if no values are known.
         Client Applications must expect that, from time to time, some operational state values may not be present
         in the device response and must be prepared to handle “missing” values. 
@@ -1842,8 +1842,7 @@ paths:
     get:
       summary: Return the current subframe X axis start position
       description: >-
-        Sets the subframe start position for the X axis (0 based) and returns
-        the current value. If binning is active, value is in binned pixels.
+        Returns the current subframe start position for the X axis (0 based). If binning is active, value is in binned pixels.
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1889,8 +1888,7 @@ paths:
     get:
       summary: Return the current subframe Y axis start position
       description: >-
-        Sets the subframe start position for the Y axis (0 based) and returns
-        the current value. If binning is active, value is in binned pixels.
+        Returns the current subframe start position for the Y axis (0 based). If binning is active, value is in binned pixels.
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2134,7 +2132,7 @@ paths:
         - CoverCalibrator Specific Methods
       responses:
         '200':
-          $ref: '#/components/responses/IntResponse'
+          $ref: '#/components/responses/CalibratorStatusResponse'
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -5778,7 +5776,7 @@ paths:
   '/telescope/{device_number}/unpark':
     put:
       summary: Unparks the mount.
-      description: Takes telescope out of the Parked state. )
+      description: Takes telescope out of the Parked state.
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5963,6 +5961,7 @@ components:
                     type: array
                     uniqueItems: true
                     items:
+                      description: A DeviceState object representing an operational property of this device
                       type: object
                       properties:
                         Name:
@@ -5970,7 +5969,7 @@ components:
                           type: string
                         Value:
                           description: >-
-                            The corresponding value of the named operational property. This is an object variable that can hold one of several basic types 
+                            The corresponding value of the named operational property. This is dynamically-typed value that can hold one of several basic types 
                             including Int16, Int32, Single, Double, String, Boolean and DateTime (returned as an ISO 8601 format). The 
                             data type must be inferred from the property name.
                           oneOf:
@@ -5984,6 +5983,9 @@ components:
                               description: A date-time string in ISO 8601 format.
                               format: date-time
                               pattern: '^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?Z$'
+                      required:
+                        - Name
+                        - Value
     '400':
       description: 'The device did not understand which operation was being requested or insufficient information was given to complete the operation. Check the error message for detailed information.'
       content:
@@ -6368,13 +6370,13 @@ components:
       properties:
         Maximum:
           description: >-
-            The maximum rate (degrees per second) This must always be a positive
+            The maximum rate (degrees per second). This must always be a positive
             number. It indicates the maximum rate in either direction about the
             axis.
           type: number
         Minimum:
           description: >-
-            The minimum rate (degrees per second) This must always be a positive
+            The minimum rate (degrees per second). This must always be a positive
             number. It indicates the maximum rate in either direction about the
             axis.
           type: number
