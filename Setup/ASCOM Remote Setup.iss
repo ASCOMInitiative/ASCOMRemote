@@ -8,7 +8,7 @@
 #define MyInformationVersion
 
 ; Read the informational SEMVER version string from the file created by the build process
-#define FileHandle = FileOpen("..\publish\remote\InstallerVersion.txt"); 
+#define FileHandle = FileOpen("..\Remote Server\bin\Debug\net8.0-windows\InstallerVersion.txt"); 
 #define FileLine = FileRead(FileHandle)
 #pragma message "Installer version number: " + FileLine
 
