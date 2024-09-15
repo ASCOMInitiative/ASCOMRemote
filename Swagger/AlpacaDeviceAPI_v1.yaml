@@ -1371,7 +1371,7 @@ paths:
       summary: Start time of the last exposure in FITS standard format.
       description: >-
         Reports the actual exposure start in the FITS-standard
-        CCYY-MM-DDThh:mm:ss[.sss...] format.
+        CCYY-MM-DDThh:mm:ss[.sss...] format. The time must be UTC.
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
