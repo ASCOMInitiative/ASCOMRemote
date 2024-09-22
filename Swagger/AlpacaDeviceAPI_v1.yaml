@@ -146,8 +146,8 @@ paths:
                     - Action
                     - Parameters
   '/{device_type}/{device_number}/commandblind':
-    deprecated: true
     put:
+      deprecated: true
       summary: Transmits an arbitrary string to the device
       description: >-
         Transmits an arbitrary string to the device and does not wait for a
@@ -192,8 +192,8 @@ paths:
       requestBody:
         $ref: '#/components/requestBodies/put_devicetype_Devicenumber_commandblind'
   '/{device_type}/{device_number}/commandstring':
-    deprecated: true
     put:
+      deprecated: true
       summary: >-
         Transmits an arbitrary string to the device and returns a string value
         from the device.
