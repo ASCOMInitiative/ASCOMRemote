@@ -147,7 +147,6 @@ paths:
                     - Parameters
   '/{device_type}/{device_number}/commandblind':
     put:
-      deprecated: true
       summary: Transmits an arbitrary string to the device
       description: >-
         Transmits an arbitrary string to the device and does not wait for a
@@ -169,7 +168,6 @@ paths:
         $ref: '#/components/requestBodies/put_devicetype_Devicenumber_commandblind'
   '/{device_type}/{device_number}/commandbool':
     put:
-      deprecated: true
       summary: >-
         Transmits an arbitrary string to the device and returns a boolean value
         from the device.
@@ -193,7 +191,6 @@ paths:
         $ref: '#/components/requestBodies/put_devicetype_Devicenumber_commandblind'
   '/{device_type}/{device_number}/commandstring':
     put:
-      deprecated: true
       summary: >-
         Transmits an arbitrary string to the device and returns a string value
         from the device.
@@ -252,7 +249,6 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      deprecated: true
       summary: Sets the connected state of the device
       description: >-
         **Deprecated in favour of the newer non-blocking [`connect`](#/ASCOM%20Methods%20Common%20To%20All%20Devices/put__device_type___device_number__connect) and [`disconnect`](#/ASCOM%20Methods%20Common%20To%20All%20Devices/put__device_type___device_number__disconnect) methods, with the new [`connecting`](#/ASCOM%20Methods%20Common%20To%20All%20Devices/get__device_type___device_number__connecting) property serving as the completion property.**  
