@@ -526,7 +526,7 @@ paths:
                       description: The X binning value
                       type: integer
                       format: int32
-                      default: 1
+                      example: 1
                   required:
                     - BinX
   '/camera/{device_number}/biny':
@@ -571,7 +571,7 @@ paths:
                       description: The Y binning value
                       type: integer
                       format: int32
-                      default: 1
+                      example: 1
                   required:
                     - BinY
   '/camera/{device_number}/camerastate':
@@ -811,7 +811,7 @@ paths:
                     CoolerOn:
                       description: Cooler state
                       type: boolean
-                      default: true
+                      example: true
                   required:
                     - CoolerOn
   '/camera/{device_number}/coolerpower':
@@ -946,7 +946,7 @@ paths:
                     FastReadout:
                       description: True to enable fast readout mode
                       type: boolean
-                      default: false
+                      example: false
                   required:
                     - FastReadout
   '/camera/{device_number}/fullwellcapacity':
@@ -1010,7 +1010,7 @@ paths:
                       description: Index of the current camera gain in the Gains string array.
                       type: integer
                       format: int32
-                      default: 0
+                      example: 0
                   required:
                     - Gain
   '/camera/{device_number}/gainmax':
@@ -1496,7 +1496,7 @@ paths:
                         pixels.
                       type: integer
                       format: int32
-                      default: 0
+                      example: 0
                   required:
                     - NumX
   '/camera/{device_number}/numy':
@@ -1545,7 +1545,7 @@ paths:
                         pixels.
                       type: integer
                       format: int32
-                      default: 0
+                      example: 0
                   required:
                     - NumY
   '/camera/{device_number}/offset':
@@ -1590,7 +1590,7 @@ paths:
                       description: Index of the current camera offset in the offsets string array.
                       type: integer
                       format: int32
-                      default: 0
+                      example: 0
                   required:
                     - Offset
   '/camera/{device_number}/offsetmax':
@@ -1747,7 +1747,7 @@ paths:
                         indicating the camera's current readout mode.
                       type: integer
                       format: int32
-                      default: 0
+                      example: 0
                   required:
                     - ReadoutMode
   '/camera/{device_number}/readoutmodes':
@@ -1849,7 +1849,7 @@ paths:
                     SetCCDTemperature:
                       description: Temperature set point (degrees Celsius).
                       type: number
-                      default: -10
+                      example: -10
                   required:
                     - SetCCDTemperature
   '/camera/{device_number}/startx':
@@ -1895,7 +1895,7 @@ paths:
                       description: The subframe X axis start position in binned pixels.
                       type: integer
                       format: int32
-                      default: 0
+                      example: 0
                   required:
                     - StartX
   '/camera/{device_number}/starty':
@@ -1941,7 +1941,7 @@ paths:
                       description: The subframe Y axis start position in binned pixels.
                       type: integer
                       format: int32
-                      default: 0
+                      example: 0
                   required:
                     - StartY
   '/camera/{device_number}/subexposureduration':
@@ -1987,7 +1987,7 @@ paths:
                     SubExposureDuration:
                       description: The request sub exposure duration in seconds
                       type: number
-                      default: 0
+                      example: 0
                   required:
                     - SubExposureDuration
   '/camera/{device_number}/abortexposure':
@@ -2581,7 +2581,7 @@ paths:
                     Slaved:
                       description: 'True if telescope is slaved to dome, otherwise false'
                       type: boolean
-                      default: false
+                      example: false
                   required:
                     - Slaved
   '/dome/{device_number}/slewing':
@@ -3135,7 +3135,7 @@ paths:
                     AveragePeriod:
                       description: Time period (hours) over which to average sensor readings
                       type: number
-                      default: 0.15
+                      example: 0.15
                   required:
                     - AveragePeriod
   '/observingconditions/{device_number}/cloudcover':
@@ -3407,7 +3407,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Pressure
+            example: Pressure
         - $ref: '#/components/parameters/ClientIDQuery'
         - $ref: '#/components/parameters/ClientTransactionIDQuery'
       tags:
@@ -3433,7 +3433,7 @@ paths:
           required: true
           schema:
             type: string
-            default: Pressure
+            example: Pressure
         - $ref: '#/components/parameters/ClientIDQuery'
         - $ref: '#/components/parameters/ClientTransactionIDQuery'
       tags:
@@ -5534,7 +5534,7 @@ paths:
                     Rate:
                       description: The rate of motion (deg/sec) about the specified axis
                       type: number
-                      default: 0
+                      example: 0
                   required:
                     - Axis
                     - Rate
@@ -5587,7 +5587,7 @@ paths:
                       description: The duration of the guide-rate motion (milliseconds)
                       type: integer
                       format: int32
-                      default: 5
+                      example: 5
                   required:
                     - Direction
                     - Duration
@@ -5842,7 +5842,7 @@ components:
       schema:
         type: integer
         format: uint32
-        default: 0
+        example: 0
         minimum: 0
         maximum: 4294967295
     ClientIDQuery:
@@ -5853,7 +5853,7 @@ components:
       schema:
         type: integer
         format: uint32
-        default: 1
+        example: 123
         minimum: 1
         maximum: 4294967295
     ClientTransactionIDQuery:
@@ -5864,7 +5864,7 @@ components:
       schema:
         type: integer
         format: uint32
-        default: 1234
+        example: 1234
         minimum: 1
         maximum: 4294967295
     RightAscensionQuery:
@@ -5893,7 +5893,7 @@ components:
       schema:
         type: integer
         format: int32
-        default: 0
+        example: 0
         minimum: 0
         maximum: 2147483647
   requestBodies:
@@ -6491,13 +6491,13 @@ components:
     RightAscension:
       type: number
       description: Right Ascension coordinate (0.0 to 23.99999999 hours)
-      default: 3.0
+      example: 3.0
       minimum: 0.0
       maximum: 23.9999999999
     Declination:
       description: Declination coordinate (-90.0 to +90.0 degrees)
       type: number
-      default: 0.0
+      example: 0.0
       minimum: -90.0
       maximum: 90.0
     PierSide:
