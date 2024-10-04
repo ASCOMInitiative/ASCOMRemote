@@ -496,7 +496,7 @@ paths:
         - Camera Specific Methods
       responses:
         '200':
-          $ref: '#/components/responses/IntResponse'
+          $ref: '#/components/responses/IntMinimum1Response'
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -527,6 +527,7 @@ paths:
                       type: integer
                       format: int32
                       example: 1
+                      minimum: 1
                   required:
                     - BinX
   '/camera/{device_number}/biny':
@@ -541,7 +542,7 @@ paths:
         - Camera Specific Methods
       responses:
         '200':
-          $ref: '#/components/responses/IntResponse'
+          $ref: '#/components/responses/IntMinimum1Response'
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -572,6 +573,7 @@ paths:
                       type: integer
                       format: int32
                       example: 1
+                      minimum: 1
                   required:
                     - BinY
   '/camera/{device_number}/camerastate':
@@ -1428,7 +1430,7 @@ paths:
         - Camera Specific Methods
       responses:
         '200':
-          $ref: '#/components/responses/IntResponse'
+          $ref: '#/components/responses/IntMinimum1Response'
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -1445,7 +1447,7 @@ paths:
         - Camera Specific Methods
       responses:
         '200':
-          $ref: '#/components/responses/IntResponse'
+          $ref: '#/components/responses/IntMinimum1Response'
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -6159,6 +6161,19 @@ components:
                   Value:
                     type: integer
                     format: int32
+                    description: Returned integer value
+    IntMinimum1Response:
+      description: Transaction complete or exception.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/AlpacaResponse'
+              - properties:
+                  Value:
+                    type: integer
+                    format: int32
+                    minimum: 1
                     description: Returned integer value
     IntArrayResponse:
       description: Transaction complete or exception.
