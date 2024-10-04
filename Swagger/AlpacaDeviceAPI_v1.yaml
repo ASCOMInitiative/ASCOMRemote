@@ -5843,8 +5843,6 @@ components:
         type: integer
         format: uint32
         default: 0
-        minimum: 0
-        maximum: 4294967295
     ClientIDQuery:
       name: ClientID
       description: Client's unique ID. (1 to 4294967295). The client should choose a value at start-up, e.g. a random value between 1 and 65535, and send this on every transaction to associate entries in device logs with this particular client.  Zero is a reserved value that clients should not use.
@@ -5855,7 +5853,6 @@ components:
         format: uint32
         default: 1
         minimum: 1
-        maximum: 4294967295
     ClientTransactionIDQuery:
       name: ClientTransactionID
       description: Client's transaction ID. (1 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.  Zero is a reserved value that clients should not use.
@@ -5866,7 +5863,6 @@ components:
         format: uint32
         default: 1234
         minimum: 1
-        maximum: 4294967295
     RightAscensionQuery:
       name: RightAscension
       in: query
@@ -5895,7 +5891,6 @@ components:
         format: int32
         default: 0
         minimum: 0
-        maximum: 2147483647
   requestBodies:
     put_devicetype_Devicenumber_commandblind:
       content:
@@ -6416,13 +6411,11 @@ components:
           type: integer
           format: uint32
           minimum: 1
-          maximum: 4294967295
         ClientTransactionID:
           description: Client's transaction ID. (1 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.  Zero is a reserved value that clients should not use.
           type: integer
           format: uint32
           minimum: 1
-          maximum: 4294967295
     AlpacaResponse:
       type: object
       properties:
@@ -6430,13 +6423,11 @@ components:
           type: integer
           format: uint32
           minimum: 1
-          maximum: 4294967295
           description: Client's transaction ID (1 to 4294967295), as supplied by the client in the command request. Zero indicates that a valid value was not supplied.
         ServerTransactionID:
           type: integer
           format: uint32
           minimum: 1
-          maximum: 4294967295
           description: >-
             Server's transaction ID (1 to 4294967295), must be unique for each client transaction so that log messages on the client can be associated with logs on the device.
             The server should start this count at 1 and increment by one on each successive transaction. Zero indicates that a valid value was not supplied.
