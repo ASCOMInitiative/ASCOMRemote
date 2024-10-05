@@ -5845,8 +5845,6 @@ components:
         type: integer
         format: uint32
         example: 0
-        minimum: 0
-        maximum: 4294967295
 
     ClientIDQuery:
       name: ClientID
