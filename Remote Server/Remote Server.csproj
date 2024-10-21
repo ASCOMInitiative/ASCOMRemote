@@ -47,7 +47,7 @@
 		<!-- Set version numbers -->
 		<ProductMajor>7</ProductMajor>
 		<ProductMinor>0</ProductMinor>
-		<ProductPatch>0</ProductPatch>
+		<ProductPatch>1</ProductPatch>
 
 		<!-- Set the pre-release string without a leading minus e.g. rc.1 -->
 		<ProductPreRelease></ProductPreRelease>

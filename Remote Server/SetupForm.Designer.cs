@@ -16,8 +16,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupForm));
             BtnCancel = new System.Windows.Forms.Button();
             BtnOK = new System.Windows.Forms.Button();
             chkAutoConnect = new System.Windows.Forms.CheckBox();
@@ -231,6 +231,7 @@
             ServedDevice99 = new ServedDevice();
             LblDevicesNotDisconnoected = new System.Windows.Forms.Label();
             ServerConfigurationTab = new System.Windows.Forms.TabPage();
+            ChkEnableReboot = new System.Windows.Forms.CheckBox();
             chkStartMinimised = new System.Windows.Forms.CheckBox();
             textBox1 = new System.Windows.Forms.TextBox();
             GrpIpVersionSelector = new System.Windows.Forms.GroupBox();
@@ -283,8 +284,9 @@
             LabHelp2 = new System.Windows.Forms.Label();
             LabHelp1 = new System.Windows.Forms.Label();
             DataGridCorsOrigins = new System.Windows.Forms.DataGridView();
+            NonStandardTab = new System.Windows.Forms.TabPage();
+            ChkOmitRawParameterInCommandXXXToTelescope = new System.Windows.Forms.CheckBox();
             DlgSetLogFolderPath = new System.Windows.Forms.FolderBrowserDialog();
-            ChkEnableReboot = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SetupTabControl.SuspendLayout();
             DeviceConfigurationTab.SuspendLayout();
@@ -314,6 +316,7 @@
             CorsConfigurationTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)NumCorsMaxAge).BeginInit();
             ((System.ComponentModel.ISupportInitialize)DataGridCorsOrigins).BeginInit();
+            NonStandardTab.SuspendLayout();
             SuspendLayout();
             // 
             // BtnCancel
@@ -383,7 +386,7 @@
             ChkRunDriversInSeparateThreadss.Location = new System.Drawing.Point(311, 338);
             ChkRunDriversInSeparateThreadss.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ChkRunDriversInSeparateThreadss.Name = "ChkRunDriversInSeparateThreadss";
-            ChkRunDriversInSeparateThreadss.Size = new System.Drawing.Size(191, 19);
+            ChkRunDriversInSeparateThreadss.Size = new System.Drawing.Size(192, 19);
             ChkRunDriversInSeparateThreadss.TabIndex = 34;
             ChkRunDriversInSeparateThreadss.Text = "Run Drivers in Separate Threads";
             ChkRunDriversInSeparateThreadss.UseVisualStyleBackColor = true;
@@ -394,7 +397,7 @@
             ChkIncludeDriverExceptionsInJsonResponses.Location = new System.Drawing.Point(560, 363);
             ChkIncludeDriverExceptionsInJsonResponses.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ChkIncludeDriverExceptionsInJsonResponses.Name = "ChkIncludeDriverExceptionsInJsonResponses";
-            ChkIncludeDriverExceptionsInJsonResponses.Size = new System.Drawing.Size(405, 19);
+            ChkIncludeDriverExceptionsInJsonResponses.Size = new System.Drawing.Size(404, 19);
             ChkIncludeDriverExceptionsInJsonResponses.TabIndex = 36;
             ChkIncludeDriverExceptionsInJsonResponses.Text = "Include driver exceptions in JSON responses (only useful for debugging)";
             ChkIncludeDriverExceptionsInJsonResponses.UseVisualStyleBackColor = true;
@@ -406,6 +409,7 @@
             SetupTabControl.Controls.Add(ServerConfigurationTab2);
             SetupTabControl.Controls.Add(LoggingConfigurationTab);
             SetupTabControl.Controls.Add(CorsConfigurationTab);
+            SetupTabControl.Controls.Add(NonStandardTab);
             SetupTabControl.Location = new System.Drawing.Point(14, 12);
             SetupTabControl.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             SetupTabControl.Name = "SetupTabControl";
@@ -548,7 +552,7 @@
             label1.Location = new System.Drawing.Point(65, 28);
             label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(69, 15);
+            label1.Size = new System.Drawing.Size(70, 15);
             label1.TabIndex = 43;
             label1.Text = "Device Type";
             // 
@@ -652,7 +656,7 @@
             label6.Location = new System.Drawing.Point(985, 28);
             label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label6.Name = "label6";
-            label6.Size = new System.Drawing.Size(29, 15);
+            label6.Size = new System.Drawing.Size(30, 15);
             label6.TabIndex = 56;
             label6.Text = "True";
             // 
@@ -780,7 +784,7 @@
             label17.Location = new System.Drawing.Point(65, 28);
             label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label17.Name = "label17";
-            label17.Size = new System.Drawing.Size(69, 15);
+            label17.Size = new System.Drawing.Size(70, 15);
             label17.TabIndex = 43;
             label17.Text = "Device Type";
             // 
@@ -820,7 +824,7 @@
             label22.Location = new System.Drawing.Point(985, 28);
             label22.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label22.Name = "label22";
-            label22.Size = new System.Drawing.Size(29, 15);
+            label22.Size = new System.Drawing.Size(30, 15);
             label22.TabIndex = 56;
             label22.Text = "True";
             // 
@@ -1060,7 +1064,7 @@
             label26.Location = new System.Drawing.Point(65, 28);
             label26.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label26.Name = "label26";
-            label26.Size = new System.Drawing.Size(69, 15);
+            label26.Size = new System.Drawing.Size(70, 15);
             label26.TabIndex = 63;
             label26.Text = "Device Type";
             // 
@@ -1100,7 +1104,7 @@
             label30.Location = new System.Drawing.Point(985, 28);
             label30.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label30.Name = "label30";
-            label30.Size = new System.Drawing.Size(29, 15);
+            label30.Size = new System.Drawing.Size(30, 15);
             label30.TabIndex = 76;
             label30.Text = "True";
             // 
@@ -1339,7 +1343,7 @@
             label35.Location = new System.Drawing.Point(65, 28);
             label35.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label35.Name = "label35";
-            label35.Size = new System.Drawing.Size(69, 15);
+            label35.Size = new System.Drawing.Size(70, 15);
             label35.TabIndex = 63;
             label35.Text = "Device Type";
             // 
@@ -1379,7 +1383,7 @@
             label39.Location = new System.Drawing.Point(985, 28);
             label39.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label39.Name = "label39";
-            label39.Size = new System.Drawing.Size(29, 15);
+            label39.Size = new System.Drawing.Size(30, 15);
             label39.TabIndex = 76;
             label39.Text = "True";
             // 
@@ -1618,7 +1622,7 @@
             label44.Location = new System.Drawing.Point(65, 28);
             label44.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label44.Name = "label44";
-            label44.Size = new System.Drawing.Size(69, 15);
+            label44.Size = new System.Drawing.Size(70, 15);
             label44.TabIndex = 63;
             label44.Text = "Device Type";
             // 
@@ -1658,7 +1662,7 @@
             label48.Location = new System.Drawing.Point(985, 28);
             label48.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label48.Name = "label48";
-            label48.Size = new System.Drawing.Size(29, 15);
+            label48.Size = new System.Drawing.Size(30, 15);
             label48.TabIndex = 76;
             label48.Text = "True";
             // 
@@ -1897,7 +1901,7 @@
             label53.Location = new System.Drawing.Point(65, 28);
             label53.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label53.Name = "label53";
-            label53.Size = new System.Drawing.Size(69, 15);
+            label53.Size = new System.Drawing.Size(70, 15);
             label53.TabIndex = 63;
             label53.Text = "Device Type";
             // 
@@ -1937,7 +1941,7 @@
             label57.Location = new System.Drawing.Point(985, 28);
             label57.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label57.Name = "label57";
-            label57.Size = new System.Drawing.Size(29, 15);
+            label57.Size = new System.Drawing.Size(30, 15);
             label57.TabIndex = 76;
             label57.Text = "True";
             // 
@@ -2176,7 +2180,7 @@
             label62.Location = new System.Drawing.Point(65, 28);
             label62.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label62.Name = "label62";
-            label62.Size = new System.Drawing.Size(69, 15);
+            label62.Size = new System.Drawing.Size(70, 15);
             label62.TabIndex = 63;
             label62.Text = "Device Type";
             // 
@@ -2216,7 +2220,7 @@
             label66.Location = new System.Drawing.Point(985, 28);
             label66.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label66.Name = "label66";
-            label66.Size = new System.Drawing.Size(29, 15);
+            label66.Size = new System.Drawing.Size(30, 15);
             label66.TabIndex = 76;
             label66.Text = "True";
             // 
@@ -2455,7 +2459,7 @@
             label71.Location = new System.Drawing.Point(65, 28);
             label71.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label71.Name = "label71";
-            label71.Size = new System.Drawing.Size(69, 15);
+            label71.Size = new System.Drawing.Size(70, 15);
             label71.TabIndex = 63;
             label71.Text = "Device Type";
             // 
@@ -2495,7 +2499,7 @@
             label75.Location = new System.Drawing.Point(985, 28);
             label75.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label75.Name = "label75";
-            label75.Size = new System.Drawing.Size(29, 15);
+            label75.Size = new System.Drawing.Size(30, 15);
             label75.TabIndex = 76;
             label75.Text = "True";
             // 
@@ -2734,7 +2738,7 @@
             label80.Location = new System.Drawing.Point(65, 28);
             label80.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label80.Name = "label80";
-            label80.Size = new System.Drawing.Size(69, 15);
+            label80.Size = new System.Drawing.Size(70, 15);
             label80.TabIndex = 63;
             label80.Text = "Device Type";
             // 
@@ -2774,7 +2778,7 @@
             label84.Location = new System.Drawing.Point(985, 28);
             label84.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label84.Name = "label84";
-            label84.Size = new System.Drawing.Size(29, 15);
+            label84.Size = new System.Drawing.Size(30, 15);
             label84.TabIndex = 76;
             label84.Text = "True";
             // 
@@ -3013,7 +3017,7 @@
             label89.Location = new System.Drawing.Point(65, 28);
             label89.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label89.Name = "label89";
-            label89.Size = new System.Drawing.Size(69, 15);
+            label89.Size = new System.Drawing.Size(70, 15);
             label89.TabIndex = 63;
             label89.Text = "Device Type";
             // 
@@ -3053,7 +3057,7 @@
             label93.Location = new System.Drawing.Point(985, 28);
             label93.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label93.Name = "label93";
-            label93.Size = new System.Drawing.Size(29, 15);
+            label93.Size = new System.Drawing.Size(30, 15);
             label93.TabIndex = 76;
             label93.Text = "True";
             // 
@@ -3278,6 +3282,17 @@
             ServerConfigurationTab.Size = new System.Drawing.Size(1198, 457);
             ServerConfigurationTab.TabIndex = 1;
             ServerConfigurationTab.Text = "Server Configuration";
+            // 
+            // ChkEnableReboot
+            // 
+            ChkEnableReboot.AutoSize = true;
+            ChkEnableReboot.Location = new System.Drawing.Point(560, 337);
+            ChkEnableReboot.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            ChkEnableReboot.Name = "ChkEnableReboot";
+            ChkEnableReboot.Size = new System.Drawing.Size(329, 19);
+            ChkEnableReboot.TabIndex = 56;
+            ChkEnableReboot.Text = "Enable Remote Management Interface Reboot Command";
+            ChkEnableReboot.UseVisualStyleBackColor = true;
             // 
             // chkStartMinimised
             // 
@@ -3570,7 +3585,7 @@
             label96.Location = new System.Drawing.Point(555, 296);
             label96.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label96.Name = "label96";
-            label96.Size = new System.Drawing.Size(312, 15);
+            label96.Size = new System.Drawing.Size(311, 15);
             label96.TabIndex = 58;
             label96.Text = "Maximum number of served devices (in increments of 10)";
             // 
@@ -3656,7 +3671,7 @@
             ChkUseUtcTime.Location = new System.Drawing.Point(7, 128);
             ChkUseUtcTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             ChkUseUtcTime.Name = "ChkUseUtcTime";
-            ChkUseUtcTime.Size = new System.Drawing.Size(134, 19);
+            ChkUseUtcTime.Size = new System.Drawing.Size(135, 19);
             ChkUseUtcTime.TabIndex = 69;
             ChkUseUtcTime.Text = "Use UTC time in logs";
             ChkUseUtcTime.UseVisualStyleBackColor = true;
@@ -3814,7 +3829,7 @@
             LabMaxAge.Location = new System.Drawing.Point(578, 330);
             LabMaxAge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             LabMaxAge.Name = "LabMaxAge";
-            LabMaxAge.Size = new System.Drawing.Size(182, 15);
+            LabMaxAge.Size = new System.Drawing.Size(181, 15);
             LabMaxAge.TabIndex = 9;
             LabMaxAge.Text = "CORS Max Age Header (seconds)";
             // 
@@ -3896,16 +3911,26 @@
             DataGridCorsOrigins.Size = new System.Drawing.Size(684, 250);
             DataGridCorsOrigins.TabIndex = 0;
             // 
-            // ChkEnableReboot
+            // NonStandardTab
             // 
-            ChkEnableReboot.AutoSize = true;
-            ChkEnableReboot.Location = new System.Drawing.Point(560, 337);
-            ChkEnableReboot.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            ChkEnableReboot.Name = "ChkEnableReboot";
-            ChkEnableReboot.Size = new System.Drawing.Size(329, 19);
-            ChkEnableReboot.TabIndex = 56;
-            ChkEnableReboot.Text = "Enable Remote Management Interface Reboot Command";
-            ChkEnableReboot.UseVisualStyleBackColor = true;
+            NonStandardTab.BackColor = System.Drawing.SystemColors.Control;
+            NonStandardTab.Controls.Add(ChkOmitRawParameterInCommandXXXToTelescope);
+            NonStandardTab.Location = new System.Drawing.Point(4, 24);
+            NonStandardTab.Name = "NonStandardTab";
+            NonStandardTab.Padding = new System.Windows.Forms.Padding(3);
+            NonStandardTab.Size = new System.Drawing.Size(1198, 457);
+            NonStandardTab.TabIndex = 6;
+            NonStandardTab.Text = "Non-standard Options";
+            // 
+            // ChkOmitRawParameterInCommandXXXToTelescope
+            // 
+            ChkOmitRawParameterInCommandXXXToTelescope.AutoSize = true;
+            ChkOmitRawParameterInCommandXXXToTelescope.Location = new System.Drawing.Point(370, 141);
+            ChkOmitRawParameterInCommandXXXToTelescope.Name = "ChkOmitRawParameterInCommandXXXToTelescope";
+            ChkOmitRawParameterInCommandXXXToTelescope.Size = new System.Drawing.Size(473, 19);
+            ChkOmitRawParameterInCommandXXXToTelescope.TabIndex = 0;
+            ChkOmitRawParameterInCommandXXXToTelescope.Text = "Omit the RAW parameter when sending CommandXXX methods to Telescope drivers";
+            ChkOmitRawParameterInCommandXXXToTelescope.UseVisualStyleBackColor = true;
             // 
             // SetupForm
             // 
@@ -3972,6 +3997,8 @@
             CorsConfigurationTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)NumCorsMaxAge).EndInit();
             ((System.ComponentModel.ISupportInitialize)DataGridCorsOrigins).EndInit();
+            NonStandardTab.ResumeLayout(false);
+            NonStandardTab.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -4243,5 +4270,7 @@
         private System.Windows.Forms.CheckBox chkSuppressConformationOnWindowsClose;
         private System.Windows.Forms.CheckBox chkConfirmExit;
         private System.Windows.Forms.CheckBox ChkEnableReboot;
+        private System.Windows.Forms.TabPage NonStandardTab;
+        private System.Windows.Forms.CheckBox ChkOmitRawParameterInCommandXXXToTelescope;
     }
 }

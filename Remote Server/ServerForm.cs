@@ -163,6 +163,7 @@ namespace ASCOM.Remote
         internal const string CHECK_FOR_PRE_RELEASE = "Check For Pre-release Updates"; public const bool CHECK_FOR_PRE_RELEASE_DEFAULT = true;
         internal const string SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE = "Suppress Confirmation On Windows Close"; public const bool SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE_DEFAULT = false;
         internal const string ENABLE_REBOOT = "Enable Remote Server Reboot"; public const bool ENABLE_REBOOT_DEFAULT = false;
+        internal const string NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE = "Non Standard - Omit Raw In Telescope CommandXXX"; public const bool NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE_DEFAULT = false;
 
         // Minimise behaviour strings
         internal const string MINIMISE_TO_SYSTEM_TRAY_KEY = "Minimise to system tray";
@@ -287,6 +288,7 @@ namespace ASCOM.Remote
         internal static bool CheckForPreReleaseUpdates;
         internal static bool SuppressConfirmationOnWindowsClose;
         internal static bool EnableReboot;
+        internal static bool NonStdOmitRawInCommandXXXToTelescope;
 
         #endregion
 
@@ -962,7 +964,7 @@ namespace ASCOM.Remote
 
                     LogMessage(0, 0, 0, "StartRESTServer", "Server started successfully.");
                     LogToScreen("Server started successfully.");
-
+                    LogToScreen("");
                 }
                 catch (Exception ex)
                 {
@@ -1107,6 +1109,18 @@ namespace ASCOM.Remote
 
                     LblDriverStatus.BackColor = Color.Green; // Turn the "Connected / Disconnected" colour box green
                     LblDriverStatus.Text = "Drivers Connected";
+                    LogToScreen("");
+
+                    // Log the state of non-standard features
+                    if (NonStdOmitRawInCommandXXXToTelescope)
+                    {
+                        string message1 = "NON-STANDARD BEHAVIOUR";
+                        string message2 = "The raw parameter will be omitted from CommandXXX calls to Telescope devices.";
+                        LogMessage(0, 0, 0, message1, message2);
+                        LogToScreen($"{message1}: {message2}");
+                        LogToScreen("");
+                    }
+                    LogBlankLine(0, 0, 0);
                 }
                 catch (Exception ex)
                 {
@@ -1115,6 +1129,7 @@ namespace ASCOM.Remote
                 }
             }
         }
+
         /// <summary>
         /// This method is called on receipt of both IPv4 broadcasts and IPv6 multi casts
         /// </summary>
@@ -1744,6 +1759,7 @@ namespace ASCOM.Remote
                 CheckForPreReleaseUpdates = driverProfile.GetValue<bool>(CHECK_FOR_PRE_RELEASE, string.Empty, CHECK_FOR_PRE_RELEASE_DEFAULT);
                 SuppressConfirmationOnWindowsClose = driverProfile.GetValue<bool>(SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE, string.Empty, SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE_DEFAULT);
                 EnableReboot = driverProfile.GetValue<bool>(ENABLE_REBOOT, string.Empty, ENABLE_REBOOT_DEFAULT);
+                NonStdOmitRawInCommandXXXToTelescope = driverProfile.GetValue<bool>(NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE, string.Empty, NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE_DEFAULT);
 
                 // Set the next log roll-over time using the persisted roll-over time value
                 SetNextRolloverTime();
@@ -1874,6 +1890,7 @@ namespace ASCOM.Remote
                 driverProfile.SetValueInvariant<bool>(CHECK_FOR_PRE_RELEASE, string.Empty, CheckForPreReleaseUpdates);
                 driverProfile.SetValueInvariant<bool>(SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE, string.Empty, SuppressConfirmationOnWindowsClose);
                 driverProfile.SetValueInvariant<bool>(ENABLE_REBOOT, string.Empty, EnableReboot);
+                driverProfile.SetValueInvariant<bool>(NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE, string.Empty, NonStdOmitRawInCommandXXXToTelescope);
 
                 // Update the next roll-over time in case the time has changed
                 //TL.LogMessage("WriteProfile", $"NextRolloverTime Before: {NextRolloverTime}");
@@ -4731,7 +4748,24 @@ namespace ASCOM.Remote
                     case "*.commandbool":
                         command = GetParameter<string>(requestData, SharedConstants.COMMAND_PARAMETER_NAME);
                         raw = GetParameter<bool>(requestData, SharedConstants.RAW_PARAMETER_NAME);
-                        deviceResponse = device.CommandBool(command, raw);
+
+                        // Check whether we are handing this in the standard way or non-standard way
+                        if (!NonStdOmitRawInCommandXXXToTelescope) // Standard behaviour for all device types
+                        {
+                            deviceResponse = device.CommandBool(command, raw);
+                        }
+                        else // Non-standard behaviour for telescope devices is active
+                        {
+                            // Check whether this is a telescope device
+                            if (configuredDevice.DeviceType.ToUpperInvariant() == "TELESCOPE") // This is a telescope device - undertake non-standard behaviour - omit the Raw parameter
+                            {
+                                deviceResponse = device.CommandBool(command);
+                            }
+                            else // Standard behaviour for all other device types
+                            {
+                                deviceResponse = device.CommandBool(command, raw);
+                            }
+                        }
                         break;
 
                     #endregion
@@ -5074,7 +5108,24 @@ namespace ASCOM.Remote
                     case "*.commandstring":
                         command = GetParameter<string>(requestData, SharedConstants.COMMAND_PARAMETER_NAME);
                         raw = GetParameter<bool>(requestData, SharedConstants.RAW_PARAMETER_NAME);
-                        deviceResponse = device.CommandString(command, raw);
+
+                        // Check whether we are handing this in the standard way or non-standard way
+                        if (!NonStdOmitRawInCommandXXXToTelescope) // Standard behaviour for all device types
+                        {
+                            deviceResponse = device.CommandString(command, raw);
+                        }
+                        else // Non-standard behaviour for telescope devices is active
+                        {
+                            // Check whether this is a telescope device
+                            if (configuredDevice.DeviceType.ToUpperInvariant() == "TELESCOPE") // This is a telescope device - undertake non-standard behaviour - omit the Raw parameter
+                            {
+                                deviceResponse = device.CommandString(command);
+                            }
+                            else // Standard behaviour for all other device types
+                            {
+                                deviceResponse = device.CommandString(command, raw);
+                            }
+                        }
                         break;
 
                     // CAMERA
@@ -7107,7 +7158,24 @@ namespace ASCOM.Remote
                     case "*.commandblind":
                         command = GetParameter<string>(requestData, SharedConstants.COMMAND_PARAMETER_NAME);
                         raw = GetParameter<bool>(requestData, SharedConstants.RAW_PARAMETER_NAME);
-                        device.CommandBlind(command, raw);
+
+                        // Check whether we are handing this in the standard way or non-standard way
+                        if (!NonStdOmitRawInCommandXXXToTelescope) // Standard behaviour for all device types
+                        {
+                            device.CommandBlind(command, raw);
+                        }
+                        else // Non-standard behaviour for telescope devices is active
+                        {
+                            // Check whether this is a telescope device
+                            if (configuredDevice.DeviceType.ToUpperInvariant() == "TELESCOPE") // This is a telescope device - undertake non-standard behaviour - omit the Raw parameter
+                            {
+                                device.CommandBlind(command);
+                            }
+                            else // Standard behaviour for all other device types
+                            {
+                                device.CommandBlind(command, raw);
+                            }
+                        }
                         break;
                     case "*.connect":
                         ValidatConnectAndDeviceStatePresent("Connect", MemberTypes.Method);
