@@ -28,29 +28,20 @@ namespace ASCOM.Remote
 
         public static Release LatestRelease(this IEnumerable<Release> releases)
         {
-            if (releases == null)
-            {
-                throw new ArgumentNullException(nameof(releases));
-            }
+            ArgumentNullException.ThrowIfNull(releases);
             return releases.Where(rp => !rp.Prerelease).Latest();
         }
 
         public static Release LatestPrerelease(this IEnumerable<Release> releases)
         {
-            if (releases == null)
-            {
-                throw new ArgumentNullException(nameof(releases));
-            }
+            ArgumentNullException.ThrowIfNull(releases);
             return releases.Where(rp => rp.Prerelease).Latest();
 
         }
 
         public static Release Latest(this IEnumerable<Release> releases)
         {
-            if (releases == null)
-            {
-                throw new ArgumentNullException(nameof(releases));
-            }
+            ArgumentNullException.ThrowIfNull(releases);
             if (releases.Any())
             {
                 return releases.OrderBy(rp => rp.ReleaseSemVersionFromTag()).LastOrDefault();
@@ -60,10 +51,7 @@ namespace ASCOM.Remote
 
         public static SemVersion ReleaseSemVersionFromTag(this Release release)
         {
-            if (release == null)
-            {
-                throw new ArgumentNullException(nameof(release));
-            }
+            ArgumentNullException.ThrowIfNull(release);
             if (!string.IsNullOrEmpty(release.TagName) && SemVersion.TryParse(release.TagName, SemVersionStyles.AllowV, out SemVersion _latest_release_version))
             {
                 return _latest_release_version;

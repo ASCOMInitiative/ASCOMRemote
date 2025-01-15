@@ -378,8 +378,10 @@ namespace ASCOM.Remote
                     }
 
                     // Create the stream writer used to write to disk
-                    logFileStream = new StreamWriter(Path.Combine(logFilePath, LogFileName), false);
-                    logFileStream.AutoFlush = true;
+                    logFileStream = new StreamWriter(Path.Combine(logFilePath, LogFileName), false)
+                    {
+                        AutoFlush = true
+                    };
                 }
                 catch (Exception ex)
                 {
@@ -398,8 +400,10 @@ namespace ASCOM.Remote
                     }
 
                     // Create the stream writer used to write to disk
-                    logFileStream = new StreamWriter(Path.Combine(logFilePath, LogFileName), false);
-                    logFileStream.AutoFlush = true;
+                    logFileStream = new StreamWriter(Path.Combine(logFilePath, LogFileName), false)
+                    {
+                        AutoFlush = true
+                    };
                 }
                 catch (Exception ex)
                 {

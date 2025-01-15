@@ -126,44 +126,44 @@ namespace ASCOM.Remote
 
         // Device server profile persistence constants
         internal const string SERVER_LOG_FOLDER_PROFILENAME = "Server Log Folder"; // No default value constant because the default Documents folder has to be calculated dynamically at run time
-        internal const string SERVER_ACCESS_LOG_PROFILENAME = "Server Access Log Enabled"; public const bool SERVER_ACCESS_LOG_DEFAULT = true;
-        internal const string SERVER_TRACE_LEVEL_PROFILENAME = "Server Trace Level"; public const bool SERVER_TRACE_LEVEL_DEFAULT = true;
-        internal const string SERVER_DEBUG_TRACE_PROFILENAME = "Server Include Debug Trace"; public const bool SERVER_DEBUG_TRACE_DEFAULT = false;
-        internal const string SERVER_IPADDRESS_PROFILENAME = "Server IP Address"; public const string SERVER_IPADDRESS_DEFAULT = SharedConstants.LOCALHOST_ADDRESS_IPV4;
-        internal const string SERVER_PORTNUMBER_PROFILENAME = "Server Port Number"; public const decimal SERVER_PORTNUMBER_DEFAULT = 11111;
-        internal const string SERVER_AUTOCONNECT_PROFILENAME = "Server Auto Connect"; public const bool SERVER_AUTOCONNECT_DEFAULT = true;
-        internal const string SCREEN_LOG_REQUESTS_PROFILENAME = "Log Requests To Screen"; public const bool SCREEN_LOG_REQUESTS_DEFAULT = true;
-        internal const string SCREEN_LOG_RESPONSES_PROFILENAME = "Log Responses To Screen"; public const bool SCREEN_LOG_RESPONSES_DEFAULT = false;
-        internal const string ALLOW_CONNECTED_SET_FALSE_PROFILENAME = "Allow Connected Set False"; public const bool ALLOW_CONNECTED_SET_FALSE_DEFAULT = true;
-        internal const string ALLOW_CONNECTED_SET_TRUE_PROFILENAME = "Allow Connected Set True"; public const bool ALLOW_CONNECTED_SET_TRUE_DEFAULT = true;
-        internal const string ALLOW_CONCURRENT_ACCESS_PROFILENAME = "Allow Concurrent Access"; public const bool ALLOW_CONCURRENT_ACCESS_DEFAULT = false;
-        internal const string MANAGEMENT_INTERFACE_ENABLED_PROFILENAME = "Management Interface Enabled"; public const bool MANGEMENT_INTERFACE_ENABLED_DEFAULT = false;
-        internal const string START_WITH_API_ENABLED_PROFILENAME = "Start WIth API Enabled"; public const bool START_WITH_API_ENABLED_DEFAULT = true;
-        internal const string RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME = "Run Drivers On Separate Threads"; public const bool RUN_DRIVERS_ON_SEPARATE_THREADS_DEFAULT = true;
-        internal const string LOG_CLIENT_IPADDRESS_PROFILENAME = "Log Client IP Address"; public const bool LOG_CLIENT_IPADDRESS_DEFAULT = false;
-        internal const string INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME = "Include Driver Exception In JSON Response"; public const bool INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_DEFAULT = false;
-        internal const string REMOTE_SERVER_LOCATION_PROFILENAME = "Remote Server Location"; public const string REMOTE_SERVER_LOCATION_DEFAULT = "Unknown";
-        internal const string CORS_PERMITTED_ORIGINS_PROFILENAME = "CORS Permitted Origins"; public const string CORS_PERMITTED_ORIGINS_DEFAULT = "*";
-        internal const string CORS_SUPPORT_ENABLED_PROFILENAME = "CORS Support Enabled"; public const bool CORS_SUPPORT_ENABLED_DEFAULT = false;
-        internal const string CORS_MAX_AGE_PROFILENAME = "CORS Max Age"; public const decimal CORS_MAX_AGE_DEFAULT = 3600;
-        internal const string CORS_CREDENTIALS_PERMITTED_PROFILENAME = "CORS Credentials Permitted"; public const bool CORS_CREDENTIALS_PERMITTED_DEFAULT = false;
-        internal const string ALPACA_DISCOVERY_ENABLED_PROFILENAME = "Alpaca Discovery Enabled"; public const bool ALPACA_DISCOVERY_ENABLED_DEFAULT = true;
-        internal const string ALPACA_UNIQUE_ID_PROFILENAME = "Alpaca Unique ID"; public static string ALPACA_UNIQUE_ID_DEFAULT = Guid.Empty.ToString();
-        internal const string ALPACA_DISCOVERY_PORT_PROFILENAME = "Alpaca Discovery Port"; public static int ALPACA_DISCOVERY_PORT_DEFAULT = SharedConstants.ALPACA_DISCOVERY_PORT;
-        internal const string MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME = "Maximum Number Of Devices"; public static int MAXIMUM_NUMBER_OF_DEVICES_DEFAULT = 10;
-        internal const string IPV4_ENABLED_PROFILENAME = "IP v4 Enabled"; public const bool IPV4_ENABLED_DEFAULT = true;
-        internal const string IPV6_ENABLED_PROFILENAME = "IP v6 Enabled"; public const bool IPV6_ENABLED_DEFAULT = false;
-        internal const string ROLLOVER_LOGS_ENABLED_PROFILENAME = "Rollover Logs Enabled"; public const bool ROLLOVER_LOGS_ENABLED_DEFAULT = false;
-        internal const string ROLLOVER_TIME_PROFILENAME = "Rollover Time"; public static DateTime ROLLOVER_TIME_DEFAULT = DateTime.Now.Date; // Default value can't be constant because it's a date-time type
-        internal const string USE_UTC_TIME_IN_LOGS_PROFILENAME = "Use UTC Time In Logs"; public const bool USE_UTC_TIME_IN_LOGS_ENABLED_DEFAULT = false;
-        internal const string MINIMISE_TO_SYSTEM_TRAY_PROFILENAME = "Minimise To System Tray"; public const bool MINIMISE_TO_SYSTEM_TRAY_DEFAULT = false;
-        internal const string CONFIRM_EXIT_PROFILENAME = "Confirm Exit"; public const bool CONFIRM_EXIT_DEFAULT = false;
-        internal const string MINIMISE_ON_START_PROFILENAME = "Minimise On Start"; public const bool MINIMISE_ON_START_DEFAULT = false;
-        internal const string CHECK_FOR_UPDATES = "Check For Updates"; public const bool CHECK_FOR_UPDATES_DEFAULT = true;
-        internal const string CHECK_FOR_PRE_RELEASE = "Check For Pre-release Updates"; public const bool CHECK_FOR_PRE_RELEASE_DEFAULT = true;
-        internal const string SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE = "Suppress Confirmation On Windows Close"; public const bool SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE_DEFAULT = false;
-        internal const string ENABLE_REBOOT = "Enable Remote Server Reboot"; public const bool ENABLE_REBOOT_DEFAULT = false;
-        internal const string NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE = "Non Standard - Omit Raw In Telescope CommandXXX"; public const bool NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE_DEFAULT = false;
+        internal const string SERVER_ACCESS_LOG_PROFILENAME = "Server Access Log Enabled"; internal const bool SERVER_ACCESS_LOG_DEFAULT = true;
+        internal const string SERVER_TRACE_LEVEL_PROFILENAME = "Server Trace Level"; internal const bool SERVER_TRACE_LEVEL_DEFAULT = true;
+        internal const string SERVER_DEBUG_TRACE_PROFILENAME = "Server Include Debug Trace"; internal const bool SERVER_DEBUG_TRACE_DEFAULT = false;
+        internal const string SERVER_IPADDRESS_PROFILENAME = "Server IP Address"; internal const string SERVER_IPADDRESS_DEFAULT = SharedConstants.LOCALHOST_ADDRESS_IPV4;
+        internal const string SERVER_PORTNUMBER_PROFILENAME = "Server Port Number"; internal const decimal SERVER_PORTNUMBER_DEFAULT = 11111;
+        internal const string SERVER_AUTOCONNECT_PROFILENAME = "Server Auto Connect"; internal const bool SERVER_AUTOCONNECT_DEFAULT = true;
+        internal const string SCREEN_LOG_REQUESTS_PROFILENAME = "Log Requests To Screen"; internal const bool SCREEN_LOG_REQUESTS_DEFAULT = true;
+        internal const string SCREEN_LOG_RESPONSES_PROFILENAME = "Log Responses To Screen"; internal const bool SCREEN_LOG_RESPONSES_DEFAULT = false;
+        internal const string ALLOW_CONNECTED_SET_FALSE_PROFILENAME = "Allow Connected Set False"; internal const bool ALLOW_CONNECTED_SET_FALSE_DEFAULT = true;
+        internal const string ALLOW_CONNECTED_SET_TRUE_PROFILENAME = "Allow Connected Set True"; internal const bool ALLOW_CONNECTED_SET_TRUE_DEFAULT = true;
+        internal const string ALLOW_CONCURRENT_ACCESS_PROFILENAME = "Allow Concurrent Access"; internal const bool ALLOW_CONCURRENT_ACCESS_DEFAULT = false;
+        internal const string MANAGEMENT_INTERFACE_ENABLED_PROFILENAME = "Management Interface Enabled"; internal const bool MANGEMENT_INTERFACE_ENABLED_DEFAULT = false;
+        internal const string START_WITH_API_ENABLED_PROFILENAME = "Start WIth API Enabled"; internal const bool START_WITH_API_ENABLED_DEFAULT = true;
+        internal const string RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME = "Run Drivers On Separate Threads"; internal const bool RUN_DRIVERS_ON_SEPARATE_THREADS_DEFAULT = true;
+        internal const string LOG_CLIENT_IPADDRESS_PROFILENAME = "Log Client IP Address"; internal const bool LOG_CLIENT_IPADDRESS_DEFAULT = false;
+        internal const string INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME = "Include Driver Exception In JSON Response"; internal const bool INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_DEFAULT = false;
+        internal const string REMOTE_SERVER_LOCATION_PROFILENAME = "Remote Server Location"; internal const string REMOTE_SERVER_LOCATION_DEFAULT = "Unknown";
+        internal const string CORS_PERMITTED_ORIGINS_PROFILENAME = "CORS Permitted Origins"; internal const string CORS_PERMITTED_ORIGINS_DEFAULT = "*";
+        internal const string CORS_SUPPORT_ENABLED_PROFILENAME = "CORS Support Enabled"; internal const bool CORS_SUPPORT_ENABLED_DEFAULT = false;
+        internal const string CORS_MAX_AGE_PROFILENAME = "CORS Max Age"; internal const decimal CORS_MAX_AGE_DEFAULT = 3600;
+        internal const string CORS_CREDENTIALS_PERMITTED_PROFILENAME = "CORS Credentials Permitted"; internal const bool CORS_CREDENTIALS_PERMITTED_DEFAULT = false;
+        internal const string ALPACA_DISCOVERY_ENABLED_PROFILENAME = "Alpaca Discovery Enabled"; internal const bool ALPACA_DISCOVERY_ENABLED_DEFAULT = true;
+        internal const string ALPACA_UNIQUE_ID_PROFILENAME = "Alpaca Unique ID"; internal static string ALPACA_UNIQUE_ID_DEFAULT = Guid.Empty.ToString();
+        internal const string ALPACA_DISCOVERY_PORT_PROFILENAME = "Alpaca Discovery Port"; internal static int ALPACA_DISCOVERY_PORT_DEFAULT = SharedConstants.ALPACA_DISCOVERY_PORT;
+        internal const string MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME = "Maximum Number Of Devices"; internal static int MAXIMUM_NUMBER_OF_DEVICES_DEFAULT = 10;
+        internal const string IPV4_ENABLED_PROFILENAME = "IP v4 Enabled"; internal const bool IPV4_ENABLED_DEFAULT = true;
+        internal const string IPV6_ENABLED_PROFILENAME = "IP v6 Enabled"; internal const bool IPV6_ENABLED_DEFAULT = false;
+        internal const string ROLLOVER_LOGS_ENABLED_PROFILENAME = "Rollover Logs Enabled"; internal const bool ROLLOVER_LOGS_ENABLED_DEFAULT = false;
+        internal const string ROLLOVER_TIME_PROFILENAME = "Rollover Time"; internal static DateTime ROLLOVER_TIME_DEFAULT = DateTime.Now.Date; // Default value can't be constant because it's a date-time type
+        internal const string USE_UTC_TIME_IN_LOGS_PROFILENAME = "Use UTC Time In Logs"; internal const bool USE_UTC_TIME_IN_LOGS_ENABLED_DEFAULT = false;
+        internal const string MINIMISE_TO_SYSTEM_TRAY_PROFILENAME = "Minimise To System Tray"; internal const bool MINIMISE_TO_SYSTEM_TRAY_DEFAULT = false;
+        internal const string CONFIRM_EXIT_PROFILENAME = "Confirm Exit"; internal const bool CONFIRM_EXIT_DEFAULT = false;
+        internal const string MINIMISE_ON_START_PROFILENAME = "Minimise On Start"; internal const bool MINIMISE_ON_START_DEFAULT = false;
+        internal const string CHECK_FOR_UPDATES = "Check For Updates"; internal const bool CHECK_FOR_UPDATES_DEFAULT = true;
+        internal const string CHECK_FOR_PRE_RELEASE = "Check For Pre-release Updates"; internal const bool CHECK_FOR_PRE_RELEASE_DEFAULT = true;
+        internal const string SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE = "Suppress Confirmation On Windows Close"; internal const bool SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE_DEFAULT = false;
+        internal const string ENABLE_REBOOT = "Enable Remote Server Reboot"; internal const bool ENABLE_REBOOT_DEFAULT = false;
+        internal const string NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE = "Non Standard - Omit Raw In Telescope CommandXXX"; internal const bool NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE_DEFAULT = false;
 
         // Minimise behaviour strings
         internal const string MINIMISE_TO_SYSTEM_TRAY_KEY = "Minimise to system tray";
@@ -228,8 +228,8 @@ namespace ASCOM.Remote
         internal static TraceLoggerPlus AccessLog;
 
         // Lists to hold discovery UDP clients
-        private readonly List<UdpClient> discoveryClientsIpV6 = new();
-        private readonly List<UdpClient> discoveryClientsIpV4 = new();
+        private readonly List<UdpClient> discoveryClientsIpV6 = [];
+        private readonly List<UdpClient> discoveryClientsIpV4 = [];
         private int discoveryCount; // Unique number for each discovery packet received
 
         internal readonly object counterLock = new();
@@ -268,7 +268,7 @@ namespace ASCOM.Remote
         internal static bool LogClientIPAddress;
         internal static bool IncludeDriverExceptionInJsonResponse;
         internal static string RemoteServerLocation;
-        internal static List<string> CorsPermittedOrigins = new(); // List of permitted origins
+        internal static List<string> CorsPermittedOrigins = []; // List of permitted origins
         internal static bool CorsSupportIsEnabled;
         internal static decimal CorsMaxAge;
         internal static bool CorsCredentialsPermitted;
@@ -343,10 +343,10 @@ namespace ASCOM.Remote
                 };
 
                 // Initialise lists
-                ConfiguredDevices = new Dictionary<string, ConfiguredDevice>();
+                ConfiguredDevices = [];
                 ActiveObjects = new ConcurrentDictionary<string, ActiveObject>();
-                ServerDeviceNames = new SortedSet<string>();
-                ServerDeviceNumbers = new SortedSet<string>();
+                ServerDeviceNames = [];
+                ServerDeviceNumbers = [];
 
                 ReadProfile();
 
@@ -491,35 +491,33 @@ namespace ASCOM.Remote
             }
 
             // Give warning message if running as ADMIN
-            using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+            using WindowsIdentity identity = WindowsIdentity.GetCurrent();
+            // Determine whether the user is running as admin
+            WindowsPrincipal principal = new(identity);
+            if (principal.IsInRole(WindowsBuiltInRole.Administrator))
             {
-                // Determine whether the user is running as admin
-                WindowsPrincipal principal = new(identity);
-                if (principal.IsInRole(WindowsBuiltInRole.Administrator))
+                // Running as admin so show a warning message on the screen
+
+                // Restore the form if minimised
+                RestoreForm();
+
+                // Display message
+                LogToScreen(" ");
+                LogToScreen("***** ASCOM REMOTE IS RUNNING WITH ADMIN PRIVILEGE!");
+                LogToScreen(" ");
+                LogToScreen("***** This increases the risk that malicious individuals will target you and cause havoc in your life.");
+                LogToScreen("***** There is no need to run ASCOM Remote with Admin privilege, the application is fully functional in normal user mode.");
+                LogToScreen("***** Please close the Remote Server and re-open it in normal user mode.");
+                LogToScreen(" ");
+
+                // Ask whether to close the application
+                DialogResult choice = MessageBox.Show("Close ASCOM Remote because it is running as administrator.", "Threat Management", MessageBoxButtons.YesNo, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button1);
+
+                // Action the user's choice if required
+                if (choice == DialogResult.Yes)
                 {
-                    // Running as admin so show a warning message on the screen
-
-                    // Restore the form if minimised
-                    RestoreForm();
-
-                    // Display message
-                    LogToScreen(" ");
-                    LogToScreen("***** ASCOM REMOTE IS RUNNING WITH ADMIN PRIVILEGE!");
-                    LogToScreen(" ");
-                    LogToScreen("***** This increases the risk that malicious individuals will target you and cause havoc in your life.");
-                    LogToScreen("***** There is no need to run ASCOM Remote with Admin privilege, the application is fully functional in normal user mode.");
-                    LogToScreen("***** Please close the Remote Server and re-open it in normal user mode.");
-                    LogToScreen(" ");
-
-                    // Ask whether to close the application
-                    DialogResult choice = MessageBox.Show("Close ASCOM Remote because it is running as administrator.", "Threat Management", MessageBoxButtons.YesNo, MessageBoxIcon.Stop, MessageBoxDefaultButton.Button1);
-
-                    // Action the user's choice if required
-                    if (choice == DialogResult.Yes)
-                    {
-                        // User selected close application so disconnect devices and stop the server
-                        Close();
-                    }
+                    // User selected close application so disconnect devices and stop the server
+                    Close();
                 }
             }
         }
@@ -1091,7 +1089,7 @@ namespace ASCOM.Remote
                                     if (this.InvokeRequired)
                                     {
                                         CreateInstanceDelegate createInstanceDelegate = new(CreateInstance);
-                                        this.Invoke(createInstanceDelegate, new object[] { configuredDevice }); // Force the driver to be created on the main UI thread if we are currently executing on a different thread
+                                        this.Invoke(createInstanceDelegate, [configuredDevice]); // Force the driver to be created on the main UI thread if we are currently executing on a different thread
                                     }
                                     else CreateInstance(configuredDevice); // We are on the UI thread so just create the driver
                                 }
@@ -1257,7 +1255,7 @@ namespace ASCOM.Remote
                             {
                                 ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject.Connected = true;
                             }
-                            catch (Exception ex2) when (configuredDevice.Value.DeviceType.ToLowerInvariant() == "focuser")
+                            catch (Exception ex2) when (configuredDevice.Value.DeviceType.Equals("focuser", StringComparison.InvariantCultureIgnoreCase))
                             {
                                 LogException(0, 0, 0, "CreateInstance", $"Error setting Connected to true for focuser device {configuredDevice.Value.ProgID} now trying Link for IFocuserV1 devices: \r\n{ex2}");
                                 ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject.Link = true;
@@ -1556,10 +1554,10 @@ namespace ASCOM.Remote
                 else
                 {
                     // Limit the maximum number of characters in the screen log to maintain performance
-                    if (txtLog.TextLength > SCREEN_LOG_MAXIMUM_LENGTH) txtLog.Text = txtLog.Text.Substring(SCREEN_LOG_MAXIMUM_LENGTH / 3);
+                    if (txtLog.TextLength > SCREEN_LOG_MAXIMUM_LENGTH) txtLog.Text = txtLog.Text[(SCREEN_LOG_MAXIMUM_LENGTH / 3)..];
 
                     // Limit the number of characters that can be added in one message to maintain performance
-                    if (screenMessage.Length > SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH) screenMessage = $"{screenMessage.Substring(0, SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH)} - Screen display truncated to {SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH} characters in order to maintain performance";
+                    if (screenMessage.Length > SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH) screenMessage = $"{screenMessage[..SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH]} - Screen display truncated to {SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH} characters in order to maintain performance";
 
                     txtLog.AppendText(screenMessage + "\r\n"); // Add the text to the screen log
                     txtLog.SelectionStart = txtLog.Text.Length; // Move the text box focus to the newly added text
@@ -1572,7 +1570,7 @@ namespace ASCOM.Remote
             if (txtConcurrency.InvokeRequired)
             {
                 SetConcurrencyCallback d = new(IncrementConcurrencyCounter);
-                this.Invoke(d, Array.Empty<object>());
+                this.Invoke(d, []);
             }
             else
             {
@@ -1586,7 +1584,7 @@ namespace ASCOM.Remote
             if (this.txtConcurrency.InvokeRequired)
             {
                 SetConcurrencyCallback decrementConcurrencyCounterDelegate = new(DecrementConcurrencyCounter);
-                this.Invoke(decrementConcurrencyCounterDelegate, Array.Empty<object>());
+                this.Invoke(decrementConcurrencyCounterDelegate, []);
             }
             else
             {
@@ -1686,7 +1684,7 @@ namespace ASCOM.Remote
         public static int GetManagedSize(Type type)
         {
             // all this just to invoke one op code with no arguments!
-            var method = new DynamicMethod("GetManagedSizeImpl", typeof(uint), Array.Empty<Type>());
+            var method = new DynamicMethod("GetManagedSizeImpl", typeof(uint), []);
 
             ILGenerator gen = method.GetILGenerator();
 
@@ -1718,97 +1716,95 @@ namespace ASCOM.Remote
         /// </summary>
         public static void ReadProfile()
         {
-            using (Configuration driverProfile = new())
+            using Configuration driverProfile = new();
+            // Initialise the logging trace state from the Profile
+            TraceState = driverProfile.GetValue<bool>(SERVER_TRACE_LEVEL_PROFILENAME, string.Empty, SERVER_TRACE_LEVEL_DEFAULT);
+            TL.Enabled = TraceState; // Set the trace state here so that it can be used below
+
+            TraceFolder = driverProfile.GetValue<string>(SERVER_LOG_FOLDER_PROFILENAME, string.Empty, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\ASCOM");
+            DebugTraceState = driverProfile.GetValue<bool>(SERVER_DEBUG_TRACE_PROFILENAME, string.Empty, SERVER_DEBUG_TRACE_DEFAULT);
+            ServerIPAddressString = driverProfile.GetValue<string>(SERVER_IPADDRESS_PROFILENAME, string.Empty, SERVER_IPADDRESS_DEFAULT);
+            ServerPortNumber = driverProfile.GetValue<decimal>(SERVER_PORTNUMBER_PROFILENAME, string.Empty, SERVER_PORTNUMBER_DEFAULT);
+            StartWithDevicesConnected = driverProfile.GetValue<bool>(SERVER_AUTOCONNECT_PROFILENAME, string.Empty, SERVER_AUTOCONNECT_DEFAULT);
+            AccessLogEnabled = driverProfile.GetValue<bool>(SERVER_ACCESS_LOG_PROFILENAME, string.Empty, SERVER_ACCESS_LOG_DEFAULT);
+            ScreenLogRequests = driverProfile.GetValue<bool>(SCREEN_LOG_REQUESTS_PROFILENAME, string.Empty, SCREEN_LOG_REQUESTS_DEFAULT);
+            ScreenLogResponses = driverProfile.GetValue<bool>(SCREEN_LOG_RESPONSES_PROFILENAME, string.Empty, SCREEN_LOG_RESPONSES_DEFAULT);
+            ManagementInterfaceEnabled = driverProfile.GetValue<bool>(MANAGEMENT_INTERFACE_ENABLED_PROFILENAME, string.Empty, MANGEMENT_INTERFACE_ENABLED_DEFAULT);
+            StartWithApiEnabled = driverProfile.GetValue<bool>(START_WITH_API_ENABLED_PROFILENAME, string.Empty, START_WITH_API_ENABLED_DEFAULT);
+            RunDriversOnSeparateThreads = driverProfile.GetValue<bool>(RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME, string.Empty, RUN_DRIVERS_ON_SEPARATE_THREADS_DEFAULT);
+            LogClientIPAddress = driverProfile.GetValue<bool>(LOG_CLIENT_IPADDRESS_PROFILENAME, string.Empty, LOG_CLIENT_IPADDRESS_DEFAULT);
+            TL.IpAddressTraceState = LogClientIPAddress; // Persist the IP address trace state to the TraceLogger so that it can be used to format lines as required
+            IncludeDriverExceptionInJsonResponse = driverProfile.GetValue<bool>(INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME, string.Empty, INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_DEFAULT);
+            RemoteServerLocation = driverProfile.GetValue<string>(REMOTE_SERVER_LOCATION_PROFILENAME, string.Empty, REMOTE_SERVER_LOCATION_DEFAULT);
+            CorsPermittedOrigins.FromConcatenatedString(driverProfile.GetValue<string>(CORS_PERMITTED_ORIGINS_PROFILENAME, string.Empty, CORS_PERMITTED_ORIGINS_DEFAULT), SharedConstants.CORS_SERIALISATION_SEPARATOR);
+            CorsSupportIsEnabled = driverProfile.GetValue<bool>(CORS_SUPPORT_ENABLED_PROFILENAME, string.Empty, CORS_SUPPORT_ENABLED_DEFAULT);
+            CorsMaxAge = driverProfile.GetValue<decimal>(CORS_MAX_AGE_PROFILENAME, string.Empty, CORS_MAX_AGE_DEFAULT);
+            CorsCredentialsPermitted = driverProfile.GetValue<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CORS_CREDENTIALS_PERMITTED_DEFAULT);
+            AlpacaDiscoveryEnabled = driverProfile.GetValue<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, ALPACA_DISCOVERY_ENABLED_DEFAULT);
+            AlpacaUniqueId = driverProfile.GetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, ALPACA_UNIQUE_ID_DEFAULT);
+            AlpacaDiscoveryPort = driverProfile.GetValue<decimal>(ALPACA_DISCOVERY_PORT_PROFILENAME, string.Empty, ALPACA_DISCOVERY_PORT_DEFAULT);
+            MaximumNumberOfDevices = driverProfile.GetValue<int>(MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME, string.Empty, MAXIMUM_NUMBER_OF_DEVICES_DEFAULT);
+            IpV4Enabled = driverProfile.GetValue<bool>(IPV4_ENABLED_PROFILENAME, string.Empty, IPV4_ENABLED_DEFAULT);
+            IpV6Enabled = driverProfile.GetValue<bool>(IPV6_ENABLED_PROFILENAME, string.Empty, IPV6_ENABLED_DEFAULT);
+            RolloverLogsEnabled = driverProfile.GetValue<bool>(ROLLOVER_LOGS_ENABLED_PROFILENAME, string.Empty, ROLLOVER_LOGS_ENABLED_DEFAULT);
+            RolloverTime = driverProfile.GetValue<DateTime>(ROLLOVER_TIME_PROFILENAME, string.Empty, ROLLOVER_TIME_DEFAULT);
+            UseUtcTimeInLogs = driverProfile.GetValue<bool>(USE_UTC_TIME_IN_LOGS_PROFILENAME, string.Empty, USE_UTC_TIME_IN_LOGS_ENABLED_DEFAULT);
+            MinimiseToSystemTray = driverProfile.GetValue<bool>(MINIMISE_TO_SYSTEM_TRAY_PROFILENAME, string.Empty, MINIMISE_TO_SYSTEM_TRAY_DEFAULT);
+            ConfirmExit = driverProfile.GetValue<bool>(CONFIRM_EXIT_PROFILENAME, string.Empty, CONFIRM_EXIT_DEFAULT);
+            StartMinimised = driverProfile.GetValue<bool>(MINIMISE_ON_START_PROFILENAME, string.Empty, MINIMISE_ON_START_DEFAULT);
+            CheckForUpdates = driverProfile.GetValue<bool>(CHECK_FOR_UPDATES, string.Empty, CHECK_FOR_UPDATES_DEFAULT);
+            CheckForPreReleaseUpdates = driverProfile.GetValue<bool>(CHECK_FOR_PRE_RELEASE, string.Empty, CHECK_FOR_PRE_RELEASE_DEFAULT);
+            SuppressConfirmationOnWindowsClose = driverProfile.GetValue<bool>(SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE, string.Empty, SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE_DEFAULT);
+            EnableReboot = driverProfile.GetValue<bool>(ENABLE_REBOOT, string.Empty, ENABLE_REBOOT_DEFAULT);
+            NonStdOmitRawInCommandXXXToTelescope = driverProfile.GetValue<bool>(NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE, string.Empty, NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE_DEFAULT);
+
+            // Set the next log roll-over time using the persisted roll-over time value
+            SetNextRolloverTime();
+
+            // Clear collections before repopulating
+            ServerDeviceNumbers.Clear();
+            ServerDeviceNames.Clear();
+
+            // Populate the server device numbers and names based on the MaximumNumberOfDevices value
+            for (int i = 0; i < MaximumNumberOfDevices; i++)
             {
-                // Initialise the logging trace state from the Profile
-                TraceState = driverProfile.GetValue<bool>(SERVER_TRACE_LEVEL_PROFILENAME, string.Empty, SERVER_TRACE_LEVEL_DEFAULT);
-                TL.Enabled = TraceState; // Set the trace state here so that it can be used below
-
-                TraceFolder = driverProfile.GetValue<string>(SERVER_LOG_FOLDER_PROFILENAME, string.Empty, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\ASCOM");
-                DebugTraceState = driverProfile.GetValue<bool>(SERVER_DEBUG_TRACE_PROFILENAME, string.Empty, SERVER_DEBUG_TRACE_DEFAULT);
-                ServerIPAddressString = driverProfile.GetValue<string>(SERVER_IPADDRESS_PROFILENAME, string.Empty, SERVER_IPADDRESS_DEFAULT);
-                ServerPortNumber = driverProfile.GetValue<decimal>(SERVER_PORTNUMBER_PROFILENAME, string.Empty, SERVER_PORTNUMBER_DEFAULT);
-                StartWithDevicesConnected = driverProfile.GetValue<bool>(SERVER_AUTOCONNECT_PROFILENAME, string.Empty, SERVER_AUTOCONNECT_DEFAULT);
-                AccessLogEnabled = driverProfile.GetValue<bool>(SERVER_ACCESS_LOG_PROFILENAME, string.Empty, SERVER_ACCESS_LOG_DEFAULT);
-                ScreenLogRequests = driverProfile.GetValue<bool>(SCREEN_LOG_REQUESTS_PROFILENAME, string.Empty, SCREEN_LOG_REQUESTS_DEFAULT);
-                ScreenLogResponses = driverProfile.GetValue<bool>(SCREEN_LOG_RESPONSES_PROFILENAME, string.Empty, SCREEN_LOG_RESPONSES_DEFAULT);
-                ManagementInterfaceEnabled = driverProfile.GetValue<bool>(MANAGEMENT_INTERFACE_ENABLED_PROFILENAME, string.Empty, MANGEMENT_INTERFACE_ENABLED_DEFAULT);
-                StartWithApiEnabled = driverProfile.GetValue<bool>(START_WITH_API_ENABLED_PROFILENAME, string.Empty, START_WITH_API_ENABLED_DEFAULT);
-                RunDriversOnSeparateThreads = driverProfile.GetValue<bool>(RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME, string.Empty, RUN_DRIVERS_ON_SEPARATE_THREADS_DEFAULT);
-                LogClientIPAddress = driverProfile.GetValue<bool>(LOG_CLIENT_IPADDRESS_PROFILENAME, string.Empty, LOG_CLIENT_IPADDRESS_DEFAULT);
-                TL.IpAddressTraceState = LogClientIPAddress; // Persist the IP address trace state to the TraceLogger so that it can be used to format lines as required
-                IncludeDriverExceptionInJsonResponse = driverProfile.GetValue<bool>(INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME, string.Empty, INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_DEFAULT);
-                RemoteServerLocation = driverProfile.GetValue<string>(REMOTE_SERVER_LOCATION_PROFILENAME, string.Empty, REMOTE_SERVER_LOCATION_DEFAULT);
-                CorsPermittedOrigins.FromConcatenatedString(driverProfile.GetValue<string>(CORS_PERMITTED_ORIGINS_PROFILENAME, string.Empty, CORS_PERMITTED_ORIGINS_DEFAULT), SharedConstants.CORS_SERIALISATION_SEPARATOR);
-                CorsSupportIsEnabled = driverProfile.GetValue<bool>(CORS_SUPPORT_ENABLED_PROFILENAME, string.Empty, CORS_SUPPORT_ENABLED_DEFAULT);
-                CorsMaxAge = driverProfile.GetValue<decimal>(CORS_MAX_AGE_PROFILENAME, string.Empty, CORS_MAX_AGE_DEFAULT);
-                CorsCredentialsPermitted = driverProfile.GetValue<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CORS_CREDENTIALS_PERMITTED_DEFAULT);
-                AlpacaDiscoveryEnabled = driverProfile.GetValue<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, ALPACA_DISCOVERY_ENABLED_DEFAULT);
-                AlpacaUniqueId = driverProfile.GetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, ALPACA_UNIQUE_ID_DEFAULT);
-                AlpacaDiscoveryPort = driverProfile.GetValue<decimal>(ALPACA_DISCOVERY_PORT_PROFILENAME, string.Empty, ALPACA_DISCOVERY_PORT_DEFAULT);
-                MaximumNumberOfDevices = driverProfile.GetValue<int>(MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME, string.Empty, MAXIMUM_NUMBER_OF_DEVICES_DEFAULT);
-                IpV4Enabled = driverProfile.GetValue<bool>(IPV4_ENABLED_PROFILENAME, string.Empty, IPV4_ENABLED_DEFAULT);
-                IpV6Enabled = driverProfile.GetValue<bool>(IPV6_ENABLED_PROFILENAME, string.Empty, IPV6_ENABLED_DEFAULT);
-                RolloverLogsEnabled = driverProfile.GetValue<bool>(ROLLOVER_LOGS_ENABLED_PROFILENAME, string.Empty, ROLLOVER_LOGS_ENABLED_DEFAULT);
-                RolloverTime = driverProfile.GetValue<DateTime>(ROLLOVER_TIME_PROFILENAME, string.Empty, ROLLOVER_TIME_DEFAULT);
-                UseUtcTimeInLogs = driverProfile.GetValue<bool>(USE_UTC_TIME_IN_LOGS_PROFILENAME, string.Empty, USE_UTC_TIME_IN_LOGS_ENABLED_DEFAULT);
-                MinimiseToSystemTray = driverProfile.GetValue<bool>(MINIMISE_TO_SYSTEM_TRAY_PROFILENAME, string.Empty, MINIMISE_TO_SYSTEM_TRAY_DEFAULT);
-                ConfirmExit = driverProfile.GetValue<bool>(CONFIRM_EXIT_PROFILENAME, string.Empty, CONFIRM_EXIT_DEFAULT);
-                StartMinimised = driverProfile.GetValue<bool>(MINIMISE_ON_START_PROFILENAME, string.Empty, MINIMISE_ON_START_DEFAULT);
-                CheckForUpdates = driverProfile.GetValue<bool>(CHECK_FOR_UPDATES, string.Empty, CHECK_FOR_UPDATES_DEFAULT);
-                CheckForPreReleaseUpdates = driverProfile.GetValue<bool>(CHECK_FOR_PRE_RELEASE, string.Empty, CHECK_FOR_PRE_RELEASE_DEFAULT);
-                SuppressConfirmationOnWindowsClose = driverProfile.GetValue<bool>(SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE, string.Empty, SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE_DEFAULT);
-                EnableReboot = driverProfile.GetValue<bool>(ENABLE_REBOOT, string.Empty, ENABLE_REBOOT_DEFAULT);
-                NonStdOmitRawInCommandXXXToTelescope = driverProfile.GetValue<bool>(NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE, string.Empty, NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE_DEFAULT);
-
-                // Set the next log roll-over time using the persisted roll-over time value
-                SetNextRolloverTime();
-
-                // Clear collections before repopulating
-                ServerDeviceNumbers.Clear();
-                ServerDeviceNames.Clear();
-
-                // Populate the server device numbers and names based on the MaximumNumberOfDevices value
-                for (int i = 0; i < MaximumNumberOfDevices; i++)
-                {
-                    ServerDeviceNumbers.Add(i.ToString());
-                    ServerDeviceNames.Add($"ServedDevice{i:00}");
-                }
-
-                // Clear collection before repopulating
-                ConfiguredDevices.Clear();
-
-                // Read configured device settings
-                foreach (string deviceName in ServerDeviceNames)
-                {
-                    // Backward compatibility fix for early releases that only hosted 10 devices
-                    string revisedDeviceName = FixDeviceName(deviceName);
-
-                    string deviceType = driverProfile.GetValue<string>(DEVICETYPE_PROFILENAME, revisedDeviceName, DEVICETYPE_DEFAULT);
-                    string progID = driverProfile.GetValue<string>(PROGID_PROFILENAME, revisedDeviceName, PROGID_DEFAULT);
-                    string description = driverProfile.GetValue<string>(DESCRIPTION_PROFILENAME, revisedDeviceName, DESCRIPTION_DEFAULT);
-                    int deviceNumber = Convert.ToInt32(driverProfile.GetValue<int>(DEVICENUMBER_PROFILENAME, revisedDeviceName, DEVICENUMBER_DEFAULT));
-                    bool allowConnectedSetFalse = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_FALSE_PROFILENAME, revisedDeviceName, ALLOW_CONNECTED_SET_FALSE_DEFAULT));
-                    bool allowConnectedSetTrue = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_TRUE_PROFILENAME, revisedDeviceName, ALLOW_CONNECTED_SET_TRUE_DEFAULT));
-                    bool allowConcurrentAccess = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONCURRENT_ACCESS_PROFILENAME, revisedDeviceName, ALLOW_CONCURRENT_ACCESS_DEFAULT));
-                    string uniqueID = driverProfile.GetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, revisedDeviceName, SharedConstants.DEVICE_NOT_CONFIGURED);
-
-                    // Upgrade earlier data stores that did not have the UniqueID field by assigning a global ID if this device is configured but has no global ID
-                    if ((deviceType != SharedConstants.DEVICE_NOT_CONFIGURED) & (uniqueID == SharedConstants.DEVICE_NOT_CONFIGURED))
-                    {
-                        uniqueID = Guid.NewGuid().ToString().ToUpperInvariant(); // Assign a new unique ID
-                        driverProfile.SetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, revisedDeviceName, uniqueID);
-                    }
-
-                    ConfiguredDevices[deviceName] = new ConfiguredDevice(deviceType, progID, description, deviceNumber, allowConnectedSetFalse, allowConnectedSetTrue, allowConcurrentAccess, uniqueID);
-                }
-
-                // Order the devices from ServedDevice0 upwards so they connect in this order.
-                // This is to ensure deterministic behaviour where devices are initialised in the order in which they appear on the setup form.
-                // This also ensures that parent drivers can be started before any dependent child drivers. 
-                // The reverse order is used when disconnecting, so child drivers are disconnected before parent drivers.
-                ConfiguredDevices = ConfiguredDevices.OrderBy(device => device.Key).ToDictionary<string, ConfiguredDevice>();
+                ServerDeviceNumbers.Add(i.ToString());
+                ServerDeviceNames.Add($"ServedDevice{i:00}");
             }
+
+            // Clear collection before repopulating
+            ConfiguredDevices.Clear();
+
+            // Read configured device settings
+            foreach (string deviceName in ServerDeviceNames)
+            {
+                // Backward compatibility fix for early releases that only hosted 10 devices
+                string revisedDeviceName = FixDeviceName(deviceName);
+
+                string deviceType = driverProfile.GetValue<string>(DEVICETYPE_PROFILENAME, revisedDeviceName, DEVICETYPE_DEFAULT);
+                string progID = driverProfile.GetValue<string>(PROGID_PROFILENAME, revisedDeviceName, PROGID_DEFAULT);
+                string description = driverProfile.GetValue<string>(DESCRIPTION_PROFILENAME, revisedDeviceName, DESCRIPTION_DEFAULT);
+                int deviceNumber = Convert.ToInt32(driverProfile.GetValue<int>(DEVICENUMBER_PROFILENAME, revisedDeviceName, DEVICENUMBER_DEFAULT));
+                bool allowConnectedSetFalse = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_FALSE_PROFILENAME, revisedDeviceName, ALLOW_CONNECTED_SET_FALSE_DEFAULT));
+                bool allowConnectedSetTrue = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONNECTED_SET_TRUE_PROFILENAME, revisedDeviceName, ALLOW_CONNECTED_SET_TRUE_DEFAULT));
+                bool allowConcurrentAccess = Convert.ToBoolean(driverProfile.GetValue<bool>(ALLOW_CONCURRENT_ACCESS_PROFILENAME, revisedDeviceName, ALLOW_CONCURRENT_ACCESS_DEFAULT));
+                string uniqueID = driverProfile.GetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, revisedDeviceName, SharedConstants.DEVICE_NOT_CONFIGURED);
+
+                // Upgrade earlier data stores that did not have the UniqueID field by assigning a global ID if this device is configured but has no global ID
+                if ((deviceType != SharedConstants.DEVICE_NOT_CONFIGURED) & (uniqueID == SharedConstants.DEVICE_NOT_CONFIGURED))
+                {
+                    uniqueID = Guid.NewGuid().ToString().ToUpperInvariant(); // Assign a new unique ID
+                    driverProfile.SetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, revisedDeviceName, uniqueID);
+                }
+
+                ConfiguredDevices[deviceName] = new ConfiguredDevice(deviceType, progID, description, deviceNumber, allowConnectedSetFalse, allowConnectedSetTrue, allowConcurrentAccess, uniqueID);
+            }
+
+            // Order the devices from ServedDevice0 upwards so they connect in this order.
+            // This is to ensure deterministic behaviour where devices are initialised in the order in which they appear on the setup form.
+            // This also ensures that parent drivers can be started before any dependent child drivers. 
+            // The reverse order is used when disconnecting, so child drivers are disconnected before parent drivers.
+            ConfiguredDevices = ConfiguredDevices.OrderBy(device => device.Key).ToDictionary<string, ConfiguredDevice>();
         }
 
         private static void SetNextRolloverTime()
@@ -1838,7 +1834,7 @@ namespace ASCOM.Remote
         {
             if (deviceName.Contains("ServedDevice0"))
             {
-                return deviceName.Substring(0, 12) + deviceName.Substring(13);
+                return deviceName[..12] + deviceName[13..];
             }
             else
             {
@@ -1851,79 +1847,77 @@ namespace ASCOM.Remote
         /// </summary>
         public static void WriteProfile()
         {
-            using (Configuration driverProfile = new())
+            using Configuration driverProfile = new();
+            // Save the variable state to the Profile
+            driverProfile.SetValue<string>(SERVER_LOG_FOLDER_PROFILENAME, string.Empty, TraceFolder);
+            driverProfile.SetValueInvariant<bool>(SERVER_TRACE_LEVEL_PROFILENAME, string.Empty, TraceState);
+            driverProfile.SetValueInvariant<bool>(SERVER_DEBUG_TRACE_PROFILENAME, string.Empty, DebugTraceState);
+            driverProfile.SetValue<string>(SERVER_IPADDRESS_PROFILENAME, string.Empty, ServerIPAddressString);
+            driverProfile.SetValueInvariant<decimal>(SERVER_PORTNUMBER_PROFILENAME, string.Empty, ServerPortNumber);
+            driverProfile.SetValueInvariant<bool>(SERVER_AUTOCONNECT_PROFILENAME, string.Empty, StartWithDevicesConnected);
+            driverProfile.SetValueInvariant<bool>(SERVER_ACCESS_LOG_PROFILENAME, string.Empty, AccessLogEnabled);
+            driverProfile.SetValueInvariant<bool>(SCREEN_LOG_REQUESTS_PROFILENAME, string.Empty, ScreenLogRequests);
+            driverProfile.SetValueInvariant<bool>(SCREEN_LOG_RESPONSES_PROFILENAME, string.Empty, ScreenLogResponses);
+            driverProfile.SetValueInvariant<bool>(MANAGEMENT_INTERFACE_ENABLED_PROFILENAME, string.Empty, ManagementInterfaceEnabled);
+            driverProfile.SetValueInvariant<bool>(START_WITH_API_ENABLED_PROFILENAME, string.Empty, StartWithApiEnabled);
+            driverProfile.SetValueInvariant<bool>(RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME, string.Empty, RunDriversOnSeparateThreads);
+            driverProfile.SetValueInvariant<bool>(LOG_CLIENT_IPADDRESS_PROFILENAME, string.Empty, LogClientIPAddress);
+            TL.IpAddressTraceState = LogClientIPAddress; // Persist the IP address trace state to the TraceLogger so that it can be used to format lines as required
+            driverProfile.SetValueInvariant<bool>(INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME, string.Empty, IncludeDriverExceptionInJsonResponse);
+            driverProfile.SetValue<string>(REMOTE_SERVER_LOCATION_PROFILENAME, string.Empty, RemoteServerLocation);
+            driverProfile.SetValue<string>(CORS_PERMITTED_ORIGINS_PROFILENAME, string.Empty, CorsPermittedOrigins.ToConcatenatedString(SharedConstants.CORS_SERIALISATION_SEPARATOR));
+            driverProfile.SetValueInvariant<bool>(CORS_SUPPORT_ENABLED_PROFILENAME, string.Empty, CorsSupportIsEnabled);
+            driverProfile.SetValueInvariant<decimal>(CORS_MAX_AGE_PROFILENAME, string.Empty, CorsMaxAge);
+            driverProfile.SetValueInvariant<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CorsCredentialsPermitted);
+            driverProfile.SetValueInvariant<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, AlpacaDiscoveryEnabled);
+            driverProfile.SetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, AlpacaUniqueId);
+            driverProfile.SetValueInvariant<decimal>(ALPACA_DISCOVERY_PORT_PROFILENAME, string.Empty, AlpacaDiscoveryPort);
+            driverProfile.SetValueInvariant<int>(MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME, string.Empty, MaximumNumberOfDevices);
+            driverProfile.SetValueInvariant<bool>(IPV4_ENABLED_PROFILENAME, string.Empty, IpV4Enabled);
+            driverProfile.SetValueInvariant<bool>(IPV6_ENABLED_PROFILENAME, string.Empty, IpV6Enabled);
+            driverProfile.SetValueInvariant<bool>(ROLLOVER_LOGS_ENABLED_PROFILENAME, string.Empty, RolloverLogsEnabled);
+            driverProfile.SetValueInvariant<DateTime>(ROLLOVER_TIME_PROFILENAME, string.Empty, RolloverTime);
+            driverProfile.SetValueInvariant<bool>(USE_UTC_TIME_IN_LOGS_PROFILENAME, string.Empty, UseUtcTimeInLogs);
+            driverProfile.SetValueInvariant<bool>(MINIMISE_TO_SYSTEM_TRAY_PROFILENAME, string.Empty, MinimiseToSystemTray);
+            driverProfile.SetValueInvariant<bool>(CONFIRM_EXIT_PROFILENAME, string.Empty, ConfirmExit);
+            driverProfile.SetValueInvariant<bool>(MINIMISE_ON_START_PROFILENAME, string.Empty, StartMinimised);
+            driverProfile.SetValueInvariant<bool>(CHECK_FOR_UPDATES, string.Empty, CheckForUpdates);
+            driverProfile.SetValueInvariant<bool>(CHECK_FOR_PRE_RELEASE, string.Empty, CheckForPreReleaseUpdates);
+            driverProfile.SetValueInvariant<bool>(SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE, string.Empty, SuppressConfirmationOnWindowsClose);
+            driverProfile.SetValueInvariant<bool>(ENABLE_REBOOT, string.Empty, EnableReboot);
+            driverProfile.SetValueInvariant<bool>(NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE, string.Empty, NonStdOmitRawInCommandXXXToTelescope);
+
+            // Update the next roll-over time in case the time has changed
+            //TL.LogMessage("WriteProfile", $"NextRolloverTime Before: {NextRolloverTime}");
+            SetNextRolloverTime();
+            //TL.LogMessage("WriteProfile", $"NextRolloverTime After: {NextRolloverTime}");
+
+            foreach (string deviceName in ServerDeviceNames)
             {
-                // Save the variable state to the Profile
-                driverProfile.SetValue<string>(SERVER_LOG_FOLDER_PROFILENAME, string.Empty, TraceFolder);
-                driverProfile.SetValueInvariant<bool>(SERVER_TRACE_LEVEL_PROFILENAME, string.Empty, TraceState);
-                driverProfile.SetValueInvariant<bool>(SERVER_DEBUG_TRACE_PROFILENAME, string.Empty, DebugTraceState);
-                driverProfile.SetValue<string>(SERVER_IPADDRESS_PROFILENAME, string.Empty, ServerIPAddressString);
-                driverProfile.SetValueInvariant<decimal>(SERVER_PORTNUMBER_PROFILENAME, string.Empty, ServerPortNumber);
-                driverProfile.SetValueInvariant<bool>(SERVER_AUTOCONNECT_PROFILENAME, string.Empty, StartWithDevicesConnected);
-                driverProfile.SetValueInvariant<bool>(SERVER_ACCESS_LOG_PROFILENAME, string.Empty, AccessLogEnabled);
-                driverProfile.SetValueInvariant<bool>(SCREEN_LOG_REQUESTS_PROFILENAME, string.Empty, ScreenLogRequests);
-                driverProfile.SetValueInvariant<bool>(SCREEN_LOG_RESPONSES_PROFILENAME, string.Empty, ScreenLogResponses);
-                driverProfile.SetValueInvariant<bool>(MANAGEMENT_INTERFACE_ENABLED_PROFILENAME, string.Empty, ManagementInterfaceEnabled);
-                driverProfile.SetValueInvariant<bool>(START_WITH_API_ENABLED_PROFILENAME, string.Empty, StartWithApiEnabled);
-                driverProfile.SetValueInvariant<bool>(RUN_DRIVERS_ON_SEPARATE_THREADS_PROFILENAME, string.Empty, RunDriversOnSeparateThreads);
-                driverProfile.SetValueInvariant<bool>(LOG_CLIENT_IPADDRESS_PROFILENAME, string.Empty, LogClientIPAddress);
-                TL.IpAddressTraceState = LogClientIPAddress; // Persist the IP address trace state to the TraceLogger so that it can be used to format lines as required
-                driverProfile.SetValueInvariant<bool>(INCLUDE_DRIVEREXCEPTION_IN_JSON_RESPONSE_PROFILENAME, string.Empty, IncludeDriverExceptionInJsonResponse);
-                driverProfile.SetValue<string>(REMOTE_SERVER_LOCATION_PROFILENAME, string.Empty, RemoteServerLocation);
-                driverProfile.SetValue<string>(CORS_PERMITTED_ORIGINS_PROFILENAME, string.Empty, CorsPermittedOrigins.ToConcatenatedString(SharedConstants.CORS_SERIALISATION_SEPARATOR));
-                driverProfile.SetValueInvariant<bool>(CORS_SUPPORT_ENABLED_PROFILENAME, string.Empty, CorsSupportIsEnabled);
-                driverProfile.SetValueInvariant<decimal>(CORS_MAX_AGE_PROFILENAME, string.Empty, CorsMaxAge);
-                driverProfile.SetValueInvariant<bool>(CORS_CREDENTIALS_PERMITTED_PROFILENAME, string.Empty, CorsCredentialsPermitted);
-                driverProfile.SetValueInvariant<bool>(ALPACA_DISCOVERY_ENABLED_PROFILENAME, string.Empty, AlpacaDiscoveryEnabled);
-                driverProfile.SetValue<string>(ALPACA_UNIQUE_ID_PROFILENAME, string.Empty, AlpacaUniqueId);
-                driverProfile.SetValueInvariant<decimal>(ALPACA_DISCOVERY_PORT_PROFILENAME, string.Empty, AlpacaDiscoveryPort);
-                driverProfile.SetValueInvariant<int>(MAXIMUM_NUMBER_OF_DEVICES_PROFILENAME, string.Empty, MaximumNumberOfDevices);
-                driverProfile.SetValueInvariant<bool>(IPV4_ENABLED_PROFILENAME, string.Empty, IpV4Enabled);
-                driverProfile.SetValueInvariant<bool>(IPV6_ENABLED_PROFILENAME, string.Empty, IpV6Enabled);
-                driverProfile.SetValueInvariant<bool>(ROLLOVER_LOGS_ENABLED_PROFILENAME, string.Empty, RolloverLogsEnabled);
-                driverProfile.SetValueInvariant<DateTime>(ROLLOVER_TIME_PROFILENAME, string.Empty, RolloverTime);
-                driverProfile.SetValueInvariant<bool>(USE_UTC_TIME_IN_LOGS_PROFILENAME, string.Empty, UseUtcTimeInLogs);
-                driverProfile.SetValueInvariant<bool>(MINIMISE_TO_SYSTEM_TRAY_PROFILENAME, string.Empty, MinimiseToSystemTray);
-                driverProfile.SetValueInvariant<bool>(CONFIRM_EXIT_PROFILENAME, string.Empty, ConfirmExit);
-                driverProfile.SetValueInvariant<bool>(MINIMISE_ON_START_PROFILENAME, string.Empty, StartMinimised);
-                driverProfile.SetValueInvariant<bool>(CHECK_FOR_UPDATES, string.Empty, CheckForUpdates);
-                driverProfile.SetValueInvariant<bool>(CHECK_FOR_PRE_RELEASE, string.Empty, CheckForPreReleaseUpdates);
-                driverProfile.SetValueInvariant<bool>(SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE, string.Empty, SuppressConfirmationOnWindowsClose);
-                driverProfile.SetValueInvariant<bool>(ENABLE_REBOOT, string.Empty, EnableReboot);
-                driverProfile.SetValueInvariant<bool>(NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE, string.Empty, NonStdOmitRawInCommandXXXToTelescope);
+                // Backward compatibility fix for early releases that only hosted 10 devices
+                string revisedDeviceName = FixDeviceName(deviceName);
 
-                // Update the next roll-over time in case the time has changed
-                //TL.LogMessage("WriteProfile", $"NextRolloverTime Before: {NextRolloverTime}");
-                SetNextRolloverTime();
-                //TL.LogMessage("WriteProfile", $"NextRolloverTime After: {NextRolloverTime}");
+                driverProfile.SetValue<string>(DEVICETYPE_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].DeviceType.ToString());
+                driverProfile.SetValue<string>(PROGID_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].ProgID.ToString());
+                driverProfile.SetValue<string>(DESCRIPTION_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].Description.ToString());
+                driverProfile.SetValue<string>(DEVICENUMBER_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].DeviceNumber.ToString());
+                driverProfile.SetValue<bool>(ALLOW_CONNECTED_SET_FALSE_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].AllowConnectedSetFalse);
+                driverProfile.SetValue<bool>(ALLOW_CONNECTED_SET_TRUE_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].AllowConnectedSetTrue);
+                driverProfile.SetValue<bool>(ALLOW_CONCURRENT_ACCESS_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].AllowConcurrentAccess);
 
-                foreach (string deviceName in ServerDeviceNames)
+                // Update unique ID if necessary
+                if (ConfiguredDevices[deviceName].DeviceType == SharedConstants.DEVICE_NOT_CONFIGURED)// Invalidate global IDs when devices are set to "none"
                 {
-                    // Backward compatibility fix for early releases that only hosted 10 devices
-                    string revisedDeviceName = FixDeviceName(deviceName);
-
-                    driverProfile.SetValue<string>(DEVICETYPE_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].DeviceType.ToString());
-                    driverProfile.SetValue<string>(PROGID_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].ProgID.ToString());
-                    driverProfile.SetValue<string>(DESCRIPTION_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].Description.ToString());
-                    driverProfile.SetValue<string>(DEVICENUMBER_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].DeviceNumber.ToString());
-                    driverProfile.SetValue<bool>(ALLOW_CONNECTED_SET_FALSE_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].AllowConnectedSetFalse);
-                    driverProfile.SetValue<bool>(ALLOW_CONNECTED_SET_TRUE_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].AllowConnectedSetTrue);
-                    driverProfile.SetValue<bool>(ALLOW_CONCURRENT_ACCESS_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].AllowConcurrentAccess);
-
-                    // Update unique ID if necessary
-                    if (ConfiguredDevices[deviceName].DeviceType == SharedConstants.DEVICE_NOT_CONFIGURED)// Invalidate global IDs when devices are set to "none"
-                    {
-                        ConfiguredDevices[deviceName].UniqueID = SharedConstants.DEVICE_NOT_CONFIGURED;
-                    }
-                    else // Create a global ID if none currently exists
-                    {
-                        if (ConfiguredDevices[deviceName].UniqueID == SharedConstants.DEVICE_NOT_CONFIGURED) // Global ID does not exist so generate one
-                        {
-                            ConfiguredDevices[deviceName].UniqueID = Guid.NewGuid().ToString().ToUpperInvariant();
-                        }
-                    }
-                    driverProfile.SetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].UniqueID.ToString());
+                    ConfiguredDevices[deviceName].UniqueID = SharedConstants.DEVICE_NOT_CONFIGURED;
                 }
+                else // Create a global ID if none currently exists
+                {
+                    if (ConfiguredDevices[deviceName].UniqueID == SharedConstants.DEVICE_NOT_CONFIGURED) // Global ID does not exist so generate one
+                    {
+                        ConfiguredDevices[deviceName].UniqueID = Guid.NewGuid().ToString().ToUpperInvariant();
+                    }
+                }
+                driverProfile.SetValue<string>(DEVICE_UNIQUE_ID_PROFILENAME, revisedDeviceName, ConfiguredDevices[deviceName].UniqueID.ToString());
             }
         }
 
@@ -2565,7 +2559,7 @@ namespace ASCOM.Remote
                             {
                                 formParameterString = reader.ReadToEnd();
                             }
-                            if (formParameterString == null) formParameterString = ""; // Handle the possibility that we get a null value instead of an empty string
+                            formParameterString ??= ""; // Handle the possibility that we get a null value instead of an empty string
 
                             string[] rawParameters = formParameterString.Split('&'); // Parse the aggregated parameter string into an array of key / value pair strings
                             if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Form parameters string: '{formParameterString}'Form parameters string length: {formParameterString.Length}, Raw parameters array size: {rawParameters.Length}");
@@ -2669,7 +2663,7 @@ namespace ASCOM.Remote
                             }
 
                             // Handle the possibility that we get a null value instead of an empty string
-                            if (formParameterString == null) formParameterString = "";
+                            formParameterString ??= "";
 
                             // Parse the aggregated parameter string into an array of key / value pair strings
                             string[] rawParameters = formParameterString.Split('&');
@@ -2844,7 +2838,7 @@ namespace ASCOM.Remote
                     if (!string.IsNullOrEmpty(request.Headers.Get(CORS_ORIGIN_HEADER))) // There is an Origin header so this is a valid CORS request
                     {
                         // Test whether this is a pre-flight request
-                        if (request.HttpMethod.ToUpperInvariant() == "OPTIONS") // This is a pre-flight request
+                        if (request.HttpMethod.Equals("OPTIONS", StringComparison.InvariantCultureIgnoreCase)) // This is a pre-flight request
                         {
                             // Test whether an HTTP method has been supplied
                             if (request.Headers[CORS_REQUEST_METHOD_HEADER] != null) // A method has been supplied, this is a CORS pre-flight request
@@ -3175,7 +3169,7 @@ namespace ASCOM.Remote
                                                             break;
 
                                                         case SharedConstants.ALPACA_DEVICE_MANAGEMENT_CONFIGURED_DEVICES:
-                                                            List<AlpacaConfiguredDevice> alpacaConfiguredDevices = new(); // Create an empty list to hold the list of configured devices 
+                                                            List<AlpacaConfiguredDevice> alpacaConfiguredDevices = []; // Create an empty list to hold the list of configured devices 
 
                                                             // Populate the list with configured devices
                                                             foreach (KeyValuePair<string, ConfiguredDevice> configuredDevice in ConfiguredDevices)
@@ -3376,7 +3370,7 @@ namespace ASCOM.Remote
 
                                                     // STRING Get Values
                                                     case SharedConstants.REMOTE_SERVER_MANGEMENT_GET_PROFILE:
-                                                        List<ProfileDevice> profileDevices = new();
+                                                        List<ProfileDevice> profileDevices = [];
                                                         try
                                                         {
                                                             using (Profile profile = new())
@@ -3470,7 +3464,7 @@ namespace ASCOM.Remote
                                                             LogMessage1(requestData, "ManagementReboot", "Rebooting server");
 
                                                             // Start a timed task that will close and reboot the server in case the mechanic below locks up before completing
-                                                            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                                                            CancellationTokenSource cancellationTokenSource = new();
                                                             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
                                                             // Start a safety task that will ensure that the server reboots in case the normal shutdown code below locks up for any reason
@@ -4496,10 +4490,10 @@ namespace ASCOM.Remote
                                         "<br>";
 
                             string deviceKey = $"{requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE]}/{requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER]}"; // Create the device key from the supplied device type and device number parameters
-                            if (ActiveObjects.ContainsKey(deviceKey)) // The specified device does exist so return a "can't configure this" response
+                            if (ActiveObjects.TryGetValue(deviceKey, out ActiveObject value)) // The specified device does exist so return a "can't configure this" response
                             {
                                 // Get the configured device information for this device
-                                ConfiguredDevice configuredDevice = ConfiguredDevices[ActiveObjects[deviceKey].ConfiguredDeviceKey];
+                                ConfiguredDevice configuredDevice = ConfiguredDevices[value.ConfiguredDeviceKey];
                                 indexPage +=
                                         $"<h3 class=\"yellow\">The {configuredDevice.Description} {configuredDevice.DeviceType} device can't be configured through the Remote Server web interface</h3>" +
                                         "<p>Please use the device's \"Properties\" button in the Remote Server Setup screen</p>";
@@ -4532,16 +4526,16 @@ namespace ASCOM.Remote
                 }
                 try
                 {
-                    if (htmlPageName.ToLowerInvariant().Contains(".html"))
+                    if (htmlPageName.Contains(".html", StringComparison.InvariantCultureIgnoreCase))
                     {
                         requestData.Response.ContentType = "text/html; charset=utf-8";
                     }
-                    else if ((htmlPageName.ToLowerInvariant().Contains(".jpeg")) || (htmlPageName.ToLowerInvariant().Contains(".jpg")))
+                    else if ((htmlPageName.Contains(".jpeg", StringComparison.InvariantCultureIgnoreCase)) || (htmlPageName.Contains(".jpg", StringComparison.InvariantCultureIgnoreCase)))
                     {
                         requestData.Response.ContentType = "image/jpeg";
                         requestData.Response.Headers.Add("Cache-Control", "public, max-age=86400");
                     }
-                    else if (htmlPageName.ToLowerInvariant().Contains(".ico"))
+                    else if (htmlPageName.Contains(".ico", StringComparison.InvariantCultureIgnoreCase))
                     {
                         requestData.Response.ContentType = "image/x-icon";
                         requestData.Response.Headers.Add("Cache-Control", "public, max-age=86400");
@@ -4585,7 +4579,7 @@ namespace ASCOM.Remote
         /// Return an HTTP 200 success response with an empty body to clients
         /// </summary>
         /// <param name="requestData"></param>
-        private void ReturnEmpty200Success(RequestData requestData)
+        private static void ReturnEmpty200Success(RequestData requestData)
         {
             try
             {
@@ -4664,7 +4658,7 @@ namespace ASCOM.Remote
         /// </summary>
         /// <param name="requestData"></param>
         /// <param name="errorMessage"></param>
-        internal void Return500Error(RequestData requestData, string errorMessage)
+        internal static void Return500Error(RequestData requestData, string errorMessage)
         {
             try
             {
@@ -4685,7 +4679,7 @@ namespace ASCOM.Remote
             DeviceInterface.IStateValueCollection deviceResponse;
 
             // Define the Remote Server response type as List<StateValue> so that it can be serialised to the correct JSON type
-            List<StateValue> responseList = new();
+            List<StateValue> responseList = [];
 
             Exception exReturn = null;
 
@@ -4757,7 +4751,7 @@ namespace ASCOM.Remote
                         else // Non-standard behaviour for telescope devices is active
                         {
                             // Check whether this is a telescope device
-                            if (configuredDevice.DeviceType.ToUpperInvariant() == "TELESCOPE") // This is a telescope device - undertake non-standard behaviour - omit the Raw parameter
+                            if (configuredDevice.DeviceType.Equals("TELESCOPE", StringComparison.InvariantCultureIgnoreCase)) // This is a telescope device - undertake non-standard behaviour - omit the Raw parameter
                             {
                                 deviceResponse = device.CommandBool(command);
                             }
@@ -5117,7 +5111,7 @@ namespace ASCOM.Remote
                         else // Non-standard behaviour for telescope devices is active
                         {
                             // Check whether this is a telescope device
-                            if (configuredDevice.DeviceType.ToUpperInvariant() == "TELESCOPE") // This is a telescope device - undertake non-standard behaviour - omit the Raw parameter
+                            if (configuredDevice.DeviceType.Equals("TELESCOPE", StringComparison.InvariantCultureIgnoreCase)) // This is a telescope device - undertake non-standard behaviour - omit the Raw parameter
                             {
                                 deviceResponse = device.CommandString(command);
                             }
@@ -5231,7 +5225,7 @@ namespace ASCOM.Remote
                 requestData.Response.StatusDescription = $"OK";
 
                 // Condition requestData.Element so that the logging lines below will work correctly
-                if (requestData.Elements == null) requestData.Elements = new string[5] { "", "", "", "", "SendResponseToClient" };
+                requestData.Elements ??= ["", "", "", "", "SendResponseToClient"];
                 if (requestData.Elements.Length < 5)
                 {
                     string[] elements = requestData.Elements;
@@ -5345,7 +5339,7 @@ namespace ASCOM.Remote
         private void ReturnStringList(string deviceType, RequestData requestData)
         {
             IEnumerable deviceResponse;
-            List<string> responseList = new();
+            List<string> responseList = [];
             Exception exReturn = null;
 
             try
@@ -6021,7 +6015,7 @@ namespace ASCOM.Remote
             };
 
             // Initialise a list to hold returned tracking rate values and add any tracking rate values that have been returned
-            List<DriveRate> rates = new();
+            List<DriveRate> rates = [];
 
             if (deviceResponse is not null) // Avoid processing a null return value because the for each code will fail 
             {
@@ -6298,8 +6292,8 @@ namespace ASCOM.Remote
             string[] acceptEncoding = requestData.Request.Headers.GetValues("Accept-Encoding"); // Get the Accept-Encoding header, if present
             if (acceptEncoding != null) // There is an Accept-Encoding header so check whether it has the compression modes that we support
             {
-                if (acceptEncoding[0].ToLowerInvariant().Contains("deflate")) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
-                if (acceptEncoding[0].ToLowerInvariant().Contains("gzip")) compressionType = SharedConstants.ImageArrayCompression.GZip;
+                if (acceptEncoding[0].Contains("deflate", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
+                if (acceptEncoding[0].Contains("gzip", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.GZip;
             }
             if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Response compression type: {compressionType}");
 
@@ -6320,7 +6314,7 @@ namespace ASCOM.Remote
             }
             else
             {
-                imageArrayBytes = Array.Empty<byte>();
+                imageArrayBytes = [];
                 imageArrayElementType = "No array elements";
             }
             long timeBCreateByteArray = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
@@ -6358,16 +6352,14 @@ namespace ASCOM.Remote
 
             if ((compressionType == SharedConstants.ImageArrayCompression.GZip) || (compressionType == SharedConstants.ImageArrayCompression.GZipOrDeflate))
             {
-                using (var compressedDataStream = new MemoryStream()) // Create a memory stream
+                using var compressedDataStream = new MemoryStream(); // Create a memory stream
+                using (var gZipStream = new GZipStream(compressedDataStream, CompressionMode.Compress, true)) // Wrap the compressed data stream in a GZip stream
                 {
-                    using (var gZipStream = new GZipStream(compressedDataStream, CompressionMode.Compress, true)) // Wrap the compressed data stream in a GZip stream
-                    {
-                        gZipStream.Write(bytesToSend, 0, bytesToSend.Length); // Write the JSON byte array to the GZip stream and hence to the compressed data stream
-                    }
-                    requestData.Response.AddHeader("Content-Encoding", "gzip");
-                    bytesToSend = compressedDataStream.ToArray(); // Get the compressed bytes from the stream into a byte array
-                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Number of uncompressed bytes: {numberOfUncompressedBytes}, Number of compressed bytes: {bytesToSend.Length:n0}bytes.");
+                    gZipStream.Write(bytesToSend, 0, bytesToSend.Length); // Write the JSON byte array to the GZip stream and hence to the compressed data stream
                 }
+                requestData.Response.AddHeader("Content-Encoding", "gzip");
+                bytesToSend = compressedDataStream.ToArray(); // Get the compressed bytes from the stream into a byte array
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Number of uncompressed bytes: {numberOfUncompressedBytes}, Number of compressed bytes: {bytesToSend.Length:n0}bytes.");
             }
             long timeToCompressResponse = sw.ElapsedMilliseconds - lastTime; lastTime = sw.ElapsedMilliseconds; // Record the duration
 
@@ -6456,8 +6448,8 @@ namespace ASCOM.Remote
             string[] acceptEncoding = requestData.Request.Headers.GetValues("Accept-Encoding"); // Get the Accept-Encoding header, if present
             if (acceptEncoding != null) // There is an Accept-Encoding header so check whether it has the compression modes that we support
             {
-                if (acceptEncoding[0].ToLowerInvariant().Contains("deflate")) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
-                if (acceptEncoding[0].ToLowerInvariant().Contains("gzip")) compressionType = SharedConstants.ImageArrayCompression.GZip;
+                if (acceptEncoding[0].Contains("deflate", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
+                if (acceptEncoding[0].Contains("gzip", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.GZip;
             }
             if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Response compression type: {compressionType}");
 
@@ -6479,7 +6471,7 @@ namespace ASCOM.Remote
             try
             {
                 // Determine whether the client request that the image be returned as a byte array
-                if (requestData.Request.Headers[SharedConstants.ACCEPT_HEADER_NAME].ToLowerInvariant().Contains(SharedConstants.IMAGE_BYTES_MIME_TYPE)) // Client supports image bytes transfer
+                if (requestData.Request.Headers[SharedConstants.ACCEPT_HEADER_NAME].Contains(SharedConstants.IMAGE_BYTES_MIME_TYPE, StringComparison.InvariantCultureIgnoreCase)) // Client supports image bytes transfer
                 {
                     imageBytesRequested = true;
                     if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Image bytes requested - Received header {requestData.Request.Headers[SharedConstants.ACCEPT_HEADER_NAME]}");
@@ -6913,10 +6905,8 @@ namespace ASCOM.Remote
                             {
                                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"No compression - ReturnImageArray Before writing bytes to output stream ({sw.ElapsedMilliseconds}ms)");
 
-                                using (JsonWriter writer = new JsonTextWriter(streamWriter1))
-                                {
-                                    serializer1.Serialize(writer, responseClass);
-                                }
+                                using JsonWriter writer = new JsonTextWriter(streamWriter1);
+                                serializer1.Serialize(writer, responseClass);
                             }
                             serializer1 = null;
 
@@ -6992,7 +6982,7 @@ namespace ASCOM.Remote
                 requestData.Response.StatusDescription = $"OK";
 
                 // Condition requestData.Element so that the logging lines below will work correctly
-                if (requestData.Elements == null) requestData.Elements = new string[5] { "", "", "", "", "SendResponseToClient" };
+                requestData.Elements ??= ["", "", "", "", "SendResponseToClient"];
                 if (requestData.Elements.Length < 5)
                 {
                     string[] elements = requestData.Elements;
@@ -7019,9 +7009,6 @@ namespace ASCOM.Remote
             {
                 LogException1(requestData, "ListenerException", $"Communications exception - Error code: {ex.ErrorCode}, Native error code: {ex.NativeErrorCode}\r\n{ex}");
             }
-
-            // Force release of the large byte array
-            imageArrayBytes = null;
 
             // Force a garbage collection of large objects to free memory
             ForceGarbageCollection();
@@ -7114,7 +7101,7 @@ namespace ASCOM.Remote
             }
 
             // Initialise a list to hold returned rate values and add any rate values that have been returned
-            List<RateResponse> rateResponse = new();
+            List<RateResponse> rateResponse = [];
 
             if (deviceResponse is not null) // Avoid processing a null return value because the for each code will fail 
             {
@@ -7166,7 +7153,7 @@ namespace ASCOM.Remote
                         else // Non-standard behaviour for telescope devices is active
                         {
                             // Check whether this is a telescope device
-                            if (configuredDevice.DeviceType.ToUpperInvariant() == "TELESCOPE") // This is a telescope device - undertake non-standard behaviour - omit the Raw parameter
+                            if (configuredDevice.DeviceType.Equals("TELESCOPE", StringComparison.InvariantCultureIgnoreCase)) // This is a telescope device - undertake non-standard behaviour - omit the Raw parameter
                             {
                                 device.CommandBlind(command);
                             }
@@ -7434,7 +7421,7 @@ namespace ASCOM.Remote
             string parameterStringValue;
 
             // Extract the parameter string from the query or form parameter lists as appropriate
-            if (requestData.Request.HttpMethod.ToUpperInvariant() == "GET") // Check query parameters for GET operations
+            if (requestData.Request.HttpMethod.Equals("GET", StringComparison.InvariantCultureIgnoreCase)) // Check query parameters for GET operations
             {
                 parameterStringValue = requestData.QueryParameters[parameterName];
             }
@@ -7524,7 +7511,7 @@ namespace ASCOM.Remote
 
             if (ex == null) // Command ran successfully so return the JSON encoded result
             {
-                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"OK - no exception. Thread: {Environment.CurrentManagedThreadId}, JSON: {((jsonResponse.Length < 1000) ? jsonResponse : jsonResponse.Substring(0, 1000))}");
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"OK - no exception. Thread: {Environment.CurrentManagedThreadId}, JSON: {((jsonResponse.Length < 1000) ? jsonResponse : jsonResponse[..1000])}");
                 if (ScreenLogResponses) LogToScreen($"  OK - JSON: {jsonResponse}");
                 TransmitResponse(requestData, "application/json; charset=utf-8", HttpStatusCode.OK, "200 OK", jsonResponse);
             }
@@ -7560,7 +7547,7 @@ namespace ASCOM.Remote
                 requestData.Response.StatusDescription = statusDescription;
 
                 // Condition requestData.Element so that the logging lines below will work correctly
-                if (requestData.Elements == null) requestData.Elements = new string[5] { "", "", "", "", "SendResponseToClient" };
+                requestData.Elements ??= ["", "", "", "", "SendResponseToClient"];
                 if (requestData.Elements.Length < 5)
                 {
                     string[] elements = requestData.Elements;

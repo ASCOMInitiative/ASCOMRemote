@@ -3514,7 +3514,7 @@
             chkConfirmExit.TabIndex = 66;
             chkConfirmExit.Text = "Show shutdown confirmation dialogue";
             chkConfirmExit.UseVisualStyleBackColor = true;
-            chkConfirmExit.CheckedChanged += chkConfirmExit_CheckedChanged;
+            chkConfirmExit.CheckedChanged += ChkConfirmExit_CheckedChanged;
             // 
             // ChkRunAs64BitApplication
             // 

@@ -32,8 +32,8 @@ namespace ASCOM.Remote
             InitializeComponent();
 
             // Create generic lists
-            deviceTypes = new List<string>();
-            deviceDictionary = new Dictionary<string, string>();
+            deviceTypes = [];
+            deviceDictionary = [];
 
             cmbDeviceType.MouseUp += CmbDeviceType_MouseUp; // To force a device number recalculation if the device type is changed
 
@@ -360,7 +360,7 @@ namespace ASCOM.Remote
                             {
                                 oDrv.Connected = true; // Try setting Connected to true
                             }
-                            catch (Exception ex2) when (DeviceType.ToLowerInvariant() == "focuser")
+                            catch (Exception ex2) when (DeviceType.Equals("focuser", StringComparison.InvariantCultureIgnoreCase))
                             {
                                 // Connected failed so try Link in case this is an IFocuserV1 device
                                 ServerForm.LogException(0, 0, 0, "Setup", $"Error setting Connected to true for focuser device {ProgID}, now trying Link for IFocuserV1 devices: \r\n{ex2}");

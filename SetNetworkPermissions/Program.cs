@@ -159,7 +159,7 @@ namespace ASCOM.Remote
                         TL.LogMessage("SetFireWallOutboundRule", $"Supplied path: {applicationPath}, full path: {applicationPathFull}");
 
                         // Now clear up previous instances of this rule
-                        IEnumerable<IFirewallRule> query = FirewallManager.Instance.Rules.Where(ruleName => ruleName.Name.ToUpperInvariant().StartsWith(LOCAL_SERVER_OUTBOUND_RULE_NAME.ToUpperInvariant()));
+                        IEnumerable<IFirewallRule> query = FirewallManager.Instance.Rules.Where(ruleName => ruleName.Name.StartsWith(LOCAL_SERVER_OUTBOUND_RULE_NAME, StringComparison.InvariantCultureIgnoreCase));
                         List<IFirewallRule> queryCopy = query.ToList();
                         foreach (IFirewallRule existingRule in queryCopy)
                         {
@@ -261,7 +261,7 @@ namespace ASCOM.Remote
                     if (ushort.TryParse(portNumberString, out ushort portNumber)) // Make sure the supplied port number is a valid value before processing it
                     {
                         // Clear up redundant firewall rules left over from previous versions (ASCOM Remote Server - Inbound and Outbound)
-                        IEnumerable<IFirewallRule> queryRedundant = FirewallManager.Instance.Rules.Where(ruleName => ruleName.Name.ToUpperInvariant().StartsWith(REMOTE_SERVER_RULE_NAME_BASE.ToUpperInvariant()));
+                        IEnumerable<IFirewallRule> queryRedundant = FirewallManager.Instance.Rules.Where(ruleName => ruleName.Name.StartsWith(REMOTE_SERVER_RULE_NAME_BASE, StringComparison.InvariantCultureIgnoreCase));
                         List<IFirewallRule> queryRedundantCopy = queryRedundant.ToList();
                         foreach (IFirewallRule existingRule in queryRedundantCopy)
                         {
@@ -313,7 +313,7 @@ namespace ASCOM.Remote
                 "SYSTEM");
             rule.Direction = FirewallDirection.Inbound;
             rule.Protocol = FirewallProtocol.TCP;
-            rule.LocalPorts = new ushort[1] { portNumber }; // Create an array containing the port number
+            rule.LocalPorts = [portNumber]; // Create an array containing the port number
             TL.LogMessage("SetHttpSysFireWallRule", "Successfully created inbound rule");
 
 
@@ -375,10 +375,10 @@ namespace ASCOM.Remote
                 }
                 else // A host name or IPv4 address
                 {
-                    colonIndex = uri.IndexOf(":", doubleSlashIndex + 2);
+                    colonIndex = uri.IndexOf(':', doubleSlashIndex + 2);
                 }
 
-                string portAndUri = uri.Substring(colonIndex + 1);
+                string portAndUri = uri[(colonIndex + 1)..];
                 TL.LogMessage("SetAcl", $"Colon index: {colonIndex}, Port and URI: {portAndUri}");
 
                 string netshCommand = "";

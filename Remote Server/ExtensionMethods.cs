@@ -130,7 +130,7 @@ namespace ASCOM.Remote
 
         public static List<StringValue> ToListStringValue(this List<string> fromList)
         {
-            List<StringValue> toList = new();
+            List<StringValue> toList = [];
 
             foreach (string item in fromList)
             {
@@ -142,7 +142,7 @@ namespace ASCOM.Remote
 
         public static List<string> ToListString(this List<StringValue> fromList)
         {
-            List<string> toList = new();
+            List<string> toList = [];
 
             foreach (StringValue item in fromList)
             {

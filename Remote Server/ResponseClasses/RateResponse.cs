@@ -1,15 +1,9 @@
 ﻿namespace ASCOM.Remote
 {
-    public class RateResponse
+    public class RateResponse(double minimum, double maximum)
     {
-        private double maximum = 0.0;
-        private double minimum = 0.0;
-
-        public RateResponse(double minimum, double maximum)
-        {
-            this.maximum = maximum;
-            this.minimum = minimum;
-        }
+        private double maximum = maximum;
+        private double minimum = minimum;
 
         public double Maximum
         {

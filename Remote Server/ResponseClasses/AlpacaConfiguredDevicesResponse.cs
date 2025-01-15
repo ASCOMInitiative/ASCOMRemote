@@ -6,7 +6,7 @@ namespace ASCOM.Remote
     {
         public AlpacaConfiguredDevicesResponse()
         {
-            Value = new List<AlpacaConfiguredDevice>();
+            Value = [];
         }
 
         public AlpacaConfiguredDevicesResponse(uint clientTransactionID, uint transactionID, List<AlpacaConfiguredDevice> value)

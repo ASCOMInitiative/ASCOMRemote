@@ -17,7 +17,8 @@ namespace ASCOM.Remote
         private bool disposedValue;
         readonly int settingsFileVersion;
         private readonly JsonDocument appSettingsDocument = null;
-
+        private readonly JsonSerializerOptions deserialiseOptions;
+        private readonly JsonSerializerOptions serialiseOptions;
 
         #region Initialiser and Dispose
 
@@ -31,6 +32,20 @@ namespace ASCOM.Remote
 
             try
             {
+                // Set JSON serialisation options
+                JsonSerializerOptions options = new()
+                {
+                    WriteIndented = true // Write the file in indented form for easier reading
+                };
+                options.Converters.Add(new JsonStringEnumConverter()); // For increased resilience, accept both string member names and integer member values as valid for enum elements.
+
+                // Set JSON de-serialisation options
+                deserialiseOptions = new()
+                {
+                    PropertyNameCaseInsensitive = true // Ignore incorrect element name casing
+                };
+                deserialiseOptions.Converters.Add(new JsonStringEnumConverter()); // For increased resilience, accept both string member names and integer member values as valid for enum elements.
+
                 // Create a new settings file with default values in case the supplied file cannot be used
                 settings = new();
 
@@ -90,15 +105,9 @@ namespace ASCOM.Remote
 
                                     try
                                     {
-                                        // Set de-serialisation options
-                                        JsonSerializerOptions options = new()
-                                        {
-                                            PropertyNameCaseInsensitive = true // Ignore incorrect element name casing
-                                        };
-                                        options.Converters.Add(new JsonStringEnumConverter()); // For increased resilience, accept both string member names and integer member values as valid for enum elements.
 
                                         // De-serialise the settings string into a Settings object
-                                        settings = JsonSerializer.Deserialize<Settings>(serialisedSettings, options);
+                                        settings = JsonSerializer.Deserialize<Settings>(serialisedSettings, deserialiseOptions);
 
                                         // Test whether the retrieved settings match the requirements of this version of the Remote Server
                                         if (settings.SettingsCompatibilityVersion == Settings.SETTINGS_COMPATIBILTY_VERSION) // Version numbers match so all is well
@@ -269,23 +278,14 @@ namespace ASCOM.Remote
         {
             try
             {
-                if (settingsToPersist is null)
-                {
-                    throw new ArgumentNullException(nameof(settingsToPersist));
-                }
+                ArgumentNullException.ThrowIfNull(settingsToPersist);
 
                 // Set the version number of this settings file
                 settingsToPersist.SettingsCompatibilityVersion = Settings.SETTINGS_COMPATIBILTY_VERSION;
 
                 TL?.LogMessage("PersistSettings", $"Settings file: {SettingsFileName}");
 
-                JsonSerializerOptions options = new()
-                {
-                    WriteIndented = true
-                };
-                options.Converters.Add(new JsonStringEnumConverter());
-
-                string serialisedSettings = JsonSerializer.Serialize<Settings>(settingsToPersist, options);
+                string serialisedSettings = JsonSerializer.Serialize<Settings>(settingsToPersist, serialiseOptions);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(SettingsFileName));
                 File.WriteAllText(SettingsFileName, serialisedSettings);

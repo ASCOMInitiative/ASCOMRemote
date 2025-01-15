@@ -81,7 +81,7 @@ namespace ASCOM.Remote
             catch (Exception ex) // Something serious has gone wrong with the ASCOM Remote server itself so report this to the user
             {
                 ServerForm.LogException1(requestData, "DriverCommand", ex.ToString());
-                restServer.Return500Error(requestData, $"Internal server error (DriverOnSeparateThread): {ex}");
+                ServerForm.Return500Error(requestData, $"Internal server error (DriverOnSeparateThread): {ex}");
             }
             return null;
         }

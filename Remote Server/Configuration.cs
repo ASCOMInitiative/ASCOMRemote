@@ -248,8 +248,8 @@ namespace ASCOM.Remote
             {
                 if (disposing)
                 {
-                    if (baseRegistryKey != null) baseRegistryKey.Dispose();
-                    if (hiveKey != null) hiveKey.Dispose();
+                    baseRegistryKey?.Dispose();
+                    hiveKey?.Dispose();
                 }
 
                 disposedValue = true;

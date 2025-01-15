@@ -25,7 +25,7 @@ namespace ASCOM.Remote
                     case "/reset":
                         // Reset the configuration
                         TraceLoggerPlus TLReset = new("RemoteReset", true);
-                        using (ConfigurationManager configurationManager = new ConfigurationManager(TLReset))
+                        using (ConfigurationManager configurationManager = new(TLReset))
                         {
                             configurationManager.Reset();
                             configurationManager.Save();
@@ -43,7 +43,7 @@ namespace ASCOM.Remote
             }
 
             TraceLoggerPlus TLInit = new("RemoteInit", true);
-            using (ConfigurationManager configurationManager = new ConfigurationManager(TLInit))
+            using (ConfigurationManager configurationManager = new(TLInit))
             {
                 // Restart as the other bitness version if required
 

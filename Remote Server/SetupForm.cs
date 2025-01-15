@@ -15,7 +15,7 @@ namespace ASCOM.Remote
 
         #region Variables
 
-        private readonly List<string> registeredDeviceTypes = new();
+        private readonly List<string> registeredDeviceTypes = [];
         // Create a dictionary to hold the current device instance numbers of every device type
         private Dictionary<string, int> deviceNumberIndexes;
 
@@ -24,7 +24,7 @@ namespace ASCOM.Remote
         private bool selectByMouse = false; // Variable to help select the whole contents of a numeric up-down box when tabbed into our selected by mouse
 
         // CORS data grid view presentation variables
-        private readonly BindingSource bindingSource = new(); // Binding source to connect the List of permitted origins to the data grid view control
+        private readonly BindingSource bindingSource = []; // Binding source to connect the List of permitted origins to the data grid view control
 
         private readonly ToolStripMenuItem insertRow = new(); // Tool strip menu items for the context menu entries
         private readonly ToolStripMenuItem insertTenRows = new();
@@ -35,7 +35,7 @@ namespace ASCOM.Remote
         private DataGridViewSelectedRowCollection selectedRows; // Collections to hold selected rows and cells for use when deleting origins
         private DataGridViewSelectedCellCollection selectedCells;
 
-        private readonly List<StringValue> corsPermittedOriginsCopy = new(); // Variable to hold a copy of the list of permitted origins so that it can be edited without affecting the master copy.
+        private readonly List<StringValue> corsPermittedOriginsCopy = []; // Variable to hold a copy of the list of permitted origins so that it can be edited without affecting the master copy.
 
         private bool alreadyDisposed = false;
         private bool maxDevicesHasChanged;
@@ -124,7 +124,7 @@ namespace ASCOM.Remote
                 ChkOmitRawParameterInCommandXXXToTelescope.Checked = ServerForm.NonStdOmitRawInCommandXXXToTelescope;
 
                 // Initialise the application minimise options combo box
-                cmbMinimiseOptions.Items.AddRange(new object[] { ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY, ServerForm.MINIMISE_TO_TASK_BAR_KEY });
+                cmbMinimiseOptions.Items.AddRange([ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY, ServerForm.MINIMISE_TO_TASK_BAR_KEY]);
                 if (ServerForm.MinimiseToSystemTray) // Minimise to system tray
                 {
                     cmbMinimiseOptions.SelectedItem = ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY;
@@ -166,14 +166,14 @@ namespace ASCOM.Remote
                 ServerForm.LogMessage(0, 0, 0, "SetupForm Load", $"Number of configured devices: {ServerForm.ConfiguredDevices.Count}.");
 
                 // Populate the device list with all configured controls
-                deviceList = WalkControls(this, new List<ServedDevice>());
+                deviceList = WalkControls(this, []);
 
                 // Initialise each of the device GUI components
                 foreach (ServedDevice item in deviceList)
                 {
-                    string devicenumberString = item.Name.Substring("ServedDevice".Length);
+                    string devicenumberString = item.Name["ServedDevice".Length..];
                     ServerForm.LogMessage(0, 0, 0, "SetupForm Load", $"Init - Found device {item.Name} - {devicenumberString}");
-                    if (int.Parse(item.Name.Substring("ServedDevice".Length)) < ServerForm.MaximumNumberOfDevices)   //string.Compare(item.Name, $"ServedDevice{ServerForm.MaximumNumberOfDevices - 1}") <= 0)         //item.Name <= $"servedDevice{ServerForm.MaximumNumberOfDevices-1}")
+                    if (int.Parse(item.Name["ServedDevice".Length..]) < ServerForm.MaximumNumberOfDevices)   //string.Compare(item.Name, $"ServedDevice{ServerForm.MaximumNumberOfDevices - 1}") <= 0)         //item.Name <= $"servedDevice{ServerForm.MaximumNumberOfDevices-1}")
                     {
                         ServerForm.LogMessage(0, 0, 0, "SetupForm Load", $"Starting Init for {item.Name}.");
                         item.InitUI(this);
@@ -294,7 +294,7 @@ namespace ASCOM.Remote
             ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", "Start");
 
             addressList.Items.Clear();
-            deviceNumberIndexes = new Dictionary<string, int>(); // Create a dictionary to hold the current device instance numbers of every device type
+            deviceNumberIndexes = []; // Create a dictionary to hold the current device instance numbers of every device type
 
             // Add IPv4 addresses
             if (RadIpV4.Checked | RadIpV4AndV6.Checked) // IPv4 addresses are required
@@ -736,7 +736,7 @@ namespace ASCOM.Remote
                 {
                     if (control is ServedDevice)
                     {
-                        if (int.Parse(control.Name.Substring("ServedDevice".Length)) < ServerForm.MaximumNumberOfDevices)
+                        if (int.Parse(control.Name["ServedDevice".Length..]) < ServerForm.MaximumNumberOfDevices)
                         {
                             deviceList.Add(control as ServedDevice);
                             //ServerForm.LogMessage(0, 0, 0, "WalkControls", $"Found served device: {control.Name}");
@@ -770,7 +770,7 @@ namespace ASCOM.Remote
             foreach (string deviceType in registeredDeviceTypes)
             {
                 ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Processing device type: " + deviceType);
-                SortedDictionary<string, ServedDevice> servedDevices = new();
+                SortedDictionary<string, ServedDevice> servedDevices = [];
                 foreach (ServedDevice c in deviceList) //.Where(device => device.DeviceType == deviceType))
                 {
                     if (c.DeviceType == deviceType)
@@ -780,7 +780,7 @@ namespace ASCOM.Remote
                     }
                 }
                 ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Added served devices");
-                Dictionary<string, string> x = new();
+                Dictionary<string, string> x = [];
 
                 foreach (KeyValuePair<string, ServedDevice> item in servedDevices)
                 {
@@ -803,7 +803,7 @@ namespace ASCOM.Remote
                 return false;
             }
 
-            if (ipAddress.ToLower() == SharedConstants.LOCALHOST_NAME_IPV4)
+            if (ipAddress.Equals(SharedConstants.LOCALHOST_NAME_IPV4, StringComparison.CurrentCultureIgnoreCase))
             {
                 errorMessage = "";
                 return true;
@@ -946,7 +946,7 @@ namespace ASCOM.Remote
             configurationManager.Settings.RunAs64Bit = ((CheckBox)sender).Checked;
         }
 
-        private void chkConfirmExit_CheckedChanged(object sender, EventArgs e)
+        private void ChkConfirmExit_CheckedChanged(object sender, EventArgs e)
         {
             chkSuppressConformationOnWindowsClose.Enabled = chkConfirmExit.Checked;
         }
