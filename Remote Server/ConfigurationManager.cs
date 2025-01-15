@@ -33,11 +33,11 @@ namespace ASCOM.Remote
             try
             {
                 // Set JSON serialisation options
-                JsonSerializerOptions options = new()
+                serialiseOptions = new()
                 {
                     WriteIndented = true // Write the file in indented form for easier reading
                 };
-                options.Converters.Add(new JsonStringEnumConverter()); // For increased resilience, accept both string member names and integer member values as valid for enum elements.
+                serialiseOptions.Converters.Add(new JsonStringEnumConverter()); // For increased resilience, accept both string member names and integer member values as valid for enum elements.
 
                 // Set JSON de-serialisation options
                 deserialiseOptions = new()
@@ -295,17 +295,6 @@ namespace ASCOM.Remote
                 TL.LogMessage("PersistSettings", ex.ToString());
             }
         }
-
-        //internal void RaiseUiHasChangedEvent()
-        //{
-        //    if (UiHasChanged is not null)
-        //    {
-        //        EventArgs args = new();
-        //        TL?.LogMessage("RaiseUiHasChangedEvent", "About to call UI has changed event handler");
-        //        UiHasChanged(this, args);
-        //        TL?.LogMessage("RaiseUiHasChangedEvent", "Returned from UI has changed event handler");
-        //    }
-        //}
 
         #endregion
 
