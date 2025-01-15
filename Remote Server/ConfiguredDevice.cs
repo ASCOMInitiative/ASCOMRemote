@@ -33,7 +33,7 @@
         {
             get
             {
-                return string.Format("{0}/{1}", DeviceType.ToLowerInvariant(), DeviceNumber); // Create the device key
+                return $"{DeviceType.ToLowerInvariant()}/{DeviceNumber}"; // Create the device key
             }
         }
     }

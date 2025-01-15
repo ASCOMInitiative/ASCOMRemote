@@ -88,7 +88,7 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                return $"UnknownMethod:'{lookupKey}' - {ex.ToString()}";
+                return $"UnknownMethod:'{lookupKey}' - {ex}";
             }
         }
 

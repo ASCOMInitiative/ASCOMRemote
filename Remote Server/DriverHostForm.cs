@@ -39,11 +39,11 @@ namespace ASCOM.Remote
         /// <param name="e"></param>
         private void DriverHostForm_Load(object sender, EventArgs e)
         {
-            deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber);
+            deviceKey = $"{configuredDevice.Value.DeviceType.ToLowerInvariant()}/{configuredDevice.Value.DeviceNumber}";
 
             ServerForm.LogMessage(0, 0, 0, "DriverHostForm", $"Creating driver {deviceKey} ({configuredDevice.Key}) on thread {Environment.CurrentManagedThreadId} with apartment state {Thread.CurrentThread.GetApartmentState()}");
             restServer.CreateInstance(configuredDevice); // Create the driver on this thread
-            ServerForm.LogMessage(0, 0, 0, "DriverHostForm", string.Format("Created driver {0} ({1}) on thread {2}", deviceKey, configuredDevice.Key, Environment.CurrentManagedThreadId));
+            ServerForm.LogMessage(0, 0, 0, "DriverHostForm", $"Created driver {deviceKey} ({configuredDevice.Key}) on thread {Environment.CurrentManagedThreadId}");
 
             ServerForm.ActiveObjects[deviceKey].DriverHostForm = this; // Save the driver host form reference so that calls can be made to the driver
         }
@@ -81,7 +81,7 @@ namespace ASCOM.Remote
             catch (Exception ex) // Something serious has gone wrong with the ASCOM Remote server itself so report this to the user
             {
                 ServerForm.LogException1(requestData, "DriverCommand", ex.ToString());
-                restServer.Return500Error(requestData, "Internal server error (DriverOnSeparateThread): " + ex.ToString());
+                restServer.Return500Error(requestData, $"Internal server error (DriverOnSeparateThread): {ex}");
             }
             return null;
         }

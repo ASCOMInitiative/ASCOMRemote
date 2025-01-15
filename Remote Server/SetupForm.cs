@@ -163,12 +163,7 @@ namespace ASCOM.Remote
                         registeredDeviceTypes.Add(deviceType); // Remember the device types on this system
                     }
                 }
-                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Number of configured devices: {0}.", ServerForm.ConfiguredDevices.Count));
-
-                //foreach (string deviceName in ServerForm.ConfiguredDevices.Keys)
-                //{
-                //    ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("ConfiguredDevices contains key {0}.", deviceName));
-                //}
+                ServerForm.LogMessage(0, 0, 0, "SetupForm Load", $"Number of configured devices: {ServerForm.ConfiguredDevices.Count}.");
 
                 // Populate the device list with all configured controls
                 deviceList = WalkControls(this, new List<ServedDevice>());
@@ -180,9 +175,9 @@ namespace ASCOM.Remote
                     ServerForm.LogMessage(0, 0, 0, "SetupForm Load", $"Init - Found device {item.Name} - {devicenumberString}");
                     if (int.Parse(item.Name.Substring("ServedDevice".Length)) < ServerForm.MaximumNumberOfDevices)   //string.Compare(item.Name, $"ServedDevice{ServerForm.MaximumNumberOfDevices - 1}") <= 0)         //item.Name <= $"servedDevice{ServerForm.MaximumNumberOfDevices-1}")
                     {
-                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Starting Init for {0}.", item.Name));
+                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", $"Starting Init for {item.Name}.");
                         item.InitUI(this);
-                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}, now setting its parameters.", item.Name));
+                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", $"Completed Init for {item.Name}, now setting its parameters.");
                         item.DeviceType = ServerForm.ConfiguredDevices[item.Name].DeviceType;
                         item.ProgID = ServerForm.ConfiguredDevices[item.Name].ProgID;
                         item.DeviceNumber = ServerForm.ConfiguredDevices[item.Name].DeviceNumber;
@@ -191,7 +186,7 @@ namespace ASCOM.Remote
                         item.AllowConcurrentAccess = ServerForm.ConfiguredDevices[item.Name].AllowConcurrentAccess;
                         item.DevicesAreConnected = ServerForm.devicesAreConnected;
 
-                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", string.Format("Completed Init for {0}.", item.Name));
+                        ServerForm.LogMessage(0, 0, 0, "SetupForm Load", $"Completed Init for {item.Name}.");
                     }
                 }
 
@@ -282,8 +277,8 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                ServerForm.LogException(0, 0, 0, "SetupForm Load", string.Format("Exception on loading form: {0}.", ex.ToString()));
-                MessageBox.Show(string.Format("Setup exception: {0}\r\nThe form may not function correctly.", ex.Message), "Setup form load error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ServerForm.LogException(0, 0, 0, "SetupForm Load", $"Exception on loading form: {ex}.");
+                MessageBox.Show($"Setup exception: {ex.Message}\r\nThe form may not function correctly.", "Setup form load error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -309,7 +304,7 @@ namespace ASCOM.Remote
                 foreach (IPAddress ipAddress in HostPc.IpV4Addresses)
                 {
                     addressList.Items.Add(ipAddress.ToString());
-                    ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("  Added {0} Address: {1}", ipAddress.AddressFamily.ToString(), ipAddress.ToString()));
+                    ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", $"  Added {ipAddress.AddressFamily} Address: {ipAddress}");
 
                     foundAnIPAddress = true;
 
@@ -327,7 +322,7 @@ namespace ASCOM.Remote
                 foreach (IPAddress ipAddress in HostPc.IpV6Addresses)
                 {
                     addressList.Items.Add($"[{ipAddress}]");
-                    ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", string.Format("  Added {0} Address: {1}", ipAddress.AddressFamily.ToString(), ipAddress.ToString()));
+                    ServerForm.LogMessage(0, 0, 0, "PopulateAddressList", $"  Added {ipAddress.AddressFamily} Address: {ipAddress}");
 
                     foundAnIPAddress = true;
 
@@ -597,7 +592,7 @@ namespace ASCOM.Remote
                 ServerForm.CheckForPreReleaseUpdates = ChkCheckForPreReleaseUpdates.Checked;
                 ServerForm.SuppressConfirmationOnWindowsClose = chkSuppressConformationOnWindowsClose.Checked;
                 ServerForm.EnableReboot = ChkEnableReboot.Checked;
-                ServerForm.NonStdOmitRawInCommandXXXToTelescope=ChkOmitRawParameterInCommandXXXToTelescope.Checked;
+                ServerForm.NonStdOmitRawInCommandXXXToTelescope = ChkOmitRawParameterInCommandXXXToTelescope.Checked;
 
                 // Update the minimise to system tray value
                 ServerForm.MinimiseToSystemTray = (string)cmbMinimiseOptions.SelectedItem == ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY; // Expression evaluates to True if minimise to tray is selected, otherwise false
@@ -659,7 +654,7 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                ServerForm.LogException(0, 0, 0, "OK Button", string.Format("Exception on closing form: {0}.", ex.ToString()));
+                ServerForm.LogException(0, 0, 0, "OK Button", $"Exception on closing form: {ex}.");
             }
         }
 
@@ -789,10 +784,10 @@ namespace ASCOM.Remote
 
                 foreach (KeyValuePair<string, ServedDevice> item in servedDevices)
                 {
-                    ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Processing item number: " + item.Value.Name + " ");
+                    ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", $"Processing item number: {item.Value.Name} ");
                     if (item.Value.DeviceType == deviceType)
                     {
-                        ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", "Setting " + deviceType + " item number: " + deviceNumberIndexes[deviceType].ToString());
+                        ServerForm.LogMessage(0, 0, 0, "RecalculateDeviceNumbers", $"Setting {deviceType} item number: {deviceNumberIndexes[deviceType]}");
                         item.Value.DeviceNumber = deviceNumberIndexes[deviceType];
                         deviceNumberIndexes[deviceType] += 1;
                     }

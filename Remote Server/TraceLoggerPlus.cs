@@ -476,7 +476,7 @@ namespace ASCOM.Remote
 
         public void LogMessage(uint instance, string prefix, string message)
         {
-            LogMessage(prefix + " " + instance.ToString(), message);
+            LogMessage($"{prefix} {instance}", message);
         }
 
         public void LogMessage(uint clientID, uint clientTransactionID, uint serverTransactionID, string prefix, string message)
@@ -505,7 +505,7 @@ namespace ASCOM.Remote
 
         public void LogMessageCrLf(uint instance, string prefix, string message)
         {
-            LogMessage(prefix + " " + instance.ToString(), message);
+            LogMessage($"{prefix} {instance}", message);
         }
 
         public void LogMessageCrLf(uint clientID, uint clientTransactionID, uint serverTransactionID, string prefix, string message)

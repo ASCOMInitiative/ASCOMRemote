@@ -527,18 +527,18 @@ namespace ASCOM.Remote
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Clear down the listener
-            LogMessage(0, 0, 0, "FormClosed", string.Format("Stopping Remote server on thread {0}", Environment.CurrentManagedThreadId));
+            LogMessage(0, 0, 0, "FormClosed", $"Stopping Remote server on thread {Environment.CurrentManagedThreadId}");
             StopRESTServer();
-            LogMessage(0, 0, 0, "FormClosed", string.Format("Stopped Remote server on thread {0}", Environment.CurrentManagedThreadId));
+            LogMessage(0, 0, 0, "FormClosed", $"Stopped Remote server on thread {Environment.CurrentManagedThreadId}");
 
             // Clear all of the current objects
-            LogMessage(0, 0, 0, "FormClosed", string.Format("Disconnecting devices on thread {0}", Environment.CurrentManagedThreadId));
+            LogMessage(0, 0, 0, "FormClosed", $"Disconnecting devices on thread {Environment.CurrentManagedThreadId}");
             DisconnectDevices();
-            LogMessage(0, 0, 0, "FormClosed", string.Format("Disconnected devices on thread {0}", Environment.CurrentManagedThreadId));
+            LogMessage(0, 0, 0, "FormClosed", $"Disconnected devices on thread {Environment.CurrentManagedThreadId}");
 
             WaitFor(200);
             LogMessage(0, 0, 0, "FormClosed", "");
-            LogMessage(0, 0, 0, "FormClosed", string.Format("Remote Server SHUT DOWN on thread {0}", Environment.CurrentManagedThreadId));
+            LogMessage(0, 0, 0, "FormClosed", $"Remote Server SHUT DOWN on thread {Environment.CurrentManagedThreadId}");
         }
 
         #endregion
@@ -734,7 +734,7 @@ namespace ASCOM.Remote
                                             setNetworkPermissionsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), PERMISSIONS_EXE_PATH);
                                         }
 
-                                        LogMessage(0, 0, 0, "StartRESTServer", string.Format("SetNetworkPermissionspath: {0}", setNetworkPermissionsPath));
+                                        LogMessage(0, 0, 0, "StartRESTServer", $"SetNetworkPermissionspath: {setNetworkPermissionsPath}");
 
                                         // Check that the SetNetworkPermissions EXE exists
                                         if (File.Exists(setNetworkPermissionsPath)) // SetNetworkPermissions exists
@@ -790,7 +790,7 @@ namespace ASCOM.Remote
                                         }
                                         else // SetNetworkPermissions does not exist
                                         {
-                                            string errorMessage = string.Format("Cannot find SetNetworkPermissions program: {0} ", setNetworkPermissionsPath);
+                                            string errorMessage = $"Cannot find SetNetworkPermissions program: {setNetworkPermissionsPath} ";
                                             LogMessage(0, 0, 0, "StartRESTServer", errorMessage);
                                             LogToScreen(errorMessage);
                                             return;
@@ -799,7 +799,7 @@ namespace ASCOM.Remote
                                     catch (Exception ex1)
                                     {
                                         LogException(0, 0, 0, "StartRESTServer", ex1.ToString());
-                                        LogToScreen("Exception while enabling the API and Management URIs: " + ex1.Message);
+                                        LogToScreen($"Exception while enabling the API and Management URIs: {ex1.Message}");
                                     }
 
                                     // Create a new listener instance and loop round to attempt to start it again
@@ -969,7 +969,7 @@ namespace ASCOM.Remote
                 catch (Exception ex)
                 {
                     LogException(0, 0, 0, "StartRESTServer", ex.ToString());
-                    LogToScreen("Exception while attempting to start the API or discovery listeners: " + ex.Message);
+                    LogToScreen($"Exception while attempting to start the API or discovery listeners: {ex.Message}");
                 }
             }
         }
@@ -1068,15 +1068,15 @@ namespace ASCOM.Remote
 
                                 if (RunDriversOnSeparateThreads)
                                 {
-                                    LogMessage(0, 0, 0, "ConnectDevices", string.Format("Creating driver {0} on separate thread. This is thread: {1}", configuredDevice.Value.ProgID, Environment.CurrentManagedThreadId));
+                                    LogMessage(0, 0, 0, "ConnectDevices", $"Creating driver {configuredDevice.Value.ProgID} on separate thread. This is thread: {Environment.CurrentManagedThreadId}");
                                     Thread driverThread = new(DriverOnSeparateThread);
                                     driverThread.SetApartmentState(ApartmentState.STA);
                                     driverThread.DisableComObjectEagerCleanup();
                                     driverThread.IsBackground = true;
                                     driverThread.Start(configuredDevice);
-                                    LogMessage(0, 0, 0, "ConnectDevices", string.Format("Thread started successfully for {0}. This is thread: {1}", configuredDevice.Value.ProgID, Environment.CurrentManagedThreadId));
+                                    LogMessage(0, 0, 0, "ConnectDevices", $"Thread started successfully for {configuredDevice.Value.ProgID}. This is thread: {Environment.CurrentManagedThreadId}");
 
-                                    string deviceKey = string.Format("{0}/{1}", configuredDevice.Value.DeviceType.ToLowerInvariant(), configuredDevice.Value.DeviceNumber);
+                                    string deviceKey = $"{configuredDevice.Value.DeviceType.ToLowerInvariant()}/{configuredDevice.Value.DeviceNumber}";
 
                                     do
                                     {
@@ -1084,7 +1084,7 @@ namespace ASCOM.Remote
                                         Application.DoEvents();
                                     } while (ActiveObjects[deviceKey].DriverHostForm == null);
 
-                                    LogMessage(0, 0, 0, "ConnectDevices", string.Format("Completed create driver delegate for {0} on thread {1}", configuredDevice.Value.ProgID, Environment.CurrentManagedThreadId));
+                                    LogMessage(0, 0, 0, "ConnectDevices", $"Completed create driver delegate for {configuredDevice.Value.ProgID} on thread {Environment.CurrentManagedThreadId}");
                                 }
                                 else
                                 {
@@ -1098,7 +1098,7 @@ namespace ASCOM.Remote
                             }
                             catch (Exception ex)
                             {
-                                LogToScreen(string.Format("Exception while attempting to create thread for device: {0} {1}", configuredDevice.Value.ProgID, ex.Message));
+                                LogToScreen($"Exception while attempting to create thread for device: {configuredDevice.Value.ProgID} {ex.Message}");
                                 LogException(0, 0, 0, "ConnectDevices", ex.ToString());
                             }
                             LogBlankLine(0, 0, 0);
@@ -1124,7 +1124,7 @@ namespace ASCOM.Remote
                 }
                 catch (Exception ex)
                 {
-                    LogToScreen("Exception while attempting to create devices: " + ex.Message);
+                    LogToScreen($"Exception while attempting to create devices: {ex.Message}");
                     LogException(0, 0, 0, "ConnectDevices", ex.ToString());
                 }
             }
@@ -1217,17 +1217,17 @@ namespace ASCOM.Remote
         {
             KeyValuePair<string, ConfiguredDevice> configuredDevice = (KeyValuePair<string, ConfiguredDevice>)arg; // Convert the supplied argument to the correct type
 
-            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("About to create driver host form"));
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", "About to create driver host form");
             DriverHostForm driverHostForm = new(configuredDevice, this); // Create the form
-            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Created driver host form"));
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", "Created driver host form");
             driverHostForm.Show(); // Make it come into existence - it doesn't exist until its shown for some reason
-            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Shown driver host form"));
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", "Shown driver host form");
             driverHostForm.Hide(); // Hide the form from view
-            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Hidden driver host form"));
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", "Hidden driver host form");
 
-            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Starting driver host environment for {0} on thread {1}", configuredDevice.Value.DeviceKey, Environment.CurrentManagedThreadId));
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", $"Starting driver host environment for {configuredDevice.Value.DeviceKey} on thread {Environment.CurrentManagedThreadId}");
             Application.Run();  // Start the message loop on this thread to bring the form to life
-            LogMessage(0, 0, 0, "DriverOnSeparateThread", string.Format("Environment for driver host {0} shut down on thread {1}", configuredDevice.Value.DeviceKey, Environment.CurrentManagedThreadId));
+            LogMessage(0, 0, 0, "DriverOnSeparateThread", $"Environment for driver host {configuredDevice.Value.DeviceKey} shut down on thread {Environment.CurrentManagedThreadId}");
             driverHostForm.Dispose();
 
         }
@@ -1236,7 +1236,7 @@ namespace ASCOM.Remote
         {
             try
             {
-                LogMessage(0, 0, 0, "CreateInstance", string.Format("Creating device: {0}, ProgID: {1}, Key: {2} on thread {3}", configuredDevice.Key, configuredDevice.Value.ProgID, configuredDevice.Value.DeviceKey, Environment.CurrentManagedThreadId));
+                LogMessage(0, 0, 0, "CreateInstance", $"Creating device: {configuredDevice.Key}, ProgID: {configuredDevice.Value.ProgID}, Key: {configuredDevice.Value.DeviceKey} on thread {Environment.CurrentManagedThreadId}");
 
                 // Create the device and save its reference to the ActiveObject instance
                 Type deviceType = Type.GetTypeFromProgID(configuredDevice.Value.ProgID);
@@ -1245,14 +1245,14 @@ namespace ASCOM.Remote
                 {
                     dynamic deviceObject = Activator.CreateInstance(deviceType);
                     ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject = deviceObject;
-                    LogMessage(0, 0, 0, "CreateInstance", string.Format("Device {0} created OK!", configuredDevice.Value.ProgID));
+                    LogMessage(0, 0, 0, "CreateInstance", $"Device {configuredDevice.Value.ProgID} created OK!");
 
                     // make sure that a device object was actually returned
                     if (ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject != null) // A device object was returned
                     {
                         try
                         {
-                            LogMessage(0, 0, 0, "CreateInstance", string.Format("Connecting device {0}", configuredDevice.Value.ProgID));
+                            LogMessage(0, 0, 0, "CreateInstance", $"Connecting device {configuredDevice.Value.ProgID}");
                             try
                             {
                                 ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject.Connected = true;
@@ -1263,35 +1263,35 @@ namespace ASCOM.Remote
                                 ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject.Link = true;
                             }
                             ActiveObjects[configuredDevice.Value.DeviceKey].InitialisedOk = true; // Set flag indicating that this device initialised and connected OK
-                            LogMessage(0, 0, 0, "CreateInstance", string.Format("Device {0} connected OK", configuredDevice.Value.ProgID));
-                            LogToScreen(string.Format("Device {0} {1} ({2}) connected OK and is available", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID));
+                            LogMessage(0, 0, 0, "CreateInstance", $"Device {configuredDevice.Value.ProgID} connected OK");
+                            LogToScreen($"Device {configuredDevice.Value.DeviceType} {configuredDevice.Value.DeviceNumber} ({configuredDevice.Value.ProgID}) connected OK and is available");
                         }
                         catch (Exception ex1) // Exception on setting Connected to True
                         {
-                            ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - it threw an error while being connected: {1}", configuredDevice.Value.ProgID, ex1.Message);
-                            LogException(0, 0, 0, "CreateInstance", string.Format("Error connecting to device {0}: \r\n{1}", configuredDevice.Value.ProgID, ex1.ToString()));
-                            LogToScreen(string.Format("ERROR - Device {0} {1} ({2}) failed to connect and is NOT available: {3}", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID, ex1.Message));
+                            ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = $"Device {configuredDevice.Value.ProgID} is unavailable - it threw an error while being connected: {ex1.Message}";
+                            LogException(0, 0, 0, "CreateInstance", $"Error connecting to device {configuredDevice.Value.ProgID}: \r\n{ex1}");
+                            LogToScreen($"ERROR - Device {configuredDevice.Value.DeviceType} {configuredDevice.Value.DeviceNumber} ({configuredDevice.Value.ProgID}) failed to connect and is NOT available: {ex1.Message}");
                         }
                     }
                     else // No device object was returned so flag that an error occurred
                     {
-                        ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - no device was returned from CreateInstance but no exception was generated either!", configuredDevice.Value.ProgID);
-                        LogMessage(0, 0, 0, "CreateInstance", string.Format("Device created OK - ActiveObjects.DeviceObject is null: {0}", (ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject == null)));
-                        LogToScreen(string.Format("ERROR - Device {0} {1} ({2}) could not be created and is NOT available. It did not create an exception or error message!", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID));
+                        ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = $"Device {configuredDevice.Value.ProgID} is unavailable - no device was returned from CreateInstance but no exception was generated either!";
+                        LogMessage(0, 0, 0, "CreateInstance", $"Device created OK - ActiveObjects.DeviceObject is null: {ActiveObjects[configuredDevice.Value.DeviceKey].DeviceObject == null}");
+                        LogToScreen($"ERROR - Device {configuredDevice.Value.DeviceType} {configuredDevice.Value.DeviceNumber} ({configuredDevice.Value.ProgID}) could not be created and is NOT available. It did not create an exception or error message!");
                     }
                 }
                 else // We did not get a Type from Type.GetTypeFromProgID, it returned null. Record an error instead
                 {
-                    ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - unable to create a Type from its ProgID. This implies that the driver may not be correctly registered for COM.", configuredDevice.Value.ProgID);
-                    LogMessage(0, 0, 0, "CreateInstance", string.Format("Device {0} is unavailable - unable to create a Type from its ProgID. This implies that the driver may not be correctly registered for COM.", configuredDevice.Value.ProgID));
-                    LogToScreen(string.Format("ERROR - Device {0} {1} ({2}) could not be created and is NOT available: Unable to create a Type from its ProgID. This implies that the driver may not be correctly registered for COM.", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID));
+                    ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = $"Device {configuredDevice.Value.ProgID} is unavailable - unable to create a Type from its ProgID. This implies that the driver may not be correctly registered for COM.";
+                    LogMessage(0, 0, 0, "CreateInstance", $"Device {configuredDevice.Value.ProgID} is unavailable - unable to create a Type from its ProgID. This implies that the driver may not be correctly registered for COM.");
+                    LogToScreen($"ERROR - Device {configuredDevice.Value.DeviceType} {configuredDevice.Value.DeviceNumber} ({configuredDevice.Value.ProgID}) could not be created and is NOT available: Unable to create a Type from its ProgID. This implies that the driver may not be correctly registered for COM.");
                 }
             }
             catch (Exception ex) // Exception when creating device
             {
-                ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = string.Format("Device {0} is unavailable - it threw an error while being created: {1}", configuredDevice.Value.ProgID, ex.Message);
-                LogException(0, 0, 0, "CreateInstance", "Error creating device: \r\n" + ex.ToString());
-                LogToScreen(string.Format("ERROR - Device {0} {1} ({2}) could not be created and is NOT available: {3}", configuredDevice.Value.DeviceType, configuredDevice.Value.DeviceNumber, configuredDevice.Value.ProgID, ex.Message));
+                ActiveObjects[configuredDevice.Value.DeviceKey].InitialisationErrorMessage = $"Device {configuredDevice.Value.ProgID} is unavailable - it threw an error while being created: {ex.Message}";
+                LogException(0, 0, 0, "CreateInstance", $"Error creating device: \r\n{ex}");
+                LogToScreen($"ERROR - Device {configuredDevice.Value.DeviceType} {configuredDevice.Value.DeviceNumber} ({configuredDevice.Value.ProgID}) could not be created and is NOT available: {ex.Message}");
             }
         }
 
@@ -1325,13 +1325,13 @@ namespace ASCOM.Remote
                         if (RunDriversOnSeparateThreads)
                         {
                             DestroyDriverDelegate destroyDriverDelegate = new(activeObject.Value.DriverHostForm.DestroyDriver);
-                            LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Starting invoke of driver delegate for device {0} on thread {1}", activeObject.Key, Environment.CurrentManagedThreadId));
+                            LogMessage(0, 0, 0, "DisconnectDevices", $"Starting invoke of driver delegate for device {activeObject.Key} on thread {Environment.CurrentManagedThreadId}");
                             activeObject.Value.DriverHostForm.Invoke(destroyDriverDelegate);
-                            LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Completed invoke of driver delegate for device {0} on thread {1}", activeObject.Key, Environment.CurrentManagedThreadId));
+                            LogMessage(0, 0, 0, "DisconnectDevices", $"Completed invoke of driver delegate for device {activeObject.Key} on thread {Environment.CurrentManagedThreadId}");
                         }
                         else
                         {
-                            LogMessage(0, 0, 0, "DisconnectDevices", string.Format("Drivers on same thread - destroying device {0} on thread {1}", activeObject.Key, Environment.CurrentManagedThreadId));
+                            LogMessage(0, 0, 0, "DisconnectDevices", $"Drivers on same thread - destroying device {activeObject.Key} on thread {Environment.CurrentManagedThreadId}");
                             RemainingObjectCount = DestroyDriver(activeObject.Key);
                         }
                     }
@@ -1339,7 +1339,7 @@ namespace ASCOM.Remote
 
                     catch (Exception ex)
                     {
-                        LogException(0, 0, 0, "DisconnectDevices", "  ReleaseComObject Exception: " + ex.ToString());
+                        LogException(0, 0, 0, "DisconnectDevices", $"  ReleaseComObject Exception: {ex}");
                     }
                     LogBlankLine(0, 0, 0);
                 }
@@ -1354,17 +1354,17 @@ namespace ASCOM.Remote
         {
             int RemainingObjectCount;
 
-            LogMessage(0, 0, 0, "DestroyDriver", string.Format("Destroying driver: {0}", DeviceKey));
+            LogMessage(0, 0, 0, "DestroyDriver", $"Destroying driver: {DeviceKey}");
 
             device = ActiveObjects[DeviceKey].DeviceObject;
 
-            if (DebugTraceState) LogMessage(0, 0, 0, "DestroyDriver", string.Format("Before setting Connected false for driver: {0}", DeviceKey));
+            if (DebugTraceState) LogMessage(0, 0, 0, "DestroyDriver", $"Before setting Connected false for driver: {DeviceKey}");
             try { device.Connected = false; } catch { }// Don't throw exceptions from these
 
-            if (DebugTraceState) LogMessage(0, 0, 0, "DestroyDriver", string.Format("Before setting Link false for driver: {0}", DeviceKey));
+            if (DebugTraceState) LogMessage(0, 0, 0, "DestroyDriver", $"Before setting Link false for driver: {DeviceKey}");
             try { device.Link = false; } catch { }
 
-            if (DebugTraceState) LogMessage(0, 0, 0, "DestroyDriver", string.Format("Before calling Dispose() for driver: {0}", DeviceKey));
+            if (DebugTraceState) LogMessage(0, 0, 0, "DestroyDriver", $"Before calling Dispose() for driver: {DeviceKey}");
             try { device.Dispose(); } catch { }
 
             // Now destroy the device instance
@@ -1376,15 +1376,15 @@ namespace ASCOM.Remote
                 do
                 {
                     LoopCount += 1;
-                    if (DebugTraceState) LogMessage(0, 0, 0, "DestroyDriver", string.Format("Before calling ReleaseComObject() for driver: {0}", DeviceKey));
+                    if (DebugTraceState) LogMessage(0, 0, 0, "DestroyDriver", $"Before calling ReleaseComObject() for driver: {DeviceKey}");
                     try { RemainingObjectCount = Marshal.ReleaseComObject(device); } catch { } // Don't throw exceptions from this
-                    LogMessage(0, 0, 0, "DestroyDriver", string.Format("Remaining {0} count: {1}, LoopCount: {2}", DeviceKey, RemainingObjectCount, LoopCount));
+                    LogMessage(0, 0, 0, "DestroyDriver", $"Remaining {DeviceKey} count: {RemainingObjectCount}, LoopCount: {LoopCount}");
                 }
                 while ((RemainingObjectCount > 0) & (LoopCount != 20));
                 device = null;
             }
 
-            LogMessage(0, 0, 0, "DestroyDriver", string.Format("Destroyed driver: {0}", DeviceKey));
+            LogMessage(0, 0, 0, "DestroyDriver", $"Destroyed driver: {DeviceKey}");
 
             return RemainingObjectCount;
         }
@@ -1559,7 +1559,7 @@ namespace ASCOM.Remote
                     if (txtLog.TextLength > SCREEN_LOG_MAXIMUM_LENGTH) txtLog.Text = txtLog.Text.Substring(SCREEN_LOG_MAXIMUM_LENGTH / 3);
 
                     // Limit the number of characters that can be added in one message to maintain performance
-                    if (screenMessage.Length > SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH) screenMessage = string.Format("{0} - Screen display truncated to {1} characters in order to maintain performance", screenMessage.Substring(0, SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH), SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH);
+                    if (screenMessage.Length > SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH) screenMessage = $"{screenMessage.Substring(0, SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH)} - Screen display truncated to {SCREEN_LOG_MAXIMUM_MESSAGE_LENGTH} characters in order to maintain performance";
 
                     txtLog.AppendText(screenMessage + "\r\n"); // Add the text to the screen log
                     txtLog.SelectionStart = txtLog.Text.Length; // Move the text box focus to the newly added text
@@ -1993,7 +1993,7 @@ namespace ASCOM.Remote
             }
 
             // Normal Setup, SHIFT was not pressed
-            LogMessage(0, 0, 0, "SetupButton", Message: string.Format("Saving current server state", apiIsEnabled, devicesAreConnected));
+            LogMessage(0, 0, 0, "SetupButton", Message: $"Saving current server state - API is enabled: {apiIsEnabled}, Devices are connected: {devicesAreConnected}");
 
             // Save current server state
             apiEnabled = apiIsEnabled;
@@ -2006,16 +2006,16 @@ namespace ASCOM.Remote
             }
 
             // Stop the REST server and disconnect served devices
-            LogMessage(0, 0, 0, "SetupButton", string.Format("Stopping RemoteServer"));
+            LogMessage(0, 0, 0, "SetupButton", "Stopping RemoteServer");
             StopRESTServer(); // Shut down access while we use the Setup screen
-            LogMessage(0, 0, 0, "SetupButton", string.Format("Disconnecting devices"));
+            LogMessage(0, 0, 0, "SetupButton", "Disconnecting devices");
             DisconnectDevices(); // Disconnect all devices so we can use their Setup screens if necessary
 
             // Show the configuration Setup form and determine whether or not the user committed any changes.
-            LogMessage(0, 0, 0, "SetupButton", string.Format("Loading Setup form"));
+            LogMessage(0, 0, 0, "SetupButton", "Loading Setup form");
             SetupForm frm = new();
             DialogResult outcome = frm.ShowDialog();
-            LogMessage(0, 0, 0, "SetupButton", string.Format("Setup dialogue outcome: {0}", outcome.ToString()));
+            LogMessage(0, 0, 0, "SetupButton", $"Setup dialogue outcome: {outcome}");
 
             // Update use of UTC time and application bitness in case these were changed in the setup dialogue
             if (outcome == DialogResult.OK) // The user committed their changes
@@ -2078,22 +2078,22 @@ namespace ASCOM.Remote
             // Start with new configuration
             if (devicesConnected)
             {
-                LogMessage(0, 0, 0, "SetupButton", string.Format("Connecting devices"));
+                LogMessage(0, 0, 0, "SetupButton", "Connecting devices");
                 ConnectDevices();
             }
             else
             {
-                LogMessage(0, 0, 0, "SetupButton", string.Format("Not connecting devices because they weren't connected in the first place."));
+                LogMessage(0, 0, 0, "SetupButton", "Not connecting devices because they weren't connected in the first place.");
             }
 
             if (apiEnabled)
             {
-                LogMessage(0, 0, 0, "SetupButton", string.Format("Starting Remote server"));
+                LogMessage(0, 0, 0, "SetupButton", "Starting Remote server");
                 StartRESTServer();
             }
             else
             {
-                LogMessage(0, 0, 0, "SetupButton", string.Format("Not starting Remote server because it wasn't running in the first place."));
+                LogMessage(0, 0, 0, "SetupButton", "Not starting Remote server because it wasn't running in the first place.");
             }
 
         }
@@ -2131,7 +2131,7 @@ namespace ASCOM.Remote
         private void ChkLogRequestsAndResponses_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox checkBox = (CheckBox)sender;
-            if (DebugTraceState) LogMessage(0, 0, 0, "ScreenLog_Changed", string.Format("Check box {0} has changed to {1}, saving new value", checkBox.Name, checkBox.Checked.ToString()));
+            if (DebugTraceState) LogMessage(0, 0, 0, "ScreenLog_Changed", string.Format($"Check box {{0}} has changed to {{1}}, saving new value", checkBox.Name, checkBox.Checked.ToString()));
             ScreenLogRequests = chkLogRequests.Checked;
             ScreenLogResponses = chkLogResponses.Checked;
             WriteProfile();
@@ -2374,17 +2374,17 @@ namespace ASCOM.Remote
             // Get the result context from the client's call
             try
             {
-                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Request received. Is thread pool thread: {1}. Is background thread: {2}.", Environment.CurrentManagedThreadId.ToString(), Thread.CurrentThread.IsThreadPoolThread, Thread.CurrentThread.IsBackground));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"Thread {Environment.CurrentManagedThreadId} - Request received. Is thread pool thread: {Thread.CurrentThread.IsThreadPoolThread}. Is background thread: {Thread.CurrentThread.IsBackground}.");
                 context = listener.EndGetContext(result); // Get the context object
             }
             catch (NullReferenceException) // httpListener is null because we are closing down or because of some other error so just log the event
             {
-                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - EndGetContext - httpListener is null so taking no action and just returning.", Environment.CurrentManagedThreadId.ToString()));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"Thread {Environment.CurrentManagedThreadId} - EndGetContext - httpListener is null so taking no action and just returning.");
                 return;
             }
             catch (ObjectDisposedException) // httpListener is disposed because the Remote server has been stopped or because of some other error so just log the event
             {
-                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - EndGetContext - httpListener is disposed so taking no action and just returning.", Environment.CurrentManagedThreadId.ToString()));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"Thread {Environment.CurrentManagedThreadId} - EndGetContext - httpListener is disposed so taking no action and just returning.");
                 return;
             }
 
@@ -2400,7 +2400,7 @@ namespace ASCOM.Remote
                 }
                 else // No context object so not possible to return an error to the client, just log the error and increment the error counter
                 {
-                    LogException1(requestData, "APIRequestCallback", string.Format("Thread {0} - EndGetContext exception: {1}", Environment.CurrentManagedThreadId.ToString(), ex.ToString()));
+                    LogException1(requestData, "APIRequestCallback", $"Thread {Environment.CurrentManagedThreadId} - EndGetContext exception: {ex}");
                     Interlocked.Increment(ref numberOfConsecutiveErrors);
                 }
             }
@@ -2408,12 +2408,12 @@ namespace ASCOM.Remote
             // Set up the next call back            
             try
             {
-                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Setting up new call back to wait for next request ", Environment.CurrentManagedThreadId.ToString()));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"Thread {Environment.CurrentManagedThreadId} - Setting up new call back to wait for next request ");
 
                 // Exit if httpListener is null because we are shutting down.
                 if (httpListener is null)
                 {
-                    if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - BeginGetContext - httpListener is null so taking no action and just returning.", Environment.CurrentManagedThreadId.ToString()));
+                    if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"Thread {Environment.CurrentManagedThreadId} - BeginGetContext - httpListener is null so taking no action and just returning.");
                     return;
                 }
 
@@ -2421,7 +2421,7 @@ namespace ASCOM.Remote
             }
             catch (NullReferenceException) // httpListener is null because we are closing down or because of some other error so just log the event
             {
-                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - BeginGetContext - httpListener is null so taking no action and just returning.", Environment.CurrentManagedThreadId.ToString()));
+                if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"Thread {Environment.CurrentManagedThreadId} - BeginGetContext - httpListener is null so taking no action and just returning.");
                 return;
             }
             catch (Exception ex)
@@ -2436,7 +2436,7 @@ namespace ASCOM.Remote
                 }
                 else // No context object so not possible to return an error to the client
                 {
-                    LogException1(requestData, "APIRequestCallback", string.Format("Thread {0} - BeginGetContext exception: {1}", Environment.CurrentManagedThreadId.ToString(), ex.ToString()));
+                    LogException1(requestData, "APIRequestCallback", $"Thread {Environment.CurrentManagedThreadId} - BeginGetContext exception: {ex}");
                     Interlocked.Increment(ref numberOfConsecutiveErrors);
                     return;
                 }
@@ -2482,13 +2482,13 @@ namespace ASCOM.Remote
             }
 
             // Now process this request, any exceptions are handled by the ProcessRequest method itself
-            if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Processing received message.", Environment.CurrentManagedThreadId.ToString()));
+            if (DebugTraceState) LogMessage1(requestData, "APIRequestCallback", $"Thread {Environment.CurrentManagedThreadId} - Processing received message.");
             ProcessRestRequest(context);
 
             // Shut down the listener and close down device drivers if the maximum number of errors has been reached
             if (numberOfConsecutiveErrors == MAX_ERRORS_BEFORE_CLOSE)
             {
-                LogMessage1(requestData, "APIRequestCallback", string.Format("Thread {0} - Maximum number of errors ({1}) reached, closing server and device drivers.", Environment.CurrentManagedThreadId, MAX_ERRORS_BEFORE_CLOSE));
+                LogMessage1(requestData, "APIRequestCallback", $"Thread {Environment.CurrentManagedThreadId} - Maximum number of errors ({MAX_ERRORS_BEFORE_CLOSE}) reached, closing server and device drivers.");
 
                 // Clear down the listener
                 StopRESTServer();
@@ -2764,7 +2764,7 @@ namespace ASCOM.Remote
                     }
 
                     //Write the access log entry
-                    AccessLog.LogMessage("    " + clientIpAddress, string.Format("{0} {1}", request.HttpMethod, request.Url.AbsolutePath));
+                    AccessLog.LogMessage("    " + clientIpAddress, $"{request.HttpMethod} {request.Url.AbsolutePath}");
                 }
 
                 if (ScreenLogRequests) // Incoming requests are logged to the screen
@@ -2783,14 +2783,14 @@ namespace ASCOM.Remote
                         // Parse the integer value out or throw a 400 error if the value is not an unsigned integer
                         if (!uint.TryParse(clientIDString, out clientID))
                         {
-                            LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}, Concurrent requests: {3}", request.HttpMethod, request.Url.PathAndQuery, Environment.CurrentManagedThreadId.ToString(), numberOfConcurrentTransactions));
+                            LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Environment.CurrentManagedThreadId}, Concurrent requests: {numberOfConcurrentTransactions}");
                             Return400Error(requestData, "Client ID is not an unsigned integer: " + queryParameters[SharedConstants.CLIENT_ID_PARAMETER_NAME]);
                             return;
                         }
                     }
                     else // Empty or white space
                     {
-                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}, Concurrent requests: {3}", request.HttpMethod, request.Url.PathAndQuery, Environment.CurrentManagedThreadId.ToString(), numberOfConcurrentTransactions));
+                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Environment.CurrentManagedThreadId}, Concurrent requests: {numberOfConcurrentTransactions}");
                         Return400Error(requestData, "Client ID is empty or white space");
                         return;
                     }
@@ -2824,11 +2824,11 @@ namespace ASCOM.Remote
                 {
                     foreach (string key in request.Headers.AllKeys)
                     {
-                        LogMessage1(requestData, "RequestReceived", string.Format("Header {0} = {1}", key, request.Headers[key]));
+                        LogMessage1(requestData, "RequestReceived", $"Header {key} = {request.Headers[key]}");
                     }
                     foreach (string key in queryParameters.AllKeys)
                     {
-                        LogMessage1(requestData, "RequestReceived", string.Format("Parameter {0} = {1}", key, queryParameters[key]));
+                        LogMessage1(requestData, "RequestReceived", $"Parameter {key} = {queryParameters[key]}");
                     }
                 } // Log supplied parameters and headers
 
@@ -2964,7 +2964,7 @@ namespace ASCOM.Remote
                     // Return a 403 error if the API is not enabled through the management console
                     if (!apiIsEnabled)
                     {
-                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, string.Format("{0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, Environment.CurrentManagedThreadId.ToString()));
+                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Environment.CurrentManagedThreadId}");
                         Return403Error(requestData, API_INTERFACE_NOT_ENABLED_MESSAGE);
                         return;
                     }
@@ -2996,7 +2996,7 @@ namespace ASCOM.Remote
                             case SharedConstants.API_VERSION_V1: // OK so we have a V1 request
                                 if ((ServerDeviceNumbers.Contains(elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER])) & (elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER] != "")) // OK so we have a valid device number
                                 {
-                                    string deviceKey = string.Format("{0}/{1}", elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE], elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER]); // Create the device key from the supplied device type and device number parameters
+                                    string deviceKey = $"{elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE]}/{elements[SharedConstants.URL_ELEMENT_DEVICE_NUMBER]}"; // Create the device key from the supplied device type and device number parameters
 
                                     requestData.DeviceKey = deviceKey; // Save the device key for use throughout the remainder of the application
 
@@ -3062,12 +3062,12 @@ namespace ASCOM.Remote
                                         } // The device did initialise OK
                                         else // Specified is configured but threw an error when created or when Connected was set True so return the error message
                                         {
-                                            Return400Error(requestData, string.Format("Device {0} did not start correctly and is unavailable: {1}", deviceKey, ActiveObjects[deviceKey].InitialisationErrorMessage));
+                                            Return400Error(requestData, $"Device {deviceKey} did not start correctly and is unavailable: {ActiveObjects[deviceKey].InitialisationErrorMessage}");
                                         } // Handle cases where the device did not initialise correctly
                                     } // OK, we have a valid device
                                     else // Specified device is not configured so return an error message
                                     {
-                                        Return400Error(requestData, string.Format("Device {0} is not configured on the Remote Server", deviceKey));
+                                        Return400Error(requestData, $"Device {deviceKey} is not configured on the Remote Server");
                                     } // Handle an invalid device
                                 } // We have a valid device number
                                 else
@@ -3130,7 +3130,7 @@ namespace ASCOM.Remote
                             for (int i = 0; i < elements.Length; i++)
                             {
                                 elements[i] = elements[i].Trim();// Remove leading and trailing space characters
-                                LogMessage1(requestData, "ManagmentCommand", string.Format("Received element {0} = {1}", i, elements[i]));
+                                LogMessage1(requestData, "ManagmentCommand", $"Received element {i} = {elements[i]}");
                             }
 
                             // We have an array of size 3, now resize it to 5 elements so that we can add the command into the equivalent position that it occupies for a "device API" call.
@@ -3223,7 +3223,7 @@ namespace ASCOM.Remote
                                         }
                                         catch (Exception ex)
                                         {
-                                            Return400Error(requestData, string.Format("Exception processing {0} command \r\n {1}", elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND], ex.ToString()));
+                                            Return400Error(requestData, $"Exception processing {elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND]} command \r\n {ex}");
                                         }
 
                                         break; // End of valid api version numbers
@@ -3335,7 +3335,7 @@ namespace ASCOM.Remote
                         for (int i = 0; i < elements.Length; i++)
                         {
                             elements[i] = elements[i].Trim();// Remove leading and trailing space characters
-                            LogMessage1(requestData, "ManagmentCommand", string.Format("Received element {0} = {1}", i, elements[i]));
+                            LogMessage1(requestData, "ManagmentCommand", $"Received element {i} = {elements[i]}");
                         }
 
                         // We have an array of size 3, now resize it to 5 elements so that we can add the command into the equivalent position that it occupies for a "device API" call.
@@ -3400,7 +3400,7 @@ namespace ASCOM.Remote
                                                         }
                                                         catch (Exception ex)
                                                         {
-                                                            Return500Error(requestData, "Unexpected exception in command: " + elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND] + " " + ex.ToString());
+                                                            Return500Error(requestData, $"Unexpected exception in command: {elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND]} {ex}");
                                                         }
                                                         break;
 
@@ -3423,9 +3423,9 @@ namespace ASCOM.Remote
                                             case "PUT": // Write or action methods
                                                 switch (elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND])
                                                 {
-                                                    // MANGEMENT_API_ENABLED removed because it won't work if the management api is disabled
+                                                    // MANGEMENT_API_ENABLED removed because it won't work if the management API is disabled
                                                     case SharedConstants.REMOTE_SERVER_MANGEMENT_SHUTDOWN_SERVER:
-                                                        LogMessage1(requestData, "ManagementShutdown", string.Format("Shutting down server - getting management lock"));
+                                                        LogMessage1(requestData, "ManagementShutdown", "Shutting down server - getting management lock");
                                                         lock (managementCommandLock) // Make sure that this command can only run one at a time!
                                                         {
                                                             LogMessage1(requestData, "ManagementShutdown", $"Got lock - API is currently enabled: {apiIsEnabled}");
@@ -3444,20 +3444,20 @@ namespace ASCOM.Remote
 
                                                     // Restart the server by closing current drivers and reloading them
                                                     case SharedConstants.REMOTE_SERVER_MANGEMENT_RESTART_SERVER:
-                                                        LogMessage1(requestData, "Management Restart", string.Format("Restarting server - getting management lock"));
+                                                        LogMessage1(requestData, "Management Restart", "Restarting server - getting management lock");
                                                         lock (managementCommandLock) // Make sure that this command can only run one at a time!
                                                         {
                                                             bool originalAPiIsEnabledState = apiIsEnabled;
-                                                            LogMessage1(requestData, "Management Restart", string.Format("Got lock - API is currently enabled: {0}", apiIsEnabled));
+                                                            LogMessage1(requestData, "Management Restart", $"Got lock - API is currently enabled: {apiIsEnabled}");
                                                             // Disable the device API
                                                             apiIsEnabled = false;
-                                                            LogMessage1(requestData, "Management Restart", string.Format("Unloading drivers - devices are connected: {0}", devicesAreConnected));
+                                                            LogMessage1(requestData, "Management Restart", $"Unloading drivers - devices are connected: {devicesAreConnected}");
                                                             if (devicesAreConnected) DisconnectDevices();
-                                                            LogMessage1(requestData, "Management Restart", string.Format("Reloading drivers"));
+                                                            LogMessage1(requestData, "Management Restart", "Reloading drivers");
                                                             WaitFor(MANAGEMENT_RESTART_WAIT_TIME); // Wait for current device activity to complete
                                                             ConnectDevices();
                                                             apiIsEnabled = originalAPiIsEnabledState;
-                                                            LogMessage1(requestData, "Management Restart", string.Format("Restored API enabled state: {0}, command completed", apiIsEnabled));
+                                                            LogMessage1(requestData, "Management Restart", $"Restored API enabled state: {apiIsEnabled}, command completed");
                                                             SendEmptyResponseToClient(requestData, null);
                                                         }
                                                         break;
@@ -3549,7 +3549,7 @@ namespace ASCOM.Remote
                                     }
                                     catch (Exception ex)
                                     {
-                                        Return400Error(requestData, string.Format("Exception processing {0} command \r\n {1}", elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND], ex.ToString()));
+                                        Return400Error(requestData, $"Exception processing {elements[SharedConstants.URL_ELEMENT_SERVER_COMMAND]} command \r\n {ex}");
                                     }
 
                                     break; // End of valid api version numbers
@@ -3568,7 +3568,7 @@ namespace ASCOM.Remote
 
                 else // A URI that did not start with /api/, /management, /setup or /configuration/ was requested
                 {
-                    LogMessage1(requestData, "Request", string.Format("Non API call - {0} URL: {1}, Thread: {2}", request.HttpMethod, request.Url.PathAndQuery, Environment.CurrentManagedThreadId.ToString()));
+                    LogMessage1(requestData, "Request", $"Non API call - {request.HttpMethod} URL: {request.Url.PathAndQuery}, Thread: {Environment.CurrentManagedThreadId}");
                     string returnMessage = HTMLOrPlainText(requestData, UNRECOGNISED_URI_MESSAGE_HTML, UNRECOGNISED_URI_MESSAGE_PLAIN);
 
                     foreach (KeyValuePair<string, ConfiguredDevice> device in ConfiguredDevices)
@@ -3584,7 +3584,7 @@ namespace ASCOM.Remote
             catch (Exception ex) // Something serious has gone wrong with the ASCOM Remote server itself so report this to the user
             {
                 LogException(clientID, clientTransactionID, serverTransactionID, "Request", ex.ToString());
-                Return500Error(requestData, "Internal server error: " + ex.ToString());
+                Return500Error(requestData, $"Internal server error: {ex}");
             }
             finally
             {
@@ -4378,7 +4378,7 @@ namespace ASCOM.Remote
             try
             {
                 LogMessage1(requestData, "Web - HTTP 200 Success", htmlPageName);
-                if (ScreenLogResponses) LogToScreen(string.Format("HTTP 200 Success - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, htmlPageName));
+                if (ScreenLogResponses) LogToScreen($"HTTP 200 Success - ClientId: {requestData.ClientID}, ClientTransactionID: {requestData.ClientTransactionID} - {htmlPageName}");
 
                 switch (htmlPageName) // Construct the relevant page or return the requested file
                 {
@@ -4553,10 +4553,10 @@ namespace ASCOM.Remote
                     requestData.Response.StatusCode = (int)HttpStatusCode.OK; // Set the response status and status code
                     requestData.Response.StatusDescription = "200 - Success";
 
-                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Web - Before setting response bytes - Length: {0:n0}, Response is null: {1}", bytesToSend.Length, requestData.Response == null));
+                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Web - Before setting response bytes - Length: {bytesToSend.Length:n0}, Response is null: {requestData.Response == null}");
                     requestData.Response.ContentLength64 = bytesToSend.Length;
 
-                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Web - Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
+                    if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Web - Before writing {requestData.Response.ContentLength64:n0} bytes to output stream");
                     requestData.Response.OutputStream.Write(bytesToSend, 0, bytesToSend.Length);
 
                     if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Web - After writing bytes to output stream");
@@ -4565,7 +4565,7 @@ namespace ASCOM.Remote
                 }
                 catch (HttpListenerException ex) // Deal with communications errors here but allow any other errors to go through and be picked up by the main error handler
                 {
-                    LogException1(requestData, "ListenerException", string.Format("Web - Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
+                    LogException1(requestData, "ListenerException", $"Web - Communications exception - Error code: {ex.ErrorCode}, Native error code: {ex.NativeErrorCode}\r\n{ex}");
                 }
 
             }
@@ -4609,7 +4609,7 @@ namespace ASCOM.Remote
             try
             {
                 LogMessage1(requestData, "HTTP 400 Error", message);
-                LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, message));
+                LogToScreen($"ERROR - ClientId: {requestData.ClientID}, ClientTransactionID: {requestData.ClientTransactionID} - {message}");
 
                 TransmitResponse(requestData, HTMLOrPlainTextContentType(requestData), HttpStatusCode.BadRequest, "400 - Unable to process request - see response content for details", CleanMessage(message));
             }
@@ -4629,7 +4629,7 @@ namespace ASCOM.Remote
             try
             {
                 LogMessage1(requestData, "HTTP 403 Error", message);
-                LogToScreen(string.Format("ERROR - ClientId: {0}, ClientTransactionID: {1} - {2}", requestData.ClientID, requestData.ClientTransactionID, message));
+                LogToScreen($"ERROR - ClientId: {requestData.ClientID}, ClientTransactionID: {requestData.ClientTransactionID} - {message}");
 
                 TransmitResponse(requestData, HTMLOrPlainTextContentType(requestData), HttpStatusCode.Forbidden, "403 " + CleanMessage(message), "403 " + CleanMessage(message));
             }
@@ -5163,7 +5163,6 @@ namespace ASCOM.Remote
             };
 
             responseJson = JsonConvert.SerializeObject(responseClass);
-            //responseJson = string.Format("{{\"ClientTransactionID\":36,\"ServerTransactionID\":36,\"ErrorNumber\":0,\"ErrorMessage\":\"\",\"Value\":\"{0}\"}}", deviceResponse);
 
             LogMessage1(requestData, "ReturnString", $"Serialise string time: {sw.ElapsedMilliseconds}ms.");
             sw.Restart();
@@ -5242,12 +5241,12 @@ namespace ASCOM.Remote
                     requestData.Elements = elements;
                 }
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Completed Encoding.GetBytes, array length: {0:n0}", imageArrayBytes.Length));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Completed Encoding.GetBytes, array length: {imageArrayBytes.Length:n0}");
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Before setting response bytes - Length: {0:n0}, Response is null: {1}", imageArrayBytes.Length, requestData.Response == null));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Before setting response bytes - Length: {imageArrayBytes.Length:n0}, Response is null: {requestData.Response == null}");
                 requestData.Response.ContentLength64 = imageArrayBytes.Length;
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Before writing {requestData.Response.ContentLength64:n0} bytes to output stream");
                 requestData.Response.OutputStream.Write(imageArrayBytes, 0, imageArrayBytes.Length);
 
                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "After writing bytes to output stream");
@@ -5259,7 +5258,7 @@ namespace ASCOM.Remote
             }
             catch (HttpListenerException ex) // Deal with communications errors here but allow any other errors to go through and be picked up by the main error handler
             {
-                LogException1(requestData, "ListenerException", string.Format("Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
+                LogException1(requestData, "ListenerException", $"Communications exception - Error code: {ex.ErrorCode}, Native error code: {ex.NativeErrorCode}\r\n{ex}");
             }
 
             // Force release of the large byte array
@@ -6028,12 +6027,12 @@ namespace ASCOM.Remote
             {
                 foreach (DriveRate rate in deviceResponse)
                 {
-                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Rate = {0}", rate.ToString()));
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Rate = {rate}");
                     rates.Add(rate);
                 }
             }
 
-            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Number of rates: {0}", rates.Count));
+            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Number of rates: {rates.Count}");
             responseClass.Value = rates;
             string responseJson = JsonConvert.SerializeObject(responseClass);
             SendResponseValueToClient(requestData, exReturn, responseJson);
@@ -6502,7 +6501,7 @@ namespace ASCOM.Remote
 
                         if (deviceResponse != null)
                         {
-                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("ImageArray Rank: {0}, Length: {1:n0}", deviceResponse.Rank, deviceResponse.Length));
+                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"ImageArray Rank: {deviceResponse.Rank}, Length: {deviceResponse.Length:n0}");
 
                             switch (deviceResponse.Rank)
                             {
@@ -6517,7 +6516,7 @@ namespace ASCOM.Remote
                                     // Fall back to base64-handoff if requested
                                     else if (base64HandoffRequested)
                                     {
-                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Preparing base64 hand off response");
                                         responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                         {
                                             ClientTransactionID = requestData.ClientTransactionID,
@@ -6528,7 +6527,7 @@ namespace ASCOM.Remote
                                         };
                                         if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                         if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Completed base64 hand off response");
                                     }
 
                                     // Finally fall back to JSON encoding of the array elements
@@ -6550,7 +6549,7 @@ namespace ASCOM.Remote
                                     // Fall back to base64-handoff if requested
                                     else if (base64HandoffRequested)
                                     {
-                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Preparing base64 hand off response");
                                         responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                         {
                                             ClientTransactionID = requestData.ClientTransactionID,
@@ -6561,7 +6560,7 @@ namespace ASCOM.Remote
                                         };
                                         if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                         if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Completed base64 hand off response");
                                     }
 
                                     // Finally fall back to JSON encoding of the array elements
@@ -6583,7 +6582,7 @@ namespace ASCOM.Remote
                         deviceResponse = device.ImageArrayVariant;
                         string arrayType = deviceResponse.GetType().Name;
                         string elementType = "";
-                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Received array of Rank {0} of Length {1:n0} and type {2}", deviceResponse.Rank, deviceResponse.Length, deviceResponse.GetType().Name));
+                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Received array of Rank {deviceResponse.Rank} of Length {deviceResponse.Length:n0} and type {deviceResponse.GetType().Name}");
 
                         switch (arrayType) // Process 2D and 3D variant arrays, all other types are unsupported
                         {
@@ -6596,7 +6595,7 @@ namespace ASCOM.Remote
                             default:
                                 throw new InvalidValueException("ReturnImageArray: Received an unsupported return array type: " + arrayType);
                         }
-                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Array elements are of type: {0}", elementType));
+                        LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Array elements are of type: {elementType}");
 
                         switch (deviceResponse.Rank)
                         {
@@ -6614,7 +6613,7 @@ namespace ASCOM.Remote
                                         // Fall back to base64-handoff if requested
                                         else if (base64HandoffRequested)
                                         {
-                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Preparing base64 hand off response");
                                             responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                             {
                                                 ClientTransactionID = requestData.ClientTransactionID,
@@ -6625,7 +6624,7 @@ namespace ASCOM.Remote
                                             };
                                             if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                             if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Completed base64 hand off response");
                                         }
 
                                         // Finally fall back to JSON encoding of the array elements
@@ -6646,7 +6645,7 @@ namespace ASCOM.Remote
                                         // Fall back to base64-handoff if requested
                                         else if (base64HandoffRequested)
                                         {
-                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Preparing base64 hand off response");
                                             responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                             {
                                                 ClientTransactionID = requestData.ClientTransactionID,
@@ -6657,7 +6656,7 @@ namespace ASCOM.Remote
                                             };
                                             if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                             if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Completed base64 hand off response");
                                         }
 
                                         // Finally fall back to JSON encoding of the array elements
@@ -6679,7 +6678,7 @@ namespace ASCOM.Remote
                                         // Fall back to base64-handoff if requested
                                         else if (base64HandoffRequested)
                                         {
-                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Preparing base64 hand off response");
                                             responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                             {
                                                 ClientTransactionID = requestData.ClientTransactionID,
@@ -6690,7 +6689,7 @@ namespace ASCOM.Remote
                                             };
                                             if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                             if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Completed base64 hand off response");
                                         }
 
                                         // Finally fall back to JSON encoding of the array elements
@@ -6718,7 +6717,7 @@ namespace ASCOM.Remote
                                         // Fall back to base64-handoff if requested
                                         else if (base64HandoffRequested)
                                         {
-                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Preparing base64 hand off response");
                                             responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                             {
                                                 ClientTransactionID = requestData.ClientTransactionID,
@@ -6729,7 +6728,7 @@ namespace ASCOM.Remote
                                             };
                                             if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                             if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Completed base64 hand off response");
                                         }
 
                                         // Finally fall back to JSON encoding of the array elements
@@ -6750,7 +6749,7 @@ namespace ASCOM.Remote
                                         // Fall back to base64-hand-off if requested
                                         else if (base64HandoffRequested)
                                         {
-                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Preparing base64 hand off response");
                                             responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                             {
                                                 ClientTransactionID = requestData.ClientTransactionID,
@@ -6761,7 +6760,7 @@ namespace ASCOM.Remote
                                             };
                                             if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                             if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Completed base64 hand off response");
                                         }
 
                                         // Finally fall back to JSON encoding of the array elements
@@ -6783,7 +6782,7 @@ namespace ASCOM.Remote
                                         // Fall back to base64-handoff if requested
                                         else if (base64HandoffRequested)
                                         {
-                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Preparing base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Preparing base64 hand off response");
                                             responseClass = new Base64ArrayHandOffResponse() // Create a populated response class with array dimensions but that doesn't have a "Value" member
                                             {
                                                 ClientTransactionID = requestData.ClientTransactionID,
@@ -6794,7 +6793,7 @@ namespace ASCOM.Remote
                                             };
                                             if (responseClass.Rank > 1) responseClass.Dimension1Length = deviceResponse.GetLength(1); // Set higher array dimensions if present
                                             if (responseClass.Rank > 2) responseClass.Dimension2Length = deviceResponse.GetLength(2);
-                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Base64Encoded - Completed base64 hand off response"));
+                                            LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Base64Encoded - Completed base64 hand off response");
                                         }
 
                                         // Finally fall back to JSON encoding of the array elements
@@ -6933,7 +6932,7 @@ namespace ASCOM.Remote
             }
             catch (HttpListenerException ex) // Deal with communications errors here but allow any other errors to go through and be picked up by the main error handler
             {
-                LogException1(requestData, "ListenerException", string.Format("ReturnImageArray Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
+                LogException1(requestData, "ListenerException", $"ReturnImageArray Communications exception - Error code: {ex.ErrorCode}, Native error code: {ex.NativeErrorCode}\r\n{ex}");
             }
 
             // Release memory so that it can be cleaned up
@@ -7003,10 +7002,10 @@ namespace ASCOM.Remote
                     requestData.Elements = elements;
                 }
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Before setting response bytes - Length: {0:n0}, Response is null: {1}", imageArrayBytes.Length, requestData.Response == null));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Before setting response bytes - Length: {imageArrayBytes.Length:n0}, Response is null: {requestData.Response == null}");
                 requestData.Response.ContentLength64 = imageArrayBytes.Length;
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Before writing {requestData.Response.ContentLength64:n0} bytes to output stream");
                 requestData.Response.OutputStream.Write(imageArrayBytes, 0, imageArrayBytes.Length);
 
                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "After writing bytes to output stream");
@@ -7018,7 +7017,7 @@ namespace ASCOM.Remote
             }
             catch (HttpListenerException ex) // Deal with communications errors here but allow any other errors to go through and be picked up by the main error handler
             {
-                LogException1(requestData, "ListenerException", string.Format("Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
+                LogException1(requestData, "ListenerException", $"Communications exception - Error code: {ex.ErrorCode}, Native error code: {ex.NativeErrorCode}\r\n{ex}");
             }
 
             // Force release of the large byte array
@@ -7455,7 +7454,7 @@ namespace ASCOM.Remote
             // Handle string values first because they don't need to be converted into another type 
             if (typeof(T) == typeof(string))
             {
-                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", parameterName, parameterStringValue));
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"{parameterName} = {parameterStringValue}");
                 return (T)(object)parameterStringValue;
             }
             // Convert the parameter value into the required type
@@ -7464,37 +7463,37 @@ namespace ASCOM.Remote
                 case "Single":
                     float singleValue;
                     if (!float.TryParse(parameterStringValue, NumberStyles.Number | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out singleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {parameterName} can not be converted to a floating point value");
-                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", parameterName, singleValue.ToString()));
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"{parameterName} = {singleValue}");
                     return (T)(object)singleValue;
 
                 case "Double":
                     double doubleValue;
                     if (!double.TryParse(parameterStringValue, NumberStyles.Number | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out doubleValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {parameterName} can not be converted to a floating point value");
-                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", parameterName, doubleValue.ToString()));
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"{parameterName} = {doubleValue}");
                     return (T)(object)doubleValue;
 
                 case "Int16":
                     short shortValue;
                     if (!short.TryParse(parameterStringValue, NumberStyles.Integer | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out shortValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {parameterName} can not be converted to an Int16 value");
-                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", parameterName, shortValue.ToString()));
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"{parameterName} = {shortValue}");
                     return (T)(object)shortValue;
 
                 case "Int32":
                     int intValue;
                     if (!int.TryParse(parameterStringValue, NumberStyles.Integer | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out intValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {parameterName} can not be converted to an Int32 value");
-                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", parameterName, intValue.ToString()));
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"{parameterName} = {intValue}");
                     return (T)(object)intValue;
 
                 case "Boolean":
                     bool boolValue;
                     if (!bool.TryParse(parameterStringValue, out boolValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {parameterName} can not be converted to a boolean value");
-                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", parameterName, boolValue.ToString()));
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"{parameterName} = {boolValue}");
                     return (T)(object)boolValue;
 
                 case "DateTime":
                     DateTime dateTimeValue;
                     if (!DateTime.TryParse(parameterStringValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTimeValue)) throw new InvalidParameterException($"GetParameter - Supplied argument '{parameterStringValue}' for parameter {parameterName} can not be converted to a DateTime value");
-                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("{0} = {1}", parameterName, dateTimeValue.ToString()));
+                    LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"{parameterName} = {dateTimeValue}");
                     return (T)(object)dateTimeValue;
 
                 default:
@@ -7525,27 +7524,27 @@ namespace ASCOM.Remote
 
             if (ex == null) // Command ran successfully so return the JSON encoded result
             {
-                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("OK - no exception. Thread: {0}, JSON: {1}", Environment.CurrentManagedThreadId.ToString(), (jsonResponse.Length < 1000) ? jsonResponse : jsonResponse.Substring(0, 1000)));
-                if (ScreenLogResponses) LogToScreen(string.Format("  OK - JSON: {0}", jsonResponse));
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"OK - no exception. Thread: {Environment.CurrentManagedThreadId}, JSON: {((jsonResponse.Length < 1000) ? jsonResponse : jsonResponse.Substring(0, 1000))}");
+                if (ScreenLogResponses) LogToScreen($"  OK - JSON: {jsonResponse}");
                 TransmitResponse(requestData, "application/json; charset=utf-8", HttpStatusCode.OK, "200 OK", jsonResponse);
             }
             else // Some sort of exception was thrown during command execution
             {
                 if (ex.GetType() == typeof(InvalidParameterException)) // A required parameter is missing or invalid in the supplied http call
                 {
-                    if (ScreenLogResponses) LogToScreen(string.Format("  PARAMETER ERROR - ClientId: {0}, ClientTxnID: {1}, ServerTxnID: {2} - {3}", requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, ex.Message));
-                    TransmitResponse(requestData, "text/plain; charset=utf-8", HttpStatusCode.BadRequest, "400 " + ex.Message, "400 " + ex.Message);
+                    if (ScreenLogResponses) LogToScreen($"  PARAMETER ERROR - ClientId: {requestData.ClientID}, ClientTxnID: {requestData.ClientTransactionID}, ServerTxnID: {requestData.ServerTransactionID} - {ex.Message}");
+                    TransmitResponse(requestData, "text/plain; charset=utf-8", HttpStatusCode.BadRequest, $"400 {ex.Message}", $"400 {ex.Message}");
                 }
                 else
                 {
-                    if (ScreenLogResponses) LogToScreen(string.Format("  DEVICE ERROR - ClientId: {0}, ClientTxnID: {1}, ServerTxnID: {2} - {3}", requestData.ClientID, requestData.ClientTransactionID, requestData.ServerTransactionID, ex.Message));
+                    if (ScreenLogResponses) LogToScreen($"  DEVICE ERROR - ClientId: {requestData.ClientID}, ClientTxnID: {requestData.ClientTransactionID}, ServerTxnID: {requestData.ServerTransactionID} - {ex.Message}");
                     TransmitResponse(requestData, "application/json; charset=utf-8", HttpStatusCode.OK, "200 OK", jsonResponse);
                 }
 
-                if (DebugTraceState) LogException1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Exception: " + ex.ToString());
-                else LogException1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "Exception: " + ex.Message);
+                if (DebugTraceState) LogException1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Exception: {ex}");
+                else LogException1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Exception: {ex.Message}");
 
-                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Thread: {0}, Json: {1}", Environment.CurrentManagedThreadId.ToString(), jsonResponse));
+                LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Thread: {Environment.CurrentManagedThreadId}, JSON: {jsonResponse}");
             }
         }
 
@@ -7572,12 +7571,12 @@ namespace ASCOM.Remote
                 }
 
                 bytesToSend = Encoding.UTF8.GetBytes(messageToSend); // Convert the message to be returned into UTF8 bytes that can be sent over the wire
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Completed Encoding.GetBytes, array length: {0:n0}", bytesToSend.Length));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Completed Encoding.GetBytes, array length: {bytesToSend.Length:n0}");
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Before setting response bytes - Length: {0:n0}, Response is null: {1}", bytesToSend.Length, requestData.Response == null));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Before setting response bytes - Length: {bytesToSend.Length:n0}, Response is null: {requestData.Response == null}");
                 requestData.Response.ContentLength64 = bytesToSend.Length;
 
-                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], string.Format("Before writing {0:n0} bytes to output stream", requestData.Response.ContentLength64));
+                if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Before writing {requestData.Response.ContentLength64:n0} bytes to output stream");
                 requestData.Response.OutputStream.Write(bytesToSend, 0, bytesToSend.Length);
 
                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], "After writing bytes to output stream");
@@ -7586,7 +7585,7 @@ namespace ASCOM.Remote
             }
             catch (HttpListenerException ex) // Deal with communications errors here but allow any other errors to go through and be picked up by the main error handler
             {
-                LogException1(requestData, "ListenerException", string.Format("Communications exception - Error code: {0}, Native error code: {1}\r\n{2}", ex.ErrorCode, ex.NativeErrorCode, ex.ToString()));
+                LogException1(requestData, "ListenerException", $"Communications exception - Error code: {ex.ErrorCode}, Native error code: {ex.NativeErrorCode}\r\n{ex}");
             }
         }
 

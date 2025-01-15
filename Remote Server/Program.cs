@@ -148,7 +148,7 @@ namespace ASCOM.Remote
             {
                 Enabled = true
             };
-            TL.LogMessage("Main", "Thread exception: " + e.Exception.ToString());
+            TL.LogMessage("Main", $"Thread exception: {e.Exception}");
             Process.Start(TL.LogFileName);
 
             TL.Enabled = false;
@@ -165,7 +165,7 @@ namespace ASCOM.Remote
             {
                 Enabled = true
             };
-            TL.LogMessage("Main", "Un-handled exception: " + exception.ToString());
+            TL.LogMessage("Main", $"Un-handled exception: {exception}");
             Process.Start(TL.LogFileName);
             TL.Enabled = false;
             TL.Dispose();

@@ -40,7 +40,7 @@ namespace ASCOM.Remote
 
         public T GetValue<T>(string KeyName, string SubKey, T DefaultValue)
         {
-            if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", string.Format("Getting {0} value '{1}' in subkey '{2}', default: '{3}'", typeof(T).Name, KeyName, SubKey, DefaultValue.ToString()));
+            if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", $"Getting {typeof(T).Name} value '{KeyName}' in subkey '{SubKey}', default: '{DefaultValue}'");
 
             if (typeof(T) == typeof(bool))
             {
@@ -66,7 +66,7 @@ namespace ASCOM.Remote
                 }
 
                 bool RetVal = Convert.ToBoolean(registryValue, CultureInfo.InvariantCulture);
-                if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", string.Format("Retrieved {0} = {1}", KeyName, RetVal.ToString()));
+                if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", $"Retrieved {KeyName} = {RetVal}");
                 return (T)((object)RetVal);
             }
 
@@ -91,7 +91,7 @@ namespace ASCOM.Remote
                     SetValue<T>(KeyName, SubKey, DefaultValue);
                     RetVal = DefaultValue.ToString();
                 }
-                if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", string.Format("Retrieved {0} = {1}", KeyName, RetVal.ToString()));
+                if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", $"Retrieved {KeyName} = {RetVal}");
                 return (T)((object)RetVal);
             }
 
@@ -119,7 +119,7 @@ namespace ASCOM.Remote
                 }
 
                 decimal RetVal = Convert.ToDecimal(registryValue, CultureInfo.InvariantCulture);
-                if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", string.Format("Retrieved {0} = {1}", KeyName, RetVal.ToString()));
+                if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", $"Retrieved {KeyName} = {RetVal}");
                 return (T)((object)RetVal);
             }
 
@@ -150,7 +150,7 @@ namespace ASCOM.Remote
                 if (DateTime.TryParse(registryValue, CultureInfo.InvariantCulture, DateTimeStyles.AllowWhiteSpaces, out DateTime RetVal))
                 {
                     // The string parsed OK so return the parsed value;
-                    if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue DateTime", string.Format("Retrieved {0} = {1}", KeyName, RetVal.ToString()));
+                    if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue DateTime", $"Retrieved {KeyName} = {RetVal}");
                     return (T)((object)RetVal);
                 }
                 else // If the string fails to parse, overwrite with the default value and return this
@@ -185,7 +185,7 @@ namespace ASCOM.Remote
                 }
 
                 int RetVal = Convert.ToInt32(registryValue, CultureInfo.InvariantCulture);
-                if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", string.Format("Retrieved {0} = {1}", KeyName, RetVal.ToString()));
+                if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", $"Retrieved {KeyName} = {RetVal}");
                 return (T)((object)RetVal);
             }
 
@@ -194,7 +194,7 @@ namespace ASCOM.Remote
 
         public void SetValue<T>(string KeyName, string SubKey, T Value)
         {
-            if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "SetValue", string.Format("Setting {0} value '{1}' in subkey '{2}' to: '{3}'", typeof(T).Name, KeyName, SubKey, Value.ToString()));
+            if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "SetValue", $"Setting {typeof(T).Name} value '{KeyName}' in subkey '{SubKey}' to: '{Value}'");
 
             if (SubKey == "") baseRegistryKey.SetValue(KeyName, Value.ToString());
             else baseRegistryKey.CreateSubKey(SubKey).SetValue(KeyName, Value.ToString());
@@ -202,7 +202,7 @@ namespace ASCOM.Remote
 
         public void SetValueInvariant<T>(string KeyName, string SubKey, T Value)
         {
-            if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "SetValue DateTime", string.Format("Setting {0} value '{1}' in subkey '{2}' to: '{3}'", typeof(T).Name, KeyName, SubKey, Value.ToString()));
+            if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "SetValue DateTime", $"Setting {typeof(T).Name} value '{KeyName}' in subkey '{SubKey}' to: '{Value}'");
 
             if ((typeof(T) == typeof(Int32)) | (typeof(T) == typeof(int)))
             {

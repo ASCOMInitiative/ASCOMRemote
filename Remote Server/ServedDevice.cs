@@ -330,16 +330,14 @@ namespace ASCOM.Remote
         private void BtnSetup_Click(object sender, EventArgs e)
         {
             // This device's ProgID is held in the variable progID so try and run its SetupDialog method
-            ServerForm.LogMessage(0, 0, 0, "Setup", string.Format("Setup button pressed for device: {0}, ProgID: {1}", cmbDevice.Text, progID));
+            ServerForm.LogMessage(0, 0, 0, "Setup", $"Setup button pressed for device: {cmbDevice.Text}, ProgID: {progID}");
 
             try
             {
                 // Get an instance of the driver from its ProgID and store this in a dynamic variable so that we can call its method directly
                 Type ProgIdType = Type.GetTypeFromProgID(progID);
-                //ServerForm.LogMessage(0, 0, 0, "Setup", string.Format("Found type: {0}", ProgIdType.Name));
 
                 dynamic oDrv = Activator.CreateInstance(ProgIdType);
-                //ServerForm.LogMessage(0, 0, 0, "Setup", "Created driver instance OK");
 
                 try
                 {
@@ -348,19 +346,15 @@ namespace ASCOM.Remote
                         DialogResult dialogResult = MessageBox.Show("Device is connected, OK to disconnect and run Setup?", "Disconnect Device?", MessageBoxButtons.OKCancel);
                         if (dialogResult == DialogResult.OK) // OK to disconnect and run setup dialogue
                         {
-                            //ServerForm.LogMessage(0, 0, 0, "Setup", "User gave permission to disconnect device - setting Connected to false");
                             try { oDrv.Connected = false; } catch { }; // Set Connected to false ignoring errors
                             try { oDrv.Link = false; } catch { }; // Set Link to false (for IFocuserV1 devices) ignoring errors
 
                             int RemainingObjectCount = Marshal.FinalReleaseComObject(oDrv);
+
                             oDrv = null;
                             oDrv = Activator.CreateInstance(ProgIdType);
 
-                            //ServerForm.LogMessage(0, 0, 0, "Setup", string.Format("Connected has bee set false and destroyed. New Connected value: {0}", oDrv.Connected));
-
-                            //ServerForm.LogMessage(0, 0, 0, "Setup", "Device is now disconnected, calling SetupDialog method");
                             oDrv.SetupDialog();
-                            //ServerForm.LogMessage(0, 0, 0, "Setup", "Completed SetupDialog method, setting Connected to true");
 
                             try
                             {
@@ -372,8 +366,6 @@ namespace ASCOM.Remote
                                 ServerForm.LogException(0, 0, 0, "Setup", $"Error setting Connected to true for focuser device {ProgID}, now trying Link for IFocuserV1 devices: \r\n{ex2}");
                                 oDrv.Link = true;
                             }
-
-                            //ServerForm.LogMessage(0, 0, 0, "Setup", "Driver is now Connected");
                         }
                         else // Not OK to disconnect so just do nothing and exit
                         {
@@ -382,9 +374,7 @@ namespace ASCOM.Remote
                     }
                     else // Driver is not connected 
                     {
-                        //ServerForm.LogMessage(0, 0, 0, "Setup", "Device is disconnected so just calling SetupDialog method");
                         oDrv.SetupDialog();
-                        //ServerForm.LogMessage(0, 0, 0, "Setup", "Completed SetupDialog method");
 
                         try { oDrv.Dispose(); } catch { }; // Dispose the driver if possible
 
@@ -399,12 +389,11 @@ namespace ASCOM.Remote
                             {
                                 LoopCount += 1; // Increment the loop counter so that we don't go on for ever!
                                 RemainingObjectCount = Marshal.ReleaseComObject(oDrv);
-                                //ServerForm.LogMessage(0, 0, 0, "Setup", "  Remaining object count: " + RemainingObjectCount.ToString() + ", LoopCount: " + LoopCount);
                             } while ((RemainingObjectCount > 0) & (LoopCount < 20));
                         }
                         catch (Exception ex2)
                         {
-                            ServerForm.LogMessage(0, 0, 0, "Setup", "  ReleaseComObject Exception: " + ex2.Message);
+                            ServerForm.LogMessage(0, 0, 0, "Setup", $"  ReleaseComObject Exception: {ex2.Message}");
                         }
 
                         oDrv = null;
@@ -412,7 +401,7 @@ namespace ASCOM.Remote
                 }
                 catch (Exception ex1)
                 {
-                    string errMsg = string.Format("Exception calling SetupDialog method: {0}", ex1.Message);
+                    string errMsg = $"Exception calling SetupDialog method: {ex1.Message}";
                     MessageBox.Show(errMsg);
                     ServerForm.LogMessage(0, 0, 0, "Setup", errMsg);
                     ServerForm.LogException(0, 0, 0, "Setup", ex1.ToString());
@@ -421,7 +410,7 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                string errMsg = string.Format("Exception creating driver {0} - {1}", progID, ex.Message);
+                string errMsg = $"Exception creating driver {progID} - {ex.Message}";
                 MessageBox.Show(errMsg);
                 ServerForm.LogMessage(0, 0, 0, "Setup", errMsg);
                 ServerForm.LogException(0, 0, 0, "Setup", ex.ToString());

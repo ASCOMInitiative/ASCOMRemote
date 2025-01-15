@@ -56,7 +56,7 @@ namespace ASCOM.Remote
                 };
 
                 Version version = Assembly.GetEntryAssembly().GetName().Version;
-                TL.LogMessage("SetNetworkPermissions", string.Format("Version {0}, Run on {1}", version.ToString(), DateTime.Now.ToString("dddd d MMMM yyyy HH:mm:ss")));
+                TL.LogMessage("SetNetworkPermissions", $"Version {version}, Run on {DateTime.Now:dddd d MMMM yyyy HH:mm:ss}");
                 TL.BlankLine();
 
                 foreach (string arg in args)
@@ -80,7 +80,7 @@ namespace ASCOM.Remote
                 {
                     Enabled = true
                 };
-                TL.LogMessage("Main", "Unhandled exception: " + ex.ToString());
+                TL.LogMessage("Main", $"Un-handled exception: {ex}");
                 TL.Enabled = false;
                 TL.Dispose();
                 TL = null;
@@ -128,27 +128,23 @@ namespace ASCOM.Remote
         {
             try // Make sure that we still try and set the firewall rules even if we bomb out trying to get information on the firewall configuration
             {
-                TL.LogMessage("QueryFireWall", string.Format("Firewall version: {0}", FirewallManager.Version.ToString())); // Log the firewall version in use
+                TL.LogMessage("QueryFireWall", $"Firewall version: {FirewallManager.Version}"); // Log the firewall version in use
                 foreach (IFirewallProfile profile in FirewallManager.Instance.Profiles)
                 {
-                    TL.LogMessage("QueryFireWall", string.Format("Found current firewall profile {0}, enabled: {1}", profile.Type.ToString(), profile.IsActive));
+                    TL.LogMessage("QueryFireWall", $"Found current firewall profile {profile.Type}, enabled: {profile.IsActive}");
                 }
 
                 COMTypeResolver cOMTypeResolver = new();
                 IFirewallProductsCollection thirdPartyFirewalls = FirewallManager.GetRegisteredProducts(cOMTypeResolver);
-                TL.LogMessage("QueryFireWall", string.Format("number of third party firewalls: {0}", thirdPartyFirewalls.Count));
+                TL.LogMessage("QueryFireWall", $"number of third party firewalls: {thirdPartyFirewalls.Count}");
                 foreach (FirewallProduct firewall in thirdPartyFirewalls)
                 {
                     TL.LogMessage("QueryFireWall", $"Found third party firewall: {firewall.Name} - {firewall.FriendlyName}");
-                    //foreach (IFirewallProfile profile in firewall.)
-                    //{
-                    //    TL.LogMessage("QueryFireWall", string.Format("Found third party firewall profile {0}, enabled: {1}", profile.Type.ToString(), profile.IsActive));
-                    //}
                 }
             }
             catch (Exception ex)
             {
-                TL.LogMessage("QueryFireWall", "Exception: " + ex.ToString());
+                TL.LogMessage("QueryFireWall", $"Exception: {ex}");
             }
             TL.BlankLine();
 
@@ -160,16 +156,16 @@ namespace ASCOM.Remote
                     if (File.Exists(applicationPath)) // The file does exist so process it
                     {
                         string applicationPathFull = Path.GetFullPath(applicationPath);
-                        TL.LogMessage("SetFireWallOutboundRule", string.Format("Supplied path: {0}, full path: {1}", applicationPath, applicationPathFull));
+                        TL.LogMessage("SetFireWallOutboundRule", $"Supplied path: {applicationPath}, full path: {applicationPathFull}");
 
                         // Now clear up previous instances of this rule
                         IEnumerable<IFirewallRule> query = FirewallManager.Instance.Rules.Where(ruleName => ruleName.Name.ToUpperInvariant().StartsWith(LOCAL_SERVER_OUTBOUND_RULE_NAME.ToUpperInvariant()));
                         List<IFirewallRule> queryCopy = query.ToList();
                         foreach (IFirewallRule existingRule in queryCopy)
                         {
-                            TL.LogMessage("SetFireWallOutboundRule", string.Format("Found rule: {0}", existingRule.Name));
+                            TL.LogMessage("SetFireWallOutboundRule", $"Found rule: {existingRule.Name}");
                             FirewallManager.Instance.Rules.Remove(existingRule); // Delete the rule
-                            TL.LogMessage("SetFireWallOutboundRule", string.Format("Deleted rule: {0}", existingRule.Name));
+                            TL.LogMessage("SetFireWallOutboundRule", $"Deleted rule: {existingRule.Name}");
                         }
 
                         IFirewallRule rule = FirewallManager.Instance.CreateApplicationRule(FirewallManager.Instance.GetProfile(FirewallProfiles.Domain | FirewallProfiles.Private | FirewallProfiles.Public).Type, LOCAL_SERVER_OUTBOUND_RULE_NAME, FirewallAction.Allow, applicationPathFull);
@@ -209,13 +205,13 @@ namespace ASCOM.Remote
 
                         TL.LogMessage("SetFireWallOutboundRule", "Successfully created outbound rule");
                         FirewallManager.Instance.Rules.Add(rule);
-                        TL.LogMessage("SetFireWallOutboundRule", string.Format("Successfully added outbound rule for {0}", applicationPathFull));
+                        TL.LogMessage("SetFireWallOutboundRule", $"Successfully added outbound rule for {applicationPathFull}");
 
                     }
                     else
                     {
-                        TL.LogMessage("SetFireWallOutboundRule", string.Format("The specified file does not exist: {0}", applicationPath));
-                        Console.WriteLine("The specified file does not exist: {0}", applicationPath);
+                        TL.LogMessage("SetFireWallOutboundRule", $"The specified file does not exist: {applicationPath}");
+                        Console.WriteLine($"The specified file does not exist: {applicationPath}");
                     }
                 }
                 else
@@ -227,8 +223,8 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                TL.LogMessage("SetFireWallOutboundRule", "Exception: " + ex.ToString());
-                Console.WriteLine("SetFireWallOutboundRule threw an exception: " + ex.Message);
+                TL.LogMessage("SetFireWallOutboundRule", $"Exception: {ex}");
+                Console.WriteLine($"SetFireWallOutboundRule threw an exception: {ex.Message}");
             }
         }
 
@@ -236,27 +232,23 @@ namespace ASCOM.Remote
         {
             try // Make sure that we still try and set the firewall rules even if we bomb out trying to get information on the firewall configuration
             {
-                TL.LogMessage("QueryFireWall", string.Format("Firewall version: {0}", FirewallManager.Version.ToString())); // Log the firewall version in use
+                TL.LogMessage("QueryFireWall", $"Firewall version: {FirewallManager.Version}"); // Log the firewall version in use
                 foreach (IFirewallProfile profile in FirewallManager.Instance.Profiles)
                 {
-                    TL.LogMessage("QueryFireWall", string.Format("Found current firewall profile {0}, enabled: {1}", profile.Type.ToString(), profile.IsActive));
+                    TL.LogMessage("QueryFireWall", $"Found current firewall profile {profile.Type}, enabled: {profile.IsActive}");
                 }
 
                 COMTypeResolver cOMTypeResolver = new();
                 IFirewallProductsCollection thirdPartyFirewalls = FirewallManager.GetRegisteredProducts(cOMTypeResolver);
-                TL.LogMessage("QueryFireWall", string.Format("number of third party firewalls: {0}", thirdPartyFirewalls.Count));
+                TL.LogMessage("QueryFireWall", $"number of third party firewalls: {thirdPartyFirewalls.Count}");
                 foreach (FirewallProduct firewall in thirdPartyFirewalls)
                 {
                     TL.LogMessage("QueryFireWall", $"Found third party firewall: {firewall.Name} - {firewall.FriendlyName}");
-                    //foreach (IFirewallProfile profile in firewall.Profiles)
-                    //{
-                    //    TL.LogMessage("QueryFireWall", string.Format("Found third party firewall profile {0}, enabled: {1}", profile.Type.ToString(), profile.IsActive));
-                    //}
                 }
             }
             catch (Exception ex)
             {
-                TL.LogMessage("QueryFireWall", "Exception: " + ex.ToString());
+                TL.LogMessage("QueryFireWall", $"Exception: {ex}");
             }
             TL.BlankLine();
 
@@ -273,9 +265,9 @@ namespace ASCOM.Remote
                         List<IFirewallRule> queryRedundantCopy = queryRedundant.ToList();
                         foreach (IFirewallRule existingRule in queryRedundantCopy)
                         {
-                            TL.LogMessage("SetHttpSysFireWallRule", string.Format("Found redundant rule: {0}", existingRule.Name));
+                            TL.LogMessage("SetHttpSysFireWallRule", $"Found redundant rule: {existingRule.Name}");
                             FirewallManager.Instance.Rules.Remove(existingRule); // Delete the rule
-                            TL.LogMessage("SetHttpSysFireWallRule", string.Format("Deleted redundant rule: {0}", existingRule.Name));
+                            TL.LogMessage("SetHttpSysFireWallRule", $"Deleted redundant rule: {existingRule.Name}");
                         }
 
                         // Check whether the specified file exists and if so delete it
@@ -283,9 +275,9 @@ namespace ASCOM.Remote
                         List<IFirewallRule> queryCopy = query.ToList();
                         foreach (IFirewallRule existingRule in queryCopy)
                         {
-                            TL.LogMessage("SetHttpSysFireWallRule", string.Format("Found rule: {0}", existingRule.Name));
+                            TL.LogMessage("SetHttpSysFireWallRule", $"Found rule: {existingRule.Name}");
                             FirewallManager.Instance.Rules.Remove(existingRule); // Delete the rule
-                            TL.LogMessage("SetHttpSysFireWallRule", string.Format("Deleted rule: {0}", existingRule.Name));
+                            TL.LogMessage("SetHttpSysFireWallRule", $"Deleted rule: {existingRule.Name}");
                         }
 
                         SetHttpRule(FirewallProfiles.Private, portNumber);
@@ -307,8 +299,8 @@ namespace ASCOM.Remote
             }
             catch (Exception ex)
             {
-                TL.LogMessage("SetHttpSysFireWallRule", "Exception: " + ex.ToString());
-                Console.WriteLine("SetHttpSysFireWallRule threw an exception: " + ex.Message);
+                TL.LogMessage("SetHttpSysFireWallRule", $"Exception: {ex}");
+                Console.WriteLine($"SetHttpSysFireWallRule threw an exception: {ex.Message}");
             }
 
         }
@@ -435,7 +427,7 @@ namespace ASCOM.Remote
 
                 // Now send the new UrlAcl
                 TL.LogMessage("SetAcl", $"Sending new UrlAcl command to NetSh: {command}");
-                netshCommand += command + "\r\n";
+                netshCommand += $"{command}\r\n";
                 TL.LogMessage("SetAcl", $"NetSh command length: {netshCommand.Length} NetSh Command: {netshCommand}");
                 SendNetshCommand(netshCommand);
 
@@ -462,20 +454,20 @@ namespace ASCOM.Remote
             {
                 StartInfo = psi
             };
-            process.OutputDataReceived += (sender, args) => TL.LogMessage("SetAcl", string.Format("NetSh output: {0}", args.Data));
+            process.OutputDataReceived += (sender, args) => TL.LogMessage("SetAcl", $"NetSh output: {args.Data}");
 
             TL.LogMessage("SendNetshCommand", "Starting process");
             process.Start();
             process.BeginOutputReadLine();
             TL.LogMessage("SendNetshCommand", "Process started");
 
-            TL.LogMessage("SendNetshCommand", string.Format("Sending netsh command: {0}", command));
+            TL.LogMessage("SendNetshCommand", $"Sending netsh command: {command}");
             process.StandardInput.WriteLine(command);
-            TL.LogMessage("SendNetshCommand", string.Format("Sent netsh command: {0}", command));
+            TL.LogMessage("SendNetshCommand", $"Sent netsh command: {command}");
 
-            TL.LogMessage("SendNetshCommand", string.Format("Sending netsh command: exit"));
+            TL.LogMessage("SendNetshCommand", "Sending netsh command: exit");
             process.StandardInput.WriteLine("exit");
-            TL.LogMessage("SendNetshCommand", string.Format("Sent netsh command: exit"));
+            TL.LogMessage("SendNetshCommand", "Sent netsh command: exit");
 
             process.WaitForExit();
             TL.LogMessage("SendNetshCommand", "Process ended");
@@ -490,9 +482,10 @@ namespace ASCOM.Remote
                 Enabled = true
             };
 
-            TL.LogMessage("Main", "Unhandled exception: " + exception.ToString());
+            TL.LogMessage("Main", $"Un-handled exception: {exception}");
             TL.Enabled = false;
             TL.Dispose();
+
             Environment.Exit(0);
         }
     }
