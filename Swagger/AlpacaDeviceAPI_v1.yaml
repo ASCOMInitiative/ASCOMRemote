@@ -165,7 +165,7 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       requestBody:
-        $ref: '#/components/requestBodies/put_devicetype_Devicenumber_commandblind'
+        $ref: '#/components/requestBodies/put_devicetype_Devicenumber_commandrequest'
   '/{device_type}/{device_number}/commandbool':
     put:
       summary: >-
@@ -188,7 +188,7 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       requestBody:
-        $ref: '#/components/requestBodies/put_devicetype_Devicenumber_commandblind'
+        $ref: '#/components/requestBodies/put_devicetype_Devicenumber_commandrequest'
   '/{device_type}/{device_number}/commandstring':
     put:
       summary: >-
@@ -211,7 +211,7 @@ paths:
         '500':
           $ref: '#/components/responses/500'
       requestBody:
-        $ref: '#/components/requestBodies/put_devicetype_Devicenumber_commandblind'
+        $ref: '#/components/requestBodies/put_devicetype_Devicenumber_commandrequest'
   '/{device_type}/{device_number}/connect':
     put:
       summary: Starts an asynchronous connect to the device.
@@ -4683,7 +4683,7 @@ paths:
                 - properties:
                     DoesRefraction:
                       description: >-
-                        Set True to make the telescope or driver applie atmospheric refraction to
+                        Set True to make the telescope or driver apply atmospheric refraction to
                         coordinates.
                       type: boolean
                   required:
@@ -5895,7 +5895,7 @@ components:
         example: 0
         minimum: 0
   requestBodies:
-    put_devicetype_Devicenumber_commandblind:
+    put_devicetype_Devicenumber_commandrequest:
       content:
         application/x-www-form-urlencoded:
           schema:
@@ -5909,7 +5909,7 @@ components:
                     description: >-
                       If set to true the string is transmitted 'as-is', if set to false then
                       protocol framing characters may be added prior to transmission
-                    type: string
+                    type: boolean
                 required:
                   - Command
                   - Raw
