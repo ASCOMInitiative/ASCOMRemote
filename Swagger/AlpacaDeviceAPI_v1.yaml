@@ -2,7 +2,7 @@ openapi: 3.1.1
 
 ## This file is licensed under the MIT license, SPDX identifier: MIT
 
-## Copyright (c) <2023> <ASCOM Initiative, Peter Simpson, Bob Denny, Danial Van Noord>
+## Copyright (c) 2025 ASCOM Initiative, Peter Simpson, Bob Denny, Danial Van Noord
 
 ## Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
 ## associated documentation files (the "Software"), to deal in the Software without restriction, 
@@ -22,6 +22,9 @@ openapi: 3.1.1
 info:
   title: ASCOM Alpaca Device API - Masterdocs Version
   version: v1
+  license:
+    name: MIT
+    url: https://opensource.org/license/mit
   description: >
     The Alpaca API uses RESTful techniques and TCP/IP to enable ASCOM applications and devices to communicate across modern network environments.
 
@@ -92,8 +95,12 @@ info:
 
     The SetupDialog method has been omitted from the Alpaca Device API because it presents a user interface rather than returning data. Alpaca device configuration is covered in the "ASCOM Alpaca Management API" specification, which can be selected through the drop-down box at the head of this page.
     
+    ## Copyright and License
     
-
+    Copyright (c) 2025 ASCOM Initiative, Peter Simpson, Bob Denny, Danial Van Noord
+    
+# This API has no security
+security: []
 paths:
   '/{device_type}/{device_number}/action':
     put:
