@@ -1306,6 +1306,7 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/maxbinx':
     get:
+      summary: Maximum binning for the camera X axis
       description: "Further information here: [MaxBinX](https://ascom-standards.org/newdocs/camera.html#Camera.MaxBinX)"
       parameters:
         - $ref: '#/components/parameters/device_number'
