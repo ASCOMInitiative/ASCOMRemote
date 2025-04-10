@@ -19,12 +19,8 @@ openapi: 3.1.0
 ## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 ## WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
 
-servers:
-  - description: Within the "Try it out" URLs, the device URL root is the trailing slash in "/ASCOMInitiative/".
-    url: https://virtserver.swaggerhub.com/ASCOMInitiative/api/v1
-
 info:
-  title: ASCOM Alpaca Device API
+  title: ASCOM Alpaca Device API - Masterdocs Version
   version: v1
   description: >
     The Alpaca API uses RESTful techniques and TCP/IP to enable ASCOM applications and devices to communicate across modern network environments.
@@ -41,6 +37,14 @@ info:
     <a href="https://ascom-standards.org/Help/Developer/html/N_ASCOM_DeviceInterface.htm">API Interface Definitions</a> e.g.
     the <a href="https://ascom-standards.org/Help/Developer/html/M_ASCOM_DeviceInterface_ITelescopeV3_SlewToCoordinates.htm">Telescope.SlewToCoordinates</a> method.      
     This document focuses on how to use the ASCOM Interface standards in their RESTful Alpaca form.
+    
+    ## Try it out
+    
+    `April 2025` - The "Try it out" option has been removed from this online API definition becuase the experience was poor compared to
+    using "Try it out" in the Omni-Simulators, which are installed as part of Platform 7. 
+    
+    You can view the Omni-Simulator's Alpaca API descriptions, including "Try it out", by starting the Omni-Simulators and clicking the "View Swagger docs and interactive queries" link on the home page.
+    
     
     ## Alpaca URLs, Case Sensitivity, Parameters and Returned values
 
@@ -453,7 +457,7 @@ paths:
   '/camera/{device_number}/bayeroffsetx':
     get:
       summary: Returns the X offset of the Bayer matrix.
-      description: 'Returns the X offset of the Bayer matrix, as defined in SensorType.'
+      description: "Further information here: [BayerOffsetX](https://ascom-standards.org/newdocs/camera.html#Camera.BayerOffsetX)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -470,7 +474,7 @@ paths:
   '/camera/{device_number}/bayeroffsety':
     get:
       summary: Returns the Y offset of the Bayer matrix.
-      description: 'Returns the Y offset of the Bayer matrix, as defined in SensorType.'
+      description: "Further information here: [BayerOffsetY](https://ascom-standards.org/newdocs/camera.html#Camera.BayerOffsetY)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -487,7 +491,7 @@ paths:
   '/camera/{device_number}/binx':
     get:
       summary: Returns the binning factor for the X axis.
-      description: Returns the binning factor for the X axis.
+      description: "Further information here: [BinX](https://ascom-standards.org/newdocs/camera.html#Camera.BinX)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -503,7 +507,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the binning factor for the X axis.
-      description: Sets the binning factor for the X axis.
+      description: "Further information here: [BinX](https://ascom-standards.org/newdocs/camera.html#Camera.BinX)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -533,7 +537,7 @@ paths:
   '/camera/{device_number}/biny':
     get:
       summary: Returns the binning factor for the Y axis.
-      description: Returns the binning factor for the Y axis.
+      description: "Further information here: [BinY](https://ascom-standards.org/newdocs/camera.html#Camera.BinY)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -549,7 +553,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the binning factor for the Y axis.
-      description: Sets the binning factor for the Y axis.
+      description: "Further information here: [BinY](https://ascom-standards.org/newdocs/camera.html#Camera.BinY)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -579,8 +583,7 @@ paths:
   '/camera/{device_number}/camerastate':
     get:
       summary: Returns the camera operational state.
-      description: >-
-        Returns the current camera operational state as an integer.
+      description: "Further information here: [CameraState](https://ascom-standards.org/newdocs/camera.html#Camera.CameraState)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -597,7 +600,7 @@ paths:
   '/camera/{device_number}/cameraxsize':
     get:
       summary: Returns the width of the CCD camera chip.
-      description: Returns the width of the CCD camera chip in unbinned pixels.
+      description: "Further information here: [CameraXSize](https://ascom-standards.org/newdocs/camera.html#Camera.CameraXSize)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -614,7 +617,7 @@ paths:
   '/camera/{device_number}/cameraysize':
     get:
       summary: Returns the height of the CCD camera chip.
-      description: Returns the height of the CCD camera chip in unbinned pixels.
+      description: "Further information here: [CameraYSize](https://ascom-standards.org/newdocs/camera.html#Camera.CameraYSize)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -631,7 +634,7 @@ paths:
   '/camera/{device_number}/canabortexposure':
     get:
       summary: Indicates whether the camera can abort exposures.
-      description: Returns true if the camera can abort exposures; false if not.
+      description: "Further information here: [CanAbortExposure](https://ascom-standards.org/newdocs/camera.html#Camera.CanAbortExposure)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -647,8 +650,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/canasymmetricbin':
     get:
-      summary: Indicates whether the camera supports asymmetric binning
-      description: Returns a flag showing whether this camera supports asymmetric binning
+      summary: Indicates whether the camera supports asymmetric binning.
+      description: "Further information here: [CanAsymmetricBin](https://ascom-standards.org/newdocs/camera.html#Camera.CanAsymmetricBin)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -665,7 +668,7 @@ paths:
   '/camera/{device_number}/canfastreadout':
     get:
       summary: Indicates whether the camera has a fast readout mode.
-      description: Indicates whether the camera has a fast readout mode.
+      description: "Further information here: [CanFastReadout](https://ascom-standards.org/newdocs/camera.html#Camera.CanFastReadout)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -682,7 +685,7 @@ paths:
   '/camera/{device_number}/cangetcoolerpower':
     get:
       summary: Indicates whether the camera's cooler power setting can be read.
-      description: 'If true, the camera''s cooler power setting can be read.'
+      description: "Further information here: [CanGetCoolerPower](https://ascom-standards.org/newdocs/camera.html#Camera.CanGetCoolerPower)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -698,8 +701,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/canpulseguide':
     get:
-      summary: Returns a flag indicating whether this camera supports pulse guiding
-      description: Returns a flag indicating whether this camera supports pulse guiding.
+      summary: Indicates whether this camera supports pulse guiding.
+      description: "Further information here: [CanPulseGuide](https://ascom-standards.org/newdocs/camera.html#Camera.CanPulseGuide)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -715,12 +718,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/cansetccdtemperature':
     get:
-      summary: >-
-        Returns a flag indicating whether this camera supports setting the CCD
-        temperature
-      description: >-
-        Returns a flag indicatig whether this camera supports setting the CCD
-        temperature
+      summary: Indicates whether this camera supports setting the CCD temperature.
+      description: "Further information here: [CanSetCCDTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.CanSetCCDTemperature)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -736,12 +735,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/canstopexposure':
     get:
-      summary: >-
-        Returns a flag indicating whether this camera can stop an exposure that
-        is in progress
-      description: >-
-        Returns a flag indicating whether this camera can stop an exposure that
-        is in progress
+      summary: Indicates whether this camera can stop an exposure that is in progress.
+      description: "Further information here: [CanStopExposure](https://ascom-standards.org/newdocs/camera.html#Camera.CanStopExposure)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -757,8 +752,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/ccdtemperature':
     get:
-      summary: Returns the current CCD temperature
-      description: Returns the current CCD temperature in degrees Celsius.
+      summary: Returns the current CCD temperature in degrees Celsius
+      description: "Further information here: [CCDTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.CCDTemperature)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -775,7 +770,7 @@ paths:
   '/camera/{device_number}/cooleron':
     get:
       summary: Returns the current cooler on/off state.
-      description: Returns the current cooler on/off state.
+      description: "Further information here: [CoolerOn](https://ascom-standards.org/newdocs/camera.html#Camera.CoolerOn)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -791,7 +786,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Turns the camera cooler on and off
-      description: 'Turns on and off the camera cooler. True = cooler on, False = cooler off'
+      description: "Further information here: [CoolerOn](https://ascom-standards.org/newdocs/camera.html#Camera.CoolerOn)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -819,7 +814,7 @@ paths:
   '/camera/{device_number}/coolerpower':
     get:
       summary: Returns the present cooler power level
-      description: 'Returns the present cooler power level, in percent.'
+      description: "Further information here: [CoolerPower](https://ascom-standards.org/newdocs/camera.html#Camera.CoolerPower)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -835,8 +830,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/electronsperadu':
     get:
-      summary: Returns the gain of the camera
-      description: Returns the gain of the camera in photoelectrons per A/D unit.
+      summary: Returns the gain of the camera in photoelectrons per A/D unit.
+      description: "Further information here: [ElectronsPerADU](https://ascom-standards.org/newdocs/camera.html#Camera.ElectronsPerADU)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -853,7 +848,7 @@ paths:
   '/camera/{device_number}/exposuremax':
     get:
       summary: Returns the maximum exposure time supported by StartExposure.
-      description: Returns the maximum exposure time supported by StartExposure.
+      description: "Further information here: [ExposureMax](https://ascom-standards.org/newdocs/camera.html#Camera.ExposureMax)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -869,10 +864,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/exposuremin':
     get:
-      summary: Returns the Minimium exposure time
-      description: >-
-        Returns the Minimium exposure time in seconds that the camera supports
-        through StartExposure.
+      summary: Returns the Minimium exposure time supported by StartExposure.
+      description: "Further information here: [ExposureMin](https://ascom-standards.org/newdocs/camera.html#Camera.ExposureMin)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -888,12 +881,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/exposureresolution':
     get:
-      summary: >-
-        Returns the smallest increment in exposure time supported by
-        StartExposure.
-      description: >-
-        Returns the smallest increment in exposure time supported by
-        StartExposure.
+      summary: Returns the smallest increment in exposure time supported by StartExposure.
+      description: "Further information here: [ExposureResolution](https://ascom-standards.org/newdocs/camera.html#Camera.ExposureResolution)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -910,7 +899,7 @@ paths:
   '/camera/{device_number}/fastreadout':
     get:
       summary: Returns whenther Fast Readout Mode is enabled.
-      description: Returns whenther Fast Readout Mode is enabled.
+      description: "Further information here: [FastReadout](https://ascom-standards.org/newdocs/camera.html#Camera.FastReadout)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -926,7 +915,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets whether Fast Readout Mode is enabled.
-      description: Sets whether Fast Readout Mode is enabled.
+      description: "Further information here: [FastReadout](https://ascom-standards.org/newdocs/camera.html#Camera.FastReadout)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -953,10 +942,8 @@ paths:
                     - FastReadout
   '/camera/{device_number}/fullwellcapacity':
     get:
-      summary: Reports the full well capacity of the camera
-      description: >-
-        Reports the full well capacity of the camera in electrons, at the
-        current camera settings (binning, SetupDialog settings, etc.).
+      summary: Reports the full well capacity of the camera in electrons, at the current camera settings.
+      description: "Further information here: [FullWellCapacity](https://ascom-standards.org/newdocs/camera.html#Camera.FullWellCapacity)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -972,8 +959,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/gain':
     get:
-      summary: Returns the camera's gain
-      description: The camera's gain (GAIN VALUE MODE) OR the index of the selected camera gain description in the Gains array (GAINS INDEX MODE).
+      summary: Returns the camera's gain (GAIN VALUE MODE) OR the index of the selected camera gain description in the Gains array (GAINS INDEX MODE).
+      description: "Further information here: [Gain](https://ascom-standards.org/newdocs/camera.html#Camera.Gain)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -988,8 +975,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Sets the camera's gain.
-      description: The camera's gain (GAIN VALUE MODE) OR the index of the selected camera gain description in the Gains array (GAINS INDEX MODE).
+      summary: Sets the camera's gain (GAIN VALUE MODE) OR the index of the selected camera gain description in the Gains array (GAINS INDEX MODE).
+      description: "Further information here: [Gain](https://ascom-standards.org/newdocs/camera.html#Camera.Gain)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1018,7 +1005,7 @@ paths:
   '/camera/{device_number}/gainmax':
     get:
       summary: Maximum Gain value of that this camera supports
-      description: Returns the maximum value of Gain.
+      description: "Further information here: [GainMax](https://ascom-standards.org/newdocs/camera.html#Camera.GainMax)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1035,7 +1022,7 @@ paths:
   '/camera/{device_number}/gainmin':
     get:
       summary: Minimum Gain value of that this camera supports 
-      description: Returns the Minimum value of Gain.
+      description: "Further information here: [GainMin](https://ascom-standards.org/newdocs/camera.html#Camera.GainMin)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1052,7 +1039,7 @@ paths:
   '/camera/{device_number}/gains':
     get:
       summary: List of Gain names supported by the camera 
-      description: Returns the Gains supported by the camera.
+      description: "Further information here: [Gains](https://ascom-standards.org/newdocs/camera.html#Camera.Gains)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1066,11 +1053,10 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
-
   '/camera/{device_number}/hasshutter':
     get:
       summary: Indicates whether the camera has a mechanical shutter
-      description: Returns a flag indicating whether this camera has a mechanical shutter.
+      description: "Further information here: [HasShutter](https://ascom-standards.org/newdocs/camera.html#Camera.HasShutter)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1086,10 +1072,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/heatsinktemperature':
     get:
-      summary: Returns the current heat sink temperature.
-      description: >-
-        Returns the current heat sink temperature (called "ambient temperature"
-        by some manufacturers) in degrees Celsius.
+      summary: Returns the current heat sink temperature in degrees Celsius.
+      description: "Further information here: [HeatSinkTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.HeatSinkTemperature)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1106,7 +1090,13 @@ paths:
   '/camera/{device_number}/imagearray':
     get:
       summary: Returns an array of integers containing the exposure pixel values
-      description: >
+      description: > 
+        Further information here: [ImageArray](https://ascom-standards.org/newdocs/camera.html#Camera.ImageArray)
+        
+
+        ## Alpaca Specific Detail
+        
+        
         Returns an array of 32bit integers containing the pixel values from the last exposure. This call can return either a 2 dimension (monochrome images) or 3 dimension (colour or multi-plane images) array 
         of size `NumX * NumY` or `NumX * NumY * NumPlanes`. Where applicable, the size of `NumPlanes` has to be determined by inspection of the returned array.
 
@@ -1211,107 +1201,11 @@ paths:
       deprecated: true
       summary: Returns an array of numbers containing the exposure pixel values
       description: >
-        **This method is deprecated in favour of [`imagearray`](#/Camera%20Specific%20Methods/get_camera__device_number__imagearray).**
+        **This method is deprecated in favour of [`imagearray`](#/Camera%20Specific%20Methods/get_camera__device_number__imagearray)
+        but the endpoint must still be implemented in Alpaca devices and must return a NotImplemented error number (0x400).**
           
-        The ImageArrayVariant property is a functional duplicate of the ImageArray 
-        property but returns data using the variant type, which requires more memory and processor 
-        resource than the Int32 type returned by ImageArray.
 
-        ImageArrayVariant was included in the ASCOM interface to support scripting languages that 
-        required data elements to be of variant type rather than as integer type. However, this restriction no 
-        longer applies and the ImageArrayVariant property is now redundant.
-
-        Returns an array containing the pixel values from the last exposure.
-        This call can return either a 2 dimension (monochrome images) or a 3
-        dimension (colour or multi-plane images) array of size `NumX * NumY` or
-        `NumX * NumY * NumPlanes`. Where applicable, the size of `NumPlanes` has
-        to be determined by inspection of the returned array.
-        
-        
-        This call can return values as short(16bit) integers, int(32bit)
-        integers or double floating point values. The nature of the returned
-        values is given in the `Type` parameter.
-        
-        
-        When de-serialising to an object it is essential to know the array `Rank` beforehand so that the correct data class can be used. This can be achieved through a regular expression or by direct parsing 
-        of the returned JSON string to extract the `Type` and `Rank` values before de-serialising.
-
-
-        This regular expression accomplishes the extraction into two named groups `Type` and `Rank`, which can then be used to select the correct de-serialisation data class:
-
-
-        `^*"Type":(?<Type>\d*),"Rank":(?<Rank>\d*)`
-
-
-        When the `SensorType` is Monochrome, RGGB, CMYG, CMYG2 or LRGB, the serialised JSON array should have 2 dimensions. For example, the returned array should appear as below if `NumX = 7`, `NumY = 5` 
-        and `Pxy` represents the pixel value at the zero based position `x` across and `y` down the image with the origin in the top left corner of the image.  
-
-
-        Please note that this is "column-major" order (column changes most rapidly)
-        from the image's row and column perspective, while, from the array's perspective, serialisation is actually effected in "row-major" order (rightmost index changes most rapidly). 
-        This unintuitive outcome arises because the ASCOM Camera Interface specification defines the image column dimension as the rightmost array dimension.
-
-
-        ```
-
-        [
-          [P00,P01,P02,P03,P04],
-
-          [P10,P11,P12,P13,P14],
-          
-          [P20,P21,P22,P23,P24],
-          
-          [P30,P31,P32,P33,P34],
-          
-          [P40,P41,P42,P43,P44],
-          
-          [P50,P51,P52,P53,P54],
-          
-          [P60,P61,P62,P63,P64],
-
-          …
-        ]
-
-        ```
-
-
-        When the `SensorType` is Color, the serialised JSON array will have 3 dimensions. For example, the returned array should appear as below if `NumX = 7`, `NumY = 5` 
-        and `Rxy`, `Gxy` and `Bxy` represent the red, green and blue pixel values at the zero based position x across and y down the image with the origin in the top left corner of the image.  Please see note above regarding element ordering.
-
-
-        ```
-
-        [
-          [[R00,G00,B00],[R01,G01,B01],[R02,G02,B02],[R03,G03,B03],[R04,G04,B04]],
-
-
-          [[R10,G10,B10],[R11,G11,B11],[R12,G12,B12],[R13,G13,B13],[R14,G14,B14]],
-
-
-          [[R20,G20,B20],[R21,G21,B21],[R22,G22,B22],[R23,G23,B23],[R24,G24,B24]],
-
-
-          [[R30,G30,B30],[R31,G31,B31],[R32,G32,B32],[R33,G33,B33],[R34,G34,B34]],
-
-
-          [[R40,G40,B40],[R41,G41,B41],[R42,G42,B42],[R43,G43,B43],[R44,G44,B44]],
-
-
-          [[R50,G50,B50],[R51,G51,B51],[R52,G52,B52],[R53,G53,B53],[R54,G54,B54]],
-
-
-          [[R60,G60,B60],[R61,G61,B61],[R62,G62,B62],[R63,G63,B63],[R64,G64,B64]],
-
-          …
-        ]
-
-        ```
-
-        ## Performance
-
-        Returning an image from an Alpaca device as a JSON array is very inefficient and can result in delays of 30 or more seconds while client and device process and send the huge JSON string over the network. 
-        A new, much faster mechanic called ImageBytes - [Alpaca ImageBytes Concepts and Implementation](https://www.ascom-standards.org/Developer/AlpacaImageBytes.pdf) has been developed that sends data as a binary byte stream and can offer a 10 to 20 fold reduction in transfer time. 
-        It is strongly recommended that Alpaca Cameras implement the ImageBytes mechanic as well as the JSON mechanic.
+        Further information here: [ImageArrayVariant](https://ascom-standards.org/newdocs/camera.html#Camera.ImageArrayVariant)
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1328,9 +1222,7 @@ paths:
   '/camera/{device_number}/imageready':
     get:
       summary: Indicates that an image is ready to be downloaded
-      description: >-
-        Returns a flag indicating whether the image is ready to be downloaded
-        from the camera.
+      description: "Further information here: [ImageReady](https://ascom-standards.org/newdocs/camera.html#Camera.ImageReady)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1347,9 +1239,7 @@ paths:
   '/camera/{device_number}/ispulseguiding':
     get:
       summary: Indicates that the camera is pulse guideing.
-      description: >-
-        Returns a flag indicating whether the camera is currrently in a
-        PulseGuide operation.
+      description: "Further information here: [IsPulseGuiding](https://ascom-standards.org/newdocs/camera.html#Camera.IsPulseGuiding)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1365,10 +1255,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/lastexposureduration':
     get:
-      summary: Duration of the last exposure
-      description: >-
-        Reports the actual exposure duration in seconds (i.e. shutter open
-        time).
+      summary: Duration of the last exposure (seconds)
+      description: "Further information here: [LastExposureDuration](https://ascom-standards.org/newdocs/camera.html#Camera.LastExposureDuration)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1384,10 +1272,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/lastexposurestarttime':
     get:
-      summary: Start time of the last exposure in FITS standard format.
-      description: >-
-        Reports the actual exposure start in the FITS-standard
-        CCYY-MM-DDThh:mm:ss[.sss...] format. The time must be UTC.
+      summary: Start time of the last exposure in FITS standard format CCYY-MM-DDThh:mm:ss[.sss...]. The time must be UTC.
+      description: "Further information here: [LastExposureStartTime](https://ascom-standards.org/newdocs/camera.html#Camera.LastExposureStartTime)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1404,7 +1290,7 @@ paths:
   '/camera/{device_number}/maxadu':
     get:
       summary: Camera's maximum ADU value
-      description: Reports the maximum ADU value the camera can produce.
+      description: "Further information here: [MaxADU](https://ascom-standards.org/newdocs/camera.html#Camera.MaxADU)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1420,8 +1306,7 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/maxbinx':
     get:
-      summary: Maximum binning for the camera X axis
-      description: Returns the maximum allowed binning for the X camera axis
+      description: "Further information here: [MaxBinX](https://ascom-standards.org/newdocs/camera.html#Camera.MaxBinX)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1438,7 +1323,7 @@ paths:
   '/camera/{device_number}/maxbiny':
     get:
       summary: Maximum binning for the camera Y axis
-      description: Returns the maximum allowed binning for the Y camera axis
+      description: "Further information here: [MaxBinY](https://ascom-standards.org/newdocs/camera.html#Camera.MaxBinY)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1454,10 +1339,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/numx':
     get:
-      summary: Returns the current subframe width
-      description: >-
-        Returns the current subframe width, if binning is active, value is in
-        binned pixels.
+      summary: Returns the current subframe width in binned pixels.
+      description: "Further information here: [NumX](https://ascom-standards.org/newdocs/camera.html#Camera.NumX)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1472,8 +1355,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Sets the current subframe width
-      description: Sets the current subframe width.
+      summary: Sets the current subframe width in binned pixels.
+      description: "Further information here: [NumX](https://ascom-standards.org/newdocs/camera.html#Camera.NumX)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1503,10 +1386,8 @@ paths:
                     - NumX
   '/camera/{device_number}/numy':
     get:
-      summary: Returns the current subframe height
-      description: >-
-        Returns the current subframe height, if binning is active, value is in
-        binned pixels.
+      summary: Returns the current subframe height in binned pixels.
+      description: "Further information here: [NumY](https://ascom-standards.org/newdocs/camera.html#Camera.NumY)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1521,8 +1402,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Sets the current subframe height
-      description: Sets the current subframe height.
+      summary: Sets the current subframe height in binned pixels.
+      description: "Further information here: [NumY](https://ascom-standards.org/newdocs/camera.html#Camera.NumY)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1552,8 +1433,8 @@ paths:
                     - NumY
   '/camera/{device_number}/offset':
     get:
-      summary: Returns the camera's offset
-      description: Returns the camera's offset (OFFSET VALUE MODE) OR the index of the selected camera offset description in the offsets array (OFFSETS INDEX MODE).
+      summary: Returns the camera's offset (OFFSET VALUE MODE) OR the index of the selected camera offset description in the offsets array (OFFSETS INDEX MODE).
+      description: "Further information here: [Offset](https://ascom-standards.org/newdocs/camera.html#Camera.Offset)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1568,8 +1449,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Sets the camera's offset.
-      description: Sets the camera's offset (OFFSET VALUE MODE) OR the index of the selected camera offset description in the offsets array (OFFSETS INDEX MODE).
+      summary: Sets the camera's offset (OFFSET VALUE MODE) OR the index of the selected camera offset description in the offsets array (OFFSETS INDEX MODE).
+      description: "Further information here: [Offset](https://ascom-standards.org/newdocs/camera.html#Camera.Offset)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1598,7 +1479,7 @@ paths:
   '/camera/{device_number}/offsetmax':
     get:
       summary: Maximum offset value of that this camera supports
-      description: Returns the maximum value of offset.
+      description: "Further information here: [OffsetMax](https://ascom-standards.org/newdocs/camera.html#Camera.OffsetMax)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1615,7 +1496,7 @@ paths:
   '/camera/{device_number}/offsetmin':
     get:
       summary: Minimum offset value of that this camera supports 
-      description: Returns the Minimum value of offset.
+      description: "Further information here: [OffsetMin](https://ascom-standards.org/newdocs/camera.html#Camera.OffsetMin)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1632,7 +1513,7 @@ paths:
   '/camera/{device_number}/offsets':
     get:
       summary: List of offset names supported by the camera 
-      description: Returns the offsets supported by the camera.
+      description: "Further information here: [Offsets](https://ascom-standards.org/newdocs/camera.html#Camera.Offsets)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1649,11 +1530,7 @@ paths:
   '/camera/{device_number}/percentcompleted':
     get:
       summary: Indicates percentage completeness of the current operation
-      description: >-
-        Returns the percentage of the current operation that is complete. If
-        valid, returns an integer between 0 and 100, where 0 indicates 0%
-        progress (function just started) and 100 indicates 100% progress (i.e.
-        completion).
+      description: "Further information here: [PercentCompleted](https://ascom-standards.org/newdocs/camera.html#Camera.PercentCompleted)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1670,7 +1547,7 @@ paths:
   '/camera/{device_number}/pixelsizex':
     get:
       summary: Width of CCD chip pixels (microns)
-      description: Returns the width of the CCD chip pixels in microns.
+      description: "Further information here: [PixelSizeX](https://ascom-standards.org/newdocs/camera.html#Camera.PixelSizeX)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1687,7 +1564,7 @@ paths:
   '/camera/{device_number}/pixelsizey':
     get:
       summary: Height of CCD chip pixels (microns)
-      description: Returns the Height of the CCD chip pixels in microns.
+      description: "Further information here: [PixelSizeY](https://ascom-standards.org/newdocs/camera.html#Camera.PixelSizeY)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1703,12 +1580,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/readoutmode':
     get:
-      summary: >-
-        Indicates the canera's readout mode as an index into the array
-        ReadoutModes
-      description: >-
-        ReadoutMode is an index into the array ReadoutModes and returns the
-        desired readout mode for the camera. Defaults to 0 if not set.
+      summary: Indicates the canera's readout mode as an index into the array ReadoutModes
+      description: "Further information here: [ReadoutMode](https://ascom-standards.org/newdocs/camera.html#Camera.ReadoutMode)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1724,7 +1597,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Set the camera's readout mode
-      description: Sets the ReadoutMode as an index into the array ReadoutModes.
+      description: "Further information here: [ReadoutMode](https://ascom-standards.org/newdocs/camera.html#Camera.ReadoutMode)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1754,11 +1627,8 @@ paths:
                     - ReadoutMode
   '/camera/{device_number}/readoutmodes':
     get:
-      summary: List of available readout modes
-      description: >-
-        This property provides an array of strings, each of which describes an
-        available readout mode of the camera. At least one string must be
-        present in the list.
+      summary: Returns a string list of available readout modes
+      description: "Further information here: [ReadoutModes](https://ascom-standards.org/newdocs/camera.html#Camera.ReadoutModes)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1774,8 +1644,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/sensorname':
     get:
-      summary: Sensor name
-      description: The name of the sensor used within the camera.
+      summary: Returns the camera's sensor name
+      description: "Further information here: [SensorName](https://ascom-standards.org/newdocs/camera.html#Camera.SensorName)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1791,12 +1661,8 @@ paths:
           $ref: '#/components/responses/500'
   '/camera/{device_number}/sensortype':
     get:
-      summary: >-
-        Type of information returned by the the camera sensor (monochrome or
-        colour)
-      description: >
-        Returns a value indicating whether the sensor is monochrome, or what
-        Bayer matrix it encodes.
+      summary: Returns a value indicating whether the sensor is monochrome, or what Bayer matrix it encodes.
+      description: "Further information here: [SensorType](https://ascom-standards.org/newdocs/camera.html#Camera.SensorType)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1813,7 +1679,7 @@ paths:
   '/camera/{device_number}/setccdtemperature':
     get:
       summary: Returns the current camera cooler setpoint in degrees Celsius.
-      description: Returns the current camera cooler setpoint in degrees Celsius.
+      description: "Further information here: [SetCCDTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.SetCCDTemperature)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1829,7 +1695,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Set the camera's cooler setpoint (degrees Celsius).
-      description: Set's the camera's cooler setpoint in degrees Celsius.
+      description: "Further information here: [SetCCDTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.SetCCDTemperature)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1856,9 +1722,8 @@ paths:
                     - SetCCDTemperature
   '/camera/{device_number}/startx':
     get:
-      summary: Return the current subframe X axis start position
-      description: >-
-        Returns the current subframe start position for the X axis (0 based). If binning is active, value is in binned pixels.
+      summary: Returns the current subframe X axis start position in binned pixels
+      description: "Further information here: [StartX](https://ascom-standards.org/newdocs/camera.html#Camera.StartX)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1873,8 +1738,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Sets the current subframe X axis start position
-      description: Sets the current subframe X axis start position in binned pixels.
+      summary: Sets the current subframe X axis start position in binned pixels
+      description: "Further information here: [StartX](https://ascom-standards.org/newdocs/camera.html#Camera.StartX)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1902,9 +1767,8 @@ paths:
                     - StartX
   '/camera/{device_number}/starty':
     get:
-      summary: Return the current subframe Y axis start position
-      description: >-
-        Returns the current subframe start position for the Y axis (0 based). If binning is active, value is in binned pixels.
+      summary: Returns the current subframe Y axis start position in binned pixels
+      description: "Further information here: [StartY](https://ascom-standards.org/newdocs/camera.html#Camera.StartY)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1919,8 +1783,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Sets the current subframe Y axis start position
-      description: Sets the current subframe Y axis start position in binned pixels.
+      summary: Sets the current subframe Y axis start position in bined pixels
+      description: "Further information here: [StartY](https://ascom-standards.org/newdocs/camera.html#Camera.StartY)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1951,6 +1815,9 @@ paths:
       summary: Camera's sub-exposure interval
       description: >-
         `ICameraV3 and later` The Camera's sub exposure duration in seconds.
+        
+        
+        "Further information here: [SubExposureDuration](https://ascom-standards.org/newdocs/camera.html#Camera.SubExposureDuration)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1968,6 +1835,9 @@ paths:
       summary: Sets the current Sub Exposure Duration
       description: >-
         `ICameraV3 and later` Sets image sub exposure duration in seconds.
+        
+        
+        "Further information here: [SubExposureDuration](https://ascom-standards.org/newdocs/camera.html#Camera.SubExposureDuration)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1994,10 +1864,8 @@ paths:
                     - SubExposureDuration
   '/camera/{device_number}/abortexposure':
     put:
-      summary: Aborts the current exposure
-      description: >-
-        Aborts the current exposure, if any, and returns the camera to Idle
-        state.
+      summary: Aborts the current exposure and returns the camera to Idle state.
+      description: "Further information here: [AbortExposure](https://ascom-standards.org/newdocs/camera.html#Camera.AbortExposure)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2014,9 +1882,7 @@ paths:
   '/camera/{device_number}/pulseguide':
     put:
       summary: Pulse guide in the specified direction for the specified time.
-      description: >-
-        Activates the Camera's mount control sytem to instruct the mount to move
-        in a particular direction for a given period of time
+      description: "Further information here: [PulseGuide](https://ascom-standards.org/newdocs/camera.html#Camera.PulseGuide)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2047,9 +1913,7 @@ paths:
   '/camera/{device_number}/startexposure':
     put:
       summary: Starts an exposure
-      description: >-
-        Starts an exposure. Use ImageReady to check when the exposure is
-        complete.
+      description: "Further information here: [StartExposure](https://ascom-standards.org/newdocs/camera.html#Camera.StartExposure)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2080,9 +1944,7 @@ paths:
   '/camera/{device_number}/stopexposure':
     put:
       summary: Stops the current exposure
-      description: >-
-        Stops the current exposure, if any. If an exposure is in progress, the
-        readout process is initiated. Ignored if readout is already in process.
+      description: "Further information here: [StopExposure](https://ascom-standards.org/newdocs/camera.html#Camera.StopExposure)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
