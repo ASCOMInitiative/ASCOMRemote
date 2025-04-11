@@ -118,7 +118,14 @@ paths:
               schema:
                 type: string
                 description: HTML page with device information.
-        '500':
+        '400':
+          description: 'The device did not understand the command.'
+          content:
+            text/html:
+              schema:
+                type: string
+                description: HTML message describing the issue.
+      '500':
           description: Server internal error so return an error message
           content:
             text/html:
