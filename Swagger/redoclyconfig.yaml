@@ -4,3 +4,10 @@ extends:
 rules:
   operation-operationId: off
   no-empty-servers: off
+  
+# This file instructs Redocly's linter to ignore the rules contained for specific parts of your API.
+# See https://redoc.ly/docs/cli/ for more information.
+Swagger/AlpacaManagementAPI_v1.yaml:
+  # /setup endpoint must always be present
+  operation-4xx-response:
+    - '#/paths/~1setup/get/responses'
