@@ -125,7 +125,7 @@ paths:
               schema:
                 type: string
                 description: HTML message describing the issue.
-      '500':
+        '500':
           description: Server internal error so return an error message
           content:
             text/html:
