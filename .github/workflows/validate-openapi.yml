@@ -8,9 +8,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install OpenAPI validator
         run: npm install -g @redocly/cli
-      - name: Validate Alpaca API definitions
-        run: redocly lint --config Swagger/redoclyconfig.yaml Swagger/AlpacaDeviceAPI_v1.yaml
       - name: Validate Managment API
         run: redocly lint --config Swagger/redoclyconfig.yaml Swagger/AlpacaManagementAPI_v1.yaml
+      - name: Validate Alpaca Device API
+        run: redocly lint --config Swagger/redoclyconfig.yaml Swagger/AlpacaDeviceAPI_v1.yaml
         env:
           NODE_NO_WARNINGS: 1
