@@ -101,6 +101,7 @@ info:
     
 # This API has no security
 security: []
+
 paths:
   '/{device_type}/{device_number}/action':
     put:

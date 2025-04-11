@@ -1,8 +1,8 @@
-openapi: 3.0.2
+openapi: 3.1.1
 
 ## This file is licensed under the MIT license, SPDX identifier: MIT
 
-## Copyright (c) <2023> <ASCOM Initiative, Peter Simpson, Bob Denny, Danial Van Noord>
+## Copyright (c) 2025 ASCOM Initiative, Peter Simpson, Bob Denny, Danial Van Noord
 
 ## Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
 ## associated documentation files (the "Software"), to deal in the Software without restriction, 
@@ -19,15 +19,15 @@ openapi: 3.0.2
 ## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
 ## WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
 
-servers:
-  - description: Within the "Try it out" URLs, the device URL root is the trailing slash in "/ascom/".
-    url: https://private-d6fe6-ascom.apiary-mock.com/ascom
-
 info:
   title: ASCOM Alpaca Management API
     
   version: "v1"
   
+    license:
+    name: MIT
+    url: https://opensource.org/license/mit
+
   description: >
     This API enables Alpaca devices to be managed.
 
@@ -87,7 +87,13 @@ info:
 
     An HTTP status code of `500` indicates an unexpected error within the device from which it could not recover. Check the body of the response for a text error message.
 
-  
+     ## Copyright and License
+    
+    Copyright (c) 2025 ASCOM Initiative, Peter Simpson, Bob Denny, Danial Van Noord
+     
+# This API has no security
+security: []
+
 paths:
   '/setup':
     get:
