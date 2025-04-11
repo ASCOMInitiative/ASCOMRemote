@@ -24,7 +24,7 @@ info:
     
   version: "v1"
   
-    license:
+  license:
     name: MIT
     url: https://opensource.org/license/mit
 
