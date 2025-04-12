@@ -20,11 +20,14 @@ openapi: 3.1.1
 ## WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
 
 info:
-  title: ASCOM Alpaca Device API - Masterdocs Version
+  title: ASCOM Alpaca Device API
+  
   version: v1
+  
   license:
     name: MIT
     url: https://opensource.org/license/mit
+
   description: >
     The Alpaca API uses RESTful techniques and TCP/IP to enable ASCOM applications and devices to communicate across modern network environments.
 
@@ -99,7 +102,7 @@ info:
     
     Copyright (c) 2025 ASCOM Initiative, Peter Simpson, Bob Denny, Danial Van Noord
     
-# This API has no security
+# This API has no security features
 security: []
 
 paths:
@@ -462,6 +465,7 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+
   '/camera/{device_number}/bayeroffsetx':
     get:
       summary: Returns the X offset of the Bayer matrix.
@@ -1969,10 +1973,11 @@ paths:
         $ref: '#/components/requestBodies/putStandardClientParameters'
 
 
+
   '/covercalibrator/{device_number}/brightness':
     get:
       summary: Returns the current calibrator brightness
-      description: Returns the current calibrator brightness in the range 0 (completely off) to MaxBrightness (fully on) 
+      description: "Further information here: [Brightness](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.Brightness)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1990,7 +1995,7 @@ paths:
     get:
       summary: Completion variable for calibrator brightness changes. 
       description: >-
-         `ICoverCalibratorV2 and later` True if the calibrator is not yet stable.
+         `ICoverCalibratorV2 and later` Further information here: [CalibratorChanging](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CalibratorChanging)
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2007,10 +2012,7 @@ paths:
   '/covercalibrator/{device_number}/calibratorstate':
     get:
       summary: Returns the state of the calibration device
-      description: >-
-        Returns the state of the calibration device, if present, otherwise returns "NotPresent".
-        The calibrator state mode is specified as an integer value from the
-        CalibratorStatus Enum.
+      description: "Further information here: [CalibratorState](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CalibratorState)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2028,7 +2030,7 @@ paths:
     get:
       summary: Completion variable for cover open and close operations.
       description: >-
-        `ICoverCalibratorV2 and later` True if the cover is moving.
+         `ICoverCalibratorV2 and later` Further information here: [CoverMoving](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CoverMoving)
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2045,10 +2047,7 @@ paths:
   '/covercalibrator/{device_number}/coverstate':
     get:
       summary: Returns the state of the device cover" 
-      description: >-
-        Returns the state of the device cover, if present, otherwise returns "NotPresent".
-        The cover state mode is specified as an integer value from the
-        CoverStatus Enum.
+      description: "Further information here: [CoverState](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CoverState)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2065,7 +2064,7 @@ paths:
   '/covercalibrator/{device_number}/maxbrightness':
     get:
       summary: Returns the calibrator's maximum Brightness value.
-      description: The Brightness value that makes the calibrator deliver its maximum illumination. 
+      description: "Further information here: [MaxBrightness](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.MaxBrightness)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2082,7 +2081,7 @@ paths:
   '/covercalibrator/{device_number}/calibratoroff':
     put:
       summary: Turns the calibrator off
-      description: 'Turns the calibrator off if the device has calibration capability.'
+      description: "Further information here: [CalibratorOff](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CalibratorOff)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2099,8 +2098,7 @@ paths:
   '/covercalibrator/{device_number}/calibratoron':
     put:
       summary: Turns the calibrator on at the specified brightness
-      description: >-
-        Turns the calibrator on at the specified brightness if the device has calibration capability.
+      description: "Further information here: [CalibratorOn](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CalibratorOn)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2128,7 +2126,7 @@ paths:
   '/covercalibrator/{device_number}/closecover':
     put:
       summary: Initiates cover closing 
-      description: 'Initiates cover closing if a cover is present.'
+      description: "Further information here: [CloseCover](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CloseCover)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2145,7 +2143,7 @@ paths:
   '/covercalibrator/{device_number}/haltcover':
     put:
       summary: Stops any cover movement that may be in progress
-      description: 'Stops any cover movement that may be in progress if a cover is present and cover movement can be interrupted.'
+      description: "Further information here: [HaltCover](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.HaltCover)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2161,8 +2159,8 @@ paths:
         $ref: '#/components/requestBodies/putStandardClientParameters'
   '/covercalibrator/{device_number}/opencover':
     put:
-      summary: Initiates cover opening
-      description: 'Initiates cover opening if a cover is present.'
+      summary: Initiates cover opening.
+      description: "Further information here: [OpenCover](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.OpenCover)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2176,12 +2174,11 @@ paths:
           $ref: '#/components/responses/500'
       requestBody:
         $ref: '#/components/requestBodies/putStandardClientParameters'
+
   '/dome/{device_number}/altitude':
     get:
-      summary: The dome altitude
-      description: >-
-        The dome altitude (degrees, horizon zero and increasing positive to 90
-        zenith).
+      summary: The dome altitude (degrees - horizon zero, increasing positive to 90 zenith).
+      description: "Further information here: [Altitude](https://ascom-standards.org/newdocs/dome.html#Dome.Altitude)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2649,6 +2646,7 @@ paths:
           $ref: '#/components/responses/500'
       requestBody:
         $ref: '#/components/requestBodies/putDome_devicenumber_slewtoazimuth'
+
   '/filterwheel/{device_number}/focusoffsets':
     get:
       summary: Filter focus offsets
@@ -2727,6 +2725,7 @@ paths:
                       format: int32
                   required:
                     - Position
+
   '/focuser/{device_number}/absolute':
     get:
       summary: Indicates whether the focuser is capable of absolute position.
@@ -2967,6 +2966,7 @@ paths:
                       format: int32
                   required:
                     - Position
+
   '/observingconditions/{device_number}/averageperiod':
     get:
       summary: Returns the time period over which observations will be averaged
@@ -3318,6 +3318,7 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+
   '/rotator/{device_number}/canreverse':
     get:
       summary: IIndicates whether the Rotator supports the Reverse method.
@@ -3600,6 +3601,7 @@ paths:
                       format: double
                   required:
                     - Position
+
   '/safetymonitor/{device_number}/issafe':
     get:
       summary: Indicates whether the monitored state is safe for use.
@@ -3619,6 +3621,7 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+
   '/switch/{device_number}/maxswitch':
     get:
       summary: The number of switch devices managed by this driver
@@ -4008,6 +4011,7 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
+
   '/telescope/{device_number}/alignmentmode':
     get:
       summary: Returns the current mount alignment mode
@@ -5686,6 +5690,9 @@ paths:
           $ref: '#/components/responses/500'
       requestBody:
         $ref: '#/components/requestBodies/putStandardClientParameters'
+
+
+
 components:
   parameters:
     device_type:
