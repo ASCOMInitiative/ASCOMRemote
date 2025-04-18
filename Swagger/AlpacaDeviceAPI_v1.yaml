@@ -469,7 +469,7 @@ paths:
   '/camera/{device_number}/bayeroffsetx':
     get:
       summary: Returns the X offset of the Bayer matrix.
-      description: "Further information here: [BayerOffsetX](https://ascom-standards.org/newdocs/camera.html#Camera.BayerOffsetX)"
+      description: "A full description of this member's behaviour is provided here: [BayerOffsetX](https://ascom-standards.org/newdocs/camera.html#Camera.BayerOffsetX)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -486,7 +486,7 @@ paths:
   '/camera/{device_number}/bayeroffsety':
     get:
       summary: Returns the Y offset of the Bayer matrix.
-      description: "Further information here: [BayerOffsetY](https://ascom-standards.org/newdocs/camera.html#Camera.BayerOffsetY)"
+      description: "A full description of this member's behaviour is provided here: [BayerOffsetY](https://ascom-standards.org/newdocs/camera.html#Camera.BayerOffsetY)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -503,7 +503,7 @@ paths:
   '/camera/{device_number}/binx':
     get:
       summary: Returns the binning factor for the X axis.
-      description: "Further information here: [BinX](https://ascom-standards.org/newdocs/camera.html#Camera.BinX)"
+      description: "A full description of this member's behaviour is provided here: [BinX](https://ascom-standards.org/newdocs/camera.html#Camera.BinX)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -519,7 +519,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the binning factor for the X axis.
-      description: "Further information here: [BinX](https://ascom-standards.org/newdocs/camera.html#Camera.BinX)"
+      description: "A full description of this member's behaviour is provided here: [BinX](https://ascom-standards.org/newdocs/camera.html#Camera.BinX)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -549,7 +549,7 @@ paths:
   '/camera/{device_number}/biny':
     get:
       summary: Returns the binning factor for the Y axis.
-      description: "Further information here: [BinY](https://ascom-standards.org/newdocs/camera.html#Camera.BinY)"
+      description: "A full description of this member's behaviour is provided here: [BinY](https://ascom-standards.org/newdocs/camera.html#Camera.BinY)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -565,7 +565,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the binning factor for the Y axis.
-      description: "Further information here: [BinY](https://ascom-standards.org/newdocs/camera.html#Camera.BinY)"
+      description: "A full description of this member's behaviour is provided here: [BinY](https://ascom-standards.org/newdocs/camera.html#Camera.BinY)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -595,7 +595,7 @@ paths:
   '/camera/{device_number}/camerastate':
     get:
       summary: Returns the camera operational state.
-      description: "Further information here: [CameraState](https://ascom-standards.org/newdocs/camera.html#Camera.CameraState)"
+      description: "A full description of this member's behaviour is provided here: [CameraState](https://ascom-standards.org/newdocs/camera.html#Camera.CameraState)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -612,7 +612,7 @@ paths:
   '/camera/{device_number}/cameraxsize':
     get:
       summary: Returns the width of the CCD camera chip.
-      description: "Further information here: [CameraXSize](https://ascom-standards.org/newdocs/camera.html#Camera.CameraXSize)"
+      description: "A full description of this member's behaviour is provided here: [CameraXSize](https://ascom-standards.org/newdocs/camera.html#Camera.CameraXSize)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -629,7 +629,7 @@ paths:
   '/camera/{device_number}/cameraysize':
     get:
       summary: Returns the height of the CCD camera chip.
-      description: "Further information here: [CameraYSize](https://ascom-standards.org/newdocs/camera.html#Camera.CameraYSize)"
+      description: "A full description of this member's behaviour is provided here: [CameraYSize](https://ascom-standards.org/newdocs/camera.html#Camera.CameraYSize)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -646,7 +646,7 @@ paths:
   '/camera/{device_number}/canabortexposure':
     get:
       summary: Indicates whether the camera can abort exposures.
-      description: "Further information here: [CanAbortExposure](https://ascom-standards.org/newdocs/camera.html#Camera.CanAbortExposure)"
+      description: "A full description of this member's behaviour is provided here: [CanAbortExposure](https://ascom-standards.org/newdocs/camera.html#Camera.CanAbortExposure)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -663,7 +663,7 @@ paths:
   '/camera/{device_number}/canasymmetricbin':
     get:
       summary: Indicates whether the camera supports asymmetric binning.
-      description: "Further information here: [CanAsymmetricBin](https://ascom-standards.org/newdocs/camera.html#Camera.CanAsymmetricBin)"
+      description: "A full description of this member's behaviour is provided here: [CanAsymmetricBin](https://ascom-standards.org/newdocs/camera.html#Camera.CanAsymmetricBin)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -680,7 +680,7 @@ paths:
   '/camera/{device_number}/canfastreadout':
     get:
       summary: Indicates whether the camera has a fast readout mode.
-      description: "Further information here: [CanFastReadout](https://ascom-standards.org/newdocs/camera.html#Camera.CanFastReadout)"
+      description: "A full description of this member's behaviour is provided here: [CanFastReadout](https://ascom-standards.org/newdocs/camera.html#Camera.CanFastReadout)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -697,7 +697,7 @@ paths:
   '/camera/{device_number}/cangetcoolerpower':
     get:
       summary: Indicates whether the camera's cooler power setting can be read.
-      description: "Further information here: [CanGetCoolerPower](https://ascom-standards.org/newdocs/camera.html#Camera.CanGetCoolerPower)"
+      description: "A full description of this member's behaviour is provided here: [CanGetCoolerPower](https://ascom-standards.org/newdocs/camera.html#Camera.CanGetCoolerPower)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -714,7 +714,7 @@ paths:
   '/camera/{device_number}/canpulseguide':
     get:
       summary: Indicates whether this camera supports pulse guiding.
-      description: "Further information here: [CanPulseGuide](https://ascom-standards.org/newdocs/camera.html#Camera.CanPulseGuide)"
+      description: "A full description of this member's behaviour is provided here: [CanPulseGuide](https://ascom-standards.org/newdocs/camera.html#Camera.CanPulseGuide)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -731,7 +731,7 @@ paths:
   '/camera/{device_number}/cansetccdtemperature':
     get:
       summary: Indicates whether this camera supports setting the CCD temperature.
-      description: "Further information here: [CanSetCCDTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.CanSetCCDTemperature)"
+      description: "A full description of this member's behaviour is provided here: [CanSetCCDTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.CanSetCCDTemperature)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -748,7 +748,7 @@ paths:
   '/camera/{device_number}/canstopexposure':
     get:
       summary: Indicates whether this camera can stop an exposure that is in progress.
-      description: "Further information here: [CanStopExposure](https://ascom-standards.org/newdocs/camera.html#Camera.CanStopExposure)"
+      description: "A full description of this member's behaviour is provided here: [CanStopExposure](https://ascom-standards.org/newdocs/camera.html#Camera.CanStopExposure)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -765,7 +765,7 @@ paths:
   '/camera/{device_number}/ccdtemperature':
     get:
       summary: Returns the current CCD temperature in degrees Celsius
-      description: "Further information here: [CCDTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.CCDTemperature)"
+      description: "A full description of this member's behaviour is provided here: [CCDTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.CCDTemperature)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -782,7 +782,7 @@ paths:
   '/camera/{device_number}/cooleron':
     get:
       summary: Returns the current cooler on/off state.
-      description: "Further information here: [CoolerOn](https://ascom-standards.org/newdocs/camera.html#Camera.CoolerOn)"
+      description: "A full description of this member's behaviour is provided here: [CoolerOn](https://ascom-standards.org/newdocs/camera.html#Camera.CoolerOn)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -798,7 +798,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Turns the camera cooler on and off
-      description: "Further information here: [CoolerOn](https://ascom-standards.org/newdocs/camera.html#Camera.CoolerOn)"
+      description: "A full description of this member's behaviour is provided here: [CoolerOn](https://ascom-standards.org/newdocs/camera.html#Camera.CoolerOn)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -826,7 +826,7 @@ paths:
   '/camera/{device_number}/coolerpower':
     get:
       summary: Returns the present cooler power level
-      description: "Further information here: [CoolerPower](https://ascom-standards.org/newdocs/camera.html#Camera.CoolerPower)"
+      description: "A full description of this member's behaviour is provided here: [CoolerPower](https://ascom-standards.org/newdocs/camera.html#Camera.CoolerPower)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -843,7 +843,7 @@ paths:
   '/camera/{device_number}/electronsperadu':
     get:
       summary: Returns the gain of the camera in photoelectrons per A/D unit.
-      description: "Further information here: [ElectronsPerADU](https://ascom-standards.org/newdocs/camera.html#Camera.ElectronsPerADU)"
+      description: "A full description of this member's behaviour is provided here: [ElectronsPerADU](https://ascom-standards.org/newdocs/camera.html#Camera.ElectronsPerADU)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -860,7 +860,7 @@ paths:
   '/camera/{device_number}/exposuremax':
     get:
       summary: Returns the maximum exposure time supported by StartExposure.
-      description: "Further information here: [ExposureMax](https://ascom-standards.org/newdocs/camera.html#Camera.ExposureMax)"
+      description: "A full description of this member's behaviour is provided here: [ExposureMax](https://ascom-standards.org/newdocs/camera.html#Camera.ExposureMax)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -877,7 +877,7 @@ paths:
   '/camera/{device_number}/exposuremin':
     get:
       summary: Returns the Minimium exposure time supported by StartExposure.
-      description: "Further information here: [ExposureMin](https://ascom-standards.org/newdocs/camera.html#Camera.ExposureMin)"
+      description: "A full description of this member's behaviour is provided here: [ExposureMin](https://ascom-standards.org/newdocs/camera.html#Camera.ExposureMin)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -894,7 +894,7 @@ paths:
   '/camera/{device_number}/exposureresolution':
     get:
       summary: Returns the smallest increment in exposure time supported by StartExposure.
-      description: "Further information here: [ExposureResolution](https://ascom-standards.org/newdocs/camera.html#Camera.ExposureResolution)"
+      description: "A full description of this member's behaviour is provided here: [ExposureResolution](https://ascom-standards.org/newdocs/camera.html#Camera.ExposureResolution)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -911,7 +911,7 @@ paths:
   '/camera/{device_number}/fastreadout':
     get:
       summary: Returns whenther Fast Readout Mode is enabled.
-      description: "Further information here: [FastReadout](https://ascom-standards.org/newdocs/camera.html#Camera.FastReadout)"
+      description: "A full description of this member's behaviour is provided here: [FastReadout](https://ascom-standards.org/newdocs/camera.html#Camera.FastReadout)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -927,7 +927,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets whether Fast Readout Mode is enabled.
-      description: "Further information here: [FastReadout](https://ascom-standards.org/newdocs/camera.html#Camera.FastReadout)"
+      description: "A full description of this member's behaviour is provided here: [FastReadout](https://ascom-standards.org/newdocs/camera.html#Camera.FastReadout)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -955,7 +955,7 @@ paths:
   '/camera/{device_number}/fullwellcapacity':
     get:
       summary: Reports the full well capacity of the camera in electrons, at the current camera settings.
-      description: "Further information here: [FullWellCapacity](https://ascom-standards.org/newdocs/camera.html#Camera.FullWellCapacity)"
+      description: "A full description of this member's behaviour is provided here: [FullWellCapacity](https://ascom-standards.org/newdocs/camera.html#Camera.FullWellCapacity)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -972,7 +972,7 @@ paths:
   '/camera/{device_number}/gain':
     get:
       summary: Returns the camera's gain (GAIN VALUE MODE) OR the index of the selected camera gain description in the Gains array (GAINS INDEX MODE).
-      description: "Further information here: [Gain](https://ascom-standards.org/newdocs/camera.html#Camera.Gain)"
+      description: "A full description of this member's behaviour is provided here: [Gain](https://ascom-standards.org/newdocs/camera.html#Camera.Gain)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -988,7 +988,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the camera's gain (GAIN VALUE MODE) OR the index of the selected camera gain description in the Gains array (GAINS INDEX MODE).
-      description: "Further information here: [Gain](https://ascom-standards.org/newdocs/camera.html#Camera.Gain)"
+      description: "A full description of this member's behaviour is provided here: [Gain](https://ascom-standards.org/newdocs/camera.html#Camera.Gain)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1017,7 +1017,7 @@ paths:
   '/camera/{device_number}/gainmax':
     get:
       summary: Maximum Gain value of that this camera supports
-      description: "Further information here: [GainMax](https://ascom-standards.org/newdocs/camera.html#Camera.GainMax)"
+      description: "A full description of this member's behaviour is provided here: [GainMax](https://ascom-standards.org/newdocs/camera.html#Camera.GainMax)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1034,7 +1034,7 @@ paths:
   '/camera/{device_number}/gainmin':
     get:
       summary: Minimum Gain value of that this camera supports 
-      description: "Further information here: [GainMin](https://ascom-standards.org/newdocs/camera.html#Camera.GainMin)"
+      description: "A full description of this member's behaviour is provided here: [GainMin](https://ascom-standards.org/newdocs/camera.html#Camera.GainMin)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1051,7 +1051,7 @@ paths:
   '/camera/{device_number}/gains':
     get:
       summary: List of Gain names supported by the camera 
-      description: "Further information here: [Gains](https://ascom-standards.org/newdocs/camera.html#Camera.Gains)"
+      description: "A full description of this member's behaviour is provided here: [Gains](https://ascom-standards.org/newdocs/camera.html#Camera.Gains)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1068,7 +1068,7 @@ paths:
   '/camera/{device_number}/hasshutter':
     get:
       summary: Indicates whether the camera has a mechanical shutter
-      description: "Further information here: [HasShutter](https://ascom-standards.org/newdocs/camera.html#Camera.HasShutter)"
+      description: "A full description of this member's behaviour is provided here: [HasShutter](https://ascom-standards.org/newdocs/camera.html#Camera.HasShutter)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1085,7 +1085,7 @@ paths:
   '/camera/{device_number}/heatsinktemperature':
     get:
       summary: Returns the current heat sink temperature in degrees Celsius.
-      description: "Further information here: [HeatSinkTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.HeatSinkTemperature)"
+      description: "A full description of this member's behaviour is provided here: [HeatSinkTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.HeatSinkTemperature)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1234,7 +1234,7 @@ paths:
   '/camera/{device_number}/imageready':
     get:
       summary: Indicates that an image is ready to be downloaded
-      description: "Further information here: [ImageReady](https://ascom-standards.org/newdocs/camera.html#Camera.ImageReady)"
+      description: "A full description of this member's behaviour is provided here: [ImageReady](https://ascom-standards.org/newdocs/camera.html#Camera.ImageReady)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1251,7 +1251,7 @@ paths:
   '/camera/{device_number}/ispulseguiding':
     get:
       summary: Indicates that the camera is pulse guideing.
-      description: "Further information here: [IsPulseGuiding](https://ascom-standards.org/newdocs/camera.html#Camera.IsPulseGuiding)"
+      description: "A full description of this member's behaviour is provided here: [IsPulseGuiding](https://ascom-standards.org/newdocs/camera.html#Camera.IsPulseGuiding)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1268,7 +1268,7 @@ paths:
   '/camera/{device_number}/lastexposureduration':
     get:
       summary: Duration of the last exposure (seconds)
-      description: "Further information here: [LastExposureDuration](https://ascom-standards.org/newdocs/camera.html#Camera.LastExposureDuration)"
+      description: "A full description of this member's behaviour is provided here: [LastExposureDuration](https://ascom-standards.org/newdocs/camera.html#Camera.LastExposureDuration)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1285,7 +1285,7 @@ paths:
   '/camera/{device_number}/lastexposurestarttime':
     get:
       summary: Start time of the last exposure in FITS standard format CCYY-MM-DDThh:mm:ss[.sss...]. The time must be UTC.
-      description: "Further information here: [LastExposureStartTime](https://ascom-standards.org/newdocs/camera.html#Camera.LastExposureStartTime)"
+      description: "A full description of this member's behaviour is provided here: [LastExposureStartTime](https://ascom-standards.org/newdocs/camera.html#Camera.LastExposureStartTime)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1302,7 +1302,7 @@ paths:
   '/camera/{device_number}/maxadu':
     get:
       summary: Camera's maximum ADU value
-      description: "Further information here: [MaxADU](https://ascom-standards.org/newdocs/camera.html#Camera.MaxADU)"
+      description: "A full description of this member's behaviour is provided here: [MaxADU](https://ascom-standards.org/newdocs/camera.html#Camera.MaxADU)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1319,7 +1319,7 @@ paths:
   '/camera/{device_number}/maxbinx':
     get:
       summary: Maximum binning for the camera X axis
-      description: "Further information here: [MaxBinX](https://ascom-standards.org/newdocs/camera.html#Camera.MaxBinX)"
+      description: "A full description of this member's behaviour is provided here: [MaxBinX](https://ascom-standards.org/newdocs/camera.html#Camera.MaxBinX)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1336,7 +1336,7 @@ paths:
   '/camera/{device_number}/maxbiny':
     get:
       summary: Maximum binning for the camera Y axis
-      description: "Further information here: [MaxBinY](https://ascom-standards.org/newdocs/camera.html#Camera.MaxBinY)"
+      description: "A full description of this member's behaviour is provided here: [MaxBinY](https://ascom-standards.org/newdocs/camera.html#Camera.MaxBinY)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1353,7 +1353,7 @@ paths:
   '/camera/{device_number}/numx':
     get:
       summary: Returns the current subframe width in binned pixels.
-      description: "Further information here: [NumX](https://ascom-standards.org/newdocs/camera.html#Camera.NumX)"
+      description: "A full description of this member's behaviour is provided here: [NumX](https://ascom-standards.org/newdocs/camera.html#Camera.NumX)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1369,7 +1369,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the current subframe width in binned pixels.
-      description: "Further information here: [NumX](https://ascom-standards.org/newdocs/camera.html#Camera.NumX)"
+      description: "A full description of this member's behaviour is provided here: [NumX](https://ascom-standards.org/newdocs/camera.html#Camera.NumX)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1400,7 +1400,7 @@ paths:
   '/camera/{device_number}/numy':
     get:
       summary: Returns the current subframe height in binned pixels.
-      description: "Further information here: [NumY](https://ascom-standards.org/newdocs/camera.html#Camera.NumY)"
+      description: "A full description of this member's behaviour is provided here: [NumY](https://ascom-standards.org/newdocs/camera.html#Camera.NumY)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1416,7 +1416,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the current subframe height in binned pixels.
-      description: "Further information here: [NumY](https://ascom-standards.org/newdocs/camera.html#Camera.NumY)"
+      description: "A full description of this member's behaviour is provided here: [NumY](https://ascom-standards.org/newdocs/camera.html#Camera.NumY)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1447,7 +1447,7 @@ paths:
   '/camera/{device_number}/offset':
     get:
       summary: Returns the camera's offset (OFFSET VALUE MODE) OR the index of the selected camera offset description in the offsets array (OFFSETS INDEX MODE).
-      description: "Further information here: [Offset](https://ascom-standards.org/newdocs/camera.html#Camera.Offset)"
+      description: "A full description of this member's behaviour is provided here: [Offset](https://ascom-standards.org/newdocs/camera.html#Camera.Offset)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1463,7 +1463,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the camera's offset (OFFSET VALUE MODE) OR the index of the selected camera offset description in the offsets array (OFFSETS INDEX MODE).
-      description: "Further information here: [Offset](https://ascom-standards.org/newdocs/camera.html#Camera.Offset)"
+      description: "A full description of this member's behaviour is provided here: [Offset](https://ascom-standards.org/newdocs/camera.html#Camera.Offset)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1492,7 +1492,7 @@ paths:
   '/camera/{device_number}/offsetmax':
     get:
       summary: Maximum offset value of that this camera supports
-      description: "Further information here: [OffsetMax](https://ascom-standards.org/newdocs/camera.html#Camera.OffsetMax)"
+      description: "A full description of this member's behaviour is provided here: [OffsetMax](https://ascom-standards.org/newdocs/camera.html#Camera.OffsetMax)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1509,7 +1509,7 @@ paths:
   '/camera/{device_number}/offsetmin':
     get:
       summary: Minimum offset value of that this camera supports 
-      description: "Further information here: [OffsetMin](https://ascom-standards.org/newdocs/camera.html#Camera.OffsetMin)"
+      description: "A full description of this member's behaviour is provided here: [OffsetMin](https://ascom-standards.org/newdocs/camera.html#Camera.OffsetMin)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1526,7 +1526,7 @@ paths:
   '/camera/{device_number}/offsets':
     get:
       summary: List of offset names supported by the camera 
-      description: "Further information here: [Offsets](https://ascom-standards.org/newdocs/camera.html#Camera.Offsets)"
+      description: "A full description of this member's behaviour is provided here: [Offsets](https://ascom-standards.org/newdocs/camera.html#Camera.Offsets)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1543,7 +1543,7 @@ paths:
   '/camera/{device_number}/percentcompleted':
     get:
       summary: Indicates percentage completeness of the current operation
-      description: "Further information here: [PercentCompleted](https://ascom-standards.org/newdocs/camera.html#Camera.PercentCompleted)"
+      description: "A full description of this member's behaviour is provided here: [PercentCompleted](https://ascom-standards.org/newdocs/camera.html#Camera.PercentCompleted)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1560,7 +1560,7 @@ paths:
   '/camera/{device_number}/pixelsizex':
     get:
       summary: Width of CCD chip pixels (microns)
-      description: "Further information here: [PixelSizeX](https://ascom-standards.org/newdocs/camera.html#Camera.PixelSizeX)"
+      description: "A full description of this member's behaviour is provided here: [PixelSizeX](https://ascom-standards.org/newdocs/camera.html#Camera.PixelSizeX)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1577,7 +1577,7 @@ paths:
   '/camera/{device_number}/pixelsizey':
     get:
       summary: Height of CCD chip pixels (microns)
-      description: "Further information here: [PixelSizeY](https://ascom-standards.org/newdocs/camera.html#Camera.PixelSizeY)"
+      description: "A full description of this member's behaviour is provided here: [PixelSizeY](https://ascom-standards.org/newdocs/camera.html#Camera.PixelSizeY)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1594,7 +1594,7 @@ paths:
   '/camera/{device_number}/readoutmode':
     get:
       summary: Indicates the canera's readout mode as an index into the array ReadoutModes
-      description: "Further information here: [ReadoutMode](https://ascom-standards.org/newdocs/camera.html#Camera.ReadoutMode)"
+      description: "A full description of this member's behaviour is provided here: [ReadoutMode](https://ascom-standards.org/newdocs/camera.html#Camera.ReadoutMode)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1610,7 +1610,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Set the camera's readout mode
-      description: "Further information here: [ReadoutMode](https://ascom-standards.org/newdocs/camera.html#Camera.ReadoutMode)"
+      description: "A full description of this member's behaviour is provided here: [ReadoutMode](https://ascom-standards.org/newdocs/camera.html#Camera.ReadoutMode)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1641,7 +1641,7 @@ paths:
   '/camera/{device_number}/readoutmodes':
     get:
       summary: Returns a string list of available readout modes
-      description: "Further information here: [ReadoutModes](https://ascom-standards.org/newdocs/camera.html#Camera.ReadoutModes)"
+      description: "A full description of this member's behaviour is provided here: [ReadoutModes](https://ascom-standards.org/newdocs/camera.html#Camera.ReadoutModes)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1658,7 +1658,7 @@ paths:
   '/camera/{device_number}/sensorname':
     get:
       summary: Returns the camera's sensor name
-      description: "Further information here: [SensorName](https://ascom-standards.org/newdocs/camera.html#Camera.SensorName)"
+      description: "A full description of this member's behaviour is provided here: [SensorName](https://ascom-standards.org/newdocs/camera.html#Camera.SensorName)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1675,7 +1675,7 @@ paths:
   '/camera/{device_number}/sensortype':
     get:
       summary: Returns a value indicating whether the sensor is monochrome, or what Bayer matrix it encodes.
-      description: "Further information here: [SensorType](https://ascom-standards.org/newdocs/camera.html#Camera.SensorType)"
+      description: "A full description of this member's behaviour is provided here: [SensorType](https://ascom-standards.org/newdocs/camera.html#Camera.SensorType)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1692,7 +1692,7 @@ paths:
   '/camera/{device_number}/setccdtemperature':
     get:
       summary: Returns the current camera cooler setpoint in degrees Celsius.
-      description: "Further information here: [SetCCDTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.SetCCDTemperature)"
+      description: "A full description of this member's behaviour is provided here: [SetCCDTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.SetCCDTemperature)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1708,7 +1708,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Set the camera's cooler setpoint (degrees Celsius).
-      description: "Further information here: [SetCCDTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.SetCCDTemperature)"
+      description: "A full description of this member's behaviour is provided here: [SetCCDTemperature](https://ascom-standards.org/newdocs/camera.html#Camera.SetCCDTemperature)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1736,7 +1736,7 @@ paths:
   '/camera/{device_number}/startx':
     get:
       summary: Returns the current subframe X axis start position in binned pixels
-      description: "Further information here: [StartX](https://ascom-standards.org/newdocs/camera.html#Camera.StartX)"
+      description: "A full description of this member's behaviour is provided here: [StartX](https://ascom-standards.org/newdocs/camera.html#Camera.StartX)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1752,7 +1752,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the current subframe X axis start position in binned pixels
-      description: "Further information here: [StartX](https://ascom-standards.org/newdocs/camera.html#Camera.StartX)"
+      description: "A full description of this member's behaviour is provided here: [StartX](https://ascom-standards.org/newdocs/camera.html#Camera.StartX)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1781,7 +1781,7 @@ paths:
   '/camera/{device_number}/starty':
     get:
       summary: Returns the current subframe Y axis start position in binned pixels
-      description: "Further information here: [StartY](https://ascom-standards.org/newdocs/camera.html#Camera.StartY)"
+      description: "A full description of this member's behaviour is provided here: [StartY](https://ascom-standards.org/newdocs/camera.html#Camera.StartY)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1797,7 +1797,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the current subframe Y axis start position in bined pixels
-      description: "Further information here: [StartY](https://ascom-standards.org/newdocs/camera.html#Camera.StartY)"
+      description: "A full description of this member's behaviour is provided here: [StartY](https://ascom-standards.org/newdocs/camera.html#Camera.StartY)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1830,7 +1830,7 @@ paths:
         `ICameraV3 and later` The Camera's sub exposure duration in seconds.
         
         
-        "Further information here: [SubExposureDuration](https://ascom-standards.org/newdocs/camera.html#Camera.SubExposureDuration)"
+        "A full description of this member's behaviour is provided here: [SubExposureDuration](https://ascom-standards.org/newdocs/camera.html#Camera.SubExposureDuration)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -1850,7 +1850,7 @@ paths:
         `ICameraV3 and later` Sets image sub exposure duration in seconds.
         
         
-        "Further information here: [SubExposureDuration](https://ascom-standards.org/newdocs/camera.html#Camera.SubExposureDuration)"
+        "A full description of this member's behaviour is provided here: [SubExposureDuration](https://ascom-standards.org/newdocs/camera.html#Camera.SubExposureDuration)"
       tags:
         - Camera Specific Methods
       parameters:
@@ -1878,7 +1878,7 @@ paths:
   '/camera/{device_number}/abortexposure':
     put:
       summary: Aborts the current exposure and returns the camera to Idle state.
-      description: "Further information here: [AbortExposure](https://ascom-standards.org/newdocs/camera.html#Camera.AbortExposure)"
+      description: "A full description of this member's behaviour is provided here: [AbortExposure](https://ascom-standards.org/newdocs/camera.html#Camera.AbortExposure)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -1895,7 +1895,7 @@ paths:
   '/camera/{device_number}/pulseguide':
     put:
       summary: Pulse guide in the specified direction for the specified time.
-      description: "Further information here: [PulseGuide](https://ascom-standards.org/newdocs/camera.html#Camera.PulseGuide)"
+      description: "A full description of this member's behaviour is provided here: [PulseGuide](https://ascom-standards.org/newdocs/camera.html#Camera.PulseGuide)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -1926,7 +1926,7 @@ paths:
   '/camera/{device_number}/startexposure':
     put:
       summary: Starts an exposure
-      description: "Further information here: [StartExposure](https://ascom-standards.org/newdocs/camera.html#Camera.StartExposure)"
+      description: "A full description of this member's behaviour is provided here: [StartExposure](https://ascom-standards.org/newdocs/camera.html#Camera.StartExposure)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -1957,7 +1957,7 @@ paths:
   '/camera/{device_number}/stopexposure':
     put:
       summary: Stops the current exposure
-      description: "Further information here: [StopExposure](https://ascom-standards.org/newdocs/camera.html#Camera.StopExposure)"
+      description: "A full description of this member's behaviour is provided here: [StopExposure](https://ascom-standards.org/newdocs/camera.html#Camera.StopExposure)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -1977,7 +1977,7 @@ paths:
   '/covercalibrator/{device_number}/brightness':
     get:
       summary: Returns the current calibrator brightness
-      description: "Further information here: [Brightness](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.Brightness)"
+      description: "A full description of this member's behaviour is provided here: [Brightness](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.Brightness)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2012,7 +2012,7 @@ paths:
   '/covercalibrator/{device_number}/calibratorstate':
     get:
       summary: Returns the state of the calibration device
-      description: "Further information here: [CalibratorState](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CalibratorState)"
+      description: "A full description of this member's behaviour is provided here: [CalibratorState](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CalibratorState)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2047,7 +2047,7 @@ paths:
   '/covercalibrator/{device_number}/coverstate':
     get:
       summary: Returns the state of the device cover" 
-      description: "Further information here: [CoverState](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CoverState)"
+      description: "A full description of this member's behaviour is provided here: [CoverState](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CoverState)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2064,7 +2064,7 @@ paths:
   '/covercalibrator/{device_number}/maxbrightness':
     get:
       summary: Returns the calibrator's maximum Brightness value.
-      description: "Further information here: [MaxBrightness](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.MaxBrightness)"
+      description: "A full description of this member's behaviour is provided here: [MaxBrightness](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.MaxBrightness)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2081,7 +2081,7 @@ paths:
   '/covercalibrator/{device_number}/calibratoroff':
     put:
       summary: Turns the calibrator off
-      description: "Further information here: [CalibratorOff](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CalibratorOff)"
+      description: "A full description of this member's behaviour is provided here: [CalibratorOff](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CalibratorOff)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2098,7 +2098,7 @@ paths:
   '/covercalibrator/{device_number}/calibratoron':
     put:
       summary: Turns the calibrator on at the specified brightness
-      description: "Further information here: [CalibratorOn](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CalibratorOn)"
+      description: "A full description of this member's behaviour is provided here: [CalibratorOn](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CalibratorOn)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2126,7 +2126,7 @@ paths:
   '/covercalibrator/{device_number}/closecover':
     put:
       summary: Initiates cover closing 
-      description: "Further information here: [CloseCover](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CloseCover)"
+      description: "A full description of this member's behaviour is provided here: [CloseCover](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.CloseCover)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2143,7 +2143,7 @@ paths:
   '/covercalibrator/{device_number}/haltcover':
     put:
       summary: Stops any cover movement that may be in progress
-      description: "Further information here: [HaltCover](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.HaltCover)"
+      description: "A full description of this member's behaviour is provided here: [HaltCover](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.HaltCover)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2160,7 +2160,7 @@ paths:
   '/covercalibrator/{device_number}/opencover':
     put:
       summary: Initiates cover opening.
-      description: "Further information here: [OpenCover](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.OpenCover)"
+      description: "A full description of this member's behaviour is provided here: [OpenCover](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.OpenCover)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2175,10 +2175,11 @@ paths:
       requestBody:
         $ref: '#/components/requestBodies/putStandardClientParameters'
 
+
   '/dome/{device_number}/altitude':
     get:
       summary: The dome altitude (degrees - horizon zero, increasing positive to 90 zenith).
-      description: "Further information here: [Altitude](https://ascom-standards.org/newdocs/dome.html#Dome.Altitude)"
+      description: "A full description of this member's behaviour is provided here: [Altitude](https://ascom-standards.org/newdocs/dome.html#Dome.Altitude)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2195,14 +2196,7 @@ paths:
   '/dome/{device_number}/athome':
     get:
       summary: Indicates whether the dome is in the home position.
-      description: >-
-        Indicates whether the dome is in the home position. This is normally
-        used following a FindHome()  operation. The value is reset with any
-        azimuth slew operation that moves the dome away from the home position.
-        AtHome may also become true durng normal slew operations, if the dome
-        passes through the home position and the dome controller hardware is
-        capable of detecting that; or at the end of a slew operation if the dome
-        comes to rest at the home position.
+      description: "A full description of this member's behaviour is provided here: [AtHome](https://ascom-standards.org/newdocs/dome.html#Dome.AtHome)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2219,9 +2213,7 @@ paths:
   '/dome/{device_number}/atpark':
     get:
       summary: Indicates whether the dome is at the park position
-      description: >-
-        True if the dome is in the programmed park position. Set only following
-        a Park() operation and reset with any slew operation.
+      description: "A full description of this member's behaviour is provided here: [AtPark](https://ascom-standards.org/newdocs/dome.html#Dome.AtPark)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2237,10 +2229,8 @@ paths:
           $ref: '#/components/responses/500'
   '/dome/{device_number}/azimuth':
     get:
-      summary: The dome azimuth
-      description: >-
-        Returns the dome azimuth (degrees, North zero and increasing clockwise,
-        i.e., 90 East, 180 South, 270 West)
+      summary: "The dome azimuth (degrees - North zero, increasing clockwise: 90 East, 180 South, 270 West)"
+      description: "A full description of this member's behaviour is provided here: [Azimuth](https://ascom-standards.org/newdocs/dome.html#Dome.Azimuth)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2257,7 +2247,7 @@ paths:
   '/dome/{device_number}/canfindhome':
     get:
       summary: Indicates whether the dome can find the home position.
-      description: True if the dome can move to the home position.
+      description: "A full description of this member's behaviour is provided here: [CanFindHome](https://ascom-standards.org/newdocs/dome.html#Dome.CanFindHome)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2274,7 +2264,7 @@ paths:
   '/dome/{device_number}/canpark':
     get:
       summary: Indicates whether the dome can be parked.
-      description: True if the dome is capable of programmed parking (Park() method)
+      description: "A full description of this member's behaviour is provided here: [CanPark](https://ascom-standards.org/newdocs/dome.html#Dome.CanPark)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2291,7 +2281,7 @@ paths:
   '/dome/{device_number}/cansetaltitude':
     get:
       summary: Indicates whether the dome altitude can be set
-      description: True if driver is capable of setting the dome altitude.
+      description: "A full description of this member's behaviour is provided here: [CanSetAltitude](https://ascom-standards.org/newdocs/dome.html#Dome.CanSetAltitude)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2308,7 +2298,7 @@ paths:
   '/dome/{device_number}/cansetazimuth':
     get:
       summary: Indicates whether the dome azimuth can be set
-      description: True if driver is capable of setting the dome azimuth.
+      description: "A full description of this member's behaviour is provided here: [CanSetAzimuth](https://ascom-standards.org/newdocs/dome.html#Dome.CanSetAzimuth)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2325,7 +2315,7 @@ paths:
   '/dome/{device_number}/cansetpark':
     get:
       summary: Indicates whether the dome park position can be set
-      description: True if driver is capable of setting the dome park position.
+      description: "A full description of this member's behaviour is provided here: [CanSetPark](https://ascom-standards.org/newdocs/dome.html#Dome.CanSetPark)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2342,7 +2332,7 @@ paths:
   '/dome/{device_number}/cansetshutter':
     get:
       summary: Indicates whether the dome shutter can be opened
-      description: True if driver is capable of automatically operating shutter
+      description: "A full description of this member's behaviour is provided here: [CanSetShutter](https://ascom-standards.org/newdocs/dome.html#Dome.CanSetShutter)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2359,7 +2349,7 @@ paths:
   '/dome/{device_number}/canslave':
     get:
       summary: Indicates whether the dome supports slaving to a telescope
-      description: True if driver is capable of slaving to a telescope.
+      description: "A full description of this member's behaviour is provided here: [CanSlave](https://ascom-standards.org/newdocs/dome.html#Dome.CanSlave)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2376,9 +2366,7 @@ paths:
   '/dome/{device_number}/cansyncazimuth':
     get:
       summary: Indicates whether the dome azimuth position can be synched
-      description: >-
-        True if driver is capable of synchronizing the dome azimuth position
-        using the SyncToAzimuth(Double) method.
+      description: "A full description of this member's behaviour is provided here: [CanSyncAzimuth](https://ascom-standards.org/newdocs/dome.html#Dome.CanSyncAzimuth)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2395,8 +2383,7 @@ paths:
   '/dome/{device_number}/shutterstatus':
     get:
       summary: Status of the dome shutter or roll-off roof
-      description: >-
-        Returns the status of the dome shutter or roll-off roof.
+      description: "A full description of this member's behaviour is provided here: [ShutterStatus](https://ascom-standards.org/newdocs/dome.html#Dome.ShutterStatus)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2413,7 +2400,7 @@ paths:
   '/dome/{device_number}/slaved':
     get:
       summary: Indicates whether the dome is slaved to the telescope
-      description: 'True if the dome is slaved to the telescope in its hardware, else False.'
+      description: "A full description of this member's behaviour is provided here: [Slaved](https://ascom-standards.org/newdocs/dome.html#Dome.Slaved)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2429,7 +2416,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets whether the dome is slaved to the telescope
-      description: Sets the current subframe height.
+      description: "A full description of this member's behaviour is provided here: [Slaved](https://ascom-standards.org/newdocs/dome.html#Dome.Slaved)"
       tags:
         - Dome Specific Methods
       parameters:
@@ -2457,9 +2444,7 @@ paths:
   '/dome/{device_number}/slewing':
     get:
       summary: Indicates whether the any part of the dome is moving
-      description: >-
-        True if any part of the dome is currently moving, False if all dome
-        components are steady.
+      description: "A full description of this member's behaviour is provided here: [Slewing](https://ascom-standards.org/newdocs/dome.html#Dome.Slewing)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2476,9 +2461,7 @@ paths:
   '/dome/{device_number}/abortslew':
     put:
       summary: Immediately cancel current dome operation.
-      description: >-
-        Calling this method will immediately disable hardware slewing (Slaved
-        will become False).
+      description: "A full description of this member's behaviour is provided here: [AbortSlew](https://ascom-standards.org/newdocs/dome.html#Dome.AbortSlew)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2495,7 +2478,7 @@ paths:
   '/dome/{device_number}/closeshutter':
     put:
       summary: Close the shutter or otherwise shield telescope from the sky.
-      description: Close the shutter or otherwise shield telescope from the sky.
+      description: "A full description of this member's behaviour is provided here: [CloseShutter](https://ascom-standards.org/newdocs/dome.html#Dome.CloseShutter)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2512,9 +2495,7 @@ paths:
   '/dome/{device_number}/findhome':
     put:
       summary: Start operation to search for the dome home position.
-      description: >-
-        After Home position is established initializes Azimuth to the default
-        value and sets the AtHome flag.
+      description: "A full description of this member's behaviour is provided here: [FindHome](https://ascom-standards.org/newdocs/dome.html#Dome.FindHome)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2531,7 +2512,7 @@ paths:
   '/dome/{device_number}/openshutter':
     put:
       summary: Open shutter or otherwise expose telescope to the sky.
-      description: Open shutter or otherwise expose telescope to the sky.
+      description: "A full description of this member's behaviour is provided here: [OpenShutter](https://ascom-standards.org/newdocs/dome.html#Dome.OpenShutter)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2548,7 +2529,7 @@ paths:
   '/dome/{device_number}/park':
     put:
       summary: Rotate dome in azimuth to park position.
-      description: 'After assuming programmed park position, sets AtPark flag.'
+      description: "A full description of this member's behaviour is provided here: [Park](https://ascom-standards.org/newdocs/dome.html#Dome.Park)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2567,9 +2548,7 @@ paths:
       summary: >-
         Set the current azimuth, altitude position of dome to be the park
         position
-      description: >-
-        Set the current azimuth, altitude position of dome to be the park
-        position.
+      description: "A full description of this member's behaviour is provided here: [SetPark](https://ascom-standards.org/newdocs/dome.html#Dome.SetPark)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2586,7 +2565,7 @@ paths:
   '/dome/{device_number}/slewtoaltitude':
     put:
       summary: Slew the dome to the given altitude position.
-      description: Slew the dome to the given altitude position.
+      description: "A full description of this member's behaviour is provided here: [SlewToAltitude](https://ascom-standards.org/newdocs/dome.html#Dome.SlewToAltitude)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2615,7 +2594,7 @@ paths:
   '/dome/{device_number}/slewtoazimuth':
     put:
       summary: Slew the dome to the given azimuth position.
-      description: Slew the dome to the given azimuth position.
+      description: "A full description of this member's behaviour is provided here: [SlewToAzimuth](https://ascom-standards.org/newdocs/dome.html#Dome.SlewToAzimuth)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2632,7 +2611,7 @@ paths:
   '/dome/{device_number}/synctoazimuth':
     put:
       summary: Synchronize the current position of the dome to the given azimuth.
-      description: Synchronize the current position of the dome to the given azimuth.
+      description: "A full description of this member's behaviour is provided here: [SyncToAzimuth](https://ascom-standards.org/newdocs/dome.html#Dome.SyncToAzimuth)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2649,8 +2628,8 @@ paths:
 
   '/filterwheel/{device_number}/focusoffsets':
     get:
-      summary: Filter focus offsets
-      description: An integer array of filter focus offsets.
+      summary: Returns an integer array of filter focus offsets
+      description: "A full description of this member's behaviour is provided here: [FocusOffsets](https://ascom-standards.org/newdocs/filterwheel.html#FilterWheel.FocusOffsets)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2667,7 +2646,7 @@ paths:
   '/filterwheel/{device_number}/names':
     get:
       summary: Filter wheel filter names
-      description: The names of the filters
+      description: "A full description of this member's behaviour is provided here: [Names](https://ascom-standards.org/newdocs/filterwheel.html#FilterWheel.Names)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2684,7 +2663,7 @@ paths:
   '/filterwheel/{device_number}/position':
     get:
       summary: Returns the current filter wheel position
-      description: Returns the current filter wheel position
+      description: "A full description of this member's behaviour is provided here: [Position](https://ascom-standards.org/newdocs/filterwheel.html#FilterWheel.Position)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2700,7 +2679,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the filter wheel position
-      description: Sets the filter wheel position
+      description: "A full description of this member's behaviour is provided here: [Position](https://ascom-standards.org/newdocs/filterwheel.html#FilterWheel.Position)"
       tags:
         - FilterWheel Specific Methods
       parameters:
@@ -2729,9 +2708,7 @@ paths:
   '/focuser/{device_number}/absolute':
     get:
       summary: Indicates whether the focuser is capable of absolute position.
-      description: >-
-        True if the focuser is capable of absolute position; that is, being
-        commanded to a specific step location.
+      description: "A full description of this member's behaviour is provided here: [Absolute](https://ascom-standards.org/newdocs/focuser.html#Focuser.Absolute)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2748,9 +2725,7 @@ paths:
   '/focuser/{device_number}/ismoving':
     get:
       summary: Indicates whether the focuser is currently moving.
-      description: >-
-        True if the focuser is currently moving to a new position. False if the
-        focuser is stationary.
+      description: "A full description of this member's behaviour is provided here: [IsMoving](https://ascom-standards.org/newdocs/focuser.html#Focuser.IsMoving)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2767,9 +2742,7 @@ paths:
   '/focuser/{device_number}/maxincrement':
     get:
       summary: Returns the focuser's maximum increment size.
-      description: >-
-        Maximum increment size allowed by the focuser; i.e. the maximum number
-        of steps allowed in one move operation.
+      description: "A full description of this member's behaviour is provided here: [MaxIncrement](https://ascom-standards.org/newdocs/focuser.html#Focuser.MaxIncrement)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2786,7 +2759,7 @@ paths:
   '/focuser/{device_number}/maxstep':
     get:
       summary: Returns the focuser's maximum step size.
-      description: Maximum step position permitted.
+      description: "A full description of this member's behaviour is provided here: [MaxStep](https://ascom-standards.org/newdocs/focuser.html#Focuser.MaxStep)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2803,7 +2776,7 @@ paths:
   '/focuser/{device_number}/position':
     get:
       summary: Returns the focuser's current position.
-      description: 'Current focuser position, in steps.'
+      description: "A full description of this member's behaviour is provided here: [Position](https://ascom-standards.org/newdocs/focuser.html#Focuser.Position)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2820,7 +2793,7 @@ paths:
   '/focuser/{device_number}/stepsize':
     get:
       summary: Returns the focuser's step size.
-      description: Step size (microns) for the focuser.
+      description: "A full description of this member's behaviour is provided here: [StepSize](https://ascom-standards.org/newdocs/focuser.html#Focuser.StepSize)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2837,9 +2810,7 @@ paths:
   '/focuser/{device_number}/tempcomp':
     get:
       summary: Retrieves the state of temperature compensation mode
-      description: >-
-        Gets the state of temperature compensation mode (if available), else
-        always False.
+      description: "A full description of this member's behaviour is provided here: [TempComp](https://ascom-standards.org/newdocs/focuser.html#Focuser.TempComp)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2855,7 +2826,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the device's temperature compensation mode.
-      description: Sets the state of temperature compensation mode.
+      description: "A full description of this member's behaviour is provided here: [TempComp](https://ascom-standards.org/newdocs/focuser.html#Focuser.TempComp)"
       tags:
         - Focuser Specific Methods
       parameters:
@@ -2884,7 +2855,7 @@ paths:
   '/focuser/{device_number}/tempcompavailable':
     get:
       summary: Indicates whether the focuser has temperature compensation.
-      description: True if focuser has temperature compensation available.
+      description: "A full description of this member's behaviour is provided here: [TempCompAvailable](https://ascom-standards.org/newdocs/focuser.html#Focuser.TempCompAvailable)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2901,7 +2872,7 @@ paths:
   '/focuser/{device_number}/temperature':
     get:
       summary: Returns the focuser's current temperature.
-      description: Current ambient temperature as measured by the focuser.
+      description: "A full description of this member's behaviour is provided here: [Temperature](https://ascom-standards.org/newdocs/focuser.html#Focuser.Temperature)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2918,9 +2889,7 @@ paths:
   '/focuser/{device_number}/halt':
     put:
       summary: Immediatley stops focuser motion.
-      description: >-
-        Immediately stop any focuser motion due to a previous Move(Int32) method
-        call.
+      description: "A full description of this member's behaviour is provided here: [Halt](https://ascom-standards.org/newdocs/focuser.html#Focuser.Halt)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2937,9 +2906,7 @@ paths:
   '/focuser/{device_number}/move':
     put:
       summary: Moves the focuser to a new position.
-      description: >-
-        Moves the focuser by the specified amount or to the specified position
-        depending on the value of the Absolute property.
+      description: "A full description of this member's behaviour is provided here: [Move](https://ascom-standards.org/newdocs/focuser.html#Focuser.Move)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -2970,7 +2937,7 @@ paths:
   '/observingconditions/{device_number}/averageperiod':
     get:
       summary: Returns the time period over which observations will be averaged
-      description: Gets the time period over which observations will be averaged
+      description: "A full description of this member's behaviour is provided here: [AveragePeriod](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.AveragePeriod)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -2986,7 +2953,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the time period over which observations will be averaged
-      description: Sets the time period over which observations will be averaged
+      description: "A full description of this member's behaviour is provided here: [AveragePeriod](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.AveragePeriod)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -3014,7 +2981,7 @@ paths:
   '/observingconditions/{device_number}/cloudcover':
     get:
       summary: Returns the amount of sky obscured by cloud
-      description: Gets the percentage of the sky obscured by cloud
+      description: "A full description of this member's behaviour is provided here: [CloudCover](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.CloudCover)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3031,7 +2998,7 @@ paths:
   '/observingconditions/{device_number}/dewpoint':
     get:
       summary: Returns the atmospheric dew point at the observatory
-      description: Gets the atmospheric dew point at the observatory reported in °C.
+      description: "A full description of this member's behaviour is provided here: [DewPoint](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.DewPoint)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3048,7 +3015,7 @@ paths:
   '/observingconditions/{device_number}/humidity':
     get:
       summary: Returns the atmospheric humidity at the observatory
-      description: Gets the atmospheric  humidity (%) at the observatory
+      description: "A full description of this member's behaviour is provided here: [Humidity](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.Humidity)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3065,9 +3032,7 @@ paths:
   '/observingconditions/{device_number}/pressure':
     get:
       summary: Returns the atmospheric pressure at the observatory.
-      description: >-
-        Gets the atmospheric pressure in hectoPascals at the observatory's
-        altitude - NOT reduced to sea level.
+      description: "A full description of this member's behaviour is provided here: [Pressure](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.Pressure)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3084,7 +3049,7 @@ paths:
   '/observingconditions/{device_number}/rainrate':
     get:
       summary: Returns the rain rate at the observatory.
-      description: Gets the rain rate (mm/hour) at the observatory.
+      description: "A full description of this member's behaviour is provided here: [RainRate](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.RainRate)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3101,7 +3066,7 @@ paths:
   '/observingconditions/{device_number}/skybrightness':
     get:
       summary: Returns the sky brightness at the observatory
-      description: Gets the sky brightness at the observatory (Lux)
+      description: "A full description of this member's behaviour is provided here: [SkyBrightness](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.SkyBrightness)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3118,9 +3083,7 @@ paths:
   '/observingconditions/{device_number}/skyquality':
     get:
       summary: Returns the sky quality at the observatory
-      description: >-
-        Gets the sky quality at the observatory (magnitudes per square arc
-        second)
+      description: "A full description of this member's behaviour is provided here: [SkyQuality](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.SkyQuality)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3137,7 +3100,7 @@ paths:
   '/observingconditions/{device_number}/skytemperature':
     get:
       summary: Returns the sky temperature at the observatory
-      description: Gets the sky temperature(°C) at the observatory.
+      description: "A full description of this member's behaviour is provided here: [SkyTemperature](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.SkyTemperature)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3154,9 +3117,7 @@ paths:
   '/observingconditions/{device_number}/starfwhm':
     get:
       summary: Returns the seeing at the observatory
-      description: >-
-        Gets the seeing at the observatory measured as star full width half
-        maximum (FWHM) in arc secs.
+      description: "A full description of this member's behaviour is provided here: [StarFWHM](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.StarFWHM)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3172,8 +3133,8 @@ paths:
           $ref: '#/components/responses/500'
   '/observingconditions/{device_number}/temperature':
     get:
-      summary: Returns the temperature at the observatory
-      description: Gets the temperature(°C) at the observatory.
+      summary: Returns the temperature at the observatory (°C)
+      description: "A full description of this member's behaviour is provided here: [Temperature](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.Temperature)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3190,12 +3151,7 @@ paths:
   '/observingconditions/{device_number}/winddirection':
     get:
       summary: Returns the wind direction at the observatory
-      description: >-
-        Gets the wind direction. The returned value must be between 0.0 and
-        360.0, interpreted according to the metereological standard, where a
-        special value of 0.0 is returned when the wind speed is 0.0. Wind
-        direction is measured clockwise from north, through east, where
-        East=90.0, South=180.0, West=270.0 and North=360.0.
+      description: "A full description of this member's behaviour is provided here: [WindDirection](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.WindDirection)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3214,9 +3170,7 @@ paths:
       summary: >-
         Returns the peak 3 second wind gust at the observatory over the last 2
         minutes
-      description: >-
-        Gets the peak 3 second wind gust(m/s) at the observatory over the last 2
-        minutes.
+      description: "A full description of this member's behaviour is provided here: [WindGust](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.WindGust)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3233,7 +3187,7 @@ paths:
   '/observingconditions/{device_number}/windspeed':
     get:
       summary: Returns the wind speed at the observatory.
-      description: Gets the wind speed(m/s) at the observatory.
+      description: "A full description of this member's behaviour is provided here: [WindSpeed](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.WindSpeed)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3250,9 +3204,7 @@ paths:
   '/observingconditions/{device_number}/refresh':
     put:
       summary: Refreshes sensor values from hardware.
-      description: >-
-        Forces the driver to immediately query its attached hardware to refresh
-        sensor values.
+      description: "A full description of this member's behaviour is provided here: [Refresh](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.Refresh)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -3269,9 +3221,7 @@ paths:
   '/observingconditions/{device_number}/sensordescription':
     get:
       summary: Return a sensor description
-      description: >-
-        Gets a description of the sensor with the name specified in the
-        SensorName parameter
+      description: "A full description of this member's behaviour is provided here: [SensorDescription](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.SensorDescription)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - name: SensorName
@@ -3295,9 +3245,7 @@ paths:
   '/observingconditions/{device_number}/timesincelastupdate':
     get:
       summary: Return the time since the sensor value was last updated
-      description: >-
-        Gets the time since the sensor specified in the SensorName
-        parameter was last updated
+      description: "A full description of this member's behaviour is provided here: [TimeSinceLastUpdate](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.TimeSinceLastUpdate)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - name: SensorName
@@ -3321,8 +3269,8 @@ paths:
 
   '/rotator/{device_number}/canreverse':
     get:
-      summary: IIndicates whether the Rotator supports the Reverse method.
-      description: True if the Rotator supports the Reverse method.
+      summary: True if the Rotator supports the Reverse method.
+      description: "A full description of this member's behaviour is provided here: [CanReverse](https://ascom-standards.org/newdocs/rotator.html#Rotator.CanReverse)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3338,10 +3286,8 @@ paths:
           $ref: '#/components/responses/500'
   '/rotator/{device_number}/ismoving':
     get:
-      summary: Indicates whether the rotator is currently moving.
-      description: >-
-        True if the rotator is currently moving to a new position. False if the
-        focuser is stationary.
+      summary: Returns True if the rotator is currently moving to a new position.
+      description: "A full description of this member's behaviour is provided here: [IsMoving](https://ascom-standards.org/newdocs/rotator.html#Rotator.IsMoving)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3357,8 +3303,8 @@ paths:
           $ref: '#/components/responses/500'
   '/rotator/{device_number}/mechanicalposition':
     get:
-      summary: Returns the rotator's mechanical current position.
-      description: 'Returns the raw mechanical position of the rotator in degrees.'
+      summary: Returns the rotator's mechanical current position (degrees).
+      description: "A full description of this member's behaviour is provided here: [MechanicalPosition](https://ascom-standards.org/newdocs/rotator.html#Rotator.MechanicalPosition)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3374,8 +3320,8 @@ paths:
           $ref: '#/components/responses/500'
   '/rotator/{device_number}/position':
     get:
-      summary: Returns the rotator's current position.
-      description: 'Current instantaneous Rotator position, in degrees.'
+      summary: Returns the rotator's current position (degrees).
+      description: "A full description of this member's behaviour is provided here: [Position](https://ascom-standards.org/newdocs/rotator.html#Rotator.Position)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3392,7 +3338,7 @@ paths:
   '/rotator/{device_number}/reverse':
     get:
       summary: Returns the rotator’s Reverse state.
-      description: Returns the rotator’s Reverse state.
+      description: "A full description of this member's behaviour is provided here: [Reverse](https://ascom-standards.org/newdocs/rotator.html#Rotator.Reverse)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3408,7 +3354,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the rotator’s Reverse state.
-      description: Sets the rotator’s Reverse state.
+      description: "A full description of this member's behaviour is provided here: [Reverse](https://ascom-standards.org/newdocs/rotator.html#Rotator.Reverse)"
       tags:
         - Rotator Specific Methods
       parameters:
@@ -3436,8 +3382,8 @@ paths:
                     - Reverse
   '/rotator/{device_number}/stepsize':
     get:
-      summary: Returns the minimum StepSize
-      description: 'The minimum StepSize, in degrees.'
+      summary: Returns the minimum StepSize (degrees).
+      description: "A full description of this member's behaviour is provided here: [StepSize](https://ascom-standards.org/newdocs/rotator.html#Rotator.StepSize)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3453,8 +3399,8 @@ paths:
           $ref: '#/components/responses/500'
   '/rotator/{device_number}/targetposition':
     get:
-      summary: Returns the destination position angle.
-      description: The destination position angle for Move() and MoveAbsolute().
+      summary: Returns the destination position angle (degrees).
+      description: "A full description of this member's behaviour is provided here: [TargetPosition](https://ascom-standards.org/newdocs/rotator.html#Rotator.TargetPosition)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3471,9 +3417,7 @@ paths:
   '/rotator/{device_number}/halt':
     put:
       summary: Immediatley stops rotator motion.
-      description: >-
-        Immediately stop any Rotator motion due to a previous Move or
-        MoveAbsolute method call.
+      description: "A full description of this member's behaviour is provided here: [Halt](https://ascom-standards.org/newdocs/rotator.html#Rotator.Halt)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -3489,10 +3433,8 @@ paths:
         $ref: '#/components/requestBodies/putStandardClientParameters'
   '/rotator/{device_number}/move':
     put:
-      summary: Moves the rotator to a new relative position.
-      description: >-
-        Causes the rotator to move Position degrees relative to the current
-        Position value.
+      summary: Moves the rotator to a new position relative to the current position.
+      description: "A full description of this member's behaviour is provided here: [Move](https://ascom-standards.org/newdocs/rotator.html#Rotator.Move)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -3519,8 +3461,8 @@ paths:
                     - Position
   '/rotator/{device_number}/moveabsolute':
     put:
-      summary: Moves the rotator to a new absolute position.
-      description: Causes the rotator to move the absolute position of Position degrees.
+      summary: Moves the rotator to a new absolute position (degrees).
+      description: "A full description of this member's behaviour is provided here: [MoveAbsolute](https://ascom-standards.org/newdocs/rotator.html#Rotator.MoveAbsolute)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -3547,8 +3489,8 @@ paths:
                     - Position
   '/rotator/{device_number}/movemechanical':
     put:
-      summary: Moves the rotator to a new raw mechanical position.
-      description: Causes the rotator to move the mechanical position of Position degrees.
+      summary: Moves the rotator to a new raw mechanical position (degrees).
+      description: "A full description of this member's behaviour is provided here: [MoveMechanical](https://ascom-standards.org/newdocs/rotator.html#Rotator.MoveMechanical)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -3576,7 +3518,7 @@ paths:
   '/rotator/{device_number}/sync':
     put:
       summary: Syncs the rotator to the specified position angle without moving it.
-      description: Causes the rotator to sync to the position of Position degrees.
+      description: "A full description of this member's behaviour is provided here: [Sync](https://ascom-standards.org/newdocs/rotator.html#Rotator.Sync)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -3605,9 +3547,7 @@ paths:
   '/safetymonitor/{device_number}/issafe':
     get:
       summary: Indicates whether the monitored state is safe for use.
-      description: >-
-        Indicates whether the monitored state is safe for use. True if the state
-        is safe, False if it is unsafe.
+      description: "A full description of this member's behaviour is provided here: [IsSafe](https://ascom-standards.org/newdocs/safetymonitor.html#SafetyMonitor.IsSafe)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3625,9 +3565,7 @@ paths:
   '/switch/{device_number}/maxswitch':
     get:
       summary: The number of switch devices managed by this driver
-      description: >-
-        Returns the number of switch devices managed by this driver. Devices are
-        numbered from 0 to MaxSwitch - 1
+      description: "A full description of this member's behaviour is provided here: [MaxSwitch](https://ascom-standards.org/newdocs/switch.html#Switch.MaxSwitch)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -3643,9 +3581,8 @@ paths:
           $ref: '#/components/responses/500'
   '/switch/{device_number}/canasync':
     get:
-      summary: Flag indicating whether this switch can operate asynchronously. 
-      description: >-
-        `ISwitchV3 and later.` This endpoint must be implemented and indicates whether the given switch can operate asynchronously.
+      summary: Returns a Flag indicating whether the specified switch can operate asynchronously. 
+      description: "`ISwitchV3 and later` A full description of this member's behaviour is provided here: [CanAsync](https://ascom-standards.org/newdocs/switch.html#Switch.CanAsync)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/SwitchNumberQuery'
@@ -3663,10 +3600,7 @@ paths:
   '/switch/{device_number}/canwrite':
     get:
       summary: Indicates whether the specified switch device can be written to
-      description: >-
-        Reports if the specified switch device can be written to, default true.
-        This is false if the device cannot be written to, for example a limit
-        switch or a sensor.  Devices are numbered from 0 to MaxSwitch - 1
+      description: "A full description of this member's behaviour is provided here: [CanWrite](https://ascom-standards.org/newdocs/switch.html#Switch.CanWrite)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/SwitchNumberQuery'
@@ -3683,10 +3617,8 @@ paths:
           $ref: '#/components/responses/500'
   '/switch/{device_number}/getswitch':
     get:
-      summary: Return the state of switch device id as a boolean
-      description: >-
-        Return the state of switch device id as a boolean.  Devices are numbered
-        from 0 to MaxSwitch - 1
+      summary: Return the state of the specified switch device as a boolean
+      description: "A full description of this member's behaviour is provided here: [GetSwitch](https://ascom-standards.org/newdocs/switch.html#Switch.GetSwitch)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/SwitchNumberQuery'
@@ -3703,11 +3635,8 @@ paths:
           $ref: '#/components/responses/500'
   '/switch/{device_number}/getswitchdescription':
     get:
-      summary: Gets the description of the specified switch device
-      description: >-
-        Gets the description of the specified switch device. This is to allow a
-        fuller description of the device to be returned, for example for a tool
-        tip. Devices are numbered from 0 to MaxSwitch - 1
+      summary: Returns the description of the specified switch device
+      description: "A full description of this member's behaviour is provided here: [GetSwitchDescription](https://ascom-standards.org/newdocs/switch.html#Switch.GetSwitchDescription)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/SwitchNumberQuery'
@@ -3724,10 +3653,8 @@ paths:
           $ref: '#/components/responses/500'
   '/switch/{device_number}/getswitchname':
     get:
-      summary: Gets the name of the specified switch device
-      description: >-
-        Gets the name of the specified switch device. Devices are numbered from
-        0 to MaxSwitch - 1
+      summary: Returns the name of the specified switch device
+      description: "A full description of this member's behaviour is provided here: [GetSwitchName](https://ascom-standards.org/newdocs/switch.html#Switch.GetSwitchName)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/SwitchNumberQuery'
@@ -3744,11 +3671,8 @@ paths:
           $ref: '#/components/responses/500'
   '/switch/{device_number}/getswitchvalue':
     get:
-      summary: Gets the value of the specified switch device as a double
-      description: >-
-        Gets the value of the specified switch device as a double. Devices are
-        numbered from 0 to MaxSwitch - 1, The value of this switch is expected
-        to be between MinSwitchValue and MaxSwitchValue.
+      summary: Returns the value of the specified switch device as a double
+      description: "A full description of this member's behaviour is provided here: [GetSwitchValue](https://ascom-standards.org/newdocs/switch.html#Switch.GetSwitchValue)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/SwitchNumberQuery'
@@ -3765,10 +3689,8 @@ paths:
           $ref: '#/components/responses/500'
   '/switch/{device_number}/minswitchvalue':
     get:
-      summary: Gets the minimum value of the specified switch device as a double
-      description: >-
-        Gets the minimum value of the specified switch device as a double.
-        Devices are numbered from 0 to MaxSwitch - 1.
+      summary: Returns the minimum value of the specified switch device as a double
+      description: "A full description of this member's behaviour is provided here: [MinSwitchValue](https://ascom-standards.org/newdocs/switch.html#Switch.MinSwitchValue)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/SwitchNumberQuery'
@@ -3786,9 +3708,7 @@ paths:
   '/switch/{device_number}/maxswitchvalue':
     get:
       summary: Gets the maximum value of the specified switch device as a double
-      description: >-
-        Gets the maximum value of the specified switch device as a double.
-        Devices are numbered from 0 to MaxSwitch - 1.
+      description: "A full description of this member's behaviour is provided here: [MaxSwitchValue](https://ascom-standards.org/newdocs/switch.html#Switch.MaxSwitchValue)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/SwitchNumberQuery'
@@ -3805,11 +3725,8 @@ paths:
           $ref: '#/components/responses/500'
   '/switch/{device_number}/setasync':
     put:
-      summary: Set a boolean switch's state asynchronously
-      description: >-
-        `ISwitchV3 and later` This is an asynchronous method that must return as soon as the state change operation has been successfully started, 
-        with StateChangeComplete(Int16) for the given switch Id = False. 
-        After the state change has completed StateChangeComplete(Int16) becomes True.
+      summary: Sets a switch's boolean state asynchronously
+      description: "`ISwitchV3 and later` A full description of this member's behaviour is provided here: [SetAsync](https://ascom-standards.org/newdocs/switch.html#Switch.SetAsync)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -3840,11 +3757,8 @@ paths:
                     - State
   '/switch/{device_number}/setasyncvalue':
     put:
-      summary: Set a switch's value asynchronously
-      description: >-
-        `ISwitchV3 and later` This is an asynchronous method that must return as soon as the state change operation has been successfully started, 
-        with StateChangeComplete(Int16) for the given switch Id = False. 
-        After the state change has completed StateChangeComplete(Int16) becomes True.
+      summary: Set a switch's double value asynchronously
+      description: "`ISwitchV3 and later` A full description of this member's behaviour is provided here: [SetAsyncValue](https://ascom-standards.org/newdocs/switch.html#Switch.SetAsyncValue)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -3875,8 +3789,8 @@ paths:
                     - Value  
   '/switch/{device_number}/setswitch':
     put:
-      summary: 'Sets a switch controller device to the specified state, true or false'
-      description: 'Sets a switch controller device to the specified state, true or false.'
+      summary: Sets a switch device to the specified boolean state
+      description: "A full description of this member's behaviour is provided here: [SetSwitch](https://ascom-standards.org/newdocs/switch.html#Switch.SetSwitch)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -3908,7 +3822,7 @@ paths:
   '/switch/{device_number}/setswitchname':
     put:
       summary: Sets a switch device name to the specified value
-      description: Sets a switch device name to the specified value.
+      description: "A full description of this member's behaviour is provided here: [SetSwitchName](https://ascom-standards.org/newdocs/switch.html#Switch.SetSwitchName)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -3939,8 +3853,8 @@ paths:
                     - Name
   '/switch/{device_number}/setswitchvalue':
     put:
-      summary: Sets a switch device value to the specified value
-      description: Sets a switch device value to the specified value.
+      summary: Sets a switch device to the specified double value
+      description: "A full description of this member's behaviour is provided here: [SetSwitchValue](https://ascom-standards.org/newdocs/switch.html#Switch.SetSwitchValue)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -3972,8 +3886,7 @@ paths:
   '/switch/{device_number}/statechangecomplete':
     get:
       summary: Completion variable for asynchronous switch state change operations.
-      description: >-
-        `ISwitchV3 and later` True if the state of the specified switch is changing, otherwise false.
+      description: "`ISwitchV3 and later` A full description of this member's behaviour is provided here: [StateChangeComplete](https://ascom-standards.org/newdocs/switch.html#Switch.StateChangeComplete)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/SwitchNumberQuery'
@@ -3990,13 +3903,8 @@ paths:
           $ref: '#/components/responses/500'
   '/switch/{device_number}/switchstep':
     get:
-      summary: >-
-        Returns the step size that this device supports (the difference between
-        successive values of the device).
-      description: >-
-        Returns the step size that this device supports (the difference between
-        successive values of the device). Devices are numbered from 0 to
-        MaxSwitch - 1.
+      summary: Returns the step size that this device supports.
+      description: "A full description of this member's behaviour is provided here: [SwitchStep](https://ascom-standards.org/newdocs/switch.html#Switch.SwitchStep)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/SwitchNumberQuery'
@@ -4015,8 +3923,7 @@ paths:
   '/telescope/{device_number}/alignmentmode':
     get:
       summary: Returns the current mount alignment mode
-      description: >-
-        Returns the alignment mode of the mount (Alt/Az, Polar, German Polar).
+      description: "A full description of this member's behaviour is provided here: [AlignmentMode](https://ascom-standards.org/newdocs/telescope.html#Telescope.AlignmentMode)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4032,10 +3939,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/altitude':
     get:
-      summary: Returns the mount's altitude above the horizon.
-      description: >-
-        The altitude above the local horizon of the mount's current position
-        (degrees, positive up)
+      summary: Returns the mount's altitude above the horizon (degrees).
+      description: "A full description of this member's behaviour is provided here: [Altitude](https://ascom-standards.org/newdocs/telescope.html#Telescope.Altitude)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4051,10 +3956,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/aperturearea':
     get:
-      summary: Returns the telescope's aperture.
-      description: >-
-        The area of the telescope's aperture, taking into account any
-        obstructions (square meters)
+      summary: Returns the telescope's aperture (square meters).
+      description: "A full description of this member's behaviour is provided here: [ApertureArea](https://ascom-standards.org/newdocs/telescope.html#Telescope.ApertureArea)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4070,8 +3973,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/aperturediameter':
     get:
-      summary: Returns the telescope's effective aperture.
-      description: The telescope's effective aperture diameter (meters)
+      summary: Returns the telescope's effective aperture (meters).
+      description: "A full description of this member's behaviour is provided here: [ApertureDiameter](https://ascom-standards.org/newdocs/telescope.html#Telescope.ApertureDiameter)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4088,10 +3991,7 @@ paths:
   '/telescope/{device_number}/athome':
     get:
       summary: Indicates whether the mount is at the home position.
-      description: >-
-        True if the mount is stopped in the Home position. Set only following a
-        FindHome()  operation, and reset with any slew operation. This property
-        must be False if the telescope does not support homing.
+      description: "A full description of this member's behaviour is provided here: [AtHome](https://ascom-standards.org/newdocs/telescope.html#Telescope.AtHome)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4108,9 +4008,7 @@ paths:
   '/telescope/{device_number}/atpark':
     get:
       summary: Indicates whether the telescope is at the park position.
-      description: >-
-        True if the telescope has been put into the parked state by the seee
-        Park()  method. Set False by calling the Unpark() method.
+      description: "A full description of this member's behaviour is provided here: [AtPark](https://ascom-standards.org/newdocs/telescope.html#Telescope.AtPark)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4126,10 +4024,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/azimuth':
     get:
-      summary: Returns the mount's azimuth.
-      description: >-
-        The azimuth at the local horizon of the mount's current position
-        (degrees, North-referenced, positive East/clockwise).
+      summary: Returns the mount's azimuth (degrees, North-referenced, positive East/clockwise).
+      description: "A full description of this member's behaviour is provided here: [Azimuth](https://ascom-standards.org/newdocs/telescope.html#Telescope.Azimuth)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4146,9 +4042,7 @@ paths:
   '/telescope/{device_number}/canfindhome':
     get:
       summary: Indicates whether the mount can find the home position.
-      description: >-
-        True if this telescope is capable of programmed finding its home
-        position (FindHome()  method).
+      description: "A full description of this member's behaviour is provided here: [CanFindHome](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanFindHome)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4165,7 +4059,7 @@ paths:
   '/telescope/{device_number}/canpark':
     get:
       summary: Indicates whether the telescope can be parked.
-      description: True if this telescope is capable of programmed parking (Park() method)
+      description: "A full description of this member's behaviour is provided here: [CanPark](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanPark)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4182,9 +4076,7 @@ paths:
   '/telescope/{device_number}/canpulseguide':
     get:
       summary: Indicates whether the telescope can be pulse guided.
-      description: >-
-        True if this telescope is capable of software-pulsed guiding (via the
-        PulseGuide(GuideDirections, Int32) method)
+      description: "A full description of this member's behaviour is provided here: [CanPulseGuide](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanPulseGuide)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4201,9 +4093,7 @@ paths:
   '/telescope/{device_number}/cansetdeclinationrate':
     get:
       summary: Indicates whether the DeclinationRate property can be changed.
-      description: >-
-        True if the DeclinationRate property can be changed to provide offset
-        tracking in the declination axis.
+      description: "A full description of this member's behaviour is provided here: [CanSetDeclinationRate](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanSetDeclinationRate)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4219,10 +4109,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/cansetguiderates':
     get:
-      summary: Indicates whether the DeclinationRate property can be changed.
-      description: >-
-        True if the guide rate properties used for PulseGuide(GuideDirections,
-        Int32) can ba adjusted.
+      summary: Indicates whether the GuideRate property can be changed.
+      description: "A full description of this member's behaviour is provided here: [CanSetGuideRates](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanSetGuideRates)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4239,9 +4127,7 @@ paths:
   '/telescope/{device_number}/cansetpark':
     get:
       summary: Indicates whether the telescope park position can be set.
-      description: >-
-        True if this telescope is capable of programmed setting of its park
-        position (SetPark() method)
+      description: "A full description of this member's behaviour is provided here: [CanSetPark](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanSetPark)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4258,9 +4144,7 @@ paths:
   '/telescope/{device_number}/cansetpierside':
     get:
       summary: Indicates whether the telescope SideOfPier can be set.
-      description: >-
-        True if the SideOfPier property can be set, meaning that the mount can
-        be forced to flip.
+      description: "A full description of this member's behaviour is provided here: [CanSetPierSide](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanSetPierSide)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4276,10 +4160,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/cansetrightascensionrate':
     get:
-      summary: Indicates whether the RightAscensionRate property can be changed.
-      description: >-
-        True if the RightAscensionRate property can be changed to provide offset
-        tracking in the right ascension axis. .
+      summary: Indicates whether the RightAscensionRate can be changed.
+      description: "A full description of this member's behaviour is provided here: [CanSetRightAscensionRate](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanSetRightAscensionRate)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4295,10 +4177,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/cansettracking':
     get:
-      summary: Indicates whether the Tracking property can be changed.
-      description: >-
-        True if the Tracking property can be changed, turning telescope sidereal
-        tracking on and off.
+      summary: Indicates whether the Tracking state can be changed.
+      description: "A full description of this member's behaviour is provided here: [CanSetTracking](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanSetTracking)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4315,9 +4195,7 @@ paths:
   '/telescope/{device_number}/canslew':
     get:
       summary: Indicates whether the telescope can slew synchronously.
-      description: >-
-        True if this telescope is capable of programmed slewing (synchronous or
-        asynchronous) to equatorial coordinates
+      description: "A full description of this member's behaviour is provided here: [CanSlew](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanSlew)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4333,12 +4211,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/canslewaltaz':
     get:
-      summary: >-
-        Indicates whether the telescope can slew synchronously to AltAz
-        coordinates.
-      description: >-
-        True if this telescope is capable of programmed slewing (synchronous or
-        asynchronous) to local horizontal coordinates
+      summary: Indicates whether the telescope can slew synchronously to AltAz coordinates.
+      description: "A full description of this member's behaviour is provided here: [CanSlewAltAz](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanSlewAltAz)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4354,12 +4228,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/canslewaltazasync':
     get:
-      summary: >-
-        Indicates whether the telescope can slew asynchronously to AltAz
-        coordinates.
-      description: >-
-        True if this telescope is capable of programmed asynchronous slewing to
-        local horizontal coordinates
+      summary: Indicates whether the telescope can slew asynchronously to AltAz coordinates.
+      description: "A full description of this member's behaviour is provided here: [CanSlewAltAzAsync](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanSlewAltAzAsync)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4375,10 +4245,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/canslewasync':
     get:
-      summary: Indicates whether the telescope can slew asynchronously.
-      description: >-
-        True if this telescope is capable of programmed asynchronous slewing to
-        equatorial coordinates.
+      summary: Indicates whether the telescope can slew asynchronously to equatorial coordinates.
+      description: "A full description of this member's behaviour is provided here: [CanSlewAsync](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanSlewAsync)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4395,9 +4263,7 @@ paths:
   '/telescope/{device_number}/cansync':
     get:
       summary: Indicates whether the telescope can sync to equatorial coordinates.
-      description: >-
-        True if this telescope is capable of programmed synching to equatorial
-        coordinates.
+      description: "A full description of this member's behaviour is provided here: [CanSync](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanSync)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4413,12 +4279,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/cansyncaltaz':
     get:
-      summary: >-
-        Indicates whether the telescope can sync to local horizontal
-        coordinates.
-      description: >-
-        True if this telescope is capable of programmed synching to local
-        horizontal coordinates
+      summary: Indicates whether the telescope can sync to Alt/Az coordinates.
+      description: "A full description of this member's behaviour is provided here: [CanSyncAltAz](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanSyncAltAz)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4435,7 +4297,7 @@ paths:
   '/telescope/{device_number}/canunpark':
     get:
       summary: Indicates whether the telescope can be unparked.
-      description: True if this telescope is capable of programmed unparking (UnPark() method)
+      description: "A full description of this member's behaviour is provided here: [CanUnpark](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanUnpark)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4451,12 +4313,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/declination':
     get:
-      summary: Returns the mount's declination.
-      description: >-
-        The declination (degrees) of the mount's current equatorial
-        coordinates, in the coordinate system given by the EquatorialSystem
-        property. Reading the property will raise an error if the value is
-        unavailable.
+      summary: Returns the mount's declination (degrees).
+      description: "A full description of this member's behaviour is provided here: [Declination](https://ascom-standards.org/newdocs/telescope.html#Telescope.Declination)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4472,8 +4330,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/declinationrate':
     get:
-      summary: Returns the telescope's declination tracking rate.
-      description: 'The declination tracking rate (arcseconds per SI second, default = 0.0). Please note that rightascensionrate units are arcseconds per sidereal second.'
+      summary: Returns the telescope's declination tracking rate (arcseconds per SI second).
+      description: "A full description of this member's behaviour is provided here: [DeclinationRate](https://ascom-standards.org/newdocs/telescope.html#Telescope.DeclinationRate)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4488,8 +4346,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Sets the telescope's declination tracking rate.
-      description: 'Sets the declination tracking rate (arcseconds per SI second). Please note that rightascensionrate units are arcseconds per sidereal second.'
+      summary: Sets the telescope's declination tracking rate (arcseconds per SI second).
+      description: "A full description of this member's behaviour is provided here: [DeclinationRate](https://ascom-standards.org/newdocs/telescope.html#Telescope.DeclinationRate)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -4516,10 +4374,8 @@ paths:
                     - DeclinationRate
   '/telescope/{device_number}/doesrefraction':
     get:
-      summary: Indicates whether atmospheric refraction is applied to coordinates.
-      description: >-
-        True if the telescope or driver applies atmospheric refraction to
-        coordinates.
+      summary: Indicates whether atmospheric refraction correction is applied to coordinates.
+      description: "A full description of this member's behaviour is provided here: [DoesRefraction](https://ascom-standards.org/newdocs/telescope.html#Telescope.DoesRefraction)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4534,10 +4390,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Determines whether atmospheric refraction is applied to coordinates.
-      description: >-
-        Causes the rotator to move Position degrees relative to the current
-        Position value.
+      summary: Determines whether atmospheric refraction correction is applied to coordinates.
+      description: "A full description of this member's behaviour is provided here: [DoesRefraction](https://ascom-standards.org/newdocs/telescope.html#Telescope.DoesRefraction)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -4557,18 +4411,14 @@ paths:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
                     DoesRefraction:
-                      description: >-
-                        Set True to make the telescope or driver apply atmospheric refraction to
-                        coordinates.
+                      description: Set True to make the telescope or driver apply atmospheric refraction correction to coordinates.
                       type: boolean
                   required:
                     - DoesRefraction
   '/telescope/{device_number}/equatorialsystem':
     get:
       summary: Returns the current equatorial coordinate system used by this telescope.
-      description: >-
-        Returns the current equatorial coordinate system used by this telescope
-        (e.g. Topocentric or J2000).
+      description: "A full description of this member's behaviour is provided here: [EquatorialSystem](https://ascom-standards.org/newdocs/telescope.html#Telescope.EquatorialSystem)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4584,8 +4434,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/focallength':
     get:
-      summary: Returns the telescope's focal length in meters.
-      description: The telescope's focal length in meters
+      summary: Returns the telescope's focal length (meters).
+      description: "A full description of this member's behaviour is provided here: [FocalLength](https://ascom-standards.org/newdocs/telescope.html#Telescope.FocalLength)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4601,10 +4451,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/guideratedeclination':
     get:
-      summary: Returns the  current Declination rate offset for telescope guiding
-      description: >-
-        The current Declination movement rate offset for telescope guiding
-        (degrees/sec)
+      summary: Returns the  current Declination rate offset for telescope guiding (degrees/sec).
+      description: "A full description of this member's behaviour is provided here: [GuideRateDeclination](https://ascom-standards.org/newdocs/telescope.html#Telescope.GuideRateDeclination)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4619,10 +4467,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Sets the  current Declination rate offset for telescope guiding.
-      description: >-
-        Sets the current Declination movement rate offset for telescope guiding
-        (degrees/sec).
+      summary: Sets the  current Declination rate offset for telescope guiding (degrees/sec).
+      description: "A full description of this member's behaviour is provided here: [GuideRateDeclination](https://ascom-standards.org/newdocs/telescope.html#Telescope.GuideRateDeclination)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -4649,10 +4495,8 @@ paths:
                     - GuideRateDeclination
   '/telescope/{device_number}/guideraterightascension':
     get:
-      summary: Returns the  current RightAscension rate offset for telescope guiding
-      description: >-
-        The current RightAscension movement rate offset for telescope guiding
-        (degrees/sec)
+      summary: Returns the  current RightAscension rate offset for telescope guiding (degrees/sec).
+      description: "A full description of this member's behaviour is provided here: [GuideRateRightAscension](https://ascom-standards.org/newdocs/telescope.html#Telescope.GuideRateRightAscension)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4667,10 +4511,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Sets the  current RightAscension rate offset for telescope guiding.
-      description: >-
-        Sets the current RightAscension movement rate offset for telescope
-        guiding (degrees/sec).
+      summary: Sets the  current RightAscension rate offset for telescope guiding (degrees/sec).
+      description: "A full description of this member's behaviour is provided here: [GuideRateRightAscension](https://ascom-standards.org/newdocs/telescope.html#Telescope.GuideRateRightAscension)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -4697,12 +4539,8 @@ paths:
                     - GuideRateRightAscension
   '/telescope/{device_number}/ispulseguiding':
     get:
-      summary: >-
-        Indicates whether the telescope is currently executing a PulseGuide
-        command
-      description: >-
-        True if a PulseGuide(GuideDirections, Int32) command is in progress,
-        False otherwise
+      summary: Indicates whether the telescope is currently executing a PulseGuide command
+      description: "A full description of this member's behaviour is provided here: [IsPulseGuiding](https://ascom-standards.org/newdocs/telescope.html#Telescope.IsPulseGuiding)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4718,11 +4556,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/rightascension':
     get:
-      summary: Returns the mount's right ascension coordinate.
-      description: >-
-        The right ascension (hours) of the mount's current equatorial
-        coordinates, in the coordinate system given by the EquatorialSystem
-        property
+      summary: Returns the mount's right ascension coordinate (hours).
+      description: "A full description of this member's behaviour is provided here: [RightAscension](https://ascom-standards.org/newdocs/telescope.html#Telescope.RightAscension)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4738,8 +4573,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/rightascensionrate':
     get:
-      summary: Returns the telescope's right ascension tracking rate.
-      description: 'The right ascension tracking rate (arcseconds per sidereal second, default = 0.0). Please note that the declinationrate units are arcseconds per SI second.'
+      summary: Returns the telescope's right ascension tracking rate (arcseconds per sidereal second).
+      description: "A full description of this member's behaviour is provided here: [RightAscensionRate](https://ascom-standards.org/newdocs/telescope.html#Telescope.RightAscensionRate)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4754,8 +4589,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Sets the telescope's right ascension tracking rate.
-      description: 'Sets the right ascension tracking rate (arcseconds per sidereal second). Please note that the declinationrate units are arcseconds per SI second.'
+      summary: Sets the telescope's right ascension tracking rate (arcseconds per sidereal second).
+      description: "A full description of this member's behaviour is provided here: [RightAscensionRate](https://ascom-standards.org/newdocs/telescope.html#Telescope.RightAscensionRate)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -4783,8 +4618,7 @@ paths:
   '/telescope/{device_number}/sideofpier':
     get:
       summary: Returns the mount's pointing state.
-      description: >-
-        Indicates the pointing state of the mount.
+      description: "A full description of this member's behaviour is provided here: [SideOfPier](https://ascom-standards.org/newdocs/telescope.html#Telescope.SideOfPier)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4800,7 +4634,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the mount's pointing state.
-      description: Sets the pointing state of the mount.
+      description: "A full description of this member's behaviour is provided here: [SideOfPier](https://ascom-standards.org/newdocs/telescope.html#Telescope.SideOfPier)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -4826,9 +4660,7 @@ paths:
   '/telescope/{device_number}/siderealtime':
     get:
       summary: Returns the local apparent sidereal time.
-      description: >-
-        The local apparent sidereal time from the telescope's internal clock
-        (hours, sidereal).
+      description: "A full description of this member's behaviour is provided here: [SiderealTime](https://ascom-standards.org/newdocs/telescope.html#Telescope.SiderealTime)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4844,10 +4676,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/siteelevation':
     get:
-      summary: Returns the observing site's elevation above mean sea level.
-      description: >-
-        The elevation above mean sea level (meters) of the site at which the
-        telescope is located.
+      summary: Returns the observing site's elevation above mean sea level (metres).
+      description: "A full description of this member's behaviour is provided here: [SiteElevation](https://ascom-standards.org/newdocs/telescope.html#Telescope.SiteElevation)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4862,10 +4692,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Sets the observing site's elevation above mean sea level.
-      description: >-
-        Sets the elevation above mean sea level (metres) of the site at which
-        the telescope is located.
+      summary: Sets the observing site's elevation above mean sea level (metres).
+      description: "A full description of this member's behaviour is provided here: [SiteElevation](https://ascom-standards.org/newdocs/telescope.html#Telescope.SiteElevation)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -4892,10 +4720,8 @@ paths:
                     - SiteElevation
   '/telescope/{device_number}/sitelatitude':
     get:
-      summary: Returns the observing site's latitude.
-      description: >-
-        The geodetic(map) latitude (degrees, positive North, WGS84) of the site
-        at which the telescope is located.
+      summary: Returns the observing site's latitude (degrees).
+      description: "A full description of this member's behaviour is provided here: [SiteLatitude](https://ascom-standards.org/newdocs/telescope.html#Telescope.SiteLatitude)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4911,7 +4737,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the observing site's latitude.
-      description: Sets the observing site's latitude (degrees).
+      description: "A full description of this member's behaviour is provided here: [SiteLatitude](https://ascom-standards.org/newdocs/telescope.html#Telescope.SiteLatitude)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -4938,10 +4764,8 @@ paths:
                     - SiteLatitude
   '/telescope/{device_number}/sitelongitude':
     get:
-      summary: Returns the observing site's longitude.
-      description: >-
-        The longitude (degrees, positive East, WGS84) of the site at which the
-        telescope is located.
+      summary: Returns the observing site's longitude (degrees, positive East, WGS84).
+      description: "A full description of this member's behaviour is provided here: [SiteLongitude](https://ascom-standards.org/newdocs/telescope.html#Telescope.SiteLongitude)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -4957,7 +4781,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the observing site's longitude.
-      description: 'Sets the observing site''s longitude (degrees, positive East, WGS84).'
+      description: "A full description of this member's behaviour is provided here: [SiteLongitude](https://ascom-standards.org/newdocs/telescope.html#Telescope.SiteLongitude)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -4985,10 +4809,7 @@ paths:
   '/telescope/{device_number}/slewing':
     get:
       summary: Indicates whether the telescope is currently slewing.
-      description: >-
-        True if telescope is currently moving in response to one of the Slew
-        methods or the MoveAxis(TelescopeAxes, Double) method, False at all
-        other times.
+      description: "A full description of this member's behaviour is provided here: [Slewing](https://ascom-standards.org/newdocs/telescope.html#Telescope.Slewing)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -5005,7 +4826,7 @@ paths:
   '/telescope/{device_number}/slewsettletime':
     get:
       summary: Returns the post-slew settling time.
-      description: Returns the post-slew settling time (sec.).
+      description: "A full description of this member's behaviour is provided here: [SlewSettleTime](https://ascom-standards.org/newdocs/telescope.html#Telescope.SlewSettleTime)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -5020,8 +4841,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Sets the post-slew settling time.
-      description: Sets the  post-slew settling time (integer sec.).
+      summary: Sets the post-slew settling time (seconds).
+      description: "A full description of this member's behaviour is provided here: [SlewSettleTime](https://ascom-standards.org/newdocs/telescope.html#Telescope.SlewSettleTime)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5048,10 +4869,8 @@ paths:
                     - SlewSettleTime
   '/telescope/{device_number}/targetdeclination':
     get:
-      summary: Returns the current target declination.
-      description: >-
-        The declination (degrees, positive North) for the target of an
-        equatorial slew or sync operation
+      summary: Returns the current target declination (degrees, positive North).
+      description: "A full description of this member's behaviour is provided here: [TargetDeclination](https://ascom-standards.org/newdocs/telescope.html#Telescope.TargetDeclination)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -5066,10 +4885,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Sets the target declination of a slew or sync.
-      description: >-
-        Sets the declination (degrees, positive North) for the target of an
-        equatorial slew or sync operation
+      summary: Sets the target declination of a slew or sync (degrees, positive North)
+      description: "A full description of this member's behaviour is provided here: [TargetDeclination](https://ascom-standards.org/newdocs/telescope.html#Telescope.TargetDeclination)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5096,10 +4913,8 @@ paths:
                     - TargetDeclination
   '/telescope/{device_number}/targetrightascension':
     get:
-      summary: Returns the current target right ascension.
-      description: >-
-        The right ascension (hours) for the target of an equatorial slew or sync
-        operation
+      summary: Returns the current target right ascension (hours).
+      description: "A full description of this member's behaviour is provided here: [TargetRightAscension](https://ascom-standards.org/newdocs/telescope.html#Telescope.TargetRightAscension)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -5114,10 +4929,8 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     put:
-      summary: Sets the target right ascension of a slew or sync.
-      description: >-
-        Sets the right ascension (hours) for the target of an equatorial slew or
-        sync operation
+      summary: Sets the target right ascension of a slew or sync (hours).
+      description: "A full description of this member's behaviour is provided here: [TargetRightAscension](https://ascom-standards.org/newdocs/telescope.html#Telescope.TargetRightAscension)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5145,7 +4958,7 @@ paths:
   '/telescope/{device_number}/tracking':
     get:
       summary: Indicates whether the telescope is tracking.
-      description: Returns the state of the telescope's sidereal tracking drive.
+      description: "A full description of this member's behaviour is provided here: [Tracking](https://ascom-standards.org/newdocs/telescope.html#Telescope.Tracking)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -5161,7 +4974,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Enables or disables telescope tracking.
-      description: Sets the state of the telescope's sidereal tracking drive.
+      description: "A full description of this member's behaviour is provided here: [Tracking](https://ascom-standards.org/newdocs/telescope.html#Telescope.Tracking)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5188,7 +5001,7 @@ paths:
   '/telescope/{device_number}/trackingrate':
     get:
       summary: Returns the current tracking rate.
-      description: The current tracking rate of the telescope's sidereal drive.
+      description: "A full description of this member's behaviour is provided here: [TrackingRate](https://ascom-standards.org/newdocs/telescope.html#Telescope.TrackingRate)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -5204,8 +5017,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the mount's tracking rate.
-      description: >-
-        Sets the tracking rate of the telescope's sidereal drive.
+      description: "A full description of this member's behaviour is provided here: [TrackingRate](https://ascom-standards.org/newdocs/telescope.html#Telescope.TrackingRate)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5231,9 +5043,7 @@ paths:
   '/telescope/{device_number}/trackingrates':
     get:
       summary: Returns a collection of supported DriveRates values.
-      description: >-
-        Returns an array of supported DriveRates values that describe the
-        permissible values of the TrackingRate property for this telescope type.
+      description: "A full description of this member's behaviour is provided here: [TrackingRates](https://ascom-standards.org/newdocs/telescope.html#Telescope.TrackingRates)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -5249,7 +5059,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/utcdate':
     get:
-      summary: Returns the UTC date/time of the telescope's internal clock.
+      summary: Returns the UTC date/time of the telescope's internal clock as a string.
+      description: "A full description of this member's behaviour is provided here: [UTCDate](https://ascom-standards.org/newdocs/telescope.html#Telescope.UTCDate)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -5265,6 +5076,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the UTC date/time of the telescope's internal clock.
+      description: "A full description of this member's behaviour is provided here: [UTCDate](https://ascom-standards.org/newdocs/telescope.html#Telescope.UTCDate)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5290,7 +5102,7 @@ paths:
   '/telescope/{device_number}/abortslew':
     put:
       summary: Immediatley stops a slew in progress.
-      description: Immediately Stops a slew in progress.
+      description: "A full description of this member's behaviour is provided here: [AbortSlew](https://ascom-standards.org/newdocs/telescope.html#Telescope.AbortSlew)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5306,12 +5118,8 @@ paths:
         $ref: '#/components/requestBodies/putStandardClientParameters'
   '/telescope/{device_number}/axisrates':
     get:
-      summary: >-
-        Returns the rates at which the telescope may be moved about the
-        specified axis.
-      description: >-
-        The rates at which the telescope may be moved about the specified axis
-        by the MoveAxis(TelescopeAxes, Double) method.
+      summary: Returns the rates at which the telescope may be moved about the specified axis (degrees / second).
+      description: "A full description of this member's behaviour is provided here: [AxisRates](https://ascom-standards.org/newdocs/telescope.html#Telescope.AxisRates)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
@@ -5329,7 +5137,7 @@ paths:
   '/telescope/{device_number}/canmoveaxis':
     get:
       summary: Indicates whether the telescope can move the requested axis.
-      description: True if this telescope can move the requested axis.
+      description: "A full description of this member's behaviour is provided here: [CanMoveAxis](https://ascom-standards.org/newdocs/telescope.html#Telescope.CanMoveAxis)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/AxisQuery'
@@ -5346,12 +5154,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/destinationsideofpier':
     get:
-      summary: >-
-        Predicts the pointing state after a German equatorial mount slews to
-        given coordinates.
-      description: >-
-        Predicts the pointing state that a German equatorial mount will be in if
-        it slews to the given coordinates.
+      summary: Predicts the pointing state after a German equatorial mount slews to given coordinates.
+      description: "A full description of this member's behaviour is provided here: [DestinationSideOfPier](https://ascom-standards.org/newdocs/telescope.html#Telescope.DestinationSideOfPier)"
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/RightAscensionQuery'
@@ -5369,8 +5173,8 @@ paths:
           $ref: '#/components/responses/500'
   '/telescope/{device_number}/findhome':
     put:
-      summary: Moves the mount to the "home" position.
-      description: Locates the telescope's "home" position (synchronous)
+      summary: Moves the mount to its "home" position.
+      description: "A full description of this member's behaviour is provided here: [FindHome](https://ascom-standards.org/newdocs/telescope.html#Telescope.FindHome)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5386,8 +5190,8 @@ paths:
         $ref: '#/components/requestBodies/putStandardClientParameters'
   '/telescope/{device_number}/moveaxis':
     put:
-      summary: Moves a telescope axis at the given rate.
-      description: Move the telescope in one axis at the given rate.
+      summary: Moves a telescope axis at the given rate (degrees / second).
+      description: "A full description of this member's behaviour is provided here: [MoveAxis](https://ascom-standards.org/newdocs/telescope.html#Telescope.MoveAxis)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5417,10 +5221,8 @@ paths:
                     - Rate
   '/telescope/{device_number}/park':
     put:
-      summary: Park the mount
-      description: >-
-        Move the telescope to its park position, stop all motion (or restrict to
-        a small safe range), and set AtPark to True. )
+      summary: Parks the mount
+      description: "A full description of this member's behaviour is provided here: [Park](https://ascom-standards.org/newdocs/telescope.html#Telescope.Park)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5437,9 +5239,7 @@ paths:
   '/telescope/{device_number}/pulseguide':
     put:
       summary: Moves the scope in the given direction for the given time.
-      description: >-
-        Moves the scope in the given direction for the given interval or time at
-        the rate given by the corresponding guide rate property
+      description: "A full description of this member's behaviour is provided here: [PulseGuide](https://ascom-standards.org/newdocs/telescope.html#Telescope.PulseGuide)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5470,8 +5270,8 @@ paths:
                     - Duration
   '/telescope/{device_number}/setpark':
     put:
-      summary: Sets the telescope's park position
-      description: Sets the telescope's park position to be its current position.
+      summary: Sets the current position as the telescope's park position.
+      description: "A full description of this member's behaviour is provided here: [SetPark](https://ascom-standards.org/newdocs/telescope.html#Telescope.SetPark)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5488,12 +5288,8 @@ paths:
   '/telescope/{device_number}/slewtoaltaz':
     put:
       deprecated: true
-      summary: Synchronously slew to the given local horizontal coordinates.
-      description: >-
-        **This method is deprecated in favour of [`slewtoaltazasync`](#/Telescope%20Specific%20Methods/put_telescope__device_number__slewtoaltazasync).**
-          
-        Move the telescope to the given local horizontal coordinates, return
-        when slew is complete
+      summary: Synchronously slew to the given Alt/Az coordinates.
+      description: "A full description of this member's behaviour is provided here: [SlewToAltAz](https://ascom-standards.org/newdocs/telescope.html#Telescope.SlewToAltAz)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5509,11 +5305,8 @@ paths:
         $ref: '#/components/requestBodies/putTelescope_devicenumber_slewtoaltaz'
   '/telescope/{device_number}/slewtoaltazasync':
     put:
-      summary: Asynchronously slew to the given local horizontal coordinates.
-      description: >-
-        Move the telescope to the given local horizontal coordinates, return
-        immediatley after the slew starts. The client can poll the Slewing
-        method to determine when the mount reaches the intended coordinates.
+      summary: Asynchronously slew to the given Alt/Az coordinates.
+      description: "A full description of this member's behaviour is provided here: [SlewToAltAzAsync](https://ascom-standards.org/newdocs/telescope.html#Telescope.SlewToAltAzAsync)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5531,11 +5324,7 @@ paths:
     put:
       deprecated: true
       summary: Synchronously slew to the given equatorial coordinates.
-      description: >-
-        **This method is deprecated in favour of [`slewtocoordinatesasync`](#/Telescope%20Specific%20Methods/put_telescope__device_number__slewtocoordinatesasync).**
-          
-        Move the telescope to the given equatorial coordinates, return when slew
-        is complete
+      description: "A full description of this member's behaviour is provided here: [SlewToCoordinates](https://ascom-standards.org/newdocs/telescope.html#Telescope.SlewToCoordinates)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5552,10 +5341,7 @@ paths:
   '/telescope/{device_number}/slewtocoordinatesasync':
     put:
       summary: Asynchronously slew to the given equatorial coordinates.
-      description: >-
-        Move the telescope to the given equatorial coordinates, return
-        immediatley after the slew starts. The client can poll the Slewing
-        method to determine when the mount reaches the intended coordinates.
+      description: "A full description of this member's behaviour is provided here: [SlewToCoordinatesAsync](https://ascom-standards.org/newdocs/telescope.html#Telescope.SlewToCoordinatesAsync)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5572,14 +5358,8 @@ paths:
   '/telescope/{device_number}/slewtotarget':
     put:
       deprecated: true
-      summary: >-
-        Synchronously slew to the TargetRightAscension and TargetDeclination
-        coordinates.
-      description: >-
-        **This method is deprecated in favour of [`slewtotargetasync`](#/Telescope%20Specific%20Methods/put_telescope__device_number__slewtotargetasync).**
-          
-        Move the telescope to the TargetRightAscension and TargetDeclination
-        equatorial coordinates, return when slew is complete
+      summary: Synchronously slew to the TargetRightAscension and TargetDeclination coordinates.
+      description: "A full description of this member's behaviour is provided here: [SlewToTarget](https://ascom-standards.org/newdocs/telescope.html#Telescope.SlewToTarget)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5595,14 +5375,8 @@ paths:
         $ref: '#/components/requestBodies/putStandardClientParameters'
   '/telescope/{device_number}/slewtotargetasync':
     put:
-      summary: >-
-        Asynchronously slew to the TargetRightAscension and TargetDeclination
-        coordinates.
-      description: >-
-        Move the telescope to the TargetRightAscension and TargetDeclination
-        equatorial coordinates, return immediatley after the slew starts. The
-        client can poll the Slewing method to determine when the mount reaches
-        the intended coordinates.
+      summary: Asynchronously slew to the TargetRightAscension and TargetDeclination coordinates.
+      description: "A full description of this member's behaviour is provided here: [SlewToTargetAsync](https://ascom-standards.org/newdocs/telescope.html#Telescope.SlewToTargetAsync)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5618,10 +5392,8 @@ paths:
         $ref: '#/components/requestBodies/putStandardClientParameters'
   '/telescope/{device_number}/synctoaltaz':
     put:
-      summary: Syncs to the given local horizontal coordinates.
-      description: >-
-        Matches the scope's local horizontal coordinates to the given local
-        horizontal coordinates.
+      summary: Sync to the given Alt/Az coordinates.
+      description: "A full description of this member's behaviour is provided here: [SyncToAltAz](https://ascom-standards.org/newdocs/telescope.html#Telescope.SyncToAltAz)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5638,9 +5410,7 @@ paths:
   '/telescope/{device_number}/synctocoordinates':
     put:
       summary: Syncs to the given equatorial coordinates.
-      description: >-
-        Matches the scope's equatorial coordinates to the given equatorial
-        coordinates.
+      description: "A full description of this member's behaviour is provided here: [SyncToCoordinates](https://ascom-standards.org/newdocs/telescope.html#Telescope.SyncToCoordinates)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5657,9 +5427,7 @@ paths:
   '/telescope/{device_number}/synctotarget':
     put:
       summary: Syncs to the TargetRightAscension and TargetDeclination coordinates.
-      description: >-
-        Matches the scope's equatorial coordinates to the TargetRightAscension
-        and TargetDeclination equatorial coordinates.
+      description: "A full description of this member's behaviour is provided here: [SyncToTarget](https://ascom-standards.org/newdocs/telescope.html#Telescope.SyncToTarget)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
@@ -5676,7 +5444,7 @@ paths:
   '/telescope/{device_number}/unpark':
     put:
       summary: Unparks the mount.
-      description: Takes telescope out of the Parked state.
+      description: "A full description of this member's behaviour is provided here: [Unpark](https://ascom-standards.org/newdocs/telescope.html#Telescope.Unpark)"
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
