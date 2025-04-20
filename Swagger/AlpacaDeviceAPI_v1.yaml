@@ -121,13 +121,17 @@ paths:
         
         This capability will be of primary value to:
          * bespoke software and hardware configurations where a single entity controls both the consuming application software and the hardware / driver environment
-         * a group of application and device authors to quickly formulate and try out new interface capabilities without requiring an immediate change to the ASCOM device interface, which will take a lot longer than just agreeing a name, input parameters and a standard response for an Action command
+         * a group of application and device authors who want to quickly formulate and try out new interface capabilities without requiring an immediate change to the ASCOM device interface, which will take a lot longer than just agreeing a name, input parameters and a standard response for an Action command
         
         
         The list of Action commands supported by a driver can be discovered through the SupportedActions property.
         
         
         This method should return an error message and NotImplementedException error number (0x400) if the driver just implements the standard ASCOM device methods and has no bespoke, unique, functionality.
+        
+        
+        A full description of this member's behaviour is provided here: [Action](https://ascom-standards.org/newdocs/camera.html#Camera.Action)". Please note that this member functions identically in all device interfaces.
+
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -148,14 +152,10 @@ paths:
                 - $ref: '#/components/schemas/AlpacaRequest'
                 - properties:
                     Action:
-                      description: >-
-                        A well known name that represents the action to be carried
-                        out.
+                      description: A well known name that represents the action to be carried out.
                       type: string
                     Parameters:
-                      description: >-
-                        List of required parameters or an Empty String if none are
-                        required
+                      description: List of required parameters or an Empty String if none are required
                       type: string
                   required:
                     - Action
@@ -163,10 +163,7 @@ paths:
   '/{device_type}/{device_number}/commandblind':
     put:
       summary: Transmits an arbitrary string to the device
-      description: >-
-        Transmits an arbitrary string to the device and does not wait for a
-        response. Optionally, protocol framing characters may be added to the
-        string before transmission.
+      description: "A full description of this member's behaviour is provided here: [CommandBlind](https://ascom-standards.org/newdocs/camera.html#Camera.CommandBlind). Please note that this member functions identically in all device interfaces."
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -183,13 +180,8 @@ paths:
         $ref: '#/components/requestBodies/put_devicetype_Devicenumber_commandrequest'
   '/{device_type}/{device_number}/commandbool':
     put:
-      summary: >-
-        Transmits an arbitrary string to the device and returns a boolean value
-        from the device.
-      description: >-
-        Transmits an arbitrary string to the device and waits for a boolean
-        response. Optionally, protocol framing characters may be added to the
-        string before transmission.
+      summary: Transmits an arbitrary string to the device and returns a boolean value from the device.
+      description: "A full description of this member's behaviour is provided here: [CommandBool](https://ascom-standards.org/newdocs/camera.html#Camera.CommandBool). Please note that this member functions identically in all device interfaces."
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -206,13 +198,8 @@ paths:
         $ref: '#/components/requestBodies/put_devicetype_Devicenumber_commandrequest'
   '/{device_type}/{device_number}/commandstring':
     put:
-      summary: >-
-        Transmits an arbitrary string to the device and returns a string value
-        from the device.
-      description: >-
-        Transmits an arbitrary string to the device and waits for a string
-        response. Optionally, protocol framing characters may be added to the
-        string before transmission.
+      summary: Transmits an arbitrary string to the device and returns a string value from the device.
+      description: "A full description of this member's behaviour is provided here: [CommandString](https://ascom-standards.org/newdocs/camera.html#Camera.CommandString). Please note that this member functions identically in all device interfaces."
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -230,7 +217,7 @@ paths:
   '/{device_type}/{device_number}/connect':
     put:
       summary: Starts an asynchronous connect to the device.
-      description: '`Platform 7 onward.` The Connecting property will be true until device initialisation is complete.'
+      description: "`Platform 7 onward.` A full description of this member's behaviour is provided here: [Connect](https://ascom-standards.org/newdocs/camera.html#Camera.Connect). Please note that this member functions identically in all device interfaces."
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -248,7 +235,7 @@ paths:
   '/{device_type}/{device_number}/connected':
     get:
       summary: Retrieves the connected state of the device
-      description: Retrieves the connected state of the device
+      description: "A full description of this member's behaviour is provided here: [Connected](https://ascom-standards.org/newdocs/camera.html#Camera.Connected). Please note that this member functions identically in all device interfaces."
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -265,10 +252,7 @@ paths:
           $ref: '#/components/responses/500'
     put:
       summary: Sets the connected state of the device
-      description: >-
-        **Deprecated in favour of the newer non-blocking [`connect`](#/ASCOM%20Methods%20Common%20To%20All%20Devices/put__device_type___device_number__connect) and [`disconnect`](#/ASCOM%20Methods%20Common%20To%20All%20Devices/put__device_type___device_number__disconnect) methods, with the new [`connecting`](#/ASCOM%20Methods%20Common%20To%20All%20Devices/get__device_type___device_number__connecting) property serving as the completion property.**  
-          
-        Sets the connected state of the device
+      description: "A full description of this member's behaviour is provided here: [Connected](https://ascom-standards.org/newdocs/camera.html#Camera.Connected). Please note that this member functions identically in all device interfaces."
       tags:
         - ASCOM Methods Common To All Devices
       parameters:
@@ -298,7 +282,7 @@ paths:
   '/{device_type}/{device_number}/connecting':
     get:
       summary: Completion variable for the asynchronous Connect() and Disconnect() methods.
-      description: '`Platform 7 onward.` Returns true while the device is connecting or disconnecting.'
+      description: "`Platform 7 onward.` A full description of this member's behaviour is provided here: [Connecting](https://ascom-standards.org/newdocs/camera.html#Camera.Connecting). Please note that this member functions identically in all device interfaces."
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -316,7 +300,7 @@ paths:
   '/{device_type}/{device_number}/description':
     get:
       summary: Device description
-      description: The description of the device
+      description: "A full description of this member's behaviour is provided here: [Description](https://ascom-standards.org/newdocs/camera.html#Camera.Description). Please note that this member functions identically in all device interfaces."
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -335,11 +319,40 @@ paths:
     get:
       summary: Returns the device's operational state in a single call.
       description: >-
-        `Platform 7 onward.` Devices must return all operational values that are definitively known but can omit entries where values
-        are unknown. Devices must not throw exceptions / return errors when values are not known. An empty list must 
-        be returned if no values are known.
-        Client Applications must expect that, from time to time, some operational state values may not be present
-        in the device response and must be prepared to handle “missing” values. 
+        "`Platform 7 onward.` Please note that this member has the same signature in all device interfaces but the returned properties vary by device type:
+        
+        
+        [Camera DeviceState](https://ascom-standards.org/newdocs/camera.html#Camera.DeviceState)
+        
+
+        [CoverCalibrator DeviceState](https://ascom-standards.org/newdocs/covercalibrator.html#CoverCalibrator.DeviceState)
+        
+
+        [Dome DeviceState](https://ascom-standards.org/newdocs/dome.html#Dome.DeviceState)
+        
+
+        [FilterWheel DeviceState](https://ascom-standards.org/newdocs/filterwheel.html#FilterWheel.DeviceState)
+        
+
+        [Focuser DeviceState](https://ascom-standards.org/newdocs/focuser.html#Focuser.DeviceState)
+        
+
+        [ObservingConditions DeviceState](https://ascom-standards.org/newdocs/observingconditions.html#ObservingConditions.DeviceState)
+        
+
+        [Rotator DeviceState](https://ascom-standards.org/newdocs/rotator.html#Rotator.DeviceState)
+        
+
+        [SafetyMonitor DeviceState](https://ascom-standards.org/newdocs/safetymonitor.html#SafetyMonitor.DeviceState)
+        
+
+        [Switch DeviceState](https://ascom-standards.org/newdocs/switch.html#Switch.DeviceState)
+        
+
+        [Telescope DeviceState](https://ascom-standards.org/newdocs/telescope.html#Telescope.DeviceState)
+        
+
+        See here for more information: [DeviceState FAQ](https://ascom-standards.org/newdocs/readall-faq.html)"
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -357,7 +370,7 @@ paths:
   '/{device_type}/{device_number}/disconnect':
     put:
       summary: Starts an asynchronous disconnect from the device.
-      description: '`Platform 7 onward.` The Connecting property will be true until device disconneciton is complete.'
+      description: "`Platform 7 onward.` A full description of this member's behaviour is provided here: [Disconnect](https://ascom-standards.org/newdocs/camera.html#Camera.Disconnect). Please note that this member functions identically in all device interfaces."
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -375,7 +388,7 @@ paths:
   '/{device_type}/{device_number}/driverinfo':
     get:
       summary: Device driver description
-      description: The description of the driver
+      description: "A full description of this member's behaviour is provided here: [DriverInfo](https://ascom-standards.org/newdocs/camera.html#Camera.DriverInfo). Please note that this member functions identically in all device interfaces."
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -393,7 +406,7 @@ paths:
   '/{device_type}/{device_number}/driverversion':
     get:
       summary: Driver Version
-      description: A string containing only the major and minor version of the driver.
+      description: "A full description of this member's behaviour is provided here: [DriverVersion](https://ascom-standards.org/newdocs/camera.html#Camera.DriverVersion). Please note that this member functions identically in all device interfaces."
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -411,10 +424,7 @@ paths:
   '/{device_type}/{device_number}/interfaceversion':
     get:
       summary: The ASCOM Device interface version number that this device supports.
-      description: >-
-        This method returns the version of the ASCOM device interface contract to which this device complies. Only one interface version is current at a moment in time and all
-        new devices should be built to the latest interface version. Applications can choose which device interface versions they support and it is in their interest to support 
-        previous versions as well as the current version to ensure thay can use the largest number of devices.
+      description: "A full description of this member's behaviour is provided here: [InterfaceVersion](https://ascom-standards.org/newdocs/camera.html#Camera.InterfaceVersion). Please note that this member functions identically in all device interfaces."
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -432,7 +442,7 @@ paths:
   '/{device_type}/{device_number}/name':
     get:
       summary: Device name
-      description: The name of the device
+      description: "A full description of this member's behaviour is provided here: [Name](https://ascom-standards.org/newdocs/camera.html#Camera.Name). Please note that this member functions identically in all device interfaces."
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
@@ -450,7 +460,7 @@ paths:
   '/{device_type}/{device_number}/supportedactions':
     get:
       summary: Returns the list of action names supported by this driver.
-      description: Returns the list of action names supported by this driver.
+      description: "A full description of this member's behaviour is provided here: [SupportedActions](https://ascom-standards.org/newdocs/camera.html#Camera.SupportedActions). Please note that this member functions identically in all device interfaces."
       parameters:
         - $ref: '#/components/parameters/device_type'
         - $ref: '#/components/parameters/device_number'
