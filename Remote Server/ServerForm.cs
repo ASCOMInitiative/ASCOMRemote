@@ -5940,7 +5940,8 @@ namespace ASCOM.Remote
                 switch (requestData.Elements[SharedConstants.URL_ELEMENT_DEVICE_TYPE] + "." + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD])
                 {
                     case "telescope.utcdate":
-                        deviceResponse = device.UTCDate; break;
+                        deviceResponse = device.UTCDate;
+                        break;
 
                     default:
                         LogMessage1(requestData, "ReturnDateTime", "Unsupported method: " + requestData.Elements[SharedConstants.URL_ELEMENT_METHOD]);
@@ -5951,6 +5952,9 @@ namespace ASCOM.Remote
             {
                 exReturn = ex;
             }
+
+            // Ensure the DateTime is in UTC format so that it de-serialises correctly in the client application
+            deviceResponse = DateTime.SpecifyKind(deviceResponse, DateTimeKind.Utc);
 
             DateTimeResponse responseClass = new(requestData.ClientTransactionID, requestData.ServerTransactionID, deviceResponse)
             {
