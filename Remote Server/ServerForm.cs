@@ -6432,6 +6432,7 @@ namespace ASCOM.Remote
         /// </remarks>
         private static void ReturnImageArray(RequestData requestData)
         {
+            LogMessage(0, 0, 0, "ReturnImageArray", $"Entered ReturnImageArray");
             try
             {
                 Array deviceResponse;
@@ -6441,7 +6442,7 @@ namespace ASCOM.Remote
                 long lastTime = 0;
 
                 // Release memory used by the previous image before acquiring the next
-                LogMessage(0, 0, 0, "ReturnImageArray", $"Before setting LastImageArray to null");
+                LogMessage(0, 0, 0, "ReturnImageArray", $"Before setting LastImageArray to null...");
                 ActiveObjects[requestData.DeviceKey].LastImageArray = null;
                 LogMessage(0, 0, 0, "ReturnImageArray", $"Set LastImageArray to null OK");
                 GC.Collect();
@@ -6455,13 +6456,20 @@ namespace ASCOM.Remote
                 Stopwatch sw = new(); // Create a stopwatch to time the process
 
                 // Determine whether the client supports compressed responses by testing the Accept-Encoding header, if present. GZip compression will be favoured over Deflate if the client accepts both methods
+                LogMessage(0, 0, 0, "ReturnImageArray", $"Before getting accept coding...");
                 string[] acceptEncoding = requestData.Request.Headers.GetValues("Accept-Encoding"); // Get the Accept-Encoding header, if present
                 LogMessage(0, 0, 0, "ReturnImageArray", $"Got accept coding  OK");
                 if (acceptEncoding != null) // There is an Accept-Encoding header so check whether it has the compression modes that we support
                 {
+                    LogMessage(0, 0, 0, "ReturnImageArray", $"Accept coding is not null");
                     if (acceptEncoding[0].Contains("deflate", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
                     if (acceptEncoding[0].Contains("gzip", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.GZip;
                 }
+                else
+                {
+                    LogMessage(0, 0, 0, "ReturnImageArray", $"Accept coding is null");
+                }
+                LogMessage(0, 0, 0, "ReturnImageArray", $"Processed Accept coding OK");
                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Response compression type: {compressionType}");
 
                 try
