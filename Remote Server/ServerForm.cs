@@ -6436,12 +6436,16 @@ namespace ASCOM.Remote
             {
                 Array deviceResponse;
                 dynamic responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID); // Initialise here so that there is a class ready to convey back an error message
+                LogMessage(0, 0, 0, "ReturnImageArray", $"Created IntArray2DResponse");
                 Exception exReturn = null;
                 long lastTime = 0;
 
                 // Release memory used by the previous image before acquiring the next
+                LogMessage(0, 0, 0, "ReturnImageArray", $"Before setting LastImageArray to null");
                 ActiveObjects[requestData.DeviceKey].LastImageArray = null;
+                LogMessage(0, 0, 0, "ReturnImageArray", $"Set LastImageArray to null OK");
                 GC.Collect();
+                LogMessage(0, 0, 0, "ReturnImageArray", $"Collected garbage OK");
 
                 // These flags indicate whether the client supports optimised, faster transfer modes for camera image data
                 SharedConstants.ImageArrayCompression compressionType = SharedConstants.ImageArrayCompression.None; // Flag to indicate what type of compression the client supports - initialised to indicate a default of no compression
@@ -6452,6 +6456,7 @@ namespace ASCOM.Remote
 
                 // Determine whether the client supports compressed responses by testing the Accept-Encoding header, if present. GZip compression will be favoured over Deflate if the client accepts both methods
                 string[] acceptEncoding = requestData.Request.Headers.GetValues("Accept-Encoding"); // Get the Accept-Encoding header, if present
+                LogMessage(0, 0, 0, "ReturnImageArray", $"Got accept coding  OK");
                 if (acceptEncoding != null) // There is an Accept-Encoding header so check whether it has the compression modes that we support
                 {
                     if (acceptEncoding[0].Contains("deflate", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
