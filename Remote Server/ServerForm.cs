@@ -6461,9 +6461,17 @@ namespace ASCOM.Remote
                 LogMessage(0, 0, 0, "ReturnImageArray", $"Got accept coding  OK");
                 if (acceptEncoding != null) // There is an Accept-Encoding header so check whether it has the compression modes that we support
                 {
-                    LogMessage(0, 0, 0, "ReturnImageArray", $"Accept coding is not null");
-                    if (acceptEncoding[0].Contains("deflate", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
-                    if (acceptEncoding[0].Contains("gzip", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.GZip;
+                    LogMessage(0, 0, 0, "ReturnImageArray", $"Accept coding is not null, array length: {acceptEncoding.Length}");
+                    // Only check for deflate and gzip if there is at least one Accept-Encoding entry.
+                    if (acceptEncoding.Length >= 1)
+                    {
+                        if (acceptEncoding[0].Contains("deflate", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
+                        if (acceptEncoding[0].Contains("gzip", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.GZip;
+                    }
+                    else
+                    {
+                        LogMessage(0, 0, 0, "ReturnImageArray", $"Accept coding is present but has no entries.");
+                    }
                 }
                 else
                 {
@@ -6953,10 +6961,12 @@ namespace ASCOM.Remote
                 GC.Collect();
 
             }
-            catch (Exception ex)
+            catch (Exception ex) // Unexpected exception handler
             {
-                LogException1(requestData, "ReturnImageArray", $"{ex.Message} - Error code: {ex.ErrorCode:X8}\r\n{ex}");
+                string errorMessage = $"{ex.Message} - Error code: {ex.HResult:X8}\r\n{ex}";
+                LogException1(requestData, "ReturnImageArray", errorMessage);
                 LogMessage(0, 0, 0, "ReturnImageArray", $"ClientTransactionID: {requestData.ClientTransactionID}, ServerTransactionID:{requestData.ServerTransactionID}, Device key:{requestData.DeviceKey}, Active objects count:{ActiveObjects.Count}");
+                Return500Error(requestData, errorMessage);
             }
         }
 
