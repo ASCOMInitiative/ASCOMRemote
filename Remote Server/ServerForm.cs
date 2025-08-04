@@ -2816,13 +2816,20 @@ namespace ASCOM.Remote
 
                 if (DebugTraceState) // List headers and detailed parameter list if in debug mode
                 {
-                    foreach (string key in request.Headers.AllKeys)
+                    if (request.Headers.AllKeys.Length > 0)
                     {
-                        LogMessage1(requestData, "RequestReceived", $"Header {key} = {request.Headers[key]}");
+                        foreach (string key in request.Headers.AllKeys)
+                        {
+                            LogMessage1(requestData, "RequestReceived", $"Header {key} = {request.Headers[key]}");
+                        }
+                        foreach (string key in queryParameters.AllKeys)
+                        {
+                            LogMessage1(requestData, "RequestReceived", $"Parameter {key} = {queryParameters[key]}");
+                        }
                     }
-                    foreach (string key in queryParameters.AllKeys)
+                    else // No headers were supplied
                     {
-                        LogMessage1(requestData, "RequestReceived", $"Parameter {key} = {queryParameters[key]}");
+                        LogMessage1(requestData, "RequestReceived", "No headers were supplied with this request");
                     }
                 } // Log supplied parameters and headers
 
@@ -6294,7 +6301,7 @@ namespace ASCOM.Remote
 
             // Determine whether the client supports compressed responses by testing the Accept-Encoding header, if present. GZip compression will be favoured over Deflate if the client accepts both methods
             string[] acceptEncoding = requestData.Request.Headers.GetValues("Accept-Encoding"); // Get the Accept-Encoding header, if present
-            if (acceptEncoding != null) // There is an Accept-Encoding header so check whether it has the compression modes that we support
+            if ((acceptEncoding != null) && (acceptEncoding.Length > 0)) // There is an Accept-Encoding header with an entry so check whether it has the compression modes that we support
             {
                 if (acceptEncoding[0].Contains("deflate", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
                 if (acceptEncoding[0].Contains("gzip", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.GZip;
@@ -6432,21 +6439,16 @@ namespace ASCOM.Remote
         /// </remarks>
         private static void ReturnImageArray(RequestData requestData)
         {
-            LogMessage(0, 0, 0, "ReturnImageArray", $"Entered ReturnImageArray");
             try
             {
                 Array deviceResponse;
                 dynamic responseClass = new IntArray2DResponse(requestData.ClientTransactionID, requestData.ServerTransactionID); // Initialise here so that there is a class ready to convey back an error message
-                LogMessage(0, 0, 0, "ReturnImageArray", $"Created IntArray2DResponse");
                 Exception exReturn = null;
                 long lastTime = 0;
 
                 // Release memory used by the previous image before acquiring the next
-                LogMessage(0, 0, 0, "ReturnImageArray", $"Before setting LastImageArray to null...");
                 ActiveObjects[requestData.DeviceKey].LastImageArray = null;
-                LogMessage(0, 0, 0, "ReturnImageArray", $"Set LastImageArray to null OK");
                 GC.Collect();
-                LogMessage(0, 0, 0, "ReturnImageArray", $"Collected garbage OK");
 
                 // These flags indicate whether the client supports optimised, faster transfer modes for camera image data
                 SharedConstants.ImageArrayCompression compressionType = SharedConstants.ImageArrayCompression.None; // Flag to indicate what type of compression the client supports - initialised to indicate a default of no compression
@@ -6456,28 +6458,12 @@ namespace ASCOM.Remote
                 Stopwatch sw = new(); // Create a stopwatch to time the process
 
                 // Determine whether the client supports compressed responses by testing the Accept-Encoding header, if present. GZip compression will be favoured over Deflate if the client accepts both methods
-                LogMessage(0, 0, 0, "ReturnImageArray", $"Before getting accept coding...");
                 string[] acceptEncoding = requestData.Request.Headers.GetValues("Accept-Encoding"); // Get the Accept-Encoding header, if present
-                LogMessage(0, 0, 0, "ReturnImageArray", $"Got accept coding  OK");
-                if (acceptEncoding != null) // There is an Accept-Encoding header so check whether it has the compression modes that we support
+                if ((acceptEncoding != null) && (acceptEncoding.Length > 0)) // There is an Accept-Encoding header and it has a value so check whether it has the compression modes that we support
                 {
-                    LogMessage(0, 0, 0, "ReturnImageArray", $"Accept coding is not null, array length: {acceptEncoding.Length}");
-                    // Only check for deflate and gzip if there is at least one Accept-Encoding entry.
-                    if (acceptEncoding.Length >= 1)
-                    {
-                        if (acceptEncoding[0].Contains("deflate", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
-                        if (acceptEncoding[0].Contains("gzip", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.GZip;
-                    }
-                    else
-                    {
-                        LogMessage(0, 0, 0, "ReturnImageArray", $"Accept coding is present but has no entries.");
-                    }
+                    if (acceptEncoding[0].Contains("deflate", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.Deflate; // Test
+                    if (acceptEncoding[0].Contains("gzip", StringComparison.InvariantCultureIgnoreCase)) compressionType = SharedConstants.ImageArrayCompression.GZip;
                 }
-                else
-                {
-                    LogMessage(0, 0, 0, "ReturnImageArray", $"Accept coding is null");
-                }
-                LogMessage(0, 0, 0, "ReturnImageArray", $"Processed Accept coding OK");
                 if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Response compression type: {compressionType}");
 
                 try
@@ -6498,10 +6484,13 @@ namespace ASCOM.Remote
                 try
                 {
                     // Determine whether the client request that the image be returned as a byte array
-                    if (requestData.Request.Headers[SharedConstants.ACCEPT_HEADER_NAME].Contains(SharedConstants.IMAGE_BYTES_MIME_TYPE, StringComparison.InvariantCultureIgnoreCase)) // Client supports image bytes transfer
+                    if (requestData.Request.Headers[SharedConstants.ACCEPT_HEADER_NAME] != null)
                     {
-                        imageBytesRequested = true;
-                        if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Image bytes requested - Received header {requestData.Request.Headers[SharedConstants.ACCEPT_HEADER_NAME]}");
+                        if (requestData.Request.Headers[SharedConstants.ACCEPT_HEADER_NAME].Contains(SharedConstants.IMAGE_BYTES_MIME_TYPE, StringComparison.InvariantCultureIgnoreCase)) // Client supports image bytes transfer
+                        {
+                            imageBytesRequested = true;
+                            if (DebugTraceState) LogMessage1(requestData, requestData.Elements[SharedConstants.URL_ELEMENT_METHOD], $"Image bytes requested - Received header {requestData.Request.Headers[SharedConstants.ACCEPT_HEADER_NAME]}");
+                        }
                     }
                 }
                 catch (Exception ex)
