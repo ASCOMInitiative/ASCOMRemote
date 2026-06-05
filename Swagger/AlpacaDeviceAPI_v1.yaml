@@ -40,8 +40,8 @@ info:
     ## Interface Behaviour
 
     The ASCOM Interface behavioural requirements for Alpaca drivers are the same as for COM based drivers and are documented in the
-    <a href="https://ascom-standards.org/Help/Developer/html/N_ASCOM_DeviceInterface.htm">API Interface Definitions</a> e.g.
-    the <a href="https://ascom-standards.org/Help/Developer/html/M_ASCOM_DeviceInterface_ITelescopeV3_SlewToCoordinates.htm">Telescope.SlewToCoordinates</a> method.      
+    <a href="https://ascom-standards.org/newdocs/">API Master Interface Definitions</a> e.g.
+    the <a href="https://ascom-standards.org/newdocs/telescope.html#Telescope.SlewToCoordinatesAsync">Telescope.SlewToCoordinatesAsync</a> method.      
     This document focuses on how to use the ASCOM Interface standards in their RESTful Alpaca form.
     
     ## Try it out
