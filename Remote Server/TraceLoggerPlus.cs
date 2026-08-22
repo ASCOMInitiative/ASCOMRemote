@@ -1,7 +1,9 @@
 ﻿using ASCOM.Common.Interfaces;
 using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace ASCOM.Remote
@@ -41,6 +43,7 @@ namespace ASCOM.Remote
         private readonly bool autoGenerateFilePath;
         private bool traceLoggerHasBeenDisposed;
         private string mutexName;
+        private string activeLogFilePath;
 
         #endregion
 
@@ -219,6 +222,13 @@ namespace ASCOM.Remote
                 // Create the log file if it doesn't yet exist
                 if (logFileStream == null) CreateLogFile();
 
+                // Roll automatically named files before writing another message
+                // once the configured size boundary has been reached.
+                if (autoGenerateFileName && MaximumLogFileSizeBytes > 0 && logFileStream.BaseStream.Length >= MaximumLogFileSizeBytes)
+                {
+                    CreateLogFile();
+                }
+
                 // Right pad the identifier string to the required column width
                 identifier = identifier.PadRight(identifierWidthValue);
 
@@ -280,6 +290,16 @@ namespace ASCOM.Remote
         public string LogFilePath { get; set; }
 
         /// <summary>
+        /// Maximum size of an automatically named log file in bytes. Set to zero to disable size-based rollover.
+        /// </summary>
+        public long MaximumLogFileSizeBytes { get; set; }
+
+        /// <summary>
+        /// Maximum number of automatically named files retained for this logger type. Set to zero to disable retention.
+        /// </summary>
+        public int MaximumRetainedLogFiles { get; set; }
+
+        /// <summary>
         /// Set or return the width of the identifier field in the log message
         /// </summary>
         /// <value>Width of the identifier field</value>
@@ -320,6 +340,7 @@ namespace ASCOM.Remote
         {
             // Initialise working copy of the log file path
             string logFilePath;
+            string logRootPath;
 
             int logFileSuffixInteger = 0; // Initialise suffix to 0
 
@@ -330,17 +351,19 @@ namespace ASCOM.Remote
                 {
                     if (!string.IsNullOrEmpty(Environment.GetFolderPath(Environment.SpecialFolder.Personal))) // This is a normaL "User" account
                     {
-                        logFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), AUTO_PATH_BASE_DIRECTORY, string.Format(AUTO_PATH_WINDOWS_DIRECTORY_TEMPLATE, DateTimeNow()));
+                        logRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), AUTO_PATH_BASE_DIRECTORY);
                     }
                     else // This is the "System" account, which does not have a personal documents directory so put log files in the 
                     {
-                        logFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), AUTO_PATH_WINDOWS_SYSTEM_USER_BASE_DIRECTORY, string.Format(AUTO_PATH_WINDOWS_DIRECTORY_TEMPLATE, DateTimeNow()));
+                        logRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), AUTO_PATH_WINDOWS_SYSTEM_USER_BASE_DIRECTORY);
                     }
                 }
                 else // We need to use the supplied log file path, which is already in the logFilePath property
                 {
-                    logFilePath = Path.Combine(LogFilePath, string.Format(AUTO_PATH_WINDOWS_DIRECTORY_TEMPLATE, DateTimeNow()));
+                    logRootPath = LogFilePath;
                 }
+
+                logFilePath = Path.Combine(logRootPath, string.Format(AUTO_PATH_WINDOWS_DIRECTORY_TEMPLATE, DateTimeNow()));
             }
             catch (Exception ex)
             {
@@ -370,18 +393,21 @@ namespace ASCOM.Remote
                     }
                     while (File.Exists(Path.Combine(logFilePath, LogFileName)) & (logFileSuffixInteger <= MAXIMUM_UNIQUE_SUFFIX_ATTEMPTS)); // Loop until the generated file name does not exist or we hit the maximum number of attempts
 
-                    // Close any current file stream before creating a new one
-                    if (logFileStream is not null)
+                    // Create the replacement before closing the current stream so a
+                    // transient creation failure leaves the existing logger usable.
+                    string newLogFilePath = Path.Combine(logFilePath, LogFileName);
+                    StreamWriter newLogFileStream = CreateStreamWriter(newLogFilePath);
+                    StreamWriter previousLogFileStream = logFileStream;
+                    logFileStream = newLogFileStream;
+                    activeLogFilePath = Path.GetFullPath(newLogFilePath);
+
+                    if (previousLogFileStream is not null)
                     {
-                        logFileStream.Close();
-                        logFileStream.Dispose();
+                        previousLogFileStream.Close();
+                        previousLogFileStream.Dispose();
                     }
 
-                    // Create the stream writer used to write to disk
-                    logFileStream = new StreamWriter(Path.Combine(logFilePath, LogFileName), false)
-                    {
-                        AutoFlush = true
-                    };
+                    ApplyRetention(logRootPath);
                 }
                 catch (Exception ex)
                 {
@@ -392,23 +418,84 @@ namespace ASCOM.Remote
             {
                 try
                 {
-                    // Close any current file stream before creating a new one
-                    if (logFileStream is not null)
-                    {
-                        logFileStream.Close();
-                        logFileStream.Dispose();
-                    }
+                    string newLogFilePath = Path.Combine(logFilePath, LogFileName);
+                    StreamWriter newLogFileStream = CreateStreamWriter(newLogFilePath);
+                    StreamWriter previousLogFileStream = logFileStream;
+                    logFileStream = newLogFileStream;
+                    activeLogFilePath = Path.GetFullPath(newLogFilePath);
 
-                    // Create the stream writer used to write to disk
-                    logFileStream = new StreamWriter(Path.Combine(logFilePath, LogFileName), false)
+                    if (previousLogFileStream is not null)
                     {
-                        AutoFlush = true
-                    };
+                        previousLogFileStream.Close();
+                        previousLogFileStream.Dispose();
+                    }
                 }
                 catch (Exception ex)
                 {
                     throw new DriverException($"TraceLogger - Unable to create log file '{LogFileName}' in directory '{logFilePath}': {ex.Message}. See inner exception for details", ex);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Create a stream writer for a log file.
+        /// </summary>
+        /// <param name="filePath">Fully qualified path of the log file to create.</param>
+        /// <returns>A stream writer configured to flush each completed line.</returns>
+        protected virtual StreamWriter CreateStreamWriter(string filePath)
+        {
+            return new StreamWriter(filePath, false)
+            {
+                AutoFlush = true
+            };
+        }
+
+        /// <summary>
+        /// Remove the oldest automatically named files for this logger type when the configured retention count is exceeded.
+        /// </summary>
+        /// <param name="logRootPath">Root directory containing the generated daily log directories.</param>
+        private void ApplyRetention(string logRootPath)
+        {
+            if (!autoGenerateFileName || MaximumRetainedLogFiles <= 0 || string.IsNullOrEmpty(activeLogFilePath)) return;
+
+            try
+            {
+                string canonicalLogRootPath = Path.GetFullPath(logRootPath);
+                string canonicalLogRootPrefix = canonicalLogRootPath.TrimEnd(
+                    Path.DirectorySeparatorChar,
+                    Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
+                Regex automaticFileNamePattern = new(
+                    $"^ASCOM\\.{Regex.Escape(logFileType)}\\.\\d{{4}}\\.\\d{{6,7}}\\.txt$",
+                    RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+
+                FileInfo[] matchingLogFiles = new DirectoryInfo(canonicalLogRootPath)
+                    .EnumerateDirectories("Logs *", SearchOption.TopDirectoryOnly)
+                    .Where(directory => (directory.Attributes & FileAttributes.ReparsePoint) == 0)
+                    .SelectMany(directory => directory.EnumerateFiles("*.txt", SearchOption.TopDirectoryOnly))
+                    .Where(file => (file.Attributes & FileAttributes.ReparsePoint) == 0)
+                    .Where(file => automaticFileNamePattern.IsMatch(file.Name))
+                    .Where(file => file.FullName.StartsWith(canonicalLogRootPrefix, StringComparison.OrdinalIgnoreCase))
+                    .Where(file => !string.Equals(file.FullName, activeLogFilePath, StringComparison.OrdinalIgnoreCase))
+                    .OrderByDescending(file => file.LastWriteTimeUtc)
+                    .ThenByDescending(file => file.FullName, StringComparer.OrdinalIgnoreCase)
+                    .Skip(Math.Max(0, MaximumRetainedLogFiles - 1))
+                    .ToArray();
+
+                foreach (FileInfo logFileToDelete in matchingLogFiles)
+                {
+                    try
+                    {
+                        logFileToDelete.Delete();
+                    }
+                    catch
+                    {
+                        // Retention is best effort. A protected or in-use old file must not stop current logging.
+                    }
+                }
+            }
+            catch
+            {
+                // Retention is best effort. Enumeration failures must not stop current logging.
             }
         }
 

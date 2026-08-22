@@ -129,6 +129,8 @@ namespace ASCOM.Remote
         internal const string SERVER_ACCESS_LOG_PROFILENAME = "Server Access Log Enabled"; internal const bool SERVER_ACCESS_LOG_DEFAULT = true;
         internal const string SERVER_TRACE_LEVEL_PROFILENAME = "Server Trace Level"; internal const bool SERVER_TRACE_LEVEL_DEFAULT = true;
         internal const string SERVER_DEBUG_TRACE_PROFILENAME = "Server Include Debug Trace"; internal const bool SERVER_DEBUG_TRACE_DEFAULT = false;
+        internal const long SERVER_LOG_MAXIMUM_FILE_SIZE_BYTES = 50L * 1024L * 1024L;
+        internal const int SERVER_LOG_MAXIMUM_RETAINED_FILES = 10;
         internal const string SERVER_IPADDRESS_PROFILENAME = "Server IP Address"; internal const string SERVER_IPADDRESS_DEFAULT = SharedConstants.LOCALHOST_ADDRESS_IPV4;
         internal const string SERVER_PORTNUMBER_PROFILENAME = "Server Port Number"; internal const decimal SERVER_PORTNUMBER_DEFAULT = 11111;
         internal const string SERVER_AUTOCONNECT_PROFILENAME = "Server Auto Connect"; internal const bool SERVER_AUTOCONNECT_DEFAULT = true;
@@ -359,7 +361,9 @@ namespace ASCOM.Remote
                 {
                     LogFilePath = TraceFolder, // Set the trace folder to the user specified value
                     Enabled = TraceState, // Enable the log if required
-                    UseUtcTime = UseUtcTimeInLogs
+                    UseUtcTime = UseUtcTimeInLogs,
+                    MaximumLogFileSizeBytes = SERVER_LOG_MAXIMUM_FILE_SIZE_BYTES,
+                    MaximumRetainedLogFiles = SERVER_LOG_MAXIMUM_RETAINED_FILES
                 };
 
                 LogMessage(0, 0, 0, "New", $"Remote Server Version {Updates.AscomRemoteVersionDisplayString}, Started on {DateTime.Now:dddd d MMMM yyyy HH: mm:ss}");
@@ -372,7 +376,9 @@ namespace ASCOM.Remote
                 {
                     LogFilePath = TraceFolder, // Set the trace folder to the user specified value
                     Enabled = AccessLogEnabled,
-                    UseUtcTime = UseUtcTimeInLogs
+                    UseUtcTime = UseUtcTimeInLogs,
+                    MaximumLogFileSizeBytes = SERVER_LOG_MAXIMUM_FILE_SIZE_BYTES,
+                    MaximumRetainedLogFiles = SERVER_LOG_MAXIMUM_RETAINED_FILES
                 };
 
                 LogMessage(0, 0, 0, "New", "Setting screen log check boxes"); // Must be done before enabling event handlers!
@@ -1467,11 +1473,13 @@ namespace ASCOM.Remote
                         TL = null;
 
                         // Start a new logger
-                        TL = new TraceLoggerPlus("", SERVER_TRACELOGGER_NAME)
+                        TL = new TraceLoggerPlus("", TraceFolder, SERVER_TRACELOGGER_NAME, true)
                         {
                             LogFilePath = TraceFolder,
                             Enabled = true, // Enable the trace logger
-                            IpAddressTraceState = LogClientIPAddress // Set the current state of the "include client IP address in trace lines" flag
+                            IpAddressTraceState = LogClientIPAddress, // Set the current state of the "include client IP address in trace lines" flag
+                            MaximumLogFileSizeBytes = SERVER_LOG_MAXIMUM_FILE_SIZE_BYTES,
+                            MaximumRetainedLogFiles = SERVER_LOG_MAXIMUM_RETAINED_FILES
                         };
 
                         TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
@@ -2744,11 +2752,13 @@ namespace ASCOM.Remote
                             AccessLog = null;
 
                             // Start a new logger
-                            AccessLog = new TraceLoggerPlus("", ACCESSLOG_TRACELOGGER_NAME)
+                            AccessLog = new TraceLoggerPlus("", TraceFolder, ACCESSLOG_TRACELOGGER_NAME, true)
                             {
                                 LogFilePath = TraceFolder,
                                 Enabled = true, // Enable the trace logger
-                                IpAddressTraceState = LogClientIPAddress // Set the current state of the "include client IP address in trace lines" flag
+                                IpAddressTraceState = LogClientIPAddress, // Set the current state of the "include client IP address in trace lines" flag
+                                MaximumLogFileSizeBytes = SERVER_LOG_MAXIMUM_FILE_SIZE_BYTES,
+                                MaximumRetainedLogFiles = SERVER_LOG_MAXIMUM_RETAINED_FILES
                             };
 
                             AccessLog.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
