@@ -16,8 +16,8 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupForm));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             BtnCancel = new System.Windows.Forms.Button();
             BtnOK = new System.Windows.Forms.Button();
             chkAutoConnect = new System.Windows.Forms.CheckBox();
@@ -260,6 +260,12 @@
             label96 = new System.Windows.Forms.Label();
             NumMaxDevices = new System.Windows.Forms.NumericUpDown();
             LoggingConfigurationTab = new System.Windows.Forms.TabPage();
+            groupBox6 = new System.Windows.Forms.GroupBox();
+            label102 = new System.Windows.Forms.Label();
+            NumberOfLogFilesToRetain = new System.Windows.Forms.NumericUpDown();
+            LabelLogFileSize = new System.Windows.Forms.Label();
+            MaximumLogFileSizeMB = new System.Windows.Forms.NumericUpDown();
+            label101 = new System.Windows.Forms.Label();
             groupBox3 = new System.Windows.Forms.GroupBox();
             chkTrace = new System.Windows.Forms.CheckBox();
             chkAccessLog = new System.Windows.Forms.CheckBox();
@@ -287,6 +293,7 @@
             NonStandardTab = new System.Windows.Forms.TabPage();
             ChkOmitRawParameterInCommandXXXToTelescope = new System.Windows.Forms.CheckBox();
             DlgSetLogFolderPath = new System.Windows.Forms.FolderBrowserDialog();
+            saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SetupTabControl.SuspendLayout();
             DeviceConfigurationTab.SuspendLayout();
@@ -310,6 +317,9 @@
             groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)NumMaxDevices).BeginInit();
             LoggingConfigurationTab.SuspendLayout();
+            groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)NumberOfLogFilesToRetain).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)MaximumLogFileSizeMB).BeginInit();
             groupBox3.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -3605,6 +3615,7 @@
             // LoggingConfigurationTab
             // 
             LoggingConfigurationTab.BackColor = System.Drawing.SystemColors.Control;
+            LoggingConfigurationTab.Controls.Add(groupBox6);
             LoggingConfigurationTab.Controls.Add(groupBox3);
             LoggingConfigurationTab.Controls.Add(groupBox2);
             LoggingConfigurationTab.Controls.Add(groupBox1);
@@ -3616,6 +3627,74 @@
             LoggingConfigurationTab.TabIndex = 4;
             LoggingConfigurationTab.Text = "Logging Configuration";
             // 
+            // groupBox6
+            // 
+            groupBox6.Controls.Add(label102);
+            groupBox6.Controls.Add(NumberOfLogFilesToRetain);
+            groupBox6.Controls.Add(this.LabelLogFileSize);
+            groupBox6.Controls.Add(MaximumLogFileSizeMB);
+            groupBox6.Controls.Add(label101);
+            groupBox6.Location = new System.Drawing.Point(451, 45);
+            groupBox6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox6.Name = "groupBox6";
+            groupBox6.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox6.Size = new System.Drawing.Size(683, 224);
+            groupBox6.TabIndex = 73;
+            groupBox6.TabStop = false;
+            groupBox6.Text = "Log Size Management";
+            // 
+            // label102
+            // 
+            label102.AutoSize = true;
+            label102.Location = new System.Drawing.Point(8, 19);
+            label102.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label102.Name = "label102";
+            label102.Size = new System.Drawing.Size(659, 90);
+            label102.TabIndex = 74;
+            label102.Text = resources.GetString("label102.Text");
+            // 
+            // NumberOfLogFilesToRetain
+            // 
+            NumberOfLogFilesToRetain.Location = new System.Drawing.Point(8, 121);
+            NumberOfLogFilesToRetain.Maximum = new decimal(new int[] { 1410065408, 2, 0, 0 });
+            NumberOfLogFilesToRetain.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            NumberOfLogFilesToRetain.Name = "NumberOfLogFilesToRetain";
+            NumberOfLogFilesToRetain.Size = new System.Drawing.Size(81, 23);
+            NumberOfLogFilesToRetain.TabIndex = 73;
+            NumberOfLogFilesToRetain.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            NumberOfLogFilesToRetain.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // LabelLogFileSize
+            // 
+            LabelLogFileSize.AutoSize = true;
+            LabelLogFileSize.Location = new System.Drawing.Point(97, 154);
+            LabelLogFileSize.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            LabelLogFileSize.Name = "LabelLogFileSize";
+            LabelLogFileSize.Size = new System.Drawing.Size(231, 15);
+            LabelLogFileSize.TabIndex = 70;
+            LabelLogFileSize.Text = "Maximum log file size before rollover (MB)";
+            // 
+            // MaximumLogFileSizeMB
+            // 
+            MaximumLogFileSizeMB.Location = new System.Drawing.Point(8, 152);
+            MaximumLogFileSizeMB.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
+            MaximumLogFileSizeMB.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            MaximumLogFileSizeMB.Name = "MaximumLogFileSizeMB";
+            MaximumLogFileSizeMB.Size = new System.Drawing.Size(81, 23);
+            MaximumLogFileSizeMB.TabIndex = 72;
+            MaximumLogFileSizeMB.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            MaximumLogFileSizeMB.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // label101
+            // 
+            label101.AutoSize = true;
+            label101.Location = new System.Drawing.Point(97, 126);
+            label101.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label101.Name = "label101";
+            label101.Size = new System.Drawing.Size(156, 15);
+            label101.TabIndex = 71;
+            label101.Text = "Number of log files to retain";
+            // 
             // groupBox3
             // 
             groupBox3.Controls.Add(chkTrace);
@@ -3623,7 +3702,7 @@
             groupBox3.Controls.Add(chkDebugTrace);
             groupBox3.Controls.Add(ChkUseUtcTime);
             groupBox3.Controls.Add(ChkLogClientIPAddress);
-            groupBox3.Location = new System.Drawing.Point(442, 37);
+            groupBox3.Location = new System.Drawing.Point(115, 45);
             groupBox3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox3.Name = "groupBox3";
             groupBox3.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -3692,7 +3771,7 @@
             groupBox2.Controls.Add(BtnSelectLogFileFolder);
             groupBox2.Controls.Add(label98);
             groupBox2.Controls.Add(label99);
-            groupBox2.Location = new System.Drawing.Point(442, 322);
+            groupBox2.Location = new System.Drawing.Point(115, 306);
             groupBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox2.Name = "groupBox2";
             groupBox2.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -3739,14 +3818,14 @@
             groupBox1.Controls.Add(ChkRollOverLogs);
             groupBox1.Controls.Add(DateTimeLogRolloverTime);
             groupBox1.Controls.Add(LblLogRolloverTime);
-            groupBox1.Location = new System.Drawing.Point(442, 213);
+            groupBox1.Location = new System.Drawing.Point(451, 306);
             groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox1.Name = "groupBox1";
             groupBox1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            groupBox1.Size = new System.Drawing.Size(304, 85);
+            groupBox1.Size = new System.Drawing.Size(360, 84);
             groupBox1.TabIndex = 70;
             groupBox1.TabStop = false;
-            groupBox1.Text = "Log Roll-over";
+            groupBox1.Text = "Log Roll-over time";
             // 
             // ChkRollOverLogs
             // 
@@ -3987,6 +4066,10 @@
             groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)NumMaxDevices).EndInit();
             LoggingConfigurationTab.ResumeLayout(false);
+            groupBox6.ResumeLayout(false);
+            groupBox6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)NumberOfLogFilesToRetain).EndInit();
+            ((System.ComponentModel.ISupportInitialize)MaximumLogFileSizeMB).EndInit();
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
             groupBox2.ResumeLayout(false);
@@ -4272,5 +4355,12 @@
         private System.Windows.Forms.CheckBox ChkEnableReboot;
         private System.Windows.Forms.TabPage NonStandardTab;
         private System.Windows.Forms.CheckBox ChkOmitRawParameterInCommandXXXToTelescope;
+        private System.Windows.Forms.Label label101;
+        private System.Windows.Forms.Label LabelLogFileSize;
+        private System.Windows.Forms.NumericUpDown MaximumLogFileSizeMB;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.NumericUpDown NumberOfLogFilesToRetain;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Label label102;
     }
 }

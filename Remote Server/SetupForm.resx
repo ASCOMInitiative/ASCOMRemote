@@ -2236,7 +2236,19 @@
   "127.0.0.1" (or [::1] if you have enabled IP
   V6).</value>
   </data>
+  <data name="label102.Text" xml:space="preserve">
+    <value>When "Number of log files to retain" is 1, a single log file is created with no size limit.  (This is the original default behaviour)
+
+When "Number of log files to retain" is &gt; 1, the  log file will gorw until reaching the size specified in
+"Maximum log file size before rollover (MB)", at which point the file is closed and another log file is started.
+
+The number of retained log files will be capped at the "Number of log files to retain" value by deleting older log files.
+</value>
+  </data>
   <metadata name="DlgSetLogFolderPath.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>323, 17</value>
+  </metadata>
+  <metadata name="saveFileDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>488, 17</value>
   </metadata>
 </root>

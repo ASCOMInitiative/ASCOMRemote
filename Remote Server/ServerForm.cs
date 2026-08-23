@@ -125,12 +125,15 @@ namespace ASCOM.Remote
         //internal const int SharedConstants.URL_ELEMENT_SERVER_COMMAND = 2; // For /server/ type URIs
 
         // Device server profile persistence constants
+
+        // Settings constants - these are the names of the settings in the profile and their default values
+
         internal const string SERVER_LOG_FOLDER_PROFILENAME = "Server Log Folder"; // No default value constant because the default Documents folder has to be calculated dynamically at run time
         internal const string SERVER_ACCESS_LOG_PROFILENAME = "Server Access Log Enabled"; internal const bool SERVER_ACCESS_LOG_DEFAULT = true;
         internal const string SERVER_TRACE_LEVEL_PROFILENAME = "Server Trace Level"; internal const bool SERVER_TRACE_LEVEL_DEFAULT = true;
         internal const string SERVER_DEBUG_TRACE_PROFILENAME = "Server Include Debug Trace"; internal const bool SERVER_DEBUG_TRACE_DEFAULT = false;
-        internal const long SERVER_LOG_MAXIMUM_FILE_SIZE_BYTES = 50L * 1024L * 1024L;
-        internal const int SERVER_LOG_MAXIMUM_RETAINED_FILES = 10;
+        internal const string SERVER_LOG_MAXIMUM_FILE_SIZE_MEGABYTES_PROFILENAME = "Server Log Maximum File Size Bytes"; internal const long SERVER_LOG_MAXIMUM_FILE_SIZE_MEGABYTES_DEFAULT = 50L; // 50MB default
+        internal const string SERVER_LOG_MAXIMUM_RETAINED_FILES_PROFILENAME = "Server Log Maximum Retained Files"; internal const int SERVER_LOG_MAXIMUM_RETAINED_FILES_DEFAULT = 1; // 1 creates a single, ever growing log file
         internal const string SERVER_IPADDRESS_PROFILENAME = "Server IP Address"; internal const string SERVER_IPADDRESS_DEFAULT = SharedConstants.LOCALHOST_ADDRESS_IPV4;
         internal const string SERVER_PORTNUMBER_PROFILENAME = "Server Port Number"; internal const decimal SERVER_PORTNUMBER_DEFAULT = 11111;
         internal const string SERVER_AUTOCONNECT_PROFILENAME = "Server Auto Connect"; internal const bool SERVER_AUTOCONNECT_DEFAULT = true;
@@ -258,6 +261,9 @@ namespace ASCOM.Remote
         internal static string TraceFolder;
         internal static bool TraceState;
         internal static bool DebugTraceState;
+
+        internal static long ServerLogMaximumFileSizeMegaBytes;
+        internal static int ServerLogMaximumRetainedFiles;
         internal static string ServerIPAddressString;
         internal static decimal ServerPortNumber;
         internal static bool StartWithDevicesConnected;
@@ -362,8 +368,8 @@ namespace ASCOM.Remote
                     LogFilePath = TraceFolder, // Set the trace folder to the user specified value
                     Enabled = TraceState, // Enable the log if required
                     UseUtcTime = UseUtcTimeInLogs,
-                    MaximumLogFileSizeBytes = SERVER_LOG_MAXIMUM_FILE_SIZE_BYTES,
-                    MaximumRetainedLogFiles = SERVER_LOG_MAXIMUM_RETAINED_FILES
+                    MaximumLogFileSizeBytes = ServerLogMaximumFileSizeMegaBytes * 1024L * 1024L, // Convert MB to bytes for the trace logger
+                    MaximumRetainedLogFiles = ServerLogMaximumRetainedFiles
                 };
 
                 LogMessage(0, 0, 0, "New", $"Remote Server Version {Updates.AscomRemoteVersionDisplayString}, Started on {DateTime.Now:dddd d MMMM yyyy HH: mm:ss}");
@@ -377,8 +383,8 @@ namespace ASCOM.Remote
                     LogFilePath = TraceFolder, // Set the trace folder to the user specified value
                     Enabled = AccessLogEnabled,
                     UseUtcTime = UseUtcTimeInLogs,
-                    MaximumLogFileSizeBytes = SERVER_LOG_MAXIMUM_FILE_SIZE_BYTES,
-                    MaximumRetainedLogFiles = SERVER_LOG_MAXIMUM_RETAINED_FILES
+                    MaximumLogFileSizeBytes = ServerLogMaximumFileSizeMegaBytes * 1024L * 1024L, // Convert MB to bytes for the trace logger
+                    MaximumRetainedLogFiles = ServerLogMaximumRetainedFiles
                 };
 
                 LogMessage(0, 0, 0, "New", "Setting screen log check boxes"); // Must be done before enabling event handlers!
@@ -1478,8 +1484,8 @@ namespace ASCOM.Remote
                             LogFilePath = TraceFolder,
                             Enabled = true, // Enable the trace logger
                             IpAddressTraceState = LogClientIPAddress, // Set the current state of the "include client IP address in trace lines" flag
-                            MaximumLogFileSizeBytes = SERVER_LOG_MAXIMUM_FILE_SIZE_BYTES,
-                            MaximumRetainedLogFiles = SERVER_LOG_MAXIMUM_RETAINED_FILES
+                            MaximumLogFileSizeBytes = ServerLogMaximumFileSizeMegaBytes * 1024L * 1024L, // Convert MB to bytes for the trace logger
+                            MaximumRetainedLogFiles = ServerLogMaximumRetainedFiles
                         };
 
                         TL.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));
@@ -1715,6 +1721,12 @@ namespace ASCOM.Remote
             return sw.Elapsed.TotalMilliseconds;
         }
 
+        public static void SetLoggerParameters(long maxLogFileSizeMB, int maxRetainedFiles)
+        {
+            TL.MaximumLogFileSizeBytes = maxLogFileSizeMB * 1024L * 1024L; // Convert MB to bytes for the trace logger
+            TL.MaximumRetainedLogFiles = maxRetainedFiles;
+        }
+
         #endregion
 
         #region Profile management
@@ -1765,6 +1777,8 @@ namespace ASCOM.Remote
             SuppressConfirmationOnWindowsClose = driverProfile.GetValue<bool>(SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE, string.Empty, SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE_DEFAULT);
             EnableReboot = driverProfile.GetValue<bool>(ENABLE_REBOOT, string.Empty, ENABLE_REBOOT_DEFAULT);
             NonStdOmitRawInCommandXXXToTelescope = driverProfile.GetValue<bool>(NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE, string.Empty, NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE_DEFAULT);
+            ServerLogMaximumFileSizeMegaBytes = driverProfile.GetValue<long>(SERVER_LOG_MAXIMUM_FILE_SIZE_MEGABYTES_PROFILENAME, string.Empty, SERVER_LOG_MAXIMUM_FILE_SIZE_MEGABYTES_DEFAULT);
+            ServerLogMaximumRetainedFiles = driverProfile.GetValue<int>(SERVER_LOG_MAXIMUM_RETAINED_FILES_PROFILENAME, string.Empty, SERVER_LOG_MAXIMUM_RETAINED_FILES_DEFAULT);
 
             // Set the next log roll-over time using the persisted roll-over time value
             SetNextRolloverTime();
@@ -1894,6 +1908,8 @@ namespace ASCOM.Remote
             driverProfile.SetValueInvariant<bool>(SUPPRESS_CONFIRMATION_ON_WINDOWS_CLOSE, string.Empty, SuppressConfirmationOnWindowsClose);
             driverProfile.SetValueInvariant<bool>(ENABLE_REBOOT, string.Empty, EnableReboot);
             driverProfile.SetValueInvariant<bool>(NONSTD_OMIT_RAW_IN_COMMANDXXX_TO_TELESCOPE, string.Empty, NonStdOmitRawInCommandXXXToTelescope);
+            driverProfile.SetValueInvariant<long>(SERVER_LOG_MAXIMUM_FILE_SIZE_MEGABYTES_PROFILENAME, string.Empty, ServerLogMaximumFileSizeMegaBytes);
+            driverProfile.SetValueInvariant<int>(SERVER_LOG_MAXIMUM_RETAINED_FILES_PROFILENAME, string.Empty, ServerLogMaximumRetainedFiles);
 
             // Update the next roll-over time in case the time has changed
             //TL.LogMessage("WriteProfile", $"NextRolloverTime Before: {NextRolloverTime}");
@@ -2757,8 +2773,8 @@ namespace ASCOM.Remote
                                 LogFilePath = TraceFolder,
                                 Enabled = true, // Enable the trace logger
                                 IpAddressTraceState = LogClientIPAddress, // Set the current state of the "include client IP address in trace lines" flag
-                                MaximumLogFileSizeBytes = SERVER_LOG_MAXIMUM_FILE_SIZE_BYTES,
-                                MaximumRetainedLogFiles = SERVER_LOG_MAXIMUM_RETAINED_FILES
+                                MaximumLogFileSizeBytes = ServerLogMaximumFileSizeMegaBytes * 1024L * 1024L, // Convert MB to bytes for the trace logger
+                                MaximumRetainedLogFiles = ServerLogMaximumRetainedFiles
                             };
 
                             AccessLog.LogMessage(clientID, clientTransactionID, serverTransactionID, "StartOfDay", "Opening a new log because a new day has started. " + now.ToString("dddd d MMMM yyyy HH:mm:ss"));

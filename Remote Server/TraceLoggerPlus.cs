@@ -222,9 +222,8 @@ namespace ASCOM.Remote
                 // Create the log file if it doesn't yet exist
                 if (logFileStream == null) CreateLogFile();
 
-                // Roll automatically named files before writing another message
-                // once the configured size boundary has been reached.
-                if (autoGenerateFileName && MaximumLogFileSizeBytes > 0 && logFileStream.BaseStream.Length >= MaximumLogFileSizeBytes)
+                // Roll automatically named files before writing another message once the configured size boundary has been reached.
+                if (autoGenerateFileName && MaximumRetainedLogFiles > 1 && logFileStream.BaseStream.Length >= MaximumLogFileSizeBytes)
                 {
                     CreateLogFile();
                 }

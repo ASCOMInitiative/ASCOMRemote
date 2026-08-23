@@ -189,6 +189,34 @@ namespace ASCOM.Remote
                 return (T)((object)RetVal);
             }
 
+            if ((typeof(T) == typeof(Int64)) | (typeof(T) == typeof(long)))
+            {
+                string registryValue;
+                if (SubKey == "")
+                {
+                    if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", "SubKey is empty so getting value directly");
+                    registryValue = (string)baseRegistryKey.GetValue(KeyName);
+                    if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", "Value retrieved OK: " + registryValue);
+                }
+                else
+                {
+                    if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", "SubKey has a value so using it...");
+                    registryValue = (string)baseRegistryKey.CreateSubKey(SubKey).GetValue(KeyName);
+                    if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", "Value retrieved OK: " + registryValue);
+                }
+
+                if (registryValue == null)
+                {
+                    SetValueInvariant<T>(KeyName, SubKey, DefaultValue);
+                    int defaultValue = Convert.ToInt32(DefaultValue);
+                    registryValue = defaultValue.ToString(CultureInfo.InvariantCulture);
+                }
+
+                Int64 RetVal = Convert.ToInt64(registryValue, CultureInfo.InvariantCulture);
+                if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "GetValue", $"Retrieved {KeyName} = {RetVal}");
+                return (T)((object)RetVal);
+            }
+
             throw new DriverException("GetValue: Unknown type: " + typeof(T).Name);
         }
 
@@ -204,9 +232,17 @@ namespace ASCOM.Remote
         {
             if (LOG_CONFIGURATION_CALLS) ServerForm.LogMessage(0, 0, 0, "SetValue DateTime", $"Setting {typeof(T).Name} value '{KeyName}' in subkey '{SubKey}' to: '{Value}'");
 
+            if ((typeof(T) == typeof(Int64)) | (typeof(T) == typeof(long)))
+            {
+                Int64 intValue = Convert.ToInt64(Value);
+                if (SubKey == "") baseRegistryKey.SetValue(KeyName, intValue.ToString(CultureInfo.InvariantCulture));
+                else baseRegistryKey.CreateSubKey(SubKey).SetValue(KeyName, intValue.ToString(CultureInfo.InvariantCulture));
+                return;
+            }
+
             if ((typeof(T) == typeof(Int32)) | (typeof(T) == typeof(int)))
             {
-                int intValue = Convert.ToInt32(Value);
+                Int32 intValue = Convert.ToInt32(Value);
                 if (SubKey == "") baseRegistryKey.SetValue(KeyName, intValue.ToString(CultureInfo.InvariantCulture));
                 else baseRegistryKey.CreateSubKey(SubKey).SetValue(KeyName, intValue.ToString(CultureInfo.InvariantCulture));
                 return;

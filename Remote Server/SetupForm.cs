@@ -80,6 +80,27 @@ namespace ASCOM.Remote
 
             // Add a handler for changes in the minimisation behaviour combo box
             cmbMinimiseOptions.SelectedIndexChanged += CmbMinimiseOptions_SelectedIndexChanged;
+
+            NumberOfLogFilesToRetain.ValueChanged += NumnberOfLogFilesToRetain_ValueChanged;
+        }
+
+        private void SetLogFileSizeState()
+        {
+            if (NumberOfLogFilesToRetain.Value == 1)
+            {
+                MaximumLogFileSizeMB.Enabled = false;
+                LabelLogFileSize.Enabled = false;
+            }
+            else
+            {
+                MaximumLogFileSizeMB.Enabled = true;
+                LabelLogFileSize.Enabled = true;
+            }
+        }
+
+        private void NumnberOfLogFilesToRetain_ValueChanged(object sender, EventArgs e)
+        {
+            SetLogFileSizeState();
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -122,6 +143,8 @@ namespace ASCOM.Remote
                 chkSuppressConformationOnWindowsClose.Enabled = chkConfirmExit.Checked;
                 ChkEnableReboot.Checked = ServerForm.EnableReboot;
                 ChkOmitRawParameterInCommandXXXToTelescope.Checked = ServerForm.NonStdOmitRawInCommandXXXToTelescope;
+                NumberOfLogFilesToRetain.Value = ServerForm.ServerLogMaximumRetainedFiles;
+                MaximumLogFileSizeMB.Value = ServerForm.ServerLogMaximumFileSizeMegaBytes;
 
                 // Initialise the application minimise options combo box
                 cmbMinimiseOptions.Items.AddRange([ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY, ServerForm.MINIMISE_TO_TASK_BAR_KEY]);
@@ -274,6 +297,7 @@ namespace ASCOM.Remote
                 else
                     ChkRunAs64BitApplication.Enabled = false;
 
+                SetLogFileSizeState();
             }
             catch (Exception ex)
             {
@@ -593,6 +617,9 @@ namespace ASCOM.Remote
                 ServerForm.SuppressConfirmationOnWindowsClose = chkSuppressConformationOnWindowsClose.Checked;
                 ServerForm.EnableReboot = ChkEnableReboot.Checked;
                 ServerForm.NonStdOmitRawInCommandXXXToTelescope = ChkOmitRawParameterInCommandXXXToTelescope.Checked;
+                ServerForm.ServerLogMaximumFileSizeMegaBytes = (long)MaximumLogFileSizeMB.Value;
+                ServerForm.ServerLogMaximumRetainedFiles = (int)NumberOfLogFilesToRetain.Value;
+                ServerForm.SetLoggerParameters((long)MaximumLogFileSizeMB.Value, (int)NumberOfLogFilesToRetain.Value); // Set the current logger parameters to the new values so that they take effect immediately
 
                 // Update the minimise to system tray value
                 ServerForm.MinimiseToSystemTray = (string)cmbMinimiseOptions.SelectedItem == ServerForm.MINIMISE_TO_SYSTEM_TRAY_KEY; // Expression evaluates to True if minimise to tray is selected, otherwise false
