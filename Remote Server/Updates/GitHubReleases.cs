@@ -42,11 +42,22 @@ namespace ASCOM.Remote
         public static Release Latest(this IEnumerable<Release> releases)
         {
             ArgumentNullException.ThrowIfNull(releases);
-            if (releases.Any())
+
+            Release? latestRelease = null;
+            SemVersion? latestVersion = null;
+
+            foreach (Release release in releases)
             {
-                return releases.OrderBy(rp => rp.ReleaseSemVersionFromTag()).LastOrDefault();
+                SemVersion releaseVersion = release.ReleaseSemVersionFromTag();
+
+                if (latestRelease is null || latestVersion is null || SemVersion.ComparePrecedence(releaseVersion, latestVersion) > 0)
+                {
+                    latestRelease = release;
+                    latestVersion = releaseVersion;
+                }
             }
-            return null;
+
+            return latestRelease;
         }
 
         public static SemVersion ReleaseSemVersionFromTag(this Release release)
