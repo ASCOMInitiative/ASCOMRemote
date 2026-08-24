@@ -120,6 +120,32 @@
   <metadata name="errorProvider1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="textBox1.Text" xml:space="preserve">
+    <value>
+  Setting the Right Server IP Address
+
+  The Remote Server defaults to the localhost
+  address (127.0.0.1), which restricts access
+  just to applications running on this PC
+
+  If you wish to use the Remote Server from
+  other devices, you must select an IP address
+  from the list that is not "localhost" or
+  "127.0.0.1" (or [::1] if you have enabled IP
+  V6).</value>
+  </data>
+  <data name="label102.Text" xml:space="preserve">
+    <value>When "Number of log files to retain" is 1, a single log file is created with no size limit.  (This is the original default behaviour)
+
+When "Number of log files to retain" is &gt; 1, the  log file will gorw until reaching the size specified in
+"Maximum log file size before rollover (MB)", at which point the file is closed and another log file is started.
+
+The number of retained log files will be capped at the "Number of log files to retain" value by deleting older log files.
+
+NOTE: When capping is enabled, it applies to ALL ASCOM Remote log files in the folder, not just to logs from the current
+instance.  i.e. logs from runs earlier in the day may be lost.
+</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -2220,29 +2246,6 @@
         IQD/VyEA/1chAP9CPyj/M1RF/0I/KP9CPyj/Qj8o/0I/KP9CPyj/Qj8o/0I/KP9CPyj/Qj8o/0I/KP9C
         Pyj/Qj8o/0I/KP9CPyj/M1RF/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
-</value>
-  </data>
-  <data name="textBox1.Text" xml:space="preserve">
-    <value>
-  Setting the Right Server IP Address
-
-  The Remote Server defaults to the localhost
-  address (127.0.0.1), which restricts access
-  just to applications running on this PC
-
-  If you wish to use the Remote Server from
-  other devices, you must select an IP address
-  from the list that is not "localhost" or
-  "127.0.0.1" (or [::1] if you have enabled IP
-  V6).</value>
-  </data>
-  <data name="label102.Text" xml:space="preserve">
-    <value>When "Number of log files to retain" is 1, a single log file is created with no size limit.  (This is the original default behaviour)
-
-When "Number of log files to retain" is &gt; 1, the  log file will gorw until reaching the size specified in
-"Maximum log file size before rollover (MB)", at which point the file is closed and another log file is started.
-
-The number of retained log files will be capped at the "Number of log files to retain" value by deleting older log files.
 </value>
   </data>
   <metadata name="DlgSetLogFolderPath.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

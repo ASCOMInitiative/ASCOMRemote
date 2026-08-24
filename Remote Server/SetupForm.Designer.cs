@@ -17,7 +17,7 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetupForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             BtnCancel = new System.Windows.Forms.Button();
             BtnOK = new System.Windows.Forms.Button();
             chkAutoConnect = new System.Windows.Forms.CheckBox();
@@ -3631,14 +3631,14 @@
             // 
             groupBox6.Controls.Add(label102);
             groupBox6.Controls.Add(NumberOfLogFilesToRetain);
-            groupBox6.Controls.Add(this.LabelLogFileSize);
+            groupBox6.Controls.Add(LabelLogFileSize);
             groupBox6.Controls.Add(MaximumLogFileSizeMB);
             groupBox6.Controls.Add(label101);
-            groupBox6.Location = new System.Drawing.Point(451, 45);
+            groupBox6.Location = new System.Drawing.Point(424, 55);
             groupBox6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox6.Name = "groupBox6";
             groupBox6.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            groupBox6.Size = new System.Drawing.Size(683, 224);
+            groupBox6.Size = new System.Drawing.Size(676, 234);
             groupBox6.TabIndex = 73;
             groupBox6.TabStop = false;
             groupBox6.Text = "Log Size Management";
@@ -3646,16 +3646,16 @@
             // label102
             // 
             label102.AutoSize = true;
-            label102.Location = new System.Drawing.Point(8, 19);
+            label102.Location = new System.Drawing.Point(8, 23);
             label102.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label102.Name = "label102";
-            label102.Size = new System.Drawing.Size(659, 90);
+            label102.Size = new System.Drawing.Size(659, 135);
             label102.TabIndex = 74;
             label102.Text = resources.GetString("label102.Text");
             // 
             // NumberOfLogFilesToRetain
             // 
-            NumberOfLogFilesToRetain.Location = new System.Drawing.Point(8, 121);
+            NumberOfLogFilesToRetain.Location = new System.Drawing.Point(8, 172);
             NumberOfLogFilesToRetain.Maximum = new decimal(new int[] { 1410065408, 2, 0, 0 });
             NumberOfLogFilesToRetain.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             NumberOfLogFilesToRetain.Name = "NumberOfLogFilesToRetain";
@@ -3667,7 +3667,7 @@
             // LabelLogFileSize
             // 
             LabelLogFileSize.AutoSize = true;
-            LabelLogFileSize.Location = new System.Drawing.Point(97, 154);
+            LabelLogFileSize.Location = new System.Drawing.Point(97, 203);
             LabelLogFileSize.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             LabelLogFileSize.Name = "LabelLogFileSize";
             LabelLogFileSize.Size = new System.Drawing.Size(231, 15);
@@ -3676,7 +3676,7 @@
             // 
             // MaximumLogFileSizeMB
             // 
-            MaximumLogFileSizeMB.Location = new System.Drawing.Point(8, 152);
+            MaximumLogFileSizeMB.Location = new System.Drawing.Point(9, 201);
             MaximumLogFileSizeMB.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
             MaximumLogFileSizeMB.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             MaximumLogFileSizeMB.Name = "MaximumLogFileSizeMB";
@@ -3688,7 +3688,7 @@
             // label101
             // 
             label101.AutoSize = true;
-            label101.Location = new System.Drawing.Point(97, 126);
+            label101.Location = new System.Drawing.Point(97, 174);
             label101.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label101.Name = "label101";
             label101.Size = new System.Drawing.Size(156, 15);
@@ -3702,11 +3702,11 @@
             groupBox3.Controls.Add(chkDebugTrace);
             groupBox3.Controls.Add(ChkUseUtcTime);
             groupBox3.Controls.Add(ChkLogClientIPAddress);
-            groupBox3.Location = new System.Drawing.Point(115, 45);
+            groupBox3.Location = new System.Drawing.Point(94, 131);
             groupBox3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox3.Name = "groupBox3";
             groupBox3.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            groupBox3.Size = new System.Drawing.Size(304, 156);
+            groupBox3.Size = new System.Drawing.Size(304, 158);
             groupBox3.TabIndex = 72;
             groupBox3.TabStop = false;
             groupBox3.Text = "Logging Configuration";
@@ -3771,11 +3771,11 @@
             groupBox2.Controls.Add(BtnSelectLogFileFolder);
             groupBox2.Controls.Add(label98);
             groupBox2.Controls.Add(label99);
-            groupBox2.Location = new System.Drawing.Point(115, 306);
+            groupBox2.Location = new System.Drawing.Point(424, 312);
             groupBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox2.Name = "groupBox2";
             groupBox2.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            groupBox2.Size = new System.Drawing.Size(304, 85);
+            groupBox2.Size = new System.Drawing.Size(304, 84);
             groupBox2.TabIndex = 71;
             groupBox2.TabStop = false;
             groupBox2.Text = "Log File Location";
@@ -3818,11 +3818,11 @@
             groupBox1.Controls.Add(ChkRollOverLogs);
             groupBox1.Controls.Add(DateTimeLogRolloverTime);
             groupBox1.Controls.Add(LblLogRolloverTime);
-            groupBox1.Location = new System.Drawing.Point(451, 306);
+            groupBox1.Location = new System.Drawing.Point(796, 312);
             groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox1.Name = "groupBox1";
             groupBox1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            groupBox1.Size = new System.Drawing.Size(360, 84);
+            groupBox1.Size = new System.Drawing.Size(304, 84);
             groupBox1.TabIndex = 70;
             groupBox1.TabStop = false;
             groupBox1.Text = "Log Roll-over time";
@@ -3973,14 +3973,14 @@
             // DataGridCorsOrigins
             // 
             DataGridCorsOrigins.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            DataGridCorsOrigins.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            DataGridCorsOrigins.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             DataGridCorsOrigins.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             DataGridCorsOrigins.EnableHeadersVisualStyles = false;
             DataGridCorsOrigins.Location = new System.Drawing.Point(255, 58);

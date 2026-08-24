@@ -132,7 +132,7 @@ namespace ASCOM.Remote
         internal const string SERVER_ACCESS_LOG_PROFILENAME = "Server Access Log Enabled"; internal const bool SERVER_ACCESS_LOG_DEFAULT = true;
         internal const string SERVER_TRACE_LEVEL_PROFILENAME = "Server Trace Level"; internal const bool SERVER_TRACE_LEVEL_DEFAULT = true;
         internal const string SERVER_DEBUG_TRACE_PROFILENAME = "Server Include Debug Trace"; internal const bool SERVER_DEBUG_TRACE_DEFAULT = false;
-        internal const string SERVER_LOG_MAXIMUM_FILE_SIZE_MEGABYTES_PROFILENAME = "Server Log Maximum File Size Bytes"; internal const long SERVER_LOG_MAXIMUM_FILE_SIZE_MEGABYTES_DEFAULT = 50L; // 50MB default
+        internal const string SERVER_LOG_MAXIMUM_FILE_SIZE_MEGABYTES_PROFILENAME = "Server Log Maximum File Size MegaBytes"; internal const long SERVER_LOG_MAXIMUM_FILE_SIZE_MEGABYTES_DEFAULT = 50L; // 50MB default
         internal const string SERVER_LOG_MAXIMUM_RETAINED_FILES_PROFILENAME = "Server Log Maximum Retained Files"; internal const int SERVER_LOG_MAXIMUM_RETAINED_FILES_DEFAULT = 1; // 1 creates a single, ever growing log file
         internal const string SERVER_IPADDRESS_PROFILENAME = "Server IP Address"; internal const string SERVER_IPADDRESS_DEFAULT = SharedConstants.LOCALHOST_ADDRESS_IPV4;
         internal const string SERVER_PORTNUMBER_PROFILENAME = "Server Port Number"; internal const decimal SERVER_PORTNUMBER_DEFAULT = 11111;
