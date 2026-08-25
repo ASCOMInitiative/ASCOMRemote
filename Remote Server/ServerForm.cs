@@ -220,6 +220,16 @@ namespace ASCOM.Remote
         [GeneratedRegex("[^\\u0020-\\u007E]")]
         private static partial Regex AsciiRegex();
 
+        /// <summary>
+        /// Maximum accepted form-body size in bytes.
+        /// </summary>
+        public const int MAXIMUM_FORM_BODY_SIZE_BYTES = 1024 * 1024; // 1 MB
+
+        /// <summary>
+        /// Maximum accepted form parameters, including empty parameter segments.
+        /// </summary>
+        public const int MAXIMUM_FORM_PARAMETER_COUNT = 256;
+
         #endregion
 
         #region Application Global Variables
