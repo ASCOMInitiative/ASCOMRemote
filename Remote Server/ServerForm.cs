@@ -2517,6 +2517,42 @@ namespace ASCOM.Remote
         }  // Event handler for new REST requests
 
         /// <summary>
+        /// Reads and logs the form parameters for a request without allowing an
+        /// unbounded request body to reach the device dispatch path.
+        /// </summary>
+        private bool TryReadFormParameters(RequestData requestData, string requestType, out NameValueCollection formParameters)
+        {
+            HttpListenerRequest request = requestData.Request;
+            if (!FormParameterReader.TryRead(
+                request.InputStream,
+                request.ContentEncoding,
+                request.ContentLength64,
+                out string formParameterString,
+                out formParameters,
+                out int formParameterCount,
+                out string errorMessage))
+            {
+                LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, errorMessage);
+                Return400Error(requestData, errorMessage);
+                return false;
+            }
+
+            string requestTypePrefix = string.IsNullOrEmpty(requestType) ? string.Empty : requestType + " ";
+            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"{requestTypePrefix}Form parameters string: '{formParameterString}' Form parameters string length: {formParameterString.Length}, Raw parameters array size: {formParameterCount}");
+
+            foreach (string key in formParameters)
+            {
+                string[] values = formParameters.GetValues(key);
+                foreach (string value in values)
+                {
+                    LogMessage1(requestData, requestTypePrefix + "Form Parameter", $"{key} = {value}");
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Processes the request received by the server
         /// </summary>
         /// <param name="context">Context object that contains the request and response objects.</param>
@@ -2578,46 +2614,7 @@ namespace ASCOM.Remote
                     case "PUT":
                         if (request.HasEntityBody) // Add any parameters supplied in the form body
                         {
-                            string formParameterString;
-                            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding)) // Extract the aggregated parameter string from the form within the request
-                            {
-                                formParameterString = reader.ReadToEnd();
-                            }
-                            formParameterString ??= ""; // Handle the possibility that we get a null value instead of an empty string
-
-                            string[] rawParameters = formParameterString.Split('&'); // Parse the aggregated parameter string into an array of key / value pair strings
-                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Form parameters string: '{formParameterString}'Form parameters string length: {formParameterString.Length}, Raw parameters array size: {rawParameters.Length}");
-
-                            // Parse each key / value pair string into its key and value and add these to the parameters collection
-                            foreach (string parameter in rawParameters)
-                            {
-                                string[] keyValuePair = parameter.Split('=');
-                                if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Found form parameter string: '{parameter}' whose KeyValuePair array size is: {keyValuePair.Length}");
-
-                                string key = keyValuePair[0].Trim(); // Extract the key value
-                                if (!string.IsNullOrEmpty(key)) // The key has a name so now extract the value
-                                {
-                                    string value = ""; // Initialise a variable to hold the value
-                                    if (keyValuePair.Length > 1) // The key does have a value
-                                    {
-                                        value = value = HttpUtility.UrlDecode(keyValuePair[1].Trim()); // Extract the value so long as one exists 
-                                    }
-                                    else // The key does not have a value
-                                    {
-                                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"No parameter value was found for parameter {parameter} - an empty string will be assumed.");
-                                    }
-
-                                    // Add the parameter key and value to the parameter list
-                                    formParameters.Add(key, value);
-
-                                    // Log the form parameter if debug tracing
-                                    LogMessage1(requestData, "Form Parameter", $"{key} = {value}");
-                                }
-                                else // The key is null or empty so ignore it
-                                {
-                                    if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"Ignoring parameter with no name");
-                                }
-                            }
+                            if (!TryReadFormParameters(requestData, string.Empty, out formParameters)) return;
 
                             #region Code no longer in use
 
@@ -2680,53 +2677,11 @@ namespace ASCOM.Remote
                         // Process form parameters if present
                         if (request.HasEntityBody) // Add any parameters supplied in the form body
                         {
-                            string formParameterString;
-                            using (var reader = new StreamReader(request.InputStream, request.ContentEncoding)) // Extract the aggregated parameter string from the form within the request
-                            {
-                                formParameterString = reader.ReadToEnd();
-                            }
+                            if (!TryReadFormParameters(requestData, "OPTIONS", out formParameters)) return;
 
-                            // Handle the possibility that we get a null value instead of an empty string
-                            formParameterString ??= "";
-
-                            // Parse the aggregated parameter string into an array of key / value pair strings
-                            string[] rawParameters = formParameterString.Split('&');
-                            if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS Form parameters string: '{formParameterString}'Form parameters string length: {formParameterString.Length}, Raw parameters array size: {rawParameters.Length}");
-
-                            // Parse each key / value pair string into its key and value and add these to the parameters collection
-                            foreach (string parameter in rawParameters)
-                            {
-                                string[] keyValuePair = parameter.Split('=');
-                                if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS Found form parameter string: '{parameter}' whose KeyValuePair array size is: {keyValuePair.Length}");
-
-                                string key = keyValuePair[0].Trim(); // Extract the key value
-                                if (!string.IsNullOrEmpty(key)) // The key has a name so now extract the value
-                                {
-                                    string value = ""; // Initialise a variable to hold the value
-                                    if (keyValuePair.Length > 1) // The key does have a value
-                                    {
-                                        value = value = HttpUtility.UrlDecode(keyValuePair[1].Trim()); // Extract the value so long as one exists 
-                                    }
-                                    else // The key does not have a value
-                                    {
-                                        LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS No parameter value was found for parameter {parameter} - an empty string will be assumed.");
-                                    }
-
-                                    // Add the parameter key and value to the parameter list
-                                    formParameters.Add(key, value);
-
-                                    // Log the form parameter if debug tracing
-                                    LogMessage1(requestData, "OPTIONS Form Parameter", $"{key} = {value}");
-                                }
-                                else // The key is null or empty so ignore it
-                                {
-                                    if (DebugTraceState) LogMessage1(requestData, SharedConstants.REQUEST_RECEIVED_STRING, $"OPTIONS Ignoring parameter with no name");
-                                }
-
-                                // Clear any query parameters and use their form data counterparts if present
-                                clientIDString = formParameters[SharedConstants.CLIENT_ID_PARAMETER_NAME];
-                                clientTransactionIDString = formParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME];
-                            }
+                            // Clear any query parameters and use their form data counterparts if present
+                            clientIDString = formParameters[SharedConstants.CLIENT_ID_PARAMETER_NAME];
+                            clientTransactionIDString = formParameters[SharedConstants.CLIENT_TRANSACTION_ID_PARAMETER_NAME];
                         }
                         break;
 
