@@ -43,8 +43,8 @@ namespace ASCOM.Remote
         {
             ArgumentNullException.ThrowIfNull(releases);
 
-            Release? latestRelease = null;
-            SemVersion? latestVersion = null;
+            Release latestRelease = null;
+            SemVersion latestVersion = null;
 
             foreach (Release release in releases)
             {
