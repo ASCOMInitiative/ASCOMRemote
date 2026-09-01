@@ -76,7 +76,7 @@ public sealed class FormParameterReaderTests
     public void TryRead_RejectsMoreThanMaximumFormParameterSegments()
     {
         string body = string.Join("&", Enumerable.Range(0,
-            FormParameterReader.MAXIMUM_FORM_PARAMETER_COUNT + 1)
+            ServerForm.MAXIMUM_FORM_PARAMETER_COUNT + 1)
             .Select(index => $"Parameter{index}=value"));
 
         bool success = TryRead(body, out NameValueCollection parameters,
@@ -92,21 +92,21 @@ public sealed class FormParameterReaderTests
     public void TryRead_AcceptsExactlyMaximumFormParameterSegments()
     {
         string body = string.Join("&", Enumerable.Range(0,
-            FormParameterReader.MAXIMUM_FORM_PARAMETER_COUNT)
+            ServerForm.MAXIMUM_FORM_PARAMETER_COUNT)
             .Select(index => $"Parameter{index}=value"));
 
         bool success = TryRead(body, out NameValueCollection parameters,
             out string errorMessage);
 
         Assert.True(success, errorMessage);
-        Assert.Equal(FormParameterReader.MAXIMUM_FORM_PARAMETER_COUNT,
+        Assert.Equal(ServerForm.MAXIMUM_FORM_PARAMETER_COUNT,
             parameters.Count);
     }
 
     [Fact]
     public void TryRead_RejectsMoreThanMaximumEmptyFormParameterSegments()
     {
-        string body = new('&', FormParameterReader.MAXIMUM_FORM_PARAMETER_COUNT);
+        string body = new('&', ServerForm.MAXIMUM_FORM_PARAMETER_COUNT);
 
         bool success = TryRead(body, out NameValueCollection parameters,
             out string errorMessage);
@@ -125,7 +125,7 @@ public sealed class FormParameterReaderTests
         bool success = FormParameterReader.TryRead(
             input,
             Encoding.UTF8,
-            FormParameterReader.MAXIMUM_FORM_BODY_SIZE_BYTES + 1L,
+            ServerForm.MAXIMUM_FORM_BODY_SIZE_BYTES + 1L,
             out _,
             out NameValueCollection parameters,
             out _,
@@ -142,7 +142,7 @@ public sealed class FormParameterReaderTests
     {
         byte[] body = Encoding.UTF8.GetBytes(
             "Parameters=" + new string('x',
-                FormParameterReader.MAXIMUM_FORM_BODY_SIZE_BYTES));
+                ServerForm.MAXIMUM_FORM_BODY_SIZE_BYTES));
         using CountingReadStream input = new(body);
 
         bool success = FormParameterReader.TryRead(
@@ -157,7 +157,7 @@ public sealed class FormParameterReaderTests
         Assert.False(success);
         Assert.Empty(parameters);
         Assert.Contains("maximum", errorMessage, StringComparison.OrdinalIgnoreCase);
-        Assert.Equal(FormParameterReader.MAXIMUM_FORM_BODY_SIZE_BYTES + 1L,
+        Assert.Equal(ServerForm.MAXIMUM_FORM_BODY_SIZE_BYTES + 1L,
             input.BytesRead);
     }
 

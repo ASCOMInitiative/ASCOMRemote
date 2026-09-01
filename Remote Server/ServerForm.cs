@@ -245,6 +245,9 @@ namespace ASCOM.Remote
         // Lists to hold discovery UDP clients
         private readonly List<UdpClient> discoveryClientsIpV6 = [];
         private readonly List<UdpClient> discoveryClientsIpV4 = [];
+        private readonly ConcurrentQueue<DiscoveryResponse> discoveryResponses = new();
+        private readonly SemaphoreSlim discoveryResponseAvailable = new(0);
+        private readonly CancellationTokenSource discoveryResponseCancellationTokenSource = new();
         private int discoveryCount; // Unique number for each discovery packet received
 
         internal readonly object counterLock = new();
@@ -417,6 +420,8 @@ namespace ASCOM.Remote
                 this.FormClosing += ServerForm_FormClosing;
                 ServerForm_Resize(this, new EventArgs()); // Move controls to their correct positions
 
+                _ = ProcessDiscoveryResponsesAsync(discoveryResponseCancellationTokenSource.Token);
+
                 // Check whether this device already has an Alpaca unique ID, if not, create one
                 if (AlpacaUniqueId == Guid.Empty.ToString()) // Guid.Empty is the default value created when the configuration is retrieved if there is no pre-existing value
                 {
@@ -546,6 +551,8 @@ namespace ASCOM.Remote
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
+            discoveryResponseCancellationTokenSource.Cancel();
+
             // Clear down the listener
             LogMessage(0, 0, 0, "FormClosed", $"Stopping Remote server on thread {Environment.CurrentManagedThreadId}");
             StopRESTServer();
@@ -1171,6 +1178,9 @@ namespace ASCOM.Remote
                 // Convert the UDP message body to a string
                 string ReceiveString = Encoding.ASCII.GetString(udpClient.EndReceive(ar, ref remoteEndpoint));
 
+                // Resume listening before processing this packet so that response delays do not block receipt of later broadcasts.
+                udpClient.BeginReceive(DiscoveryCallback, udpClient);
+
                 // Get the IP address of the interface on this PC that received the message
                 IPEndPoint localIpEndPoint = (IPEndPoint)udpClient.Client.LocalEndPoint;
 
@@ -1185,8 +1195,6 @@ namespace ASCOM.Remote
                     if (localIpEndPoint.ToString() != new IPEndPoint(IPAddress.Parse(ServerIPAddressString), (int)AlpacaDiscoveryPort).ToString()) // IP Addresses don't match so we just ignore the request
                     {
                         if (DebugTraceState) LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"  The endpoint is NOT enabled - This request will be dropped.");
-                        // Continue to listen for discovery packets and don't process this request further
-                        udpClient.BeginReceive(DiscoveryCallback, udpClient);
                         return;
                     }
                     else // IP addresses do match so we can process this request
@@ -1216,12 +1224,14 @@ namespace ASCOM.Remote
                     string jsonResponse = JsonConvert.SerializeObject(alpacaDiscoveryResponse); // Convert the response object to a JSON string
                     ServerForm.LogMessage((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"JSON Discovery response: {jsonResponse}");
 
-                    byte[] response = Encoding.ASCII.GetBytes(jsonResponse); // Convert the JSON string to a byte array and send this back to the caller
-                    udpClient.Send(response, response.Length, remoteEndpoint);
-                }
+                    byte[] response = Encoding.ASCII.GetBytes(jsonResponse); // Convert the JSON string to a byte array
 
-                // Continue to listen for discovery packets
-                udpClient.BeginReceive(DiscoveryCallback, udpClient);
+                    // Add the response to the outgoing queue
+                    discoveryResponses.Enqueue(new DiscoveryResponse((uint)discoveryNumber, udpClient, response, remoteEndpoint));
+
+                    // This signals the WaitAsync in ProcessDiscoveryResponsesAsync that an item has been enqueued and releases the wait so the item can be processed
+                    discoveryResponseAvailable.Release();
+                }
             }
             catch (ObjectDisposedException)
             {
@@ -1230,6 +1240,57 @@ namespace ASCOM.Remote
             catch (Exception ex)
             {
                 LogException((uint)discoveryNumber, 0, 0, "DiscoveryCallback", $"Unexpected exception: {ex}");
+            }
+        }
+
+        /// <summary>
+        /// Processes discovery responses captured by DiscoveryCallback
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token that will terminate the process on shutdown.</param>
+        /// <returns>async TASK</returns>
+        private async Task ProcessDiscoveryResponsesAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                // Loop for ever until the cancellation token generates an OperationCanceledException exception.
+                while (true)
+                {
+                    // Wait for the next item to be enqueued
+                    await discoveryResponseAvailable.WaitAsync(cancellationToken);
+
+                    // Retrieve the next item to be processed
+                    if (discoveryResponses.TryDequeue(out DiscoveryResponse discoveryResponse))
+                    {
+                        try
+                        {
+                            // Add a small random delay (up to 20ms) to avoid flooding the network with broadcast responses
+                            await Task.Delay(Random.Shared.Next(1, 21), cancellationToken);
+
+                            // Send the discovery response to the client
+                            await discoveryResponse.UdpClient.SendAsync(discoveryResponse.Response, discoveryResponse.Response.Length, discoveryResponse.RemoteEndpoint);
+                        }
+                        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                        {
+                            throw;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // Discovery listeners are closed when the REST server stops.
+                        }
+                        catch (Exception ex)
+                        {
+                            LogException(discoveryResponse.DiscoveryNumber, 0, 0, "ProcessDiscoveryResponsesAsync", $"Unexpected exception: {ex}");
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                // Just absorb this exception, which occurs when closing down.
+            }
+            catch (Exception ex) // Log any other exceptions
+            {
+                LogException(0, 0, 0, "ProcessDiscoveryResponsesAsync", $"Unexpected exception: {ex}");
             }
         }
 
