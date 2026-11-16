@@ -1,0 +1,6 @@
+extends:
+  - recommended
+
+rules:
+  operation-operationId: off
+  no-empty-servers: off

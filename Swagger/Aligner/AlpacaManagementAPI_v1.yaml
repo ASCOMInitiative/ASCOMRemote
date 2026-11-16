@@ -1,0 +1,400 @@
+openapi: 3.1.1
+
+## This file is licensed under the MIT license, SPDX identifier: MIT
+
+## Copyright (c) 2025 ASCOM Initiative, Peter Simpson, Bob Denny, Danial Van Noord
+
+## Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
+## associated documentation files (the "Software"), to deal in the Software without restriction, 
+## including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+## and/or sell copies of the Software, and to permit persons to whom the Software is furnished to 
+## do so, subject to the following conditions:
+
+## The above copyright notice and this permission notice (including the next paragraph) shall be 
+## included in all copies or substantial portions of the Software.
+
+## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
+## BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+## IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+## LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION 
+## WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+
+info:
+  title: ASCOM Alpaca Management API
+    
+  version: "v1"
+  
+  license:
+    name: MIT
+    url: https://opensource.org/license/mit
+
+  description: >
+    This API enables Alpaca devices to be managed.
+
+    ## Introduction
+
+    The overall Alpaca device mangement interface provides two access mechanisms: **browser** through paths prefixed with **"/setup"** and **REST/JSON** through paths prefixed with **"/management"**.
+    
+    
+    The browser and JSON methods also come in two styles: **"Versioned"** and **"Unversioned"**. 
+    Unversioned paths are intended to be "well known" and not to change in future, whereas versioned paths can change should this ever be required.
+    
+    
+    The number of unversioned paths has been limited to two: a top level browser URL for overall device configuration and a JSON list of the  interface versions supported by the Alpaca device. All other paths are versioned.
+
+
+    ## URLs and Case Sensitivity
+
+    **Alpaca Management URLs** are all of the form **http(s)://host:port/path** where path is one of the method names below. e.g. for an Alpaca interface running on port 7843 of a device with IP address 192.168.1.89:
+    
+    * The main browser setup URL would be **http://192.168.1.89:7843/setup**
+        
+    * The JSON list of supported interface versions would be available through a GET to **http://192.168.1.89:7843/management/apiversions**
+        
+    * The JSON list of configured ASCOM devices  would be available through a GET to **http://192.168.1.89:7843/management/v1/configureddevices**
+    
+    
+
+    URLs are case sensitive and all elements must be in lower case. This means that both the device type and command name must always be in lower case. Parameter names are not case sensitive, so clients and drivers should be prepared for parameter names to be supplied and returned with any casing. Parameter values can be in mixed case as required.
+    
+    
+    ## Parameters and Returned values
+
+    For GET operations, parameters should be placed in the URL query string and for PUT operations they should be placed in the body of the message.
+
+
+    Responses, as described below, are returned in JSON format and always include a common set of values including the client's transaction number, 
+    the server's transaction number together with any error message and error number.
+
+    If the transaction completes successfully, the ErrorMessage field will be an empty string and the ErrorNumber field will be zero.
+
+
+    ## HTTP Status Codes and ASCOM Error codes
+
+    The returned HTTP status code gives a high level view of whether the device understood the request and whether it attempted to process it.
+    
+    
+    Under most circumstances the returned status will be `200`, indicating that the request was correctly formatted and that it was passed to the device's handler to execute.
+    A `200` status does not necessarily mean that the operation completed as expected, without error, and you must always check the ErrorMessage and ErrorNumber fields to confirm
+    whether the returned result is valid. The `200` status simply means that the transaction was successfully managed by the device's transaction management layer.
+    
+    
+    An HTTP status code of `400` indicates that the management JSON command interpreter could not interpret the request e.g. an invalid device number or misspelt device type was supplied. Check the body of the response for a text error message.
+
+
+    In common with accepted Internet practice, an HTTP status code of `403` indicates that an invalid URL was sent to the /setup browser interface.
+
+
+    An HTTP status code of `500` indicates an unexpected error within the device from which it could not recover. Check the body of the response for a text error message.
+
+     ## Copyright and License
+    
+    Copyright (c) 2025 ASCOM Initiative, Peter Simpson, Bob Denny, Danial Van Noord
+     
+# This API has no security
+security: []
+
+paths:
+  '/setup':
+    get:
+      summary: Primary browser web page for the overall collection of devices
+      description: >
+      
+        This is a single, well-known, API version-independent, browser interface that provides a consistent user experience and well known "new user" starting point for all Alpaca devices.
+        The web page must describe the overall device, including name, manufacturer and version number.  
+        
+        
+        This page must also enable the user to set cross cutting information that applies to the whole device such as the operating IP address and port number.  
+        
+        
+        This URL could also provide links to configuration pages of available devices, at the developer's discretion. 
+      tags:
+        - HTML Browser User Interface
+      responses:
+        '200':
+          description: Alpaca device primary HTML page
+          content:
+            text/html:
+              schema:
+                type: string
+                description: HTML page with device information.
+        '400':
+          description: 'The device did not understand the command.'
+          content:
+            text/html:
+              schema:
+                type: string
+                description: HTML message describing the issue.
+        '500':
+          description: Server internal error so return an error message
+          content:
+            text/html:
+              schema:
+                type: string
+                description: HTML message describing the issue.
+                
+  '/setup/v1/{device_type}/{device_number}/setup':
+    get:
+      summary: Configuration web page for the specified device
+      description: >
+        Web page user interface that enables device specific configuration to be set for each available device. This must be implemented, even if the response to the user is that the device is not configurable.
+
+
+        User relevance is increased by providing a unique configuration page for each device. This enables deep linking directly to the  device's individual configuration page and avoids displaying non-relevant information about other devices.
+      parameters:
+        - $ref: '#/components/parameters/device_type'
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - HTML Browser User Interface
+      responses:
+        '200':
+          description: Alpaca individual ASCOM device HTML configuration page. This must be implemented, even if the response to the user is that the device is not configurable.
+          content:
+            text/html:
+              schema:
+                type: string
+        '403':
+          description: 'The provided path specifies an unsupported device or method, return an error message to display in the browser'
+          content:
+            text/html:
+              schema:
+                type: string
+                description: HTML message describing the issue.
+        '500':
+          description: 'Server internal error so return an error message'
+          content:
+            text/html:
+              schema:
+                type: string
+                description: HTML message describing the issue.
+                
+  '/management/apiversions':
+    get:
+      summary: Supported Alpaca API versions
+      description: Returns an integer array of supported Alpaca API version numbers.
+      parameters:
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Management Interface (JSON)
+      responses:
+        '200':
+          description: integer array of supported Alpaca API version numbers.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntArrayResponse'
+        '400':
+          description: 'Method or parameter value error, check error message'
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error, check error message'
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+                
+  '/management/v1/description':
+    get:
+      summary: Summary information about this device as a whole
+      description: >
+        Returns cross-cutting information that applies to all devices available at this URL:Port.
+      parameters:
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Management Interface (JSON)
+      responses:
+        '200':
+          description: Cross cutting information that applies to all devices served through this URL:Port.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DescriptionResponse'
+        '403':
+          description: 'The provided path specifies an unsupported device or method, return an error message to display in the browser'
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error so return an error message'
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+                
+  '/management/v1/configureddevices':
+    get:
+      summary: Summary information about each available ASCOM device
+      description: >
+        Returns an array of device description objects, providing unique information for each served device, enabling them to be accessed through the Alpaca Device API.
+      parameters:
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Management Interface (JSON)
+      responses:
+        '200':
+          description: Summary information about each available ASCOM device.
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/ConfiguredDevicesResponse'
+        '403':
+          description: 'The provided path specifies an unsupported device or method, return an error message to display in the browser'
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: 'Server internal error so return an error message'
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+
+components:
+  parameters:
+    device_type:
+      name: device_type
+      description: One of the recognised ASCOM device types e.g. telescope (must be lower case)
+      in: path
+      required: true
+      schema:
+        type: string
+        default: telescope
+        pattern: '^[a-z]*$'
+        
+    device_number:
+      name: device_number
+      description: Zero based device number as set on the server (0 to 4294967295)
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: uint32
+        minimum: 0
+        maximum: 4294967295
+        
+    ClientIDQuery:
+      name: ClientID
+      description: Client's unique ID. (0 to 4294967295). The client should choose a value at start-up, e.g. a random value between 0 and 65535, and send this value on every transaction to help associate entries in device logs with this particular client.
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: uint32
+        minimum: 0
+        maximum: 4294967295
+        
+    ClientTransactionIDQuery:
+      name: ClientTransactionID
+      description: Client's transaction ID. (0 to 4294967295). The client should start this count at 1 and increment by one on each successive transaction. This will aid associating entries in device logs with corresponding entries in client side logs.
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: uint32
+        minimum: 0
+        maximum: 4294967295
+        
+  schemas:
+    ConfiguredDevicesResponse:
+      type: object
+      properties:
+        Value:
+          type: array
+          items:
+            type: object
+            properties:
+              DeviceName:
+                type: string
+                description: A short name for this device that a user would expect to see in a list of available devices.
+              DeviceType:
+                type: string
+                description: One of the supported ASCOM Devices types such as Telescope, Camera, Focuser etc.
+              DeviceNumber:
+                type: integer
+                format: uint32
+                minimum: 0
+                maximum: 4294967295
+                description: The device number that must be used to access this device through the Alpaca Device API.
+              UniqueID:
+                type: string
+                description: A string representation of a random value that uniquely identifies this ASCOM device; the random value should have a minimum of 48bits of randomness. Where possible a UUID / GUID should be used, but this is not mandatory.
+          description: Array of device configuration objects.
+        ClientTransactionID:
+          type: integer
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
+          description: Client's transaction ID (0 to 4294967295), as supplied by the client in the command request.
+        ServerTransactionID:
+          type: integer
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
+          description: Server's transaction ID (0 to 4294967295), should be unique for each client transaction so that log messages on the client can be associated with logs on the device.
+
+    DescriptionResponse:
+      type: object
+      properties:
+        Value:
+          type: object
+          properties:
+            ServerName:
+              type: string
+              description: The device or server's overall name.
+            Manufacturer:
+              type: string
+              description: The manufacturer's name.
+            ManufacturerVersion:
+              type: string
+              description: The device or server's version number.
+            Location:
+              type: string
+              description: The device or server's location.
+        ClientTransactionID:
+          type: integer
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
+          description: Client's transaction ID (0 to 4294967295), as supplied by the client in the command request.
+        ServerTransactionID:
+          type: integer
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
+          description: Server's transaction ID (0 to 4294967295), should be unique for each client transaction so that log messages on the client can be associated with logs on the device.
+
+    IntArrayResponse:
+      type: object
+      properties:
+        Value:
+          type: array
+          items:
+            type: integer
+            format: uint32
+            minimum: 1
+            maximum: 4294967295
+          description: Array of integer values.
+        ClientTransactionID:
+          type: integer
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
+          description: Client's transaction ID (0 to 4294967295), as supplied by the client in the command request.
+        ServerTransactionID:
+          type: integer
+          format: uint32
+          minimum: 0
+          maximum: 4294967295
+          description: Server's transaction ID (0 to 4294967295), should be unique for each client transaction so that log messages on the client can be associated with logs on the device.
+
+    ErrorMessage:
+      type: string
+      description: Plain text message describing the issue.
