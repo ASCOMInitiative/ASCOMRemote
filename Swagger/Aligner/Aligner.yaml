@@ -322,6 +322,9 @@ paths:
         "`Platform 7 onward.` Please note that this member has the same signature in all device interfaces but the returned properties vary by device type:
         
         
+        [Aligner DeviceState](https://URL.not.yet.available)
+
+
         [Camera DeviceState](https://ascom-standards.org/newdocs/camera.html#Camera.DeviceState)
         
 
@@ -486,6 +489,256 @@ paths:
 
 
 
+  '/aligner/{device_number}/configuration':
+    get:
+      summary: Returns the aligner configuration.
+      description: Returns the configuration values for the aligner device.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Aligner Specific Methods (Draft v1)
+      responses:
+        '200':
+          $ref: '#/components/responses/AlignerConfigurationResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  '/aligner/{device_number}/configurationversion':
+    get:
+      summary: Returns the configuration object's interface version.
+      description: This version is independent of the overall aligner interface version.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Aligner Specific Methods (Draft v1)
+      responses:
+        '200':
+          $ref: '#/components/responses/IntResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  '/aligner/{device_number}/findhome':
+    put:
+      summary: Starts movement of all axes to their home positions.
+      description: The operation runs asynchronously; poll ismoving to determine when it completes.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Aligner Specific Methods (Draft v1)
+      responses:
+        '200':
+          $ref: '#/components/responses/MethodResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
+  '/aligner/{device_number}/halt':
+    put:
+      summary: Halts movement on all axes.
+      description: Returns when all motion has stopped.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Aligner Specific Methods (Draft v1)
+      responses:
+        '200':
+          $ref: '#/components/responses/MethodResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      requestBody:
+        $ref: '#/components/requestBodies/putStandardClientParameters'
+  '/aligner/{device_number}/ismoving':
+    get:
+      summary: Indicates whether any aligner movement is in progress.
+      description: True while any move or homing operation is in progress.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Aligner Specific Methods (Draft v1)
+      responses:
+        '200':
+          $ref: '#/components/responses/BoolResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  '/aligner/{device_number}/move':
+    put:
+      summary: Starts a relative move of all aligner axes.
+      description: Starts an asynchronous relative move; use 0.0 for an axis that should not move.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Aligner Specific Methods (Draft v1)
+      responses:
+        '200':
+          $ref: '#/components/responses/MethodResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/AlpacaRequest'
+                - properties:
+                    X:
+                      description: Relative movement of the X axis in the configured aligner units.
+                      type: number
+                      format: double
+                    Y:
+                      description: Relative movement of the Y axis in the configured aligner units.
+                      type: number
+                      format: double
+                    Z:
+                      description: Relative movement of the Z axis in the configured aligner units.
+                      type: number
+                      format: double
+                  required:
+                    - X
+                    - Y
+                    - Z
+  '/aligner/{device_number}/moveabsolute':
+    put:
+      summary: Starts a move of all aligner axes to absolute positions.
+      description: Starts an asynchronous move to the requested absolute positions.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Aligner Specific Methods (Draft v1)
+      responses:
+        '200':
+          $ref: '#/components/responses/MethodResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/AlpacaRequest'
+                - properties:
+                    X:
+                      description: Absolute X-axis position in the configured aligner units.
+                      type: number
+                      format: double
+                    Y:
+                      description: Absolute Y-axis position in the configured aligner units.
+                      type: number
+                      format: double
+                    Z:
+                      description: Absolute Z-axis position in the configured aligner units.
+                      type: number
+                      format: double
+                  required:
+                    - X
+                    - Y
+                    - Z
+  '/aligner/{device_number}/sync':
+    put:
+      summary: Sets the current coordinates of all aligner axes without movement.
+      description: Sets the axis coordinates synchronously without moving the device.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Aligner Specific Methods (Draft v1)
+      responses:
+        '200':
+          $ref: '#/components/responses/MethodResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/AlpacaRequest'
+                - properties:
+                    X:
+                      description: Current X-axis coordinate in the configured aligner units.
+                      type: number
+                      format: double
+                    Y:
+                      description: Current Y-axis coordinate in the configured aligner units.
+                      type: number
+                      format: double
+                    Z:
+                      description: Current Z-axis coordinate in the configured aligner units.
+                      type: number
+                      format: double
+                  required:
+                    - X
+                    - Y
+                    - Z
+  '/aligner/{device_number}/xposition':
+    get:
+      summary: Returns the current X-axis position.
+      description: Position in the units reported by the aligner's configuration.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Aligner Specific Methods (Draft v1)
+      responses:
+        '200':
+          $ref: '#/components/responses/DoubleResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  '/aligner/{device_number}/yposition':
+    get:
+      summary: Returns the current Y-axis position.
+      description: Position in the units reported by the aligner's configuration.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Aligner Specific Methods (Draft v1)
+      responses:
+        '200':
+          $ref: '#/components/responses/DoubleResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+  '/aligner/{device_number}/zposition':
+    get:
+      summary: Returns the current Z-axis position.
+      description: Position in the units reported by the aligner's configuration.
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+        - $ref: '#/components/parameters/ClientIDQuery'
+        - $ref: '#/components/parameters/ClientTransactionIDQuery'
+      tags:
+        - Aligner Specific Methods (Draft v1)
+      responses:
+        '200':
+          $ref: '#/components/responses/DoubleResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
   '/camera/{device_number}/bayeroffsetx':
     get:
       summary: Returns the X offset of the Bayer matrix.
@@ -5491,6 +5744,7 @@ components:
       schema:
         type: string
         enum:
+          - aligner
           - camera
           - covercalibrator
           - dome
@@ -5675,6 +5929,81 @@ components:
                       required:
                         - Name
                         - Value
+    AlignerConfigurationResponse:
+      description: Transaction complete or exception.
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/AlpacaResponse'
+              - properties:
+                  Value:
+                    description: Configuration values returned by the IAlignerV1.Configuration property.
+                    type: object
+                    properties:
+                      AlignerPurpose:
+                        description: Intended purpose of the aligner device.
+                        $ref: '#/components/schemas/AlignerPurpose'
+                      CanFindHome:
+                        description: True if the device can find home.
+                        type: boolean
+                      CanHalt:
+                        description: True if the device can halt all movement.
+                        type: boolean
+                      CanMoveX:
+                        description: True if the device can move its X axis.
+                        type: boolean
+                      CanMoveY:
+                        description: True if the device can move its Y axis.
+                        type: boolean
+                      CanMoveZ:
+                        description: True if the device can move its Z axis.
+                        type: boolean
+                      CanMoveAbsolute:
+                        description: True if the device can move to an absolute position.
+                        type: boolean
+                      CanSync:
+                        description: True if the device can synchronize its state.
+                        type: boolean
+                      Units:
+                        description: Unit of measurement used for axis movement.
+                        $ref: '#/components/schemas/AlignerUnits'
+                      XMaxMove:
+                        description: Largest relative X-axis movement supported; may not be implemented.
+                        type: number
+                        format: double
+                      XMaxPosition:
+                        description: Maximum reachable X-axis position; optional and paired with XMinPosition.
+                        type: number
+                        format: double
+                      XMinPosition:
+                        description: Minimum reachable X-axis position; optional and paired with XMaxPosition.
+                        type: number
+                        format: double
+                      YMaxMove:
+                        description: Largest relative Y-axis movement supported; may not be implemented.
+                        type: number
+                        format: double
+                      YMaxPosition:
+                        description: Maximum reachable Y-axis position; optional and paired with YMinPosition.
+                        type: number
+                        format: double
+                      YMinPosition:
+                        description: Minimum reachable Y-axis position; optional and paired with YMaxPosition.
+                        type: number
+                        format: double
+                      ZMaxMove:
+                        description: Largest relative Z-axis movement supported; may not be implemented.
+                        type: number
+                        format: double
+                      ZMaxPosition:
+                        description: Maximum reachable Z-axis position; optional and paired with ZMinPosition.
+                        type: number
+                        format: double
+                      ZMinPosition:
+                        description: Minimum reachable Z-axis position; optional and paired with ZMaxPosition.
+                        type: number
+                        format: double
     '400':
       description: 'The device did not understand which operation was being requested or insufficient information was given to complete the operation. Check the error message for detailed information.'
       content:
@@ -6364,3 +6693,88 @@ components:
         - title: B1950
           description: B1950 equinox, FK4 reference frame.
           const: 4
+    AlignerPurpose:
+      description: The intended purpose of the aligner device.
+      type: integer
+      format: int32
+      oneOf:
+        - title: Unset
+          description: Default value indicating that the device has not set a valid purpose.
+          const: 0
+        - title: PolarAligner
+          description: The device is a polar alignment aid.
+          const: 1
+        - title: OpticalAxisAligner
+          description: The device aligns a telescope to the required optical axis.
+          const: 2
+        - title: Reserved3
+          description: Reserved for future use.
+          const: 3
+        - title: Reserved4
+          description: Reserved for future use.
+          const: 4
+        - title: Reserved5
+          description: Reserved for future use.
+          const: 5
+        - title: Reserved6
+          description: Reserved for future use.
+          const: 6
+        - title: Reserved7
+          description: Reserved for future use.
+          const: 7
+        - title: Reserved8
+          description: Reserved for future use.
+          const: 8
+        - title: Reserved9
+          description: Reserved for future use.
+          const: 9
+        - title: Reserved10
+          description: Reserved for future use.
+          const: 10
+        - title: Reserved11
+          description: Reserved for future use.
+          const: 11
+        - title: Reserved12
+          description: Reserved for future use.
+          const: 12
+        - title: Reserved13
+          description: Reserved for future use.
+          const: 13
+        - title: Reserved14
+          description: Reserved for future use.
+          const: 14
+        - title: Reserved15
+          description: Reserved for future use.
+          const: 15
+        - title: Reserved16
+          description: Reserved for future use.
+          const: 16
+        - title: Reserved17
+          description: Reserved for future use.
+          const: 17
+        - title: Reserved18
+          description: Reserved for future use.
+          const: 18
+        - title: Reserved19
+          description: Reserved for future use.
+          const: 19
+        - title: Reserved20
+          description: Reserved for future use.
+          const: 20
+    AlignerUnits:
+      description: Units of movement for the aligner's axes.
+      type: integer
+      format: int32
+      oneOf:
+        - title: Unset
+          description: Default value indicating that valid units have not been set.
+          const: 0
+        - title: Degrees
+          description: Movement is measured in degrees.
+          const: 1
+        - title: Millimeters
+          description: Movement is measured in millimeters.
+          const: 2
+        - title: Counts
+          description: Movement is measured in arbitrary position counts.
+          const: 3
