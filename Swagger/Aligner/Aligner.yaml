@@ -650,6 +650,35 @@ paths:
                     - X
                     - Y
                     - Z
+  
+  '/aligner/{device_number}/SetBacklashCompensation':
+    put:
+      summary: Enable or turn off backlash compensation..
+      description: Enable or turn off backlash compensation..
+      parameters:
+        - $ref: '#/components/parameters/device_number'
+      tags:
+        - Aligner Specific Methods (Draft v1)
+      responses:
+        '200':
+          $ref: '#/components/responses/MethodResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/AlpacaRequest'
+                - properties:
+                    State:
+                      description: 'True to enable, false to turn off backlash compensation.'
+                      type: boolean
+                  required:
+                    - State
+
   '/aligner/{device_number}/sync':
     put:
       summary: Sets the current coordinates of all aligner axes without movement.
@@ -5944,10 +5973,14 @@ components:
                       AlignerPurpose:
                         description: Intended purpose of the aligner device.
                         $ref: '#/components/schemas/AlignerPurpose'
+                      BacklashCompensation:
+                        description: True if the device compensates for gear backlash, otherwise false.
+                        type: boolean
                       CanFindHome:
                         description: True if the device can find home.
                         type: boolean
-                        description: True if the device can halt all movement.
+                      CanMoveAbsolute:
+                        description: True if the device can move to an absolute position.
                         type: boolean
                       CanMoveX:
                         description: True if the device can move its X axis.
@@ -5958,8 +5991,8 @@ components:
                       CanMoveZ:
                         description: True if the device can move its Z axis.
                         type: boolean
-                      CanMoveAbsolute:
-                        description: True if the device can move to an absolute position.
+                      CanSetBacklash:
+                        description: True if the device can enable / turn off backlash compensation.
                         type: boolean
                       CanSync:
                         description: True if the device can synchronize its state.
