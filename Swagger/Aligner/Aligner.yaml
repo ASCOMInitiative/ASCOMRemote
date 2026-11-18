@@ -5947,7 +5947,6 @@ components:
                       CanFindHome:
                         description: True if the device can find home.
                         type: boolean
-                      CanHalt:
                         description: True if the device can halt all movement.
                         type: boolean
                       CanMoveX:
@@ -5969,39 +5968,51 @@ components:
                         description: Unit of measurement used for axis movement.
                         $ref: '#/components/schemas/AlignerUnits'
                       XMaxMove:
-                        description: Largest relative X-axis movement supported; may not be implemented.
+                        description: Largest relative X-axis movement supported. May be omitted if not supported.
                         type: number
                         format: double
                       XMaxPosition:
-                        description: Maximum reachable X-axis position; optional and paired with XMinPosition.
+                        description: Maximum reachable X-axis position; paired with XMinPosition. May be omitted if not supported.
                         type: number
                         format: double
                       XMinPosition:
-                        description: Minimum reachable X-axis position; optional and paired with XMaxPosition.
+                        description: Minimum reachable X-axis position; paired with XMaxPosition. May be omitted if not supported.
+                        type: number
+                        format: double
+                      XResolution:
+                        description: The smallest move the X-axis can make in AlignerUnits.
                         type: number
                         format: double
                       YMaxMove:
-                        description: Largest relative Y-axis movement supported; may not be implemented.
+                        description: Largest relative Y-axis movement supported. May be omitted if not supported.
                         type: number
                         format: double
                       YMaxPosition:
-                        description: Maximum reachable Y-axis position; optional and paired with YMinPosition.
+                        description: Maximum reachable Y-axis position; paired with YMinPosition. May be omitted if not supported.
                         type: number
                         format: double
                       YMinPosition:
-                        description: Minimum reachable Y-axis position; optional and paired with YMaxPosition.
+                        description: Minimum reachable Y-axis position; paired with YMaxPosition. May be omitted if not supported.
+                        type: number
+                        format: double
+                      YResolution:
+                        description: The smallest move the Y-axis can make in AlignerUnits.
                         type: number
                         format: double
                       ZMaxMove:
-                        description: Largest relative Z-axis movement supported; may not be implemented.
+                        description: Largest relative Z-axis movement supported. May be omitted if not supported.
                         type: number
                         format: double
                       ZMaxPosition:
-                        description: Maximum reachable Z-axis position; optional and paired with ZMinPosition.
+                        description: Maximum reachable Z-axis position; paired with ZMinPosition. May be omitted if not supported.
                         type: number
                         format: double
                       ZMinPosition:
-                        description: Minimum reachable Z-axis position; optional and paired with ZMaxPosition.
+                        description: Minimum reachable Z-axis position; paired with ZMaxPosition. May be omitted if not supported.
+                        type: number
+                        format: double
+                      ZResolution:
+                        description: The smallest move the Z-axis can make in AlignerUnits.
                         type: number
                         format: double
     '400':
