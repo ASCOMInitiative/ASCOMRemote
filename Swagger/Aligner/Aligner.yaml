@@ -5927,7 +5927,7 @@ components:
                     properties:
                       AlignerType:
                         description: The device's purpose.
-                        $ref: '#/components/schemas/AlignerPurpose'
+                        $ref: '#/components/schemas/AlignerType'
                       BacklashCompensation:
                         description: True if the device compensates for gear backlash, otherwise false.
                         type: boolean
@@ -5965,7 +5965,7 @@ components:
                         type: number
                         format: double
                       XResolution:
-                        description: The smallest move the X-axis can make in AlignerUnits.
+                        description: The smallest move the X-axis can make in AlignerUnits. May be omitted if not supported.
                         type: number
                         format: double
                       YMaxMove:
@@ -5981,7 +5981,7 @@ components:
                         type: number
                         format: double
                       YResolution:
-                        description: The smallest move the Y-axis can make in AlignerUnits.
+                        description: The smallest move the Y-axis can make in AlignerUnits. May be omitted if not supported.
                         type: number
                         format: double
                       ZMaxMove:
@@ -5997,7 +5997,7 @@ components:
                         type: number
                         format: double
                       ZResolution:
-                        description: The smallest move the Z-axis can make in AlignerUnits.
+                        description: The smallest move the Z-axis can make in AlignerUnits. May be omitted if not supported.
                         type: number
                         format: double
     '400':
@@ -6689,7 +6689,7 @@ components:
         - title: B1950
           description: B1950 equinox, FK4 reference frame.
           const: 4
-    AlignerPurpose:
+    AlignerType:
       description: The intended purpose of the aligner device.
       type: integer
       format: int32
