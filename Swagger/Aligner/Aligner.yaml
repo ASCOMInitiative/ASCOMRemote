@@ -543,7 +543,7 @@ paths:
   '/aligner/{device_number}/ismoving':
     get:
       summary: Indicates whether any aligner movement is in progress.
-      description: True while any move or homing operation is in progress.
+      description: "True while any move or homing operation is in progress. Stays true until the axes are at rest, including any backlash take-up the device performs after reaching the target. If the operation fails, reading this property returns an error until the next operation that uses it starts; see [Asynchronous Operations in ASCOM](https://ascom-standards.org/newdocs/async-faq.html)."
       parameters:
         - $ref: '#/components/parameters/device_number'
         - $ref: '#/components/parameters/ClientIDQuery'
