@@ -322,7 +322,7 @@ paths:
         "`Platform 7 onward.` Please note that this member has the same signature in all device interfaces but the returned properties vary by device type:
         
         
-        [Aligner DeviceState](https://URL.not.yet.available)
+        [Aligner DeviceState](https://ascom-standards.org/ialigner/html/80f0a573-0834-b104-5d2d-d8f866443c7a.htm)
 
 
         [Camera DeviceState](https://ascom-standards.org/newdocs/camera.html#Camera.DeviceState)
@@ -498,27 +498,10 @@ paths:
         - $ref: '#/components/parameters/ClientIDQuery'
         - $ref: '#/components/parameters/ClientTransactionIDQuery'
       tags:
-        - Aligner Specific Methods (Draft v1)
+        - Aligner Specific Methods (Draft v2)
       responses:
         '200':
           $ref: '#/components/responses/AlignerConfigurationResponse'
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-  '/aligner/{device_number}/configurationversion':
-    get:
-      summary: Returns the configuration object's interface version.
-      description: This version is independent of the overall aligner interface version.
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-        - $ref: '#/components/parameters/ClientIDQuery'
-        - $ref: '#/components/parameters/ClientTransactionIDQuery'
-      tags:
-        - Aligner Specific Methods (Draft v1)
-      responses:
-        '200':
-          $ref: '#/components/responses/IntResponse'
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -530,7 +513,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
-        - Aligner Specific Methods (Draft v1)
+        - Aligner Specific Methods (Draft v2)
       responses:
         '200':
           $ref: '#/components/responses/MethodResponse'
@@ -547,7 +530,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
-        - Aligner Specific Methods (Draft v1)
+        - Aligner Specific Methods (Draft v2)
       responses:
         '200':
           $ref: '#/components/responses/MethodResponse'
@@ -566,7 +549,7 @@ paths:
         - $ref: '#/components/parameters/ClientIDQuery'
         - $ref: '#/components/parameters/ClientTransactionIDQuery'
       tags:
-        - Aligner Specific Methods (Draft v1)
+        - Aligner Specific Methods (Draft v2)
       responses:
         '200':
           $ref: '#/components/responses/BoolResponse'
@@ -581,7 +564,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
-        - Aligner Specific Methods (Draft v1)
+        - Aligner Specific Methods (Draft v2)
       responses:
         '200':
           $ref: '#/components/responses/MethodResponse'
@@ -619,7 +602,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
-        - Aligner Specific Methods (Draft v1)
+        - Aligner Specific Methods (Draft v2)
       responses:
         '200':
           $ref: '#/components/responses/MethodResponse'
@@ -651,34 +634,6 @@ paths:
                     - Y
                     - Z
   
-  '/aligner/{device_number}/SetBacklashCompensation':
-    put:
-      summary: Enable or turn off backlash compensation..
-      description: Enable or turn off backlash compensation..
-      parameters:
-        - $ref: '#/components/parameters/device_number'
-      tags:
-        - Aligner Specific Methods (Draft v1)
-      responses:
-        '200':
-          $ref: '#/components/responses/MethodResponse'
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/AlpacaRequest'
-                - properties:
-                    State:
-                      description: 'True to enable, false to turn off backlash compensation.'
-                      type: boolean
-                  required:
-                    - State
-
   '/aligner/{device_number}/sync':
     put:
       summary: Sets the current coordinates of all aligner axes without movement.
@@ -686,7 +641,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/device_number'
       tags:
-        - Aligner Specific Methods (Draft v1)
+        - Aligner Specific Methods (Draft v2)
       responses:
         '200':
           $ref: '#/components/responses/MethodResponse'
@@ -726,7 +681,7 @@ paths:
         - $ref: '#/components/parameters/ClientIDQuery'
         - $ref: '#/components/parameters/ClientTransactionIDQuery'
       tags:
-        - Aligner Specific Methods (Draft v1)
+        - Aligner Specific Methods (Draft v2)
       responses:
         '200':
           $ref: '#/components/responses/DoubleResponse'
@@ -743,7 +698,7 @@ paths:
         - $ref: '#/components/parameters/ClientIDQuery'
         - $ref: '#/components/parameters/ClientTransactionIDQuery'
       tags:
-        - Aligner Specific Methods (Draft v1)
+        - Aligner Specific Methods (Draft v2)
       responses:
         '200':
           $ref: '#/components/responses/DoubleResponse'
@@ -760,7 +715,7 @@ paths:
         - $ref: '#/components/parameters/ClientIDQuery'
         - $ref: '#/components/parameters/ClientTransactionIDQuery'
       tags:
-        - Aligner Specific Methods (Draft v1)
+        - Aligner Specific Methods (Draft v2)
       responses:
         '200':
           $ref: '#/components/responses/DoubleResponse'
@@ -5970,8 +5925,8 @@ components:
                     description: Configuration values returned by the IAlignerV1.Configuration property.
                     type: object
                     properties:
-                      AlignerPurpose:
-                        description: Intended purpose of the aligner device.
+                      AlignerType:
+                        description: The device's purpose.
                         $ref: '#/components/schemas/AlignerPurpose'
                       BacklashCompensation:
                         description: True if the device compensates for gear backlash, otherwise false.
@@ -5990,9 +5945,6 @@ components:
                         type: boolean
                       CanMoveZ:
                         description: True if the device can move its Z axis.
-                        type: boolean
-                      CanSetBacklash:
-                        description: True if the device can enable / turn off backlash compensation.
                         type: boolean
                       CanSync:
                         description: True if the device can synchronize its state.
@@ -6822,3 +6774,54 @@ components:
         - title: Counts
           description: Movement is measured in arbitrary position counts.
           const: 3
+        - title: Reserved4
+          description: Reserved for future use.
+          const: 4
+        - title: Reserved5
+          description: Reserved for future use.
+          const: 5
+        - title: Reserved6
+          description: Reserved for future use.
+          const: 6
+        - title: Reserved7
+          description: Reserved for future use.
+          const: 7
+        - title: Reserved8
+          description: Reserved for future use.
+          const: 8
+        - title: Reserved9
+          description: Reserved for future use.
+          const: 9
+        - title: Reserved10
+          description: Reserved for future use.
+          const: 10
+        - title: Reserved11
+          description: Reserved for future use.
+          const: 11
+        - title: Reserved12
+          description: Reserved for future use.
+          const: 12
+        - title: Reserved13
+          description: Reserved for future use.
+          const: 13
+        - title: Reserved14
+          description: Reserved for future use.
+          const: 14
+        - title: Reserved15
+          description: Reserved for future use.
+          const: 15
+        - title: Reserved16
+          description: Reserved for future use.
+          const: 16
+        - title: Reserved17
+          description: Reserved for future use.
+          const: 17
+        - title: Reserved18
+          description: Reserved for future use.
+          const: 18
+        - title: Reserved19
+          description: Reserved for future use.
+          const: 19
+        - title: Reserved20
+          description: Reserved for future use.
+          const: 20
